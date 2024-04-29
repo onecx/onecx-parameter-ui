@@ -1,0 +1,83 @@
+{
+  "GENERAL": {
+    "YES": "Ja",
+    "NO": "Nein",
+    "SWITCH_TO_EDIT": "In den Editionsmodus schalten",
+    "SWITCH_TO_VIEW": "Wechseln Sie in den Ansichtsmodus",
+    "CLOSE": "Schließen",
+    "RELOAD": "Neuladen",
+    "SAVE": "Speichern",
+    "CREATE": "Erstellen",
+    "NO_DATA": "Keine Ergebnisse"
+  },
+  "SEARCH": {
+    "PARAMETER_SEARCH": "Parameter-Suche",
+    "MSG_NO_RESULTS": "Die Suche ergab keine Treffer",
+    "MSG_SEARCH_FAILED": "Suche ist fehlgeschlagen",
+    "ACTION": "Aktion",
+    "SEARCH": "Suchen",
+    "RESET": "Zurücksetzen",
+    "SELECT_TYPE": "Wählen Sie einen Typ",
+    "DROPDOWN_PLACEHOLDER": "Irgendein",
+    "APPLICATION_ID_IS_MANDATORY": "Das Feld Anwendung-ID ist obligatorisch"
+  },
+  "APPLICATION_PARAMETER": {
+    "APPLICATION_ID": "Anwendung-ID",
+    "KEY": "Schlüssel",
+    "VALUE": "Wert",
+    "IMPORT_VALUE": "Importwert",
+    "TYPE": "Werttyp",
+    "DESCRIPTION": "Beschreibung",
+    "UNIT": "Einheit",
+    "RANGE_FROM": "Bereich von",
+    "RANGE_TO": "Bereich bis",
+    "PARAMETER_TYPE": {
+      "UNAVAILABLE": "Nicht verfügbar",
+      "STRING": "Zeichenfolge",
+      "NUMBER": "Nummer",
+      "BOOLEAN": "Boolean",
+      "JSON": "Json"
+    }
+  },
+  "DETAILS": {
+    "FORM_MANDATORY": "Pflichtfelder fehlen",
+    "VALUE_HAS_WRONG_TYPE": "Der Wert hat den falschen Typ",
+    "FORM_KEY_MIN_LEN": "Schlüssel sollte mindestens 3 Buchstaben haben"
+  },
+  "EDIT": {
+    "EDIT_PARAMETER": "Aktualisieren einem Parameter",
+    "BREADCRUMB": "Parameterdetails",
+    "UPDATE_SUCCESS": "Parameter erfolgreich aktualisiert",
+    "UPDATE_ERROR": "Fehler beim Aktualisieren des Parameters",
+    "FETCH_ERROR": "Parameter mit angegebener Id ist nicht abgerufen."
+  },
+  "CREATE": {
+    "CREATE_PARAMETER": "Erstellung einem Parameter",
+    "BREADCRUMB": "Parameter-Erstellenung",
+    "CREATE_SUCCESS": "Parameter wurde erfolgreich erstellt.",
+    "CREATE_ERROR": "Fehler, Parameter wurde nicht erfolgreich erstellt.",
+    "CLOSE": "Schließen",
+    "SAVE": "Erstellen"
+  },
+  "PARAMETER_DELETE": {
+    "PARAMETER_DELETE": "Parameter-Löschung",
+    "DELETE_SUCCESS": "Parameter wurde erfolgreich gelöscht",
+    "DELETE_ERROR": "Fehler, Parameter wurde nicht gelöscht",
+    "MESSAGE": "Sind Sie sicher, dass Sie diese Parameter löschen möchten?"
+  },
+  "HISTORY": {
+    "HISTORY": "Verlaufsdaten",
+    "INSTANCE_ID": "Instanz-ID",
+    "DEFAULT_VALUE": "Standardwert",
+    "USED_VALUE": "Gebrauchtwert",
+    "LAST_USED": "Zuletzt verwendeten"
+  },
+  "DIALOG": {
+    "SELECT_APPLICATION_ID": "Wählen Sie Anwendungs-ID aus",
+    "SELECT_KEY": "Wählen Sie Schlüssel",
+    "FILTER_BY": "Filtern nach"
+  },
+  "CHART": {
+    "NUMBER_OF_REQUESTS": "Anzahl der Anfragen"
+  }
+}

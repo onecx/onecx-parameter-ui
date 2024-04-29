@@ -1,0 +1,25 @@
+<ocx-portal-page [helpArticleId]="helpArticleId">
+  <ocx-search-criteria
+    header="{{ 'SEARCH.PARAMETER_SEARCH' | translate }}"
+    [showBreadcrumbs]="false"
+    [disableAdvancedToggle]="true"
+  >
+    <div toolbarItems>
+      <button
+        pButton
+        label="{{ 'CREATE.CREATE_PARAMETER' | translate }}"
+        pTooltip="{{ 'CREATE.CREATE_PARAMETER' | translate }}"
+        tooltipPosition="top"
+        [routerLink]="['./create']"
+        icon="pi pi-plus"
+      ></button>
+    </div>
+    <app-criteria
+      [searchInProgress]="searchInProgress"
+      (criteriaSubmitted)="searchData(this.criteria!)"
+      (resetSubmitted)="reset()"
+      simpleCriteria
+    ></app-criteria>
+  </ocx-search-criteria>
+  <app-results [results]="results" (deleteEvent)="deleteParameter('random ID')"></app-results>
+</ocx-portal-page>

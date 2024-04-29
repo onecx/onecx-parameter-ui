@@ -1,0 +1,59 @@
+<div id="criteria">
+  <form [formGroup]="criteriaGroup">
+    <div class="flex flex-wrap gap-3 mb-3">
+      <span class="p-float-label flex-auto">
+        <input
+          id="applicationId"
+          pInputText
+          type="text"
+          formControlName="applicationId"
+          [ngClass]="
+            criteriaGroup.controls['applicationId'].invalid &&
+            criteriaGroup.controls['applicationId'].dirty &&
+            criteriaGroup.controls['applicationId'].touched
+              ? 'ng-invalid ng-dirty'
+              : null
+          "
+          style="width: 100%"
+          required
+          (click)="showAppIdSelectDialog(); criteriaGroup.reset()"
+        />
+        <label class="required" for="applicationId">{{ 'APPLICATION_PARAMETER.APPLICATION_ID' | translate }}</label>
+      </span>
+      <span class="p-float-label flex-auto">
+        <input
+          id="key"
+          pInputText
+          type="text"
+          formControlName="key"
+          style="width: 100%"
+          (click)="showAppKeySelectDialog()"
+        />
+        <label for="key">{{ 'APPLICATION_PARAMETER.KEY' | translate }}</label>
+      </span>
+    </div>
+  </form>
+  <div>
+    <button
+      id="search-button"
+      pButton
+      icon="pi pi-search"
+      class="search-button"
+      style="margin-right: 10px"
+      type="button"
+      label="Search"
+      [disabled]="searchInProgress"
+      (click)="submitCriteria()"
+    ></button>
+    <button
+      id="reset-button"
+      pButton
+      icon="pi pi-times"
+      class="search-button"
+      type="button"
+      label="Reset"
+      [disabled]="searchInProgress"
+      (click)="submitReset()"
+    ></button>
+  </div>
+</div>

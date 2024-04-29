@@ -1,0 +1,145 @@
+<div class="grid">
+  <div class="col-12">
+    <div id="results">
+      <p-table
+        #table
+        [value]="results"
+        [columns]="filteredColumns"
+        [styleClass]="'mt-1'"
+        [alwaysShowPaginator]="true"
+        [autoLayout]="true"
+        [paginator]="true"
+        [rows]="rowsPerPage"
+        [rowsPerPageOptions]="rowsPerPageOptions"
+        [reorderableColumns]="false"
+        stateStorage="session"
+        stateKey="resultsState"
+        dataKey="id"
+      >
+        <ng-template pTemplate="caption">
+          <ocx-data-view-controls
+            [supportedViews]="['table']"
+            [enableFiltering]="true"
+            [enableSorting]="false"
+            [columnDefinitions]="columns"
+            (columnsChange)="onColumnsChange($event)"
+            (filterChange)="onFilterChange($event)"
+          ></ocx-data-view-controls>
+        </ng-template>
+        <ng-template pTemplate="paginatorleft" let-state>
+          <ocx-paging-info [resultsCount]="results ? results.length : -1" [state]="state"></ocx-paging-info>
+        </ng-template>
+
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <th title="{{ 'SEARCH.ACTION' | translate }}">
+              {{ 'SEARCH.ACTION' | translate }}
+            </th>
+            <th
+              *ngFor="let col of columns"
+              [pSortableColumn]="col.field"
+              title="{{ 'APPLICATION_PARAMETER.' + col.header | translate }}"
+            >
+              <span class="table-filter-flex">
+                {{ 'APPLICATION_PARAMETER.' + col.header | translate }}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+                <p-columnFilter
+                  *ngIf="col.field !== 'type'"
+                  type="text"
+                  [field]="col.field"
+                  display="menu"
+                ></p-columnFilter>
+                <p-columnFilter
+                  *ngIf="col.field === 'type'"
+                  [field]="col.field"
+                  display="menu"
+                  [showMatchModes]="false"
+                  [showOperator]="false"
+                  [showAddButton]="false"
+                  matchMode="equals"
+                >
+                  <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                    <p-dropdown
+                      [ngModel]="value"
+                      [options]="getStatusOptions(col.field)"
+                      (onChange)="filter($event.value)"
+                      [showClear]="true"
+                      [autoDisplayFirst]="false"
+                      placeholder="{{ 'SEARCH.DROPDOWN_PLACEHOLDER' | translate }}"
+                    >
+                      <ng-template pTemplate="item" let-item>
+                        {{ 'APPLICATION_PARAMETER.PARAMETER_TYPE.' + item.label | translate }}
+                      </ng-template>
+                      <ng-template let-selectedItem pTemplate="selectedItem">
+                        {{ 'APPLICATION_PARAMETER.PARAMETER_TYPE.' + selectedItem.label | translate }}
+                      </ng-template>
+                    </p-dropdown>
+                  </ng-template>
+                </p-columnFilter>
+              </span>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-results let-columns="columns">
+          <tr [pSelectableRow]="results">
+            <td>
+              <button
+                type="button"
+                icon="pi pi-pencil"
+                pButton
+                class="mr-2"
+                title="Edit"
+                [routerLink]="['./edit', results.id]"
+              ></button>
+              <button
+                class="mr-2"
+                type="button"
+                icon="pi pi-trash"
+                pButton
+                title="Delete"
+                (click)="deleteDialogVisible = true; setSelectedParameter(results)"
+              ></button>
+            </td>
+            <ng-container *ngFor="let col of columns">
+              <td>
+                <div *ngIf="col.field !== 'type'">
+                  {{ results[col.field] }}
+                </div>
+                <div *ngIf="col.field === 'type'">
+                  {{ translateTypeField(results[col.field]) }}
+                </div>
+              </td>
+            </ng-container>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+<p-dialog
+  header="{{ 'PARAMETER_DELETE.PARAMETER_DELETE' | translate }}"
+  [(visible)]="deleteDialogVisible"
+  [baseZIndex]="10000"
+>
+  <p>
+    {{ 'PARAMETER_DELETE.MESSAGE' | translate }}
+  </p>
+  <div><b>Application Id</b>: {{ getSelectedParameter()?.applicationId }}</div>
+  <div><b>Key</b>: {{ getSelectedParameter()?.key }}</div>
+  <p-footer class="btn-text">
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="{{ ('GENERAL.YES' | translate) || true }}"
+      (click)="deleteEvent.emit(getSelectedParameter().id); deleteDialogVisible = false"
+    ></button>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      (click)="setSelectedParameter(null); deleteDialogVisible = false"
+      label="{{ ('GENERAL.NO' | translate) || true }}"
+    ></button>
+  </p-footer>
+</p-dialog>

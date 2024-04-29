@@ -1,0 +1,47 @@
+<ocx-portal-page [header]="'EDIT.EDIT_PARAMETER' | translate">
+  <ocx-page-header
+    [header]="'EDIT.EDIT_PARAMETER' | translate"
+    [disableDefaultActions]="true"
+    [showBreadcrumbs]="false"
+  >
+    <div toolbarItems>
+      <button
+        pButton
+        class="mr-2"
+        label="{{ 'GENERAL.CLOSE' | translate }}"
+        pTooltip="{{ 'GENERAL.CLOSE' | translate }}"
+        tooltipPosition="top"
+        [routerLink]="['../../../']"
+        icon="pi pi-times"
+      ></button>
+      <button
+        pButton
+        class="mr-2"
+        label="{{ 'GENERAL.RELOAD' | translate }}"
+        pTooltip="{{ 'GENERAL.RELOAD' | translate }}"
+        tooltipPosition="top"
+        (click)="parameterDetailFormComponent!.reloadData()"
+        icon="pi pi-refresh"
+      ></button>
+      <button
+        pButton
+        class="mr-2"
+        label="{{ parameterDetailFormComponent!.viewEditButtonName | translate }}"
+        pTooltip="{{ 'GENERAL.SWITCH_TO_EDIT' | translate }}"
+        tooltipPosition="top"
+        (click)="parameterDetailFormComponent!.switchMode()"
+        icon="pi pi-pencil"
+      ></button>
+      <button
+        pButton
+        label="{{ 'GENERAL.SAVE' | translate }}"
+        pTooltip="{{ 'GENERAL.SAVE' | translate }}"
+        tooltipPosition="top"
+        (click)="parameterDetailFormComponent!.emitFormUpdate()"
+        icon="pi pi-save"
+        [disabled]="!parameterDetailFormComponent?.formEnabled"
+      ></button>
+    </div>
+  </ocx-page-header>
+  <app-parameter-detail-form (formSubmitted)="onSubmit($event)" mode="edit"></app-parameter-detail-form>
+</ocx-portal-page>

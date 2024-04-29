@@ -1,0 +1,29 @@
+<ocx-portal-page [header]="'CREATE.CREATE_PARAMETER' | translate">
+  <ocx-page-header
+    [header]="'CREATE.CREATE_PARAMETER' | translate"
+    [disableDefaultActions]="true"
+    [showBreadcrumbs]="false"
+  >
+    <div toolbarItems>
+      <button
+        pButton
+        class="mr-2"
+        label="{{ 'GENERAL.CLOSE' | translate }}"
+        pTooltip="{{ 'GENERAL.CLOSE' | translate }}"
+        tooltipPosition="top"
+        [routerLink]="['../']"
+        icon="pi pi-times"
+      ></button>
+      <button
+        pButton
+        class="mr-2"
+        label="{{ 'GENERAL.CREATE' | translate }}"
+        pTooltip="{{ 'GENERAL.CREATE' | translate }}"
+        tooltipPosition="top"
+        (click)="parameterDetailFormComponent!.emitFormCreate()"
+        icon="pi pi-save"
+      ></button>
+    </div>
+  </ocx-page-header>
+  <app-parameter-detail-form (formSubmitted)="onSubmit($event)"></app-parameter-detail-form>
+</ocx-portal-page>
