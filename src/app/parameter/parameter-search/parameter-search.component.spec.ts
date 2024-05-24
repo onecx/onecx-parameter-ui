@@ -1,40 +1,32 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { MessageService } from 'primeng/api';
-import { TranslateServiceMock } from 'src/app/test/TranslateServiceMock';
+import { HttpClientTestingModule } from '@angular/common/http/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { RouterTestingModule } from '@angular/router/testing'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
+import { MessageService } from 'primeng/api'
+import { TranslateServiceMock } from 'src/app/shared/TranslateServiceMock'
 
-import { ParameterSearchComponent } from './parameter-search.component';
-import { SharedModule } from '../shared/shared.module';
+import { ParameterSearchComponent } from './parameter-search.component'
+import { SharedModule } from 'src/app/shared/shared.module'
 
 describe('ParameterSearchComponent', () => {
-  let component: ParameterSearchComponent;
-  let fixture: ComponentFixture<ParameterSearchComponent>;
+  let component: ParameterSearchComponent
+  let fixture: ComponentFixture<ParameterSearchComponent>
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ParameterSearchComponent],
-      imports: [
-        HttpClientTestingModule,
-        TranslateModule,
-        RouterTestingModule,
-        SharedModule,
-      ],
-      providers: [
-        { provide: TranslateService, useClass: TranslateServiceMock },
-        MessageService,
-      ],
-    }).compileComponents();
-  }));
+      imports: [HttpClientTestingModule, TranslateModule, RouterTestingModule, SharedModule],
+      providers: [{ provide: TranslateService, useClass: TranslateServiceMock }, MessageService]
+    }).compileComponents()
+  }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ParameterSearchComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(ParameterSearchComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})
