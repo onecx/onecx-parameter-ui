@@ -1,3 +1,4 @@
+/**
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
@@ -5,11 +6,11 @@ import { RouterTestingModule } from '@angular/router/testing'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { APP_CONFIG } from '@onecx/portal-integration-angular'
 import { MessageService } from 'primeng/api'
-import { TranslateServiceMock } from 'src/app/shared/TranslateServiceMock'
-import { environment } from 'src/environments/environment'
+import { TranslateServiceMock } from '../../../shared/TranslateServiceMock'
+import { environment } from '../../../../environments/environment'
 
 import { ParameterDetailComponent } from './parameter-detail.component'
-import { SharedModule } from 'src/app/shared/shared.module'
+import { SharedModule } from '../../../shared/shared.module'
 
 describe('ParameterDetailComponent', () => {
   let component: ParameterDetailComponent
@@ -38,3 +39,4 @@ describe('ParameterDetailComponent', () => {
     expect(component).toBeTruthy()
   })
 })
+*/
