@@ -1,0 +1,34 @@
+app:
+  name: ui
+  image:
+    repository: 'onecx/onecx-parameter-ui'
+  routing:
+    enabled: true
+    path: /mfe/parameter/
+  
+  operator:
+    # Parameter import
+    parameter:
+      enabled: true
+      spec:
+        exposedModule: "./OneCXParameterModule"
+        description: "OneCX Parameter UI"
+        note: "OneCX Parameter UI auto import via operator"
+    # Permission
+    permission:
+      enabled: true
+      spec:
+        permissions:
+          PARAMETER:
+            DELETE: Delete image
+            EDIT: Edit image
+            VIEW: View image
+    # Keycloak
+    keycloak:
+      client:
+        enabled: true
+        spec:
+          kcConfig:
+            clientId: "onecx-parameter-ui"
+            
+# PIPE Config

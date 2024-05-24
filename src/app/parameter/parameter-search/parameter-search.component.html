@@ -1,0 +1,11 @@
+<ocx-portal-page [helpArticleId]="helpArticleId">
+  <div toolbarItems></div>
+  <app-criteria
+    [actions]="(actions$ | async) ?? []"
+    [searchInProgress]="searchInProgress"
+    (criteriaSubmitted)="searchData(this.criteria!)"
+    (resetSubmitted)="reset()"
+    simpleCriteria
+  ></app-criteria>
+  <app-results [results]="results" (deleteEvent)="deleteParameter('random ID')"></app-results>
+</ocx-portal-page>

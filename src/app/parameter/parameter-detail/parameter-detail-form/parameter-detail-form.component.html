@@ -1,0 +1,140 @@
+<div class="flex justify-center" style="margin: 15px">
+  <label for="formTypeSwitch">Standard form</label>
+  <p-inputSwitch
+    inputId="formTypeSwitch"
+    [(ngModel)]="advancedForm"
+    [ngStyle]="{ margin: '0 5px' }"
+    (onChange)="mode !== 'edit' ? parameterForm.reset() : ''"
+  ></p-inputSwitch>
+  <label for="formTypeSwitch">Advanced form</label>
+</div>
+
+<div>
+  <p-card>
+    <form [formGroup]="parameterForm">
+      <div class="grid m-0">
+        <div class="p-fluid col-12 md:col-6">
+          <span class="p-float-label">
+            <input pInputText type="text" id="applicationId" formControlName="applicationId" />
+            <label [ngClass]="mode !== 'edit' ? 'required' : ''" for="applicationId">{{
+              'APPLICATION_PARAMETER.APPLICATION_ID' | translate
+            }}</label>
+          </span>
+        </div>
+
+        <div class="p-fluid col-12 md:col-6 mb-3">
+          <span class="p-float-label">
+            <input pInputText type="text" id="key" formControlName="key" />
+            <label [ngClass]="mode !== 'edit' ? 'required' : ''" for="key">{{
+              'APPLICATION_PARAMETER.KEY' | translate
+            }}</label>
+          </span>
+        </div>
+
+        <div class="p-fluid col-12 md:col-6 mb-3" *ngIf="!advancedForm">
+          <span class="p-float-label">
+            <input pInputText type="text" id="value" formControlName="value" />
+            <label class="required" for="value">{{ 'APPLICATION_PARAMETER.VALUE' | translate }}</label>
+          </span>
+        </div>
+
+        <div class="p-fluid col-12 md:col-6 mb-3" *ngIf="advancedForm">
+          <span class="p-float-label">
+            <textarea [rows]="5" [cols]="30" pInputTextarea id="value" formControlName="value" jsonColorize> </textarea>
+            <label class="required" for="value">{{ 'APPLICATION_PARAMETER.VALUE' | translate }}</label>
+          </span>
+        </div>
+
+        <div class="p-fluid col-12 md:col-6 mb-3">
+          <span class="p-float-label">
+            <input pInputText type="text" id="importValue" [value]="parameterDTO?.importValue" disabled="true" />
+            <label for="importValue">{{ 'APPLICATION_PARAMETER.IMPORT_VALUE' | translate }}</label>
+          </span>
+        </div>
+
+        <div class="p-fluid col-12 md:col-6 mb-3">
+          <span class="p-float-label">
+            <p-dropdown [options]="getApplicationParameterTypes()" formControlName="type">
+              <ng-template let-option pTemplate="selectedItem">
+                {{ 'APPLICATION_PARAMETER.PARAMETER_TYPE.' + option | translate }}
+              </ng-template>
+              <ng-template let-option pTemplate="option">
+                {{ 'APPLICATION_PARAMETER.PARAMETER_TYPE.' + option | translate }}
+              </ng-template>
+            </p-dropdown>
+            <label [ngClass]="mode !== 'edit' ? 'required' : ''" for="type">{{
+              'APPLICATION_PARAMETER.TYPE' | translate
+            }}</label>
+          </span>
+        </div>
+
+        <div class="p-fluid col-12 md:col-6 mb-3">
+          <span class="p-float-label">
+            <input pInputText type="text" id="unit" formControlName="unit" />
+            <label for="importValue">{{ 'APPLICATION_PARAMETER.UNIT' | translate }}</label>
+          </span>
+        </div>
+
+        <div class="p-fluid col-12 md:col-6 mb-3">
+          <span class="p-float-label">
+            <input pInputText type="text" id="rangeFrom" formControlName="rangeFrom" />
+            <label for="rangeFrom">{{ 'APPLICATION_PARAMETER.RANGE_FROM' | translate }}</label>
+          </span>
+        </div>
+
+        <div class="p-fluid col-12 md:col-6 mb-3">
+          <span class="p-float-label">
+            <input pInputText type="text" id="rangeTo" formControlName="rangeTo" />
+            <label for="rangeTo">{{ 'APPLICATION_PARAMETER.RANGE_TO' | translate }}</label>
+          </span>
+        </div>
+
+        <div class="p-fluid col-12 md:col-6 mb-3">
+          <span class="p-float-label">
+            <textarea [rows]="5" [cols]="30" pInputTextarea id="description" formControlName="description"> </textarea>
+            <label class="required" for="description">{{ 'APPLICATION_PARAMETER.DESCRIPTION' | translate }}</label>
+          </span>
+        </div>
+      </div>
+    </form>
+  </p-card>
+</div>
+
+<div *ngIf="advancedForm" class="mt-3 flex flex-column gap-3">
+  <h4 style="margin-bottom: 5px !important">
+    {{ 'HISTORY.HISTORY' | translate }}
+  </h4>
+  <p-card>
+    <p-table
+      [value]="parameterHistoryArray"
+      styleClass="p-datatable-striped"
+      [resizableColumns]="true"
+      [autoLayout]="true"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th id="instanceId">{{ 'HISTORY.INSTANCE_ID' | translate }}</th>
+          <th id="defaultValue">{{ 'HISTORY.DEFAULT_VALUE' | translate }}</th>
+          <th id="usedValue">{{ 'HISTORY.USED_VALUE' | translate }}</th>
+          <th id="lastUsed">{{ 'HISTORY.LAST_USED' | translate }}</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-parameterHistory>
+        <tr>
+          <td>{{ parameterHistory.instanceId }}</td>
+          <td>{{ parameterHistory.defaultValue }}</td>
+          <td>{{ parameterHistory.usedValue }}</td>
+          <td>{{ parameterHistory.creationDate | date : 'medium' }}</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="16">{{ 'GENERAL.NO_DATA' | translate }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+  <p-card *ngIf="data">
+    <p-chart type="line" [data]="data" [options]="options" height="400"></p-chart>
+  </p-card>
+</div>
