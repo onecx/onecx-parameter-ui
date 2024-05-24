@@ -5,6 +5,7 @@ import { MessageService, SelectItem } from 'primeng/api'
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { ApplicationParameter, ApplicationParameterHistoryCriteria } from 'src/app/shared/generated'
 import { ParameterListComponent } from './parameter-list.component'
+import { Action } from '@onecx/portal-integration-angular'
 
 @Component({
   selector: 'app-criteria',
@@ -17,6 +18,8 @@ export class CriteriaComponent implements OnInit, OnDestroy {
   public typeOptions: SelectItem[] | undefined
   public ref: DynamicDialogRef | undefined
   private translatedData: any
+
+  @Input() public actions: Action[] = []
 
   @Input()
   public searchInProgress: boolean = false

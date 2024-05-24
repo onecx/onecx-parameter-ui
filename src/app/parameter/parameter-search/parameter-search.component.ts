@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
-import { provideParent, PortalSearchPage } from '@onecx/portal-integration-angular'
+import { provideParent, PortalSearchPage, Action } from '@onecx/portal-integration-angular'
 
 import { MessageService } from 'primeng/api'
 import { finalize, map, tap } from 'rxjs/operators'
@@ -11,6 +11,7 @@ import {
   ApplicationParameterHistoryCriteria,
   ParametersAPIService
 } from 'src/app/shared/generated'
+import { ActivatedRoute, Router } from '@angular/router'
 
 @Component({
   selector: 'app-parameter-search',
@@ -22,6 +23,7 @@ export class ParameterSearchComponent extends PortalSearchPage<ApplicationParame
   private translatedData: any
   public criteria: ApplicationParameterHistoryCriteria | undefined
   public helpArticleId = 'PAGE_PARAMETERS_SEARCH'
+  public actions$: Observable<Action[]> | undefined
 
   @ViewChild(CriteriaComponent)
   criteriaComponent: CriteriaComponent | undefined
@@ -29,7 +31,9 @@ export class ParameterSearchComponent extends PortalSearchPage<ApplicationParame
   constructor(
     private readonly messageService: MessageService,
     private translateService: TranslateService,
-    private readonly parametersApi: ParametersAPIService
+    private readonly parametersApi: ParametersAPIService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     super()
   }
@@ -37,6 +41,7 @@ export class ParameterSearchComponent extends PortalSearchPage<ApplicationParame
   public ngOnInit(): void {
     this.loadTranslations()
     this.searchData(this.criteria!)
+    this.prepareActionButtons()
   }
 
   public search(mode: 'basic' | 'advanced'): Observable<ApplicationParameter[]> {
@@ -44,7 +49,6 @@ export class ParameterSearchComponent extends PortalSearchPage<ApplicationParame
       finalize(() => (this.searchInProgress = false)),
       tap({
         next: (data: any) => {
-          console.log('hitted search')
           if (data.totalElements == 0) {
             this.messageService.add({
               severity: 'success',
@@ -54,8 +58,6 @@ export class ParameterSearchComponent extends PortalSearchPage<ApplicationParame
           }
         },
         error: () => {
-          console.log('hitted search err')
-
           this.messageService.add({
             severity: 'error',
             summary: this.translatedData['SEARCH.MSG_SEARCH_FAILED']
@@ -109,5 +111,22 @@ export class ParameterSearchComponent extends PortalSearchPage<ApplicationParame
       .subscribe((text: Record<string, string>) => {
         this.translatedData = text
       })
+  }
+
+  private prepareActionButtons(): void {
+    this.actions$ = this.translateService.get(['CREATE.CREATE_PARAMETER']).pipe(
+      map((data) => {
+        return [
+          {
+            label: data['CREATE.CREATE_PARAMETER'],
+            title: data['CREATE.CREATE_PARAMETER'],
+            actionCallback: () => this.router.navigate([`./create`], { relativeTo: this.route }),
+            icon: 'pi pi-plus',
+            show: 'always',
+            permission: 'ANNOUNCEMENT#EDIT'
+          }
+        ]
+      })
+    )
   }
 }
