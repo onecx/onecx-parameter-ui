@@ -5,11 +5,11 @@ import { RouterTestingModule } from '@angular/router/testing'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { APP_CONFIG } from '@onecx/portal-integration-angular'
 import { MessageService } from 'primeng/api'
-import { TranslateServiceMock } from 'src/app/shared/TranslateServiceMock'
-import { environment } from 'src/environments/environment'
+import { TranslateServiceMock } from '../../../shared/TranslateServiceMock'
+import { environment } from '../../../../environments/environment'
 
 import { ParameterDetailFormComponent } from './parameter-detail-form.component'
-import { SharedModule } from 'src/app/shared/shared.module'
+import { SharedModule } from '../../../shared/shared.module'
 
 describe('ParameterDetailFormComponent', () => {
   let component: ParameterDetailFormComponent

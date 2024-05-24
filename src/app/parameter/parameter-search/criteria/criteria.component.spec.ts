@@ -6,9 +6,9 @@ import { CriteriaComponent } from './criteria.component'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { RouterTestingModule } from '@angular/router/testing'
 import { APP_CONFIG } from '@onecx/portal-integration-angular'
-import { TranslateServiceMock } from 'src/app/shared/TranslateServiceMock'
-import { environment } from 'src/environments/environment'
-import { SharedModule } from 'src/app/shared/shared.module'
+import { TranslateServiceMock } from '../../../shared/TranslateServiceMock'
+import { environment } from '../../../../environments/environment'
+import { SharedModule } from '../../../shared/shared.module'
 import { DialogService } from 'primeng/dynamicdialog'
 
 describe('CriteriaComponent', () => {
