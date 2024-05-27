@@ -2,7 +2,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { TestBed } from '@angular/core/testing'
 import { HttpClient } from '@angular/common/http'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
-import { MfeInfo } from '@onecx/portal-integration-angular'
+import { MfeInfo, providePortalDialogService } from '@onecx/portal-integration-angular'
 import { environment } from 'src/environments/environment'
 
 describe('SharedModule', () => {
@@ -12,7 +12,8 @@ describe('SharedModule', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      schemas: [NO_ERRORS_SCHEMA]
+      schemas: [NO_ERRORS_SCHEMA],
+      providers: [providePortalDialogService()]
     })
 
     httpClient = TestBed.inject(HttpClient)
@@ -24,7 +25,9 @@ describe('SharedModule', () => {
       mountPath: '',
       remoteBaseUrl: 'http://localhost:4200/',
       baseHref: '',
-      shellName: ''
+      shellName: '',
+      appId: '',
+      productName: ''
     }
     const result = mfeInfo.remoteBaseUrl + '' + environment.apiPrefix
     expect(result).toEqual('http://localhost:4200/bff')
