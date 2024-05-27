@@ -1,11 +1,10 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
-import { MessageService } from 'primeng/api'
 import { ResultsComponent } from './results.component'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { TranslateServiceMock } from '../../../shared/TranslateServiceMock'
-import { APP_CONFIG } from '@onecx/portal-integration-angular'
+import { APP_CONFIG, PortalMessageService } from '@onecx/portal-integration-angular'
 import { environment } from '../../../../environments/environment'
 import { SharedModule } from '../../../shared/shared.module'
 
@@ -20,7 +19,7 @@ describe('ResultsComponent', () => {
       providers: [
         { provide: APP_CONFIG, useValue: environment },
         { provide: TranslateService, useClass: TranslateServiceMock },
-        { provide: MessageService, useClass: MessageService }
+        { provide: PortalMessageService, useClass: PortalMessageService }
       ]
     }).compileComponents()
   }))

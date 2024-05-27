@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core'
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
-import { MessageService, SelectItem } from 'primeng/api'
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog'
+import { SelectItem } from 'primeng/api'
+import { DynamicDialogRef } from 'primeng/dynamicdialog'
 import { ApplicationParameter, ApplicationParameterHistoryCriteria } from 'src/app/shared/generated'
 import { ParameterListComponent } from './parameter-list.component'
-import { Action } from '@onecx/portal-integration-angular'
+import { Action, PortalDialogService, PortalMessageService } from '@onecx/portal-integration-angular'
 
 @Component({
   selector: 'app-criteria',
@@ -32,9 +32,9 @@ export class CriteriaComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly fb: UntypedFormBuilder,
-    private readonly messageService: MessageService,
+    private readonly messageService: PortalMessageService,
     private translateService: TranslateService,
-    public dialogService: DialogService
+    public dialogService: PortalDialogService
   ) {}
 
   public ngOnInit(): void {
@@ -57,9 +57,8 @@ export class CriteriaComponent implements OnInit, OnDestroy {
     console.log('criteria submit')
 
     if (this.criteriaGroup.controls['applicationId'].invalid) {
-      this.messageService.add({
-        severity: 'error',
-        summary: this.translatedData['SEARCH.APPLICATION_ID_IS_MANDATORY']
+      this.messageService.error({
+        detailParameters: this.translatedData['SEARCH.APPLICATION_ID_IS_MANDATORY']
       })
       return
     }

@@ -4,8 +4,7 @@ import { ParameterCreateComponent } from './parameter-create.component'
 import { RouterTestingModule } from '@angular/router/testing'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
-import { MessageService } from 'primeng/api'
-import { APP_CONFIG } from '@onecx/portal-integration-angular'
+import { APP_CONFIG, PortalMessageService } from '@onecx/portal-integration-angular'
 import { TranslateServiceMock } from '../../../shared/TranslateServiceMock'
 import { environment } from '../../../../environments/environment'
 import { SharedModule } from '../../../shared/shared.module'
@@ -21,7 +20,7 @@ describe('ParameterCreateComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: TranslateService, useClass: TranslateServiceMock },
-        { provide: MessageService, useClass: MessageService },
+        { provide: PortalMessageService, useClass: PortalMessageService },
         { provide: APP_CONFIG, useValue: environment }
       ]
     }).compileComponents()
