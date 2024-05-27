@@ -7,13 +7,15 @@ app:
     path: /mfe/parameter/
   
   operator:
-    # Parameter import
-    parameter:
+    # Microfrontend
+    microfrontend:
       enabled: true
-      spec:
-        exposedModule: "./OneCXParameterModule"
-        description: "OneCX Parameter UI"
-        note: "OneCX Parameter UI auto import via operator"
+      specs:
+        main:
+          exposedModule: "./OneCXParameterModule"
+          description: "OneCX Parameter UI"
+          note: "OneCX Parameter UI auto import via operator"
+          type: MODULE
     # Permission
     permission:
       enabled: true
