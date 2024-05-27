@@ -3,8 +3,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { RouterTestingModule } from '@angular/router/testing'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
-import { APP_CONFIG } from '@onecx/portal-integration-angular'
-import { MessageService } from 'primeng/api'
+import { APP_CONFIG, PortalMessageService } from '@onecx/portal-integration-angular'
 import { TranslateServiceMock } from '../../../shared/TranslateServiceMock'
 import { environment } from '../../../../environments/environment'
 
@@ -22,7 +21,7 @@ describe('ParameterDetailFormComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: TranslateService, useClass: TranslateServiceMock },
-        { provide: MessageService, useClass: MessageService },
+        { provide: PortalMessageService, useClass: PortalMessageService },
         { provide: APP_CONFIG, useValue: environment }
       ]
     }).compileComponents()

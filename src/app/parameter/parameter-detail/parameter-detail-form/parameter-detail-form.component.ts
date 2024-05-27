@@ -3,8 +3,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
+import { PortalMessageService } from '@onecx/portal-integration-angular'
 
-import { MessageService } from 'primeng/api'
 import { finalize } from 'rxjs'
 import {
   ApplicationParameter,
@@ -40,7 +40,7 @@ export class ParameterDetailFormComponent implements OnInit {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly fb: UntypedFormBuilder,
-    private readonly messageService: MessageService,
+    private readonly messageService: PortalMessageService,
     private readonly translateService: TranslateService,
     private readonly paramterApiService: ParametersAPIService,
     private readonly paramtersHistoryApiService: HistoriesAPIService
@@ -76,9 +76,8 @@ export class ParameterDetailFormComponent implements OnInit {
 
   public emitFormCreate(): void {
     if (!this.isValidValueType()) {
-      this.messageService.add({
-        severity: 'error',
-        summary: this.translatedData!['DETAILS.VALUE_HAS_WRONG_TYPE']
+      this.messageService.error({
+        data: this.translatedData!['DETAILS.VALUE_HAS_WRONG_TYPE']
       })
     } else if (this.parameterForm.valid) {
       let parameter: ApplicationParameterCreate = {
@@ -146,9 +145,8 @@ export class ParameterDetailFormComponent implements OnInit {
           this.loadChartData()
         },
         error: () => {
-          this.messageService.add({
-            severity: 'error',
-            summary: this.translatedData!['SEARCH.MSG_SEARCH_FAILED']
+          this.messageService.error({
+            data: this.translatedData!['SEARCH.MSG_SEARCH_FAILED']
           })
         }
       })
@@ -167,9 +165,8 @@ export class ParameterDetailFormComponent implements OnInit {
           this.parameterHistoryArray = results.stream as any[]
         },
         error: () => {
-          this.messageService.add({
-            severity: 'error',
-            summary: this.translatedData!['SEARCH.MSG_SEARCH_FAILED']
+          this.messageService.error({
+            data: this.translatedData!['SEARCH.MSG_SEARCH_FAILED']
           })
         }
       })
@@ -183,10 +180,8 @@ export class ParameterDetailFormComponent implements OnInit {
       }
     })
     if (errors.length > 0) {
-      this.messageService.add({
-        severity: 'error',
-        summary: this.translatedData!['DETAILS.FORM_MANDATORY'],
-        detail: errors.join(', ')
+      this.messageService.error({
+        data: this.translatedData!['DETAILS.FORM_MANDATORY']
       })
     }
   }
@@ -271,16 +266,14 @@ export class ParameterDetailFormComponent implements OnInit {
           this.chartData = data
           this.setChartData()
           if (data.length == 0) {
-            this.messageService.add({
-              severity: 'success',
-              summary: this.translatedData!['SEARCH.MSG_NO_RESULTS']
+            this.messageService.success({
+              data: this.translatedData!['SEARCH.MSG_NO_RESULTS']
             })
           }
         },
         error: () => {
-          this.messageService.add({
-            severity: 'error',
-            summary: this.translatedData!['SEARCH.MSG_SEARCH_FAILED']
+          this.messageService.error({
+            data: this.translatedData!['SEARCH.MSG_SEARCH_FAILED']
           })
         }
       })

@@ -1,8 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
-import { provideParent, PortalSearchPage, Action } from '@onecx/portal-integration-angular'
+import { provideParent, PortalSearchPage, Action, PortalMessageService } from '@onecx/portal-integration-angular'
 
-import { MessageService } from 'primeng/api'
 import { finalize, map, tap } from 'rxjs/operators'
 import { CriteriaComponent } from './criteria/criteria.component'
 import { Observable } from 'rxjs'
@@ -29,7 +28,7 @@ export class ParameterSearchComponent extends PortalSearchPage<ApplicationParame
   criteriaComponent: CriteriaComponent | undefined
 
   constructor(
-    private readonly messageService: MessageService,
+    private readonly messageService: PortalMessageService,
     private translateService: TranslateService,
     private readonly parametersApi: ParametersAPIService,
     private router: Router,
@@ -50,17 +49,15 @@ export class ParameterSearchComponent extends PortalSearchPage<ApplicationParame
       tap({
         next: (data: any) => {
           if (data.totalElements == 0) {
-            this.messageService.add({
-              severity: 'success',
-              summary: this.translatedData['SEARCH.MSG_NO_RESULTS']
+            this.messageService.success({
+              data: this.translatedData['SEARCH.MSG_NO_RESULTS']
             })
             return data.size
           }
         },
         error: () => {
-          this.messageService.add({
-            severity: 'error',
-            summary: this.translatedData['SEARCH.MSG_SEARCH_FAILED']
+          this.messageService.error({
+            data: this.translatedData['SEARCH.MSG_SEARCH_FAILED']
           })
         }
       }),
@@ -84,16 +81,14 @@ export class ParameterSearchComponent extends PortalSearchPage<ApplicationParame
   public deleteParameter(id: string): void {
     this.parametersApi.deleteParameter({ id }).subscribe(
       () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: this.translatedData['PARAMETER_DELETE.DELETE_SUCCESS']
+        this.messageService.success({
+          data: this.translatedData['PARAMETER_DELETE.DELETE_SUCCESS']
         })
         this.searchData(this.criteria!)
       },
       () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: this.translatedData['PARAMETER_DELETE.DELETE_ERROR']
+        this.messageService.error({
+          data: this.translatedData['PARAMETER_DELETE.DELETE_ERROR']
         })
       }
     )
