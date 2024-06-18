@@ -14,34 +14,58 @@
     <form [formGroup]="parameterForm">
       <div class="grid m-0">
         <div class="p-fluid col-12 md:col-6">
-          <span class="p-float-label">
-            <input pInputText type="text" id="applicationId" formControlName="applicationId" />
-            <label [ngClass]="mode !== 'edit' ? 'required' : ''" for="applicationId">{{
+          <span class="p-float-label" controlErrorAnchor>
+            <p-dropdown
+              formControlName="productName"
+              [options]="this.productOptions"
+              optionLabel="title"
+              optionValue="value"
+              id="productName"
+              appendTo="body"
+              [showClear]="true"
+              (onChange)="this.updateApplicationIds($event.value)"
+              [style]="{ minWidth: '200px' }"
+              [editable]="true"
+            />
+            <label class="ocx-required-label" for="productName">{{
+              'APPLICATION_PARAMETER.PRODUCT_NAME' | translate
+            }}</label>
+          </span>
+        </div>
+        <div class="p-fluid col-12 md:col-6">
+          <span class="p-float-label" controlErrorAnchor>
+            <p-dropdown
+              formControlName="applicationId"
+              [options]="this.applicationIds"
+              id="applicationId"
+              appendTo="body"
+              [style]="{ minWidth: '200px' }"
+              [editable]="true"
+            />
+            <label class="ocx-required-label" for="applicationId">{{
               'APPLICATION_PARAMETER.APPLICATION_ID' | translate
             }}</label>
           </span>
         </div>
 
         <div class="p-fluid col-12 md:col-6 mb-3">
-          <span class="p-float-label">
+          <span class="p-float-label" controlErrorAnchor>
             <input pInputText type="text" id="key" formControlName="key" />
-            <label [ngClass]="mode !== 'edit' ? 'required' : ''" for="key">{{
-              'APPLICATION_PARAMETER.KEY' | translate
-            }}</label>
+            <label class="ocx-required-label" for="key">{{ 'APPLICATION_PARAMETER.KEY' | translate }}</label>
           </span>
         </div>
 
         <div class="p-fluid col-12 md:col-6 mb-3" *ngIf="!advancedForm">
-          <span class="p-float-label">
+          <span class="p-float-label" controlErrorAnchor>
             <input pInputText type="text" id="value" formControlName="value" />
-            <label class="required" for="value">{{ 'APPLICATION_PARAMETER.VALUE' | translate }}</label>
+            <label class="ocx-required-label" for="value">{{ 'APPLICATION_PARAMETER.VALUE' | translate }}</label>
           </span>
         </div>
 
         <div class="p-fluid col-12 md:col-6 mb-3" *ngIf="advancedForm">
-          <span class="p-float-label">
+          <span class="p-float-label" controlErrorAnchor>
             <textarea [rows]="5" [cols]="30" pInputTextarea id="value" formControlName="value" jsonColorize> </textarea>
-            <label class="required" for="value">{{ 'APPLICATION_PARAMETER.VALUE' | translate }}</label>
+            <label class="ocx-required-label" for="value">{{ 'APPLICATION_PARAMETER.VALUE' | translate }}</label>
           </span>
         </div>
 
@@ -49,22 +73,6 @@
           <span class="p-float-label">
             <input pInputText type="text" id="importValue" [value]="parameterDTO?.importValue" disabled="true" />
             <label for="importValue">{{ 'APPLICATION_PARAMETER.IMPORT_VALUE' | translate }}</label>
-          </span>
-        </div>
-
-        <div class="p-fluid col-12 md:col-6 mb-3">
-          <span class="p-float-label">
-            <p-dropdown [options]="getApplicationParameterTypes()" formControlName="type">
-              <ng-template let-option pTemplate="selectedItem">
-                {{ 'APPLICATION_PARAMETER.PARAMETER_TYPE.' + option | translate }}
-              </ng-template>
-              <ng-template let-option pTemplate="option">
-                {{ 'APPLICATION_PARAMETER.PARAMETER_TYPE.' + option | translate }}
-              </ng-template>
-            </p-dropdown>
-            <label [ngClass]="mode !== 'edit' ? 'required' : ''" for="type">{{
-              'APPLICATION_PARAMETER.TYPE' | translate
-            }}</label>
           </span>
         </div>
 
@@ -90,9 +98,11 @@
         </div>
 
         <div class="p-fluid col-12 md:col-6 mb-3">
-          <span class="p-float-label">
+          <span class="p-float-label" controlErrorAnchor>
             <textarea [rows]="5" [cols]="30" pInputTextarea id="description" formControlName="description"> </textarea>
-            <label class="required" for="description">{{ 'APPLICATION_PARAMETER.DESCRIPTION' | translate }}</label>
+            <label class="ocx-required-label" for="description">{{
+              'APPLICATION_PARAMETER.DESCRIPTION' | translate
+            }}</label>
           </span>
         </div>
       </div>
@@ -101,18 +111,31 @@
 </div>
 
 <div *ngIf="advancedForm" class="mt-3 flex flex-column gap-3">
-  <h4 style="margin-bottom: 5px !important">
-    {{ 'HISTORY.HISTORY' | translate }}
-  </h4>
+  <span class="flex justify-center align-items-center">
+    <h4 style="margin-bottom: 5px !important">
+      {{ 'HISTORY.HISTORY' | translate }}
+    </h4>
+    <p-button
+      icon="pi pi-refresh"
+      styleClass="p-button-text"
+      pTooltip="{{ 'HISTORY.HISTORY_RELOAD' | translate }}"
+      (onClick)="this.getParameterHistoryArray()"
+    ></p-button>
+  </span>
   <p-card>
     <p-table
       [value]="parameterHistoryArray"
       styleClass="p-datatable-striped"
       [resizableColumns]="true"
       [autoLayout]="true"
+      selectionMode="single"
+      [(selection)]="this.selectedHistoryParam"
+      (onRowSelect)="this.useHistoryParam()"
     >
       <ng-template pTemplate="header">
         <tr>
+          <th id="productName">{{ 'HISTORY.PRODUCT' | translate }}</th>
+          <th id="applicationId">{{ 'HISTORY.APPLICATION' | translate }}</th>
           <th id="instanceId">{{ 'HISTORY.INSTANCE_ID' | translate }}</th>
           <th id="defaultValue">{{ 'HISTORY.DEFAULT_VALUE' | translate }}</th>
           <th id="usedValue">{{ 'HISTORY.USED_VALUE' | translate }}</th>
@@ -120,7 +143,9 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-parameterHistory>
-        <tr>
+        <tr [pSelectableRow]="parameterHistory">
+          <td>{{ parameterHistory.productName }}</td>
+          <td>{{ parameterHistory.applicationId }}</td>
           <td>{{ parameterHistory.instanceId }}</td>
           <td>{{ parameterHistory.defaultValue }}</td>
           <td>{{ parameterHistory.usedValue }}</td>

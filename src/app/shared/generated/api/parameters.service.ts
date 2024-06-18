@@ -27,11 +27,13 @@ import { ApplicationParameterPageResult } from '../model/applicationParameterPag
 // @ts-ignore
 import { ApplicationParameterUpdate } from '../model/applicationParameterUpdate';
 // @ts-ignore
-import { ApplicationsPageResult } from '../model/applicationsPageResult';
-// @ts-ignore
 import { KeysPageResult } from '../model/keysPageResult';
 // @ts-ignore
+import { ParameterSearchCriteria } from '../model/parameterSearchCriteria';
+// @ts-ignore
 import { ProblemDetailResponse } from '../model/problemDetailResponse';
+// @ts-ignore
+import { Product } from '../model/product';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -46,16 +48,6 @@ export interface DeleteParameterRequestParams {
     id: string;
 }
 
-export interface GetAllApplicationParametersRequestParams {
-    applicationId?: string;
-    productName?: string;
-    key?: string;
-    name?: string;
-    pageNumber?: number;
-    pageSize?: number;
-    type?: Array<string>;
-}
-
 export interface GetAllKeysRequestParams {
     applicationId?: string;
     productName?: string;
@@ -63,6 +55,10 @@ export interface GetAllKeysRequestParams {
 
 export interface GetParameterByIdRequestParams {
     id: string;
+}
+
+export interface SearchApplicationParametersByCriteriaRequestParams {
+    parameterSearchCriteria: ParameterSearchCriteria;
 }
 
 export interface UpdateParameterValueRequestParams {
@@ -265,107 +261,12 @@ export class ParametersAPIService {
 
     /**
      * Find all parameters
-     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getAllApplicationParameters(requestParameters: GetAllApplicationParametersRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ApplicationParameterPageResult>;
-    public getAllApplicationParameters(requestParameters: GetAllApplicationParametersRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ApplicationParameterPageResult>>;
-    public getAllApplicationParameters(requestParameters: GetAllApplicationParametersRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ApplicationParameterPageResult>>;
-    public getAllApplicationParameters(requestParameters: GetAllApplicationParametersRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
-        const applicationId = requestParameters.applicationId;
-        const productName = requestParameters.productName;
-        const key = requestParameters.key;
-        const name = requestParameters.name;
-        const pageNumber = requestParameters.pageNumber;
-        const pageSize = requestParameters.pageSize;
-        const type = requestParameters.type;
-
-        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if (applicationId !== undefined && applicationId !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>applicationId, 'applicationId');
-        }
-        if (productName !== undefined && productName !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>productName, 'productName');
-        }
-        if (key !== undefined && key !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>key, 'key');
-        }
-        if (name !== undefined && name !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>name, 'name');
-        }
-        if (pageNumber !== undefined && pageNumber !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageNumber, 'pageNumber');
-        }
-        if (pageSize !== undefined && pageSize !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageSize, 'pageSize');
-        }
-        if (type) {
-            type.forEach((element) => {
-                localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-                  <any>element, 'type');
-            })
-        }
-
-        let localVarHeaders = this.defaultHeaders;
-
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (localVarHttpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-        }
-
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
-        if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
-        }
-
-
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
-        if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
-            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
-            } else {
-                responseType_ = 'blob';
-            }
-        }
-
-        let localVarPath = `/parameters`;
-        return this.httpClient.request<ApplicationParameterPageResult>('get', `${this.configuration.basePath}${localVarPath}`,
-            {
-                context: localVarHttpContext,
-                params: localVarQueryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * Find all parameters
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public getAllApplications(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ApplicationsPageResult>;
-    public getAllApplications(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ApplicationsPageResult>>;
-    public getAllApplications(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ApplicationsPageResult>>;
+    public getAllApplications(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<Product>>;
+    public getAllApplications(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<Product>>>;
+    public getAllApplications(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<Product>>>;
     public getAllApplications(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
@@ -400,7 +301,7 @@ export class ParametersAPIService {
         }
 
         let localVarPath = `/parameters/applications`;
-        return this.httpClient.request<ApplicationsPageResult>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<Product>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -530,6 +431,75 @@ export class ParametersAPIService {
         return this.httpClient.request<ApplicationParameter>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Find all parameters by criteria
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public searchApplicationParametersByCriteria(requestParameters: SearchApplicationParametersByCriteriaRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ApplicationParameterPageResult>;
+    public searchApplicationParametersByCriteria(requestParameters: SearchApplicationParametersByCriteriaRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ApplicationParameterPageResult>>;
+    public searchApplicationParametersByCriteria(requestParameters: SearchApplicationParametersByCriteriaRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ApplicationParameterPageResult>>;
+    public searchApplicationParametersByCriteria(requestParameters: SearchApplicationParametersByCriteriaRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+        const parameterSearchCriteria = requestParameters.parameterSearchCriteria;
+        if (parameterSearchCriteria === null || parameterSearchCriteria === undefined) {
+            throw new Error('Required parameter parameterSearchCriteria was null or undefined when calling searchApplicationParametersByCriteria.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/parameters/search`;
+        return this.httpClient.request<ApplicationParameterPageResult>('post', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: parameterSearchCriteria,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

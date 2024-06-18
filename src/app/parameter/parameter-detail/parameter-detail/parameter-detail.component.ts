@@ -3,6 +3,8 @@ import { ParameterDetailFormComponent } from '../parameter-detail-form/parameter
 import { TranslateService } from '@ngx-translate/core'
 import { ParametersAPIService } from 'src/app/shared/generated'
 import { PortalMessageService } from '@onecx/angular-integration-interface'
+import { Observable } from 'rxjs'
+import { Action } from '@onecx/portal-integration-angular'
 
 @Component({
   selector: 'app-parameter-detail',
@@ -14,6 +16,8 @@ export class ParameterDetailComponent implements OnInit {
   parameterDetailFormComponent: ParameterDetailFormComponent | undefined
 
   public translatedData: Record<string, string> | undefined
+  public actions$: Observable<Action[]> | undefined
+  public saveEnabled: boolean = false
 
   constructor(
     private readonly messageService: PortalMessageService,
@@ -26,19 +30,20 @@ export class ParameterDetailComponent implements OnInit {
   }
 
   public onSubmit(parameterWrapper: any): void {
-    this.parametersApiService.updateParameterValue(parameterWrapper.id, parameterWrapper.parameter).subscribe(
-      () => {
-        this.messageService.success({
-          data: this.translatedData!['EDIT.UPDATE_SUCCESS']
-        })
-        this.parameterDetailFormComponent?.switchMode()
-      },
-      () => {
-        this.messageService.error({
-          data: this.translatedData!['EDIT.UPDATE_ERROR']
-        })
-      }
-    )
+    this.parametersApiService
+      .updateParameterValue({ applicationParameterUpdate: { ...parameterWrapper.parameter }, id: parameterWrapper.id })
+      .subscribe(
+        () => {
+          this.messageService.success({
+            summaryKey: this.translatedData!['EDIT.UPDATE_SUCCESS']
+          })
+        },
+        () => {
+          this.messageService.error({
+            summaryKey: this.translatedData!['EDIT.UPDATE_ERROR']
+          })
+        }
+      )
   }
 
   private loadTranslations(): void {

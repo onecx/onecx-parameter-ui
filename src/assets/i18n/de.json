@@ -11,7 +11,8 @@
     "NO_DATA": "Keine Ergebnisse"
   },
   "SEARCH": {
-    "PARAMETER_SEARCH": "Parameter-Suche",
+    "PARAMETER_SEARCH_HEADER": "Parameter Management",
+    "PARAMETER_SEARCH_SUB_HEADER": "Suchen und verwalten von Parameter",
     "MSG_NO_RESULTS": "Die Suche ergab keine Treffer",
     "MSG_SEARCH_FAILED": "Suche ist fehlgeschlagen",
     "ACTION": "Aktion",
@@ -22,11 +23,12 @@
     "APPLICATION_ID_IS_MANDATORY": "Das Feld Anwendung-ID ist obligatorisch"
   },
   "APPLICATION_PARAMETER": {
-    "APPLICATION_ID": "Anwendung-ID",
+    "APPLICATION_ID": "Applikations-ID",
+    "APPLICATION": "Applikation",
+    "PRODUCT_NAME": "Produkt",
     "KEY": "Schlüssel",
     "VALUE": "Wert",
     "IMPORT_VALUE": "Importwert",
-    "TYPE": "Werttyp",
     "DESCRIPTION": "Beschreibung",
     "UNIT": "Einheit",
     "RANGE_FROM": "Bereich von",
@@ -45,7 +47,8 @@
     "FORM_KEY_MIN_LEN": "Schlüssel sollte mindestens 3 Buchstaben haben"
   },
   "EDIT": {
-    "EDIT_PARAMETER": "Aktualisieren einem Parameter",
+    "EDIT_PARAMETER": "Parameter Bearbeiten",
+    "TOOLTIP": "Aktualisieren einem Parameter",
     "BREADCRUMB": "Parameterdetails",
     "UPDATE_SUCCESS": "Parameter erfolgreich aktualisiert",
     "UPDATE_ERROR": "Fehler beim Aktualisieren des Parameters",
@@ -60,7 +63,8 @@
     "SAVE": "Erstellen"
   },
   "PARAMETER_DELETE": {
-    "PARAMETER_DELETE": "Parameter-Löschung",
+    "PARAMETER_DELETE": "Parameter löschen",
+    "TOOLTIP": "Parameter löschen",
     "DELETE_SUCCESS": "Parameter wurde erfolgreich gelöscht",
     "DELETE_ERROR": "Fehler, Parameter wurde nicht gelöscht",
     "MESSAGE": "Sind Sie sicher, dass Sie diese Parameter löschen möchten?"
@@ -70,7 +74,10 @@
     "INSTANCE_ID": "Instanz-ID",
     "DEFAULT_VALUE": "Standardwert",
     "USED_VALUE": "Gebrauchtwert",
-    "LAST_USED": "Zuletzt verwendeten"
+    "LAST_USED": "Zuletzt verwendeten",
+    "HISTORY_RELOAD": "Verlaufsdaten aktualisieren",
+    "APPLICATION": "Applikation",
+    "PRODUCT": "Produkt"
   },
   "DIALOG": {
     "SELECT_APPLICATION_ID": "Wählen Sie Anwendungs-ID aus",
@@ -79,5 +86,10 @@
   },
   "CHART": {
     "NUMBER_OF_REQUESTS": "Anzahl der Anfragen"
+  },
+  "VALIDATION": {
+    "ERRORS": {
+      "EMPTY_REQUIRED_FIELD": "Pflichtfeld"
+    }
   }
 }

@@ -128,58 +128,22 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         '404':
           description: Not Found
-  /parameters:
-    get:
+  /parameters/search:
+    post:
       x-onecx:
         permissions:
           parameter:
             - read
       tags:
         - parameters
-      description: Find all parameters
-      operationId: getAllApplicationParameters
-      parameters:
-        - name: applicationId
-          in: query
-          schema:
-            description: The application parameter id.
-            type: string
-        - name: productName
-          in: query
-          schema:
-            description: The product name.
-            type: string
-        - name: key
-          in: query
-          schema:
-            description: The application parameter key.
-            type: string
-        - name: name
-          in: query
-          schema:
-            description: The application parameter name.
-            type: string
-        - name: pageNumber
-          in: query
-          schema:
-            format: int32
-            description: The number of page.
-            default: 0
-            type: integer
-        - name: pageSize
-          in: query
-          schema:
-            format: int32
-            description: The size of page
-            default: 100
-            type: integer
-        - name: type
-          in: query
-          schema:
-            description: The application parameter type.
-            type: array
-            items:
-              type: string
+      description: Find all parameters by criteria
+      operationId: searchApplicationParametersByCriteria
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParameterSearchCriteria'
       responses:
         '200':
           description: OK
@@ -193,6 +157,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+  /parameters:
     post:
       x-onecx:
         permissions:
@@ -235,7 +200,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApplicationsPageResult'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
         '400':
           description: Bad Request
           content:
@@ -363,8 +330,71 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+  /products/search:
+    post:
+      x-onecx:
+        permissions:
+          product:
+            - read
+      tags:
+        - products
+      description: search all products of product-store
+      operationId: searchAllAvailableProducts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductStoreSearchCriteria'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductStorePageResult'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
 components:
   schemas:
+    ProductStoreSearchCriteria:
+      type: object
+      properties:
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 100
+          maximum: 1000
+          type: integer
+    ProductStorePageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
     ApplicationParameterCreate:
       type: object
       properties:
@@ -375,8 +405,6 @@ components:
         productName:
           type: string
         value:
-          type: string
-        type:
           type: string
         description:
           type: string
@@ -421,8 +449,6 @@ components:
         setValue:
           type: string
         importValue:
-          type: string
-        type:
           type: string
         unit:
           type: string
@@ -541,23 +567,12 @@ components:
         rangeTo:
           format: int32
           type: integer
-    ApplicationsPageResult:
+    Product:
       type: object
       properties:
-        totalElements:
-          format: int64
-          description: The total elements in the resource.
-          type: integer
-        number:
-          format: int32
-          type: integer
-        size:
-          format: int32
-          type: integer
-        totalPages:
-          format: int64
-          type: integer
-        stream:
+        productName:
+          type: string
+        applications:
           type: array
           items:
             type: string
@@ -611,6 +626,27 @@ components:
           example: 2022-03-10T12:15:50
         count:
           format: int64
+          type: integer
+    ParameterSearchCriteria:
+      type: object
+      properties:
+        applicationId:
+          type: string
+        productName:
+          type: string
+        key:
+          type: string
+        name:
+          type: string
+        pageNumber:
+          format: int32
+          description: The number of page
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 100
           type: integer
     ProblemDetailResponse:
       type: object

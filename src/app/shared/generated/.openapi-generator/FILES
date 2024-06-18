@@ -5,6 +5,7 @@ api.module.ts
 api/api.ts
 api/histories.service.ts
 api/parameters.service.ts
+api/products.service.ts
 configuration.ts
 encoder.ts
 git_push.sh
@@ -16,13 +17,16 @@ model/applicationParameterHistoryCriteria.ts
 model/applicationParameterHistoryPageResult.ts
 model/applicationParameterPageResult.ts
 model/applicationParameterUpdate.ts
-model/applicationsPageResult.ts
 model/keysPageResult.ts
 model/models.ts
 model/parameterHistoryCount.ts
 model/parameterHistoryCountCriteria.ts
+model/parameterSearchCriteria.ts
 model/problemDetailInvalidParam.ts
 model/problemDetailParam.ts
 model/problemDetailResponse.ts
+model/product.ts
+model/productStorePageResult.ts
+model/productStoreSearchCriteria.ts
 param.ts
 variables.ts

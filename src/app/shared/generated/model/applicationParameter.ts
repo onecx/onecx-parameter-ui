@@ -25,7 +25,6 @@ export interface ApplicationParameter {
     key?: string;
     setValue?: string;
     importValue?: string;
-    type?: string;
     unit?: string;
     rangeFrom?: number;
     rangeTo?: number;

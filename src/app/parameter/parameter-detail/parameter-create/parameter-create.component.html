@@ -22,6 +22,7 @@
         tooltipPosition="top"
         (click)="parameterDetailFormComponent!.emitFormCreate()"
         icon="pi pi-save"
+        [disabled]="!parameterDetailFormComponent?.parameterForm?.valid"
       ></button>
     </div>
   </ocx-page-header>

@@ -21,6 +21,12 @@ export class ResultsComponent implements OnInit {
   public rowsPerPageOptions = [10, 20, 50]
   public columns: Column[] = [
     {
+      field: 'productName',
+      header: 'PRODUCT_NAME',
+      active: true,
+      translationPrefix: 'APPLICATION_PARAMETER'
+    },
+    {
       field: 'applicationId',
       header: 'APPLICATION_ID',
       active: true,
@@ -41,12 +47,6 @@ export class ResultsComponent implements OnInit {
     {
       field: 'importValue',
       header: 'IMPORT_VALUE',
-      active: true,
-      translationPrefix: 'APPLICATION_PARAMETER'
-    },
-    {
-      field: 'type',
-      header: 'TYPE',
       active: true,
       translationPrefix: 'APPLICATION_PARAMETER'
     }

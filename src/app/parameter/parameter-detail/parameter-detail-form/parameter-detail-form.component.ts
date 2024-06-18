@@ -1,17 +1,23 @@
 /* eslint-disable @typescript-eslint/explicit-member-accessibility */
+import { DatePipe } from '@angular/common'
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 import { PortalMessageService } from '@onecx/portal-integration-angular'
+import { SelectItem } from 'primeng/api'
 
-import { finalize } from 'rxjs'
+import { Observable, finalize, lastValueFrom, tap } from 'rxjs'
 import {
   ApplicationParameter,
   ApplicationParameterCreate,
+  ApplicationParameterHistory,
   ApplicationParameterHistoryCriteria,
   HistoriesAPIService,
-  ParametersAPIService
+  ParameterHistoryCount,
+  ParametersAPIService,
+  ProductStorePageResult,
+  ProductsAPIService
 } from 'src/app/shared/generated'
 
 @Component({
@@ -20,6 +26,10 @@ import {
   styleUrls: ['./parameter-detail-form.component.scss']
 })
 export class ParameterDetailFormComponent implements OnInit {
+  public applicationIds: String[] = []
+  public productOptions: SelectItem[] = []
+  public products$: Observable<ProductStorePageResult> | undefined
+  public selectedHistoryParam: ApplicationParameterHistory | undefined
   @Input()
   public mode!: string
   @Output()
@@ -31,11 +41,11 @@ export class ParameterDetailFormComponent implements OnInit {
   public translatedData: Record<string, string> | undefined
   public parameterDTO: ApplicationParameter | undefined
   public parameterHistoryArray: any[] = []
-  public viewEditButtonName: string = 'GENERAL.SWITCH_TO_EDIT'
   public advancedForm: boolean = false
   public chartData: any = []
   data: any
   options: any
+  criteriaGroup: any
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -43,7 +53,9 @@ export class ParameterDetailFormComponent implements OnInit {
     private readonly messageService: PortalMessageService,
     private readonly translateService: TranslateService,
     private readonly paramterApiService: ParametersAPIService,
-    private readonly paramtersHistoryApiService: HistoriesAPIService
+    private readonly paramtersHistoryApiService: HistoriesAPIService,
+    private readonly productsApi: ProductsAPIService,
+    private readonly datePipe: DatePipe
   ) {}
 
   ngOnInit(): void {
@@ -53,6 +65,7 @@ export class ParameterDetailFormComponent implements OnInit {
       this.getParameter(this.parameterId)
       this.disableForm()
     }
+    this.getAllProductNamesAndApplicationIds()
   }
 
   public emitFormUpdate(): void {
@@ -75,16 +88,12 @@ export class ParameterDetailFormComponent implements OnInit {
   }
 
   public emitFormCreate(): void {
-    if (!this.isValidValueType()) {
-      this.messageService.error({
-        data: this.translatedData!['DETAILS.VALUE_HAS_WRONG_TYPE']
-      })
-    } else if (this.parameterForm.valid) {
+    if (this.parameterForm.valid) {
       let parameter: ApplicationParameterCreate = {
+        productName: this.parameterForm.value.productName,
         applicationId: this.parameterForm.value.applicationId,
         key: this.parameterForm.value.key,
         value: this.parameterForm.value.value,
-        type: this.parameterForm.value.type,
         description: this.parameterForm.value.description,
         unit: this.parameterForm.value.unit,
         rangeFrom: this.parameterForm.value.rangeFrom,
@@ -96,40 +105,14 @@ export class ParameterDetailFormComponent implements OnInit {
     }
   }
 
-  public getApplicationParameterTypes() {
-    let values = Object.keys('')
-    if (!this.advancedForm && this.mode !== 'edit') {
-      values = values.filter((item) => item !== 'JSON')
-    }
-    return values
-  }
-
-  public switchMode(): void {
-    this.formEnabled = !this.formEnabled
-    if (this.formEnabled) {
-      this.viewEditButtonName = 'GENERAL.SWITCH_TO_VIEW'
-      this.parameterForm.controls['value']?.enable()
-      this.parameterForm.controls['description']?.enable()
-      this.parameterForm.controls['unit']?.enable()
-      this.parameterForm.controls['rangeFrom']?.enable()
-      this.parameterForm.controls['rangeTo']?.enable()
-    } else {
-      this.viewEditButtonName = 'GENERAL.SWITCH_TO_EDIT'
-      Object.keys(this.parameterForm.controls).forEach((key) => {
-        this.parameterForm.controls[key]?.disable()
-      })
-    }
-  }
-
   public reloadData(): void {
     this.getParameter(this.parameterId)
   }
 
   public disableForm(): void {
-    Object.keys(this.parameterForm.controls).forEach((key) => {
-      const control = this.parameterForm.controls[key]
-      control.disable()
-    })
+    this.parameterForm.controls['productName'].disable()
+    this.parameterForm.controls['key'].disable()
+    this.parameterForm.controls['applicationId'].disable()
   }
 
   private getParameter(aplicationParameterId: string): void {
@@ -138,7 +121,6 @@ export class ParameterDetailFormComponent implements OnInit {
       .pipe(finalize(() => (this.searchInProgress = false)))
       .subscribe({
         next: (result: ApplicationParameter) => {
-          console.log(JSON.stringify(result))
           this.parameterDTO = result
           this.updateForm(result)
           this.getParameterHistoryArray()
@@ -146,7 +128,7 @@ export class ParameterDetailFormComponent implements OnInit {
         },
         error: () => {
           this.messageService.error({
-            data: this.translatedData!['SEARCH.MSG_SEARCH_FAILED']
+            summaryKey: this.translatedData!['SEARCH.MSG_SEARCH_FAILED']
           })
         }
       })
@@ -155,18 +137,19 @@ export class ParameterDetailFormComponent implements OnInit {
   public getParameterHistoryArray(): void {
     let criteria: ApplicationParameterHistoryCriteria = {
       applicationId: this.parameterForm.value.applicationId,
+      productName: this.parameterForm.value.productName,
       key: this.parameterForm.value.key
     }
     this.paramtersHistoryApiService
-      .getAllApplicationParametersHistoryLatest({ applicationParameterHistoryCriteria: criteria })
+      .getAllApplicationParametersHistory({ applicationParameterHistoryCriteria: criteria })
       .pipe(finalize(() => (this.searchInProgress = false)))
       .subscribe({
         next: (results) => {
-          this.parameterHistoryArray = results.stream as any[]
+          this.parameterHistoryArray = results.stream as ApplicationParameterHistory[]
         },
         error: () => {
           this.messageService.error({
-            data: this.translatedData!['SEARCH.MSG_SEARCH_FAILED']
+            summaryKey: this.translatedData!['SEARCH.MSG_SEARCH_FAILED']
           })
         }
       })
@@ -181,50 +164,17 @@ export class ParameterDetailFormComponent implements OnInit {
     })
     if (errors.length > 0) {
       this.messageService.error({
-        data: this.translatedData!['DETAILS.FORM_MANDATORY']
+        summaryKey: this.translatedData!['DETAILS.FORM_MANDATORY']
       })
     }
   }
 
-  private isValidValueType(): boolean {
-    switch (this.parameterForm.value.type) {
-      case 'JSON':
-        try {
-          JSON.parse(this.parameterForm.value.value)
-          return true
-        } catch (error) {
-          return false
-        }
-      case 'BOOLEAN':
-        if (
-          this.parameterForm.value.value.toLowerCase() == 'true' ||
-          this.parameterForm.value.value.toLowerCase() == 'false'
-        ) {
-          return true
-        }
-        break
-      case 'STRING':
-        if (typeof this.parameterForm.value.value == 'string') {
-          return true
-        }
-        break
-      case 'NUMBER':
-        if (!isNaN(this.parameterForm.value.value)) {
-          return true
-        }
-        break
-      case 'UNAVAILABLE':
-        return false
-    }
-    return false
-  }
-
   private initializeForm(): UntypedFormGroup {
     return this.fb.group({
+      productName: new UntypedFormControl(null, [Validators.required]),
       applicationId: new UntypedFormControl(null, [Validators.required]),
       key: new UntypedFormControl(null, [Validators.required]),
       value: new UntypedFormControl(null, [Validators.required]),
-      type: new UntypedFormControl(null, [Validators.required]),
       description: new UntypedFormControl(null, [Validators.required]),
       unit: new UntypedFormControl(null),
       rangeFrom: new UntypedFormControl(null),
@@ -233,23 +183,17 @@ export class ParameterDetailFormComponent implements OnInit {
   }
 
   private updateForm(parameterDTO: ApplicationParameter) {
+    this.parameterForm.controls['productName'].setValue(parameterDTO.productName)
     this.parameterForm.controls['applicationId'].setValue(parameterDTO.applicationId)
     this.parameterForm.controls['key'].setValue(parameterDTO.key)
     this.parameterForm.controls['value'].setValue(parameterDTO.setValue)
-    if (!parameterDTO.type) {
-      this.parameterForm.controls['type'].setValue('UNAVAILABLE')
-    } else {
-      let type = parameterDTO.type.toUpperCase()
-      if (parameterDTO.type == null) {
-        this.parameterForm.controls['type'].setValue('UNAVAILABLE')
-      } else {
-        this.parameterForm.controls['type'].setValue(type)
-      }
-    }
     this.parameterForm.controls['description'].setValue(parameterDTO.description)
     this.parameterForm.controls['unit'].setValue(parameterDTO.unit)
     this.parameterForm.controls['rangeFrom'].setValue(parameterDTO.rangeFrom)
     this.parameterForm.controls['rangeTo'].setValue(parameterDTO.rangeTo)
+    this.parameterForm.valueChanges.subscribe(() => {
+      this.formEnabled = true
+    })
   }
 
   private loadChartData(): void {
@@ -257,6 +201,7 @@ export class ParameterDetailFormComponent implements OnInit {
       .getCountsByCriteria({
         parameterHistoryCountCriteria: {
           applicationId: this.parameterDTO?.applicationId,
+          productName: this.parameterDTO?.productName,
           key: this.parameterDTO?.key
         }
       })
@@ -267,13 +212,13 @@ export class ParameterDetailFormComponent implements OnInit {
           this.setChartData()
           if (data.length == 0) {
             this.messageService.success({
-              data: this.translatedData!['SEARCH.MSG_NO_RESULTS']
+              summaryKey: this.translatedData!['SEARCH.MSG_NO_RESULTS']
             })
           }
         },
         error: () => {
           this.messageService.error({
-            data: this.translatedData!['SEARCH.MSG_SEARCH_FAILED']
+            summaryKey: this.translatedData!['SEARCH.MSG_SEARCH_FAILED']
           })
         }
       })
@@ -284,10 +229,10 @@ export class ParameterDetailFormComponent implements OnInit {
     const textColor = documentStyle.getPropertyValue('--text-color')
     const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary')
     const surfaceBorder = documentStyle.getPropertyValue('--surface-border')
-
-    const dates = this.chartData.map((item1: any) => item1)
-    const counts = this.chartData.map((item2: any) => item2)
-
+    const dates = this.chartData.map((item1: ParameterHistoryCount) =>
+      this.datePipe.transform(item1.creationDate, 'medium')
+    )
+    const counts = this.chartData.map((item2: ParameterHistoryCount) => item2.count)
     this.data = {
       labels: dates,
       datasets: [
@@ -334,18 +279,67 @@ export class ParameterDetailFormComponent implements OnInit {
     }
   }
 
+  private getAllProductNamesAndApplicationIds(): void {
+    this.products$ = this.productsApi.searchAllAvailableProducts({ productStoreSearchCriteria: {} }).pipe(
+      tap((data) => {
+        this.productOptions = []
+        if (data.stream) {
+          data.stream.sort((a, b) => this.compareStrings(a.productName!, b.productName!)).unshift({ productName: '' })
+          data.stream.map((p) =>
+            this.productOptions.push({
+              title: p.productName,
+              value: p.productName
+            })
+          )
+        }
+      })
+    )
+    this.products$!.subscribe()
+  }
+
+  public async updateApplicationIds(productName: String) {
+    await lastValueFrom(this.products$!).then((data) => {
+      this.applicationIds = []
+      this.parameterForm.controls['applicationId'].reset()
+      if (data.stream) {
+        data.stream.map((p) => {
+          if (p.productName === productName && p.applications) {
+            this.applicationIds = p.applications!
+            this.applicationIds.unshift('')
+          }
+        })
+      }
+    })
+  }
+  compareStrings(a: String, b: String): number {
+    if (a < b) {
+      return -1
+    } else if (a > b) {
+      return 1
+    } else return 0
+  }
+
+  public useHistoryParam() {
+    this.parameterForm.controls['value'].setValue(this.selectedHistoryParam?.usedValue)
+    this.parameterForm.controls['productName'].setValue(this.selectedHistoryParam?.productName)
+    this.parameterForm.controls['applicationId'].setValue(this.selectedHistoryParam?.applicationId)
+    this.parameterForm.controls['key'].setValue(this.selectedHistoryParam?.key)
+  }
+
   private loadTranslations(): void {
     this.translateService
       .get([
         'EDIT.FETCH_ERROR',
         'DETAILS.FORM_MANDATORY',
-        'DETAILS.VALUE_HAS_WRONG_TYPE',
         'DETAILS.FORM_KEY_MIN_LEN',
         'APPLICATION_PARAMETER.APPLICATION_ID',
         'APPLICATION_PARAMETER.KEY',
         'APPLICATION_PARAMETER.VALUE',
         'APPLICATION_PARAMETER.DESCRIPTION',
-        'CHART.NUMBER_OF_REQUESTS'
+        'CHART.NUMBER_OF_REQUESTS',
+        'SEARCH.MSG_SEARCH_FAILED',
+        'SEARCH.MSG_NO_RESULTS',
+        'VALIDATION.ERRORS.EMPTY_REQUIRED_FIELD'
       ])
       .subscribe((data) => {
         this.translatedData = data
