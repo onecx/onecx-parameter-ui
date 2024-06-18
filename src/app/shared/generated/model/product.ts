@@ -11,14 +11,8 @@
  */
 
 
-export interface ApplicationsPageResult { 
-    /**
-     * The total elements in the resource.
-     */
-    totalElements?: number;
-    number?: number;
-    size?: number;
-    totalPages?: number;
-    stream?: Array<string>;
+export interface Product { 
+    productName?: string;
+    applications?: Array<string>;
 }
 

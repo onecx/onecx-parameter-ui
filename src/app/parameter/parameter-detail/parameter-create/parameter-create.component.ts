@@ -30,12 +30,12 @@ export class ParameterCreateComponent implements OnInit {
     this.parametersApiService.createParameterValue({ applicationParameterCreate: parameterCreate }).subscribe(
       () => {
         this.messageService.success({
-          data: this.translatedData!['CREATE.CREATE_SUCCESS']
+          summaryKey: this.translatedData!['CREATE.CREATE_SUCCESS']
         })
       },
       () => {
         this.messageService.error({
-          data: this.translatedData!['CREATE.CREATE_ERROR']
+          summaryKey: this.translatedData!['CREATE.CREATE_ERROR']
         })
       }
     )

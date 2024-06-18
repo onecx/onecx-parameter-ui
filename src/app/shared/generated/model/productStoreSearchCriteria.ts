@@ -11,14 +11,14 @@
  */
 
 
-export interface ApplicationParameterCreate { 
-    key?: string;
-    applicationId?: string;
-    productName?: string;
-    value?: string;
-    description?: string;
-    unit?: string;
-    rangeFrom?: number;
-    rangeTo?: number;
+export interface ProductStoreSearchCriteria { 
+    /**
+     * The number of page.
+     */
+    pageNumber?: number;
+    /**
+     * The size of page
+     */
+    pageSize?: number;
 }
 

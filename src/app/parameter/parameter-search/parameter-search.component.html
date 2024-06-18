@@ -1,11 +1,47 @@
 <ocx-portal-page [helpArticleId]="helpArticleId">
   <div toolbarItems></div>
-  <app-criteria
-    [actions]="(actions$ | async) ?? []"
-    [searchInProgress]="searchInProgress"
-    (criteriaSubmitted)="searchData(this.criteria!)"
-    (resetSubmitted)="reset()"
-    simpleCriteria
-  ></app-criteria>
-  <app-results [results]="results" (deleteEvent)="deleteParameter('random ID')"></app-results>
+  <ocx-search-header
+    [header]="'SEARCH.PARAMETER_SEARCH_HEADER' | translate"
+    [subheader]="'SEARCH.PARAMETER_SEARCH_SUB_HEADER' | translate"
+    (searched)="searchData(this.criteria || {})"
+    (resetted)="reset()"
+    [manualBreadcrumbs]="false"
+    [actions]="(this.actions$ | async) ?? []"
+  >
+    <div id="criteria">
+      <form [formGroup]="criteriaGroup">
+        <div class="flex flex-wrap gap-3 mb-3">
+          <span class="p-float-label">
+            <p-dropdown
+              formControlName="productName"
+              [options]="this.productOptions"
+              optionLabel="title"
+              optionValue="value"
+              id="productName"
+              appendTo="body"
+              [showClear]="true"
+              (onChange)="this.updateApplicationIds($event.value)"
+              [style]="{ minWidth: '200px' }"
+            />
+            <label for="productName">{{ 'APPLICATION_PARAMETER.PRODUCT_NAME' | translate }}</label>
+          </span>
+          <span class="p-float-label">
+            <p-dropdown
+              formControlName="applicationId"
+              [options]="this.applicationIds"
+              id="applicationId"
+              appendTo="body"
+              [style]="{ minWidth: '200px' }"
+            />
+            <label for="applicationId">{{ 'APPLICATION_PARAMETER.APPLICATION' | translate }}</label>
+          </span>
+          <span class="p-float-label">
+            <input id="key" pInputText type="text" formControlName="key" />
+            <label for="key">{{ 'APPLICATION_PARAMETER.KEY' | translate }}</label>
+          </span>
+        </div>
+      </form>
+    </div>
+  </ocx-search-header>
+  <app-results [results]="results" (deleteEvent)="deleteParameter($event)"></app-results>
 </ocx-portal-page>

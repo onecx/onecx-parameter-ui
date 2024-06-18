@@ -1,8 +1,8 @@
 <ocx-portal-page [header]="'EDIT.EDIT_PARAMETER' | translate">
   <ocx-page-header
     [header]="'EDIT.EDIT_PARAMETER' | translate"
-    [disableDefaultActions]="true"
     [showBreadcrumbs]="false"
+    [actions]="(this.actions$ | async) ?? []"
   >
     <div toolbarItems>
       <button
@@ -11,7 +11,7 @@
         label="{{ 'GENERAL.CLOSE' | translate }}"
         pTooltip="{{ 'GENERAL.CLOSE' | translate }}"
         tooltipPosition="top"
-        [routerLink]="['../../../']"
+        [routerLink]="['../../']"
         icon="pi pi-times"
       ></button>
       <button
@@ -22,15 +22,6 @@
         tooltipPosition="top"
         (click)="parameterDetailFormComponent!.reloadData()"
         icon="pi pi-refresh"
-      ></button>
-      <button
-        pButton
-        class="mr-2"
-        label="{{ parameterDetailFormComponent!.viewEditButtonName | translate }}"
-        pTooltip="{{ 'GENERAL.SWITCH_TO_EDIT' | translate }}"
-        tooltipPosition="top"
-        (click)="parameterDetailFormComponent!.switchMode()"
-        icon="pi pi-pencil"
       ></button>
       <button
         pButton
