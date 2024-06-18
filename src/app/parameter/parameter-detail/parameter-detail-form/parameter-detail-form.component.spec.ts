@@ -9,6 +9,7 @@ import { environment } from '../../../../environments/environment'
 
 import { ParameterDetailFormComponent } from './parameter-detail-form.component'
 import { SharedModule } from '../../../shared/shared.module'
+import { DatePipe } from '@angular/common'
 
 describe('ParameterDetailFormComponent', () => {
   let component: ParameterDetailFormComponent
@@ -22,7 +23,8 @@ describe('ParameterDetailFormComponent', () => {
       providers: [
         { provide: TranslateService, useClass: TranslateServiceMock },
         { provide: PortalMessageService, useClass: PortalMessageService },
-        { provide: APP_CONFIG, useValue: environment }
+        { provide: APP_CONFIG, useValue: environment },
+        { provide: DatePipe, useClass: DatePipe }
       ]
     }).compileComponents()
   })
