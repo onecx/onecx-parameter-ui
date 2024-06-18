@@ -136,6 +136,7 @@
         <tr>
           <th id="productName">{{ 'HISTORY.PRODUCT' | translate }}</th>
           <th id="applicationId">{{ 'HISTORY.APPLICATION' | translate }}</th>
+          <th id="key">{{ 'HISTORY.KEY' | translate }}</th>
           <th id="instanceId">{{ 'HISTORY.INSTANCE_ID' | translate }}</th>
           <th id="defaultValue">{{ 'HISTORY.DEFAULT_VALUE' | translate }}</th>
           <th id="usedValue">{{ 'HISTORY.USED_VALUE' | translate }}</th>
@@ -146,6 +147,7 @@
         <tr [pSelectableRow]="parameterHistory">
           <td>{{ parameterHistory.productName }}</td>
           <td>{{ parameterHistory.applicationId }}</td>
+          <td>{{ parameterHistory.key }}</td>
           <td>{{ parameterHistory.instanceId }}</td>
           <td>{{ parameterHistory.defaultValue }}</td>
           <td>{{ parameterHistory.usedValue }}</td>

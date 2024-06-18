@@ -77,7 +77,8 @@
     "LAST_USED": "Zuletzt verwendeten",
     "HISTORY_RELOAD": "Verlaufsdaten aktualisieren",
     "APPLICATION": "Applikation",
-    "PRODUCT": "Produkt"
+    "PRODUCT": "Produkt",
+    "KEY": "Schlüssel"
   },
   "DIALOG": {
     "SELECT_APPLICATION_ID": "Wählen Sie Anwendungs-ID aus",

@@ -64,6 +64,8 @@ export class ParameterDetailFormComponent implements OnInit {
       this.parameterId = this.route.snapshot.paramMap.get('id') || ''
       this.getParameter(this.parameterId)
       this.disableForm()
+    } else {
+      this.getParameterHistoryArray()
     }
     this.getAllProductNamesAndApplicationIds()
   }
@@ -136,9 +138,9 @@ export class ParameterDetailFormComponent implements OnInit {
 
   public getParameterHistoryArray(): void {
     let criteria: ApplicationParameterHistoryCriteria = {
-      applicationId: this.parameterForm.value.applicationId,
-      productName: this.parameterForm.value.productName,
-      key: this.parameterForm.value.key
+      applicationId: this.parameterForm.value.applicationId || this.parameterDTO?.applicationId,
+      productName: this.parameterForm.value.productName || this.parameterDTO?.productName,
+      key: this.parameterForm.value.key || this.parameterDTO?.key
     }
     this.paramtersHistoryApiService
       .getAllApplicationParametersHistory({ applicationParameterHistoryCriteria: criteria })

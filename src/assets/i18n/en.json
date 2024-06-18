@@ -71,13 +71,14 @@
   },
   "HISTORY": {
     "HISTORY": "History",
-    "INSTANCE_ID": "Instance Id",
+    "INSTANCE_ID": "Instance ID",
     "DEFAULT_VALUE": "Default Value",
     "USED_VALUE": "Used Value",
     "LAST_USED": "Last used",
     "HISTORY_RELOAD": "Reload history",
     "APPLICATION": "Application",
-    "PRODUCT": "Product"
+    "PRODUCT": "Product",
+    "KEY": "Key"
   },
   "DIALOG": {
     "SELECT_APPLICATION_ID": "Select Application Id",
