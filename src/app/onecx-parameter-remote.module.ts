@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpClientModule } from '@angular/common/http'
 import { BrowserModule } from '@angular/platform-browser'
 import { APP_INITIALIZER, DoBootstrap, Injector, NgModule } from '@angular/core'
 import { createCustomElement } from '@angular/elements'
@@ -9,12 +9,21 @@ import {
   AppStateService,
   ConfigurationService,
   createTranslateLoader,
+  PortalApiConfiguration,
   PortalCoreModule,
   PortalMissingTranslationHandler
 } from '@onecx/portal-integration-angular'
 import { addInitializeModuleGuard } from '@onecx/angular-integration-interface'
 import { initializeRouter, startsWith } from '@onecx/angular-webcomponents'
+import { AngularAuthModule } from '@onecx/angular-auth'
 import { AppEntrypointComponent } from './app-entrypoint.component'
+import { environment } from 'src/environments/environment'
+import { Configuration } from './shared/generated'
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+
+function apiConfigProvider(configService: ConfigurationService, appStateService: AppStateService) {
+  return new PortalApiConfiguration(Configuration, environment.apiPrefix, configService, appStateService)
+}
 
 const routes: Routes = [
   {
@@ -25,7 +34,10 @@ const routes: Routes = [
 @NgModule({
   declarations: [AppEntrypointComponent],
   imports: [
+    AngularAuthModule,
+    BrowserAnimationsModule,
     BrowserModule,
+    HttpClientModule,
     PortalCoreModule.forMicroFrontend(),
     RouterModule.forRoot(addInitializeModuleGuard(routes)),
     TranslateModule.forRoot({
@@ -46,7 +58,8 @@ const routes: Routes = [
       useFactory: initializeRouter,
       multi: true,
       deps: [Router, AppStateService]
-    }
+    },
+    { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] }
   ],
   schemas: []
 })
