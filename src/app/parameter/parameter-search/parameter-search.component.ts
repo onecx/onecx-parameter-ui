@@ -63,7 +63,7 @@ export class ParameterSearchComponent extends PortalSearchPage<ApplicationParame
               return data.size
             }
           },
-          error: (err) => {
+          error: () => {
             this.messageService.error({
               summaryKey: this.translatedData['SEARCH.MSG_SEARCH_FAILED']
             })

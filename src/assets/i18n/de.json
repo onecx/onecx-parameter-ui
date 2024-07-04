@@ -2,7 +2,7 @@
   "GENERAL": {
     "YES": "Ja",
     "NO": "Nein",
-    "SWITCH_TO_EDIT": "In den Editionsmodus schalten",
+    "SWITCH_TO_EDIT": "In den Änderungsmodus schalten",
     "SWITCH_TO_VIEW": "Wechseln Sie in den Ansichtsmodus",
     "CLOSE": "Schließen",
     "RELOAD": "Neuladen",
@@ -12,7 +12,7 @@
   },
   "SEARCH": {
     "PARAMETER_SEARCH_HEADER": "Parameter Management",
-    "PARAMETER_SEARCH_SUB_HEADER": "Suchen und verwalten von Parameter",
+    "PARAMETER_SEARCH_SUB_HEADER": "Suchen und verwalten von Parametern",
     "MSG_NO_RESULTS": "Die Suche ergab keine Treffer",
     "MSG_SEARCH_FAILED": "Suche ist fehlgeschlagen",
     "ACTION": "Aktion",
@@ -47,18 +47,18 @@
     "FORM_KEY_MIN_LEN": "Schlüssel sollte mindestens 3 Buchstaben haben"
   },
   "EDIT": {
-    "EDIT_PARAMETER": "Parameter Bearbeiten",
-    "TOOLTIP": "Aktualisieren einem Parameter",
+    "EDIT_PARAMETER": "Parameter bearbeiten",
+    "TOOLTIP": "Aktualisieren eines Parameters",
     "BREADCRUMB": "Parameterdetails",
     "UPDATE_SUCCESS": "Parameter erfolgreich aktualisiert",
     "UPDATE_ERROR": "Fehler beim Aktualisieren des Parameters",
-    "FETCH_ERROR": "Parameter mit angegebener Id ist nicht abgerufen."
+    "FETCH_ERROR": "Parameter mit angegebener Id konnte nicht abgerufen werden"
   },
   "CREATE": {
-    "CREATE_PARAMETER": "Erstellung einem Parameter",
-    "BREADCRUMB": "Parameter-Erstellenung",
-    "CREATE_SUCCESS": "Parameter wurde erfolgreich erstellt.",
-    "CREATE_ERROR": "Fehler, Parameter wurde nicht erfolgreich erstellt.",
+    "CREATE_PARAMETER": "Erstellung eines Parameters",
+    "BREADCRUMB": "Parameter-Erstellung",
+    "CREATE_SUCCESS": "Parameter wurde erfolgreich erstellt",
+    "CREATE_ERROR": "Fehler, Parameter wurde nicht erstellt",
     "CLOSE": "Schließen",
     "SAVE": "Erstellen"
   },
@@ -73,8 +73,8 @@
     "HISTORY": "Verlaufsdaten",
     "INSTANCE_ID": "Instanz-ID",
     "DEFAULT_VALUE": "Standardwert",
-    "USED_VALUE": "Gebrauchtwert",
-    "LAST_USED": "Zuletzt verwendeten",
+    "USED_VALUE": "Verwendeter Wert",
+    "LAST_USED": "Zuletzt verwendet",
     "HISTORY_RELOAD": "Verlaufsdaten aktualisieren",
     "APPLICATION": "Applikation",
     "PRODUCT": "Produkt",
@@ -82,7 +82,7 @@
   },
   "DIALOG": {
     "SELECT_APPLICATION_ID": "Wählen Sie Anwendungs-ID aus",
-    "SELECT_KEY": "Wählen Sie Schlüssel",
+    "SELECT_KEY": "Wählen Sie den Schlüssel",
     "FILTER_BY": "Filtern nach"
   },
   "CHART": {
