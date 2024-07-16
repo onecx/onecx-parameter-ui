@@ -1,7 +1,6 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http'
 import { BrowserModule } from '@angular/platform-browser'
 import { APP_INITIALIZER, DoBootstrap, Injector, NgModule } from '@angular/core'
-import { createCustomElement } from '@angular/elements'
 import { Router, RouterModule, Routes } from '@angular/router'
 import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core'
 
@@ -14,7 +13,7 @@ import {
   PortalMissingTranslationHandler
 } from '@onecx/portal-integration-angular'
 import { addInitializeModuleGuard } from '@onecx/angular-integration-interface'
-import { initializeRouter, startsWith } from '@onecx/angular-webcomponents'
+import { createAppEntrypoint, initializeRouter, startsWith } from '@onecx/angular-webcomponents'
 import { AngularAuthModule } from '@onecx/angular-auth'
 import { AppEntrypointComponent } from './app-entrypoint.component'
 import { environment } from 'src/environments/environment'
@@ -69,9 +68,6 @@ export class OneCXParameterModule implements DoBootstrap {
   }
 
   ngDoBootstrap(): void {
-    const appEntrypoint = createCustomElement(AppEntrypointComponent, {
-      injector: this.injector
-    })
-    customElements.define('ocx-parameter-component', appEntrypoint)
+    createAppEntrypoint(AppEntrypointComponent, 'ocx-parameter-component', this.injector)
   }
 }
