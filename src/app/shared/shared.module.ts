@@ -22,15 +22,7 @@ import { SelectButtonModule } from 'primeng/selectbutton'
 import { TableModule } from 'primeng/table'
 import { ToastModule } from 'primeng/toast'
 
-import { AppStateService, ConfigurationService, PortalApiConfiguration } from '@onecx/portal-integration-angular'
-
-import { Configuration } from 'src/app/shared/generated'
-import { environment } from 'src/environments/environment'
 import { LabelResolver } from './label.resolver'
-
-export function apiConfigProvider(configService: ConfigurationService, appStateService: AppStateService) {
-  return new PortalApiConfiguration(Configuration, environment.apiPrefix, configService, appStateService)
-}
 
 @NgModule({
   declarations: [],
@@ -101,11 +93,7 @@ export function apiConfigProvider(configService: ConfigurationService, appStateS
     TranslateModule
   ],
   //this is not elegant, for some reason the injection token from primeng does not work across federated module
-  providers: [
-    ConfirmationService,
-    LabelResolver,
-    { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] }
-  ],
+  providers: [ConfirmationService, LabelResolver],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SharedModule {}

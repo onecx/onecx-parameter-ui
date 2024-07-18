@@ -5,7 +5,7 @@ const config = withModuleFederationPlugin({
   name: 'onecx-parameter-ui',
   filename: 'remoteEntry.js',
   exposes: {
-    './OneCXParameterModule': 'src/app/onecx-parameter-remote.module.ts'
+    './OneCXParameterModule': 'src/bootstrap.ts'
   },
   shared: share({
     '@angular/core': { singleton: true, requiredVersion: 'auto' },
@@ -33,6 +33,7 @@ const config = withModuleFederationPlugin({
     '@onecx/keycloak-auth': { requiredVersion: 'auto', includeSecondaries: true },
     '@onecx/portal-integration-angular': { requiredVersion: 'auto', includeSecondaries: true },
     '@onecx/accelerator': { requiredVersion: 'auto', includeSecondaries: true },
+    '@onecx/angular-accelerator': { requiredVersion: 'auto', includeSecondaries: true },
     '@onecx/integration-interface': { requiredVersion: 'auto', includeSecondaries: true }
   }),
   sharedMappings: ['@onecx/portal-integration-angular']
@@ -45,5 +46,17 @@ const plugins = config.plugins.filter((plugin) => !(plugin instanceof ModifyEntr
 
 module.exports = {
   ...config,
-  plugins
+  plugins,
+  output: {
+    uniqueName: 'onecx-parameter-ui',
+    publicPath: 'auto'
+  },
+  experiments: {
+    ...config.experiments,
+    topLevelAwait: true
+  },
+  optimization: {
+    runtimeChunk: false,
+    splitChunks: false
+  }
 }
