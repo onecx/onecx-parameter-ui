@@ -26,7 +26,7 @@ import {
   styleUrls: ['./parameter-detail-form.component.scss']
 })
 export class ParameterDetailFormComponent implements OnInit {
-  public applicationIds: String[] = []
+  public applicationIds: string[] = []
   public productOptions: SelectItem[] = []
   public products$: Observable<ProductStorePageResult> | undefined
   public selectedHistoryParam: ApplicationParameterHistory | undefined
@@ -72,14 +72,14 @@ export class ParameterDetailFormComponent implements OnInit {
 
   public emitFormUpdate(): void {
     if (this.parameterForm.valid) {
-      let parameter: ApplicationParameter = {
+      const parameter: ApplicationParameter = {
         setValue: this.parameterForm.value.value,
         description: this.parameterForm.value.description,
         unit: this.parameterForm.value.unit,
         rangeFrom: this.parameterForm.value.rangeFrom,
         rangeTo: this.parameterForm.value.rangeTo
       }
-      let parametterWrapper = {
+      const parametterWrapper = {
         id: this.parameterDTO?.id,
         parameter: parameter
       }
@@ -91,7 +91,7 @@ export class ParameterDetailFormComponent implements OnInit {
 
   public emitFormCreate(): void {
     if (this.parameterForm.valid) {
-      let parameter: ApplicationParameterCreate = {
+      const parameter: ApplicationParameterCreate = {
         productName: this.parameterForm.value.productName,
         applicationId: this.parameterForm.value.applicationId,
         key: this.parameterForm.value.key,
@@ -137,7 +137,7 @@ export class ParameterDetailFormComponent implements OnInit {
   }
 
   public getParameterHistoryArray(): void {
-    let criteria: ApplicationParameterHistoryCriteria = {
+    const criteria: ApplicationParameterHistoryCriteria = {
       applicationId: this.parameterForm.value.applicationId || this.parameterDTO?.applicationId,
       productName: this.parameterForm.value.productName || this.parameterDTO?.productName,
       key: this.parameterForm.value.key || this.parameterDTO?.key
@@ -299,7 +299,7 @@ export class ParameterDetailFormComponent implements OnInit {
     this.products$!.subscribe()
   }
 
-  public async updateApplicationIds(productName: String) {
+  public async updateApplicationIds(productName: string) {
     await lastValueFrom(this.products$!).then((data) => {
       this.applicationIds = []
       this.parameterForm.controls['applicationId'].reset()
@@ -313,7 +313,7 @@ export class ParameterDetailFormComponent implements OnInit {
       }
     })
   }
-  compareStrings(a: String, b: String): number {
+  compareStrings(a: string, b: string): number {
     if (a < b) {
       return -1
     } else if (a > b) {

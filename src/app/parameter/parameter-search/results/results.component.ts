@@ -62,11 +62,11 @@ export class ResultsComponent implements OnInit {
   constructor(private readonly translateService: TranslateService) {}
 
   public getStatusOptions(field: string): SelectItem[] {
-    let data: SelectItem<any>[] = []
+    const data: SelectItem<any>[] = []
     Object.values('')
       .filter(isNaN as any)
       .forEach((value) => {
-        let selectItem = {
+        const selectItem = {
           label: value,
           value: value
         } as SelectItem

@@ -22,7 +22,7 @@ export class ParameterSearchComponent extends PortalSearchPage<ApplicationParame
   public actions$: Observable<Action[]> | undefined
   public products$: Observable<Product[]> | undefined
   public criteriaGroup!: UntypedFormGroup
-  public applicationIds: String[] = []
+  public applicationIds: string[] = []
   public productOptions: SelectItem[] = []
 
   constructor(
@@ -167,7 +167,7 @@ export class ParameterSearchComponent extends PortalSearchPage<ApplicationParame
     this.products$!.subscribe()
   }
 
-  public async updateApplicationIds(productName: String) {
+  public async updateApplicationIds(productName: string) {
     await lastValueFrom(this.products$!)
       .then((data) => {
         this.applicationIds = []
@@ -187,7 +187,7 @@ export class ParameterSearchComponent extends PortalSearchPage<ApplicationParame
         }
       })
   }
-  compareStrings(a: String, b: String): number {
+  compareStrings(a: string, b: string): number {
     if (a < b) {
       return -1
     } else if (a > b) {
