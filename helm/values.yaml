@@ -16,6 +16,9 @@ app:
           description: "OneCX Parameter UI"
           note: "OneCX Parameter UI auto import via operator"
           type: MODULE
+          technology: WEBCOMPONENTMODULE
+          remoteName: onecx-parameter
+          tagName: ocx-parameter-component
     # Permission
     permission:
       enabled: true

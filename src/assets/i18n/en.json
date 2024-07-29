@@ -20,7 +20,7 @@
     "RESET": "Reset",
     "SELECT_TYPE": "Select Type",
     "DROPDOWN_PLACEHOLDER": "Any",
-    "APPLICATION_ID_IS_MANDATORY": "Applicatio Id field is mandatory"
+    "APPLICATION_ID_IS_MANDATORY": "Application Id field is mandatory"
   },
   "APPLICATION_PARAMETER": {
     "APPLICATION_ID": "Application ID",
