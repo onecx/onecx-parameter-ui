@@ -30,12 +30,12 @@ export class ParameterCreateComponent implements OnInit {
     this.parametersApiService.createParameterValue({ applicationParameterCreate: parameterCreate }).subscribe(
       () => {
         this.messageService.success({
-          summaryKey: this.translatedData!['CREATE.CREATE_SUCCESS']
+          summaryKey: this.translatedData!['ACTIONS.CREATE.CREATE_SUCCESS']
         })
       },
       () => {
         this.messageService.error({
-          summaryKey: this.translatedData!['CREATE.CREATE_ERROR']
+          summaryKey: this.translatedData!['ACTIONS.CREATE.CREATE_ERROR']
         })
       }
     )
@@ -43,7 +43,7 @@ export class ParameterCreateComponent implements OnInit {
 
   private loadTranslations(): void {
     this.translateService
-      .get(['CREATE.BREADCRUMB', 'CREATE.CREATE_SUCCESS', 'CREATE.CREATE_ERROR'])
+      .get(['ACTIONS.CREATE.BREADCRUMB', 'ACTIONS.CREATE.CREATE_SUCCESS', 'ACTIONS.CREATE.CREATE_ERROR'])
       .subscribe((translations: Record<string, string>) => {
         this.translatedData = translations
       })

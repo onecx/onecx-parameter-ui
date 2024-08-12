@@ -25,9 +25,10 @@ app:
       spec:
         permissions:
           PARAMETER:
-            DELETE: Delete image
-            EDIT: Edit image
-            VIEW: View image
+            DELETE: Delete parameter
+            EDIT: Edit parameter
+            VIEW: View parameter
+            SEARCH: Search parameter
     # Keycloak
     keycloak:
       client:
