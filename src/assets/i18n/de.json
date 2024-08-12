@@ -128,10 +128,13 @@
       "UNIT": "Tragen Sie eine Einheit ein",
       "RANGE_FROM": "Bereich von",
       "RANGE_TO": "Bereich bis",
-      "DESCRIPTION": "Bitte beschreiben Sie den Parameter"
+      "DESCRIPTION": "Bitte beschreiben Sie den Parameter",
+      "FORM_TYPE": "Wählen Sie zwischen Standard- und erweiterter Form"
     }
   },
   "DETAILS": {
+    "STANDARD_FORM": "Standardformular",
+    "ADVANCED_FORM": "Erweitertes Formular",
     "FORM_MANDATORY": "Pflichtfelder fehlen",
     "VALUE_HAS_WRONG_TYPE": "Der Wert hat den falschen Typ",
     "FORM_KEY_MIN_LEN": "Schlüssel sollte mindestens 3 Buchstaben haben"

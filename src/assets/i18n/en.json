@@ -128,10 +128,13 @@
       "UNIT": "Please provide a Unit",
       "RANGE_FROM": "Range from",
       "RANGE_TO": "Range to",
-      "DESCRIPTION": "Provide a description of the parameter"
+      "DESCRIPTION": "Provide a description of the parameter",
+      "FORM_TYPE": "Choose between standard and advanced form"
     }
   },
   "DETAILS": {
+    "STANDARD_FORM": "Standard form",
+    "ADVANCED_FORM": "Advanced form",
     "FORM_MANDATORY": "Mandatory fields are missing",
     "VALUE_HAS_WRONG_TYPE": "Value has wrong type",
     "FORM_KEY_MIN_LEN": "Key should have at least 3 letters"

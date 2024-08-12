@@ -1,13 +1,16 @@
 <ocx-page-content styleClass="px-3">
   <div class="flex justify-center" style="margin: 15px">
-    <label for="formTypeSwitch">Standard form</label>
+    <label for="formTypeSwitch">{{ 'DETAILS.STANDARD_FORM' | translate }}</label>
     <p-inputSwitch
-      inputId="formTypeSwitch"
+      inputId="parameter_detail_formTypeSwitch"
       [(ngModel)]="advancedForm"
       [ngStyle]="{ margin: '0 5px' }"
       (onChange)="mode !== 'edit' ? parameterForm.reset() : ''"
+      [pTooltip]="'PARAMETER.TOOLTIPS.FORM_TYPE' | translate"
+      tooltipPosition="top"
+      tooltipEvent="hover"
     ></p-inputSwitch>
-    <label for="formTypeSwitch">Advanced form</label>
+    <label for="parameter_detail_formTypeSwitch">{{ 'DETAILS.ADVANCED_FORM' | translate }}</label>
   </div>
 
   <div>
