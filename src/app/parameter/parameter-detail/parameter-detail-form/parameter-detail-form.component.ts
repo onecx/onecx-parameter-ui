@@ -334,7 +334,7 @@ export class ParameterDetailFormComponent implements OnInit {
         'ACTIONS.EDIT.FETCH_ERROR',
         'DETAILS.FORM_MANDATORY',
         'DETAILS.FORM_KEY_MIN_LEN',
-        'PARAMETER.APPLICATION_ID',
+        'PARAMETER.APP_ID',
         'PARAMETER.KEY',
         'PARAMETER.VALUE',
         'PARAMETER.DESCRIPTION',

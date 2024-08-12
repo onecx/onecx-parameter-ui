@@ -74,7 +74,7 @@
     "TOOLTIPS": {
       "CANCEL_AND_CLOSE": "Cancel and close dialog",
       "SAVE": "Save changes",
-      "SAVE_AS": "Save as new Theme"
+      "SAVE_AS": "Save as new Parameter"
     }
   },
   "GENERAL": {
@@ -101,7 +101,7 @@
     "APPLICATION_ID_IS_MANDATORY": "Application Id field is mandatory"
   },
   "PARAMETER": {
-    "APPLICATION_ID": "App-ID",
+    "APP_ID": "App-ID",
     "APPLICATION": "App",
     "PRODUCT_NAME": "Application",
     "KEY": "Key",
@@ -119,7 +119,7 @@
       "JSON": "Json"
     },
     "TOOLTIPS": {
-      "APPLICATION_ID": "Please choose an App ID",
+      "APP_ID": "Please choose an App ID",
       "APPLICATION": "Please choose an App",
       "PRODUCT_NAME": "Please choose an Application",
       "KEY": "Please provide a Parameter Key",

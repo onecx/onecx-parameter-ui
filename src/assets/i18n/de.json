@@ -101,7 +101,7 @@
     "APPLICATION_ID_IS_MANDATORY": "Das Feld Anwendung-ID ist obligatorisch"
   },
   "PARAMETER": {
-    "APPLICATION_ID": "App-ID",
+    "APP_ID": "App-ID",
     "APPLICATION": "App",
     "PRODUCT_NAME": "Applikation",
     "KEY": "Schlüssel",
@@ -119,7 +119,7 @@
       "JSON": "Json"
     },
     "TOOLTIPS": {
-      "APPLICATION_ID": "Wählen Sie eine App-ID",
+      "APP_ID": "Wählen Sie eine App-ID",
       "APPLICATION": "Wählen Sie eine App",
       "PRODUCT_NAME": "Wählen Sie eine Applikation",
       "KEY": "Tragen Sie einen eindeutigen Parameter-Schlüssel ein",

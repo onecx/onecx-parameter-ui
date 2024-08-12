@@ -18,7 +18,6 @@ import { SelectItem } from 'primeng/api'
 export class ParameterSearchComponent extends PortalSearchPage<ApplicationParameter> implements OnInit {
   private translatedData: any
   public criteria: ParameterSearchCriteria = {}
-  public helpArticleId = 'PAGE_PARAMETERS_SEARCH'
   public actions$: Observable<Action[]> | undefined
   public products$: Observable<Product[]> | undefined
   public criteriaGroup!: UntypedFormGroup

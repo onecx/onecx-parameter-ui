@@ -28,7 +28,7 @@ export class ResultsComponent implements OnInit {
     },
     {
       field: 'applicationId',
-      header: 'APPLICATION_ID',
+      header: 'APP_ID',
       active: true,
       translationPrefix: 'PARAMETER'
     },
