@@ -161,7 +161,7 @@ export class ParameterDetailFormComponent implements OnInit {
     const errors: string[] = []
     Object.keys(this.parameterForm.controls).forEach((key) => {
       if (this.parameterForm.controls[key].invalid) {
-        errors.push(this.translatedData![`APPLICATION_PARAMETER.${key.toUpperCase()}`])
+        errors.push(this.translatedData![`PARAMETER.${key.toUpperCase()}`])
       }
     })
     if (errors.length > 0) {
@@ -331,13 +331,13 @@ export class ParameterDetailFormComponent implements OnInit {
   private loadTranslations(): void {
     this.translateService
       .get([
-        'EDIT.FETCH_ERROR',
+        'ACTIONS.EDIT.FETCH_ERROR',
         'DETAILS.FORM_MANDATORY',
         'DETAILS.FORM_KEY_MIN_LEN',
-        'APPLICATION_PARAMETER.APPLICATION_ID',
-        'APPLICATION_PARAMETER.KEY',
-        'APPLICATION_PARAMETER.VALUE',
-        'APPLICATION_PARAMETER.DESCRIPTION',
+        'PARAMETER.APP_ID',
+        'PARAMETER.KEY',
+        'PARAMETER.VALUE',
+        'PARAMETER.DESCRIPTION',
         'CHART.NUMBER_OF_REQUESTS',
         'SEARCH.MSG_SEARCH_FAILED',
         'SEARCH.MSG_NO_RESULTS',

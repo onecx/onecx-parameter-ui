@@ -35,12 +35,12 @@ export class ParameterDetailComponent implements OnInit {
       .subscribe(
         () => {
           this.messageService.success({
-            summaryKey: this.translatedData!['EDIT.UPDATE_SUCCESS']
+            summaryKey: this.translatedData!['ACTIONS.EDIT.UPDATE_SUCCESS']
           })
         },
         () => {
           this.messageService.error({
-            summaryKey: this.translatedData!['EDIT.UPDATE_ERROR']
+            summaryKey: this.translatedData!['ACTIONS.EDIT.UPDATE_ERROR']
           })
         }
       )
@@ -48,7 +48,7 @@ export class ParameterDetailComponent implements OnInit {
 
   private loadTranslations(): void {
     this.translateService
-      .get(['EDIT.BREADCRUMB', 'EDIT.UPDATE_SUCCESS', 'EDIT.UPDATE_ERROR'])
+      .get(['ACTIONS.EDIT.BREADCRUMB', 'ACTIONS.EDIT.UPDATE_SUCCESS', 'ACTIONS.EDIT.UPDATE_ERROR'])
       .subscribe((translations: Record<string, string>) => {
         this.translatedData = translations
       })

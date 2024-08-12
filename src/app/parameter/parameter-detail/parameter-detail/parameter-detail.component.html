@@ -1,6 +1,7 @@
-<ocx-portal-page [header]="'EDIT.EDIT_PARAMETER' | translate">
+<ocx-portal-page [helpArticleId]="'PAGE_PARAMETERS_DETAIL'" [header]="'ACTIONS.EDIT.EDIT_PARAMETER' | translate">
   <ocx-page-header
-    [header]="'EDIT.EDIT_PARAMETER' | translate"
+    [header]="'ACTIONS.EDIT.EDIT_PARAMETER' | translate"
+    [subheader]="'ACTIONS.EDIT.EDIT_PARAMETER_SUB_HEADER' | translate"
     [showBreadcrumbs]="false"
     [actions]="(this.actions$ | async) ?? []"
   >

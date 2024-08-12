@@ -18,7 +18,6 @@ import { SelectItem } from 'primeng/api'
 export class ParameterSearchComponent extends PortalSearchPage<ApplicationParameter> implements OnInit {
   private translatedData: any
   public criteria: ParameterSearchCriteria = {}
-  public helpArticleId = 'PAGE_PARAMETERS_SEARCH'
   public actions$: Observable<Action[]> | undefined
   public products$: Observable<Product[]> | undefined
   public criteriaGroup!: UntypedFormGroup
@@ -126,12 +125,12 @@ export class ParameterSearchComponent extends PortalSearchPage<ApplicationParame
   }
 
   private prepareActionButtons(): void {
-    this.actions$ = this.translateService.get(['CREATE.CREATE_PARAMETER']).pipe(
+    this.actions$ = this.translateService.get(['ACTIONS.CREATE.CREATE_PARAMETER']).pipe(
       map((data) => {
         return [
           {
-            label: data['CREATE.CREATE_PARAMETER'],
-            title: data['CREATE.CREATE_PARAMETER'],
+            label: data['ACTIONS.CREATE.CREATE_PARAMETER'],
+            title: data['ACTIONS.CREATE.CREATE_PARAMETER'],
             actionCallback: () => this.router.navigate([`./create`], { relativeTo: this.route }),
             icon: 'pi pi-plus',
             show: 'always',

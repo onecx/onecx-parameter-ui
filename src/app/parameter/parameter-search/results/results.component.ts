@@ -24,31 +24,31 @@ export class ResultsComponent implements OnInit {
       field: 'productName',
       header: 'PRODUCT_NAME',
       active: true,
-      translationPrefix: 'APPLICATION_PARAMETER'
+      translationPrefix: 'PARAMETER'
     },
     {
       field: 'applicationId',
-      header: 'APPLICATION_ID',
+      header: 'APP_ID',
       active: true,
-      translationPrefix: 'APPLICATION_PARAMETER'
+      translationPrefix: 'PARAMETER'
     },
     {
       field: 'key',
       header: 'KEY',
       active: true,
-      translationPrefix: 'APPLICATION_PARAMETER'
+      translationPrefix: 'PARAMETER'
     },
     {
       field: 'setValue',
       header: 'VALUE',
       active: true,
-      translationPrefix: 'APPLICATION_PARAMETER'
+      translationPrefix: 'PARAMETER'
     },
     {
       field: 'importValue',
       header: 'IMPORT_VALUE',
       active: true,
-      translationPrefix: 'APPLICATION_PARAMETER'
+      translationPrefix: 'PARAMETER'
     }
   ]
   public filteredColumns: Column[] = []
@@ -57,7 +57,7 @@ export class ResultsComponent implements OnInit {
 
   private selectedParameter = null
 
-  private readonly pathToTranslationJSON = 'APPLICATION_PARAMETER.'
+  private readonly pathToTranslationJSON = 'PARAMETER.'
 
   constructor(private readonly translateService: TranslateService) {}
 
@@ -100,24 +100,24 @@ export class ResultsComponent implements OnInit {
 
   public translateTypeField(type: string) {
     if (!type) {
-      return this.translatedData!['APPLICATION_PARAMETER.PARAMETER_TYPE.UNAVAILABLE']
+      return this.translatedData!['PARAMETER.PARAMETER_TYPE.UNAVAILABLE']
     }
     type = type.toUpperCase()
     if (type == null) {
-      return this.translatedData!['APPLICATION_PARAMETER.PARAMETER_TYPE.UNAVAILABLE']
+      return this.translatedData!['PARAMETER.PARAMETER_TYPE.UNAVAILABLE']
     } else {
-      return this.translatedData!['APPLICATION_PARAMETER.PARAMETER_TYPE.' + type]
+      return this.translatedData!['PARAMETER.PARAMETER_TYPE.' + type]
     }
   }
 
   private loadTranslations(): void {
     this.translateService
       .get([
-        'APPLICATION_PARAMETER.PARAMETER_TYPE.UNAVAILABLE',
-        'APPLICATION_PARAMETER.PARAMETER_TYPE.STRING',
-        'APPLICATION_PARAMETER.PARAMETER_TYPE.NUMBER',
-        'APPLICATION_PARAMETER.PARAMETER_TYPE.BOOLEAN',
-        'APPLICATION_PARAMETER.PARAMETER_TYPE.JSON'
+        'PARAMETER.PARAMETER_TYPE.UNAVAILABLE',
+        'PARAMETER.PARAMETER_TYPE.STRING',
+        'PARAMETER.PARAMETER_TYPE.NUMBER',
+        'PARAMETER.PARAMETER_TYPE.BOOLEAN',
+        'PARAMETER.PARAMETER_TYPE.JSON'
       ])
       .subscribe((data) => {
         this.translatedData = data

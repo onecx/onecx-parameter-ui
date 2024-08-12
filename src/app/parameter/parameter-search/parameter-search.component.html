@@ -1,4 +1,4 @@
-<ocx-portal-page [helpArticleId]="helpArticleId">
+<ocx-portal-page [helpArticleId]="'PAGE_PARAMETERS_SEARCH'" permission="PARAMETER#SEARCH">
   <div toolbarItems></div>
   <ocx-search-header
     [header]="'SEARCH.PARAMETER_SEARCH_HEADER' | translate"
@@ -8,7 +8,7 @@
     [manualBreadcrumbs]="false"
     [actions]="(this.actions$ | async) ?? []"
   >
-    <div id="criteria">
+    <div id="parameter_search_criteria">
       <form [formGroup]="criteriaGroup">
         <div class="flex flex-wrap gap-3 mb-3">
           <span class="p-float-label">
@@ -17,27 +17,38 @@
               [options]="this.productOptions"
               optionLabel="title"
               optionValue="value"
-              id="productName"
+              id="parameter_search_criteria_productName"
               appendTo="body"
               [showClear]="true"
               (onChange)="this.updateApplicationIds($event.value)"
               [style]="{ minWidth: '200px' }"
+              [pTooltip]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
             />
-            <label for="productName">{{ 'APPLICATION_PARAMETER.PRODUCT_NAME' | translate }}</label>
+            <label for="parameter_search_criteria_productName">{{ 'PARAMETER.PRODUCT_NAME' | translate }}</label>
           </span>
           <span class="p-float-label">
             <p-dropdown
               formControlName="applicationId"
               [options]="this.applicationIds"
-              id="applicationId"
+              id="parameter_search_criteria_applicationId"
               appendTo="body"
               [style]="{ minWidth: '200px' }"
+              [pTooltip]="'PARAMETER.TOOLTIPS.APP_ID' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
             />
-            <label for="applicationId">{{ 'APPLICATION_PARAMETER.APPLICATION' | translate }}</label>
+            <label for="parameter_search_criteria_applicationId">{{ 'PARAMETER.APPLICATION' | translate }}</label>
           </span>
-          <span class="p-float-label">
-            <input id="key" pInputText type="text" formControlName="key" />
-            <label for="key">{{ 'APPLICATION_PARAMETER.KEY' | translate }}</label>
+          <span
+            class="p-float-label"
+            [pTooltip]="'PARAMETER.TOOLTIPS.KEY' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
+            <input id="parameter_search_criteria_key" pInputText type="text" formControlName="key" />
+            <label for="parameter_search_criteria_key">{{ 'PARAMETER.KEY' | translate }}</label>
           </span>
         </div>
       </form>

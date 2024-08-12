@@ -1,4 +1,82 @@
 {
+  "ACTIONS": {
+    "LABEL": "Aktionen",
+    "CONFIRMATION": {
+      "NO": "Nein",
+      "YES": "Ja",
+      "NO.TOOLTIP": "Abbruch ohne Änderung",
+      "YES.TOOLTIP": "Bestätigen und Ausführen"
+    },
+    "COPY": {
+      "LABEL": "Kopieren",
+      "OF": "Kopie von ",
+      "DATA": "Mit den Daten einen neuen Parameter anlegen",
+      "CLIPBOARD": "In die Zwischenablage kopieren"
+    },
+    "CREATE": {
+      "LABEL": "Erstellen",
+      "PARAMETER": "Parameter erstellen",
+      "PARAMETER.TOOLTIP": "Einen neuen Parameter erstellen",
+      "CREATE_PARAMETER": "Erstellung eines Parameters",
+      "CREATE_PARAMETER_SUB_HEADER": "Füllen Sie die Eingaben aus, um einen neuen Parameter zu erstellen",
+      "BREADCRUMB": "Parameter-Erstellung",
+      "CREATE_SUCCESS": "Parameter wurde erfolgreich erstellt",
+      "CREATE_ERROR": "Fehler, Parameter wurde nicht erstellt",
+      "CLOSE": "Schließen",
+      "SAVE": "Erstellen",
+      "MESSAGE": {
+        "CREATE_OK": "Der Parameter wurde erfolgreich erstellt",
+        "CREATE_NOK": "Ein Fehler ist aufgetreten. Der Parameter wurde nicht erstellt."
+      }
+    },
+    "DELETE": {
+      "LABEL": "Löschen",
+      "PARAMETERS.TOOLTIP": "Lösche diesen Parameter",
+      "PARAMETER": "Parameter löschen",
+      "MENU": "Menüpunkt löschen",
+      "MESSAGE": "Möchten Sie \"{{ITEM}}\" löschen?",
+      "MESSAGE_INFO": "Diese Aktion kann nicht rückgängig gemacht werden!",
+      "MESSAGE_NOK": "Parameter konnte nicht gelöscht werden",
+      "MESSAGE_OK": "Parameter erfolgreich gelöscht"
+    },
+    "EDIT": {
+      "LABEL": "Bearbeiten",
+      "EDIT_PARAMETER": "Parameter bearbeiten",
+      "TOOLTIP": "Aktualisieren eines Parameters",
+      "BREADCRUMB": "Parameterdetails",
+      "UPDATE_SUCCESS": "Parameter erfolgreich aktualisiert",
+      "UPDATE_ERROR": "Fehler beim Aktualisieren des Parameters",
+      "FETCH_ERROR": "Parameter mit angegebener Id konnte nicht abgerufen werden",
+      "EDIT_PARAMETER_SUB_HEADER": "Ändern Sie die Eingaben, um den Parameter anzupassen",
+      "MESSAGE": {
+        "CHANGE_OK": "Der Parameter wurde erfolgreich geändert.",
+        "CHANGE_NOK": "Ein Fehler ist aufgetreten. Der Parameter wurde nicht geändert."
+      }
+    },
+    "EXPORT": {
+      "LABEL": "Export",
+      "TOOLTIP": "Definition als JSON herunterladen",
+      "PARAMETER": "Die Parameter-Definition im JSON Format herunterladen",
+      "MESSAGE": {
+        "NOK": "Parameter konnte nicht exportiert werden"
+      }
+    },
+    "IMPORT": {
+      "LABEL": "Import",
+      "TOOLTIP": "Definition als JSON hochladen",
+      "PARAMETER": "Die Parameter-Definition im JSON Format importieren."
+    },
+    "CANCEL": "Cancel",
+    "CHOOSE": "Choose",
+    "SAVE": "Save",
+    "SAVE_AS": "Save as ...",
+    "UPLOAD": "Upload",
+    "TOOLTIPS": {
+      "CANCEL_AND_CLOSE": "Cancel and close dialog",
+      "SAVE": "Save changes",
+      "SAVE_AS": "Save as new Theme"
+    }
+  },
   "GENERAL": {
     "YES": "Ja",
     "NO": "Nein",
@@ -22,10 +100,10 @@
     "DROPDOWN_PLACEHOLDER": "Irgendein",
     "APPLICATION_ID_IS_MANDATORY": "Das Feld Anwendung-ID ist obligatorisch"
   },
-  "APPLICATION_PARAMETER": {
-    "APPLICATION_ID": "Applikations-ID",
-    "APPLICATION": "Applikation",
-    "PRODUCT_NAME": "Produkt",
+  "PARAMETER": {
+    "APP_ID": "App-ID",
+    "APPLICATION": "App",
+    "PRODUCT_NAME": "Applikation",
     "KEY": "Schlüssel",
     "VALUE": "Wert",
     "IMPORT_VALUE": "Importwert",
@@ -39,28 +117,27 @@
       "NUMBER": "Nummer",
       "BOOLEAN": "Boolean",
       "JSON": "Json"
+    },
+    "TOOLTIPS": {
+      "APP_ID": "Wählen Sie eine App-ID",
+      "APPLICATION": "Wählen Sie eine App",
+      "PRODUCT_NAME": "Wählen Sie eine Applikation",
+      "KEY": "Tragen Sie einen eindeutigen Parameter-Schlüssel ein",
+      "VALUE": "Tragen Sie einen Wert ein",
+      "IMPORT_VALUE": "Werte importieren",
+      "UNIT": "Tragen Sie eine Einheit ein",
+      "RANGE_FROM": "Bereich von",
+      "RANGE_TO": "Bereich bis",
+      "DESCRIPTION": "Bitte beschreiben Sie den Parameter",
+      "FORM_TYPE": "Wählen Sie zwischen Standard- und erweiterter Form"
     }
   },
   "DETAILS": {
+    "STANDARD_FORM": "Standardformular",
+    "ADVANCED_FORM": "Erweitertes Formular",
     "FORM_MANDATORY": "Pflichtfelder fehlen",
     "VALUE_HAS_WRONG_TYPE": "Der Wert hat den falschen Typ",
     "FORM_KEY_MIN_LEN": "Schlüssel sollte mindestens 3 Buchstaben haben"
-  },
-  "EDIT": {
-    "EDIT_PARAMETER": "Parameter bearbeiten",
-    "TOOLTIP": "Aktualisieren eines Parameters",
-    "BREADCRUMB": "Parameterdetails",
-    "UPDATE_SUCCESS": "Parameter erfolgreich aktualisiert",
-    "UPDATE_ERROR": "Fehler beim Aktualisieren des Parameters",
-    "FETCH_ERROR": "Parameter mit angegebener Id konnte nicht abgerufen werden"
-  },
-  "CREATE": {
-    "CREATE_PARAMETER": "Erstellung eines Parameters",
-    "BREADCRUMB": "Parameter-Erstellung",
-    "CREATE_SUCCESS": "Parameter wurde erfolgreich erstellt",
-    "CREATE_ERROR": "Fehler, Parameter wurde nicht erstellt",
-    "CLOSE": "Schließen",
-    "SAVE": "Erstellen"
   },
   "PARAMETER_DELETE": {
     "PARAMETER_DELETE": "Parameter löschen",
@@ -77,8 +154,8 @@
     "LAST_USED": "Zuletzt verwendet",
     "HISTORY_RELOAD": "Verlaufsdaten aktualisieren",
     "APPLICATION": "Applikation",
-    "PRODUCT": "Produkt",
-    "KEY": "Schlüssel"
+    "PRODUCT": "Applikation",
+    "KEY": "Parameter-Schlüssel"
   },
   "DIALOG": {
     "SELECT_APPLICATION_ID": "Wählen Sie Anwendungs-ID aus",
