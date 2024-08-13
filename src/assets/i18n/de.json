@@ -64,6 +64,9 @@
       "TOOLTIP": "Definition als JSON hochladen",
       "PARAMETER": "Die Parameter-Definition im JSON Format importieren."
     },
+    "VIEW": {
+      "TOOLTIP": "Parameter-Details ansehen"
+    },
     "CANCEL": "Cancel",
     "CHOOSE": "Choose",
     "SAVE": "Save",

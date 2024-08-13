@@ -69,11 +69,26 @@
     <ng-template pTemplate="body" let-results let-columns="columns">
       <tr [pSelectableRow]="results">
         <td>
+          <ng-container *ocxIfNotPermission="'PARAMETER#EDIT'">
+            <button
+              pbutton
+              type="button"
+              permission="'PARAMETER#VIEW'"
+              [id]="'parameter_search_table_row_' + results + '_view_action'"
+              [routerLink]="['./edit', results.id]"
+              class="my-0 p-1 p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
+              [pTooltip]="'ACTIONS.VIEW.TOOLTIP' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            >
+              <span class="text-primary font-medium p-button-icon pi pi-eye" aria-hidden="true"></span>
+            </button>
+          </ng-container>
           <button
             pbutton
             type="button"
-            permission="'PARAMETER#VIEW'"
-            [id]="'parameter_search_table_row_' + results + '_view_action'"
+            permission="'PARAMETER#EDIT'"
+            [id]="'parameter_search_table_row_' + results + '_edit_action'"
             [routerLink]="['./edit', results.id]"
             class="my-0 p-1 p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
             [pTooltip]="'ACTIONS.EDIT.TOOLTIP' | translate"
@@ -98,12 +113,8 @@
         </td>
         <ng-container *ngFor="let col of columns">
           <td>
-            <div *ngIf="col.field !== 'type'">
-              {{ results[col.field] }}
-            </div>
-            <div *ngIf="col.field === 'type'">
-              {{ translateTypeField(results[col.field]) }}
-            </div>
+            <div *ngIf="col.field !== 'type'">{{ results[col.field] }}</div>
+            <div *ngIf="col.field === 'type'">{{ translateTypeField(results[col.field]) }}</div>
           </td>
         </ng-container>
       </tr>
@@ -115,9 +126,7 @@
     [(visible)]="deleteDialogVisible"
     [baseZIndex]="10000"
   >
-    <p>
-      {{ 'PARAMETER_DELETE.MESSAGE' | translate }}
-    </p>
+    <p>{{ 'PARAMETER_DELETE.MESSAGE' | translate }}</p>
     <div><b>Product</b>: {{ getSelectedParameter()?.productName }}</div>
     <div><b>Application ID</b>: {{ getSelectedParameter()?.applicationId }}</div>
     <div><b>Key</b>: {{ getSelectedParameter()?.key }}</div>

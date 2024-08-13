@@ -64,6 +64,9 @@
       "TOOLTIP": "Upload definition in JSON format",
       "PARAMETER": "Import Parameter in JSON format."
     },
+    "VIEW": {
+      "TOOLTIP": "View Parameter details"
+    },
     "CANCEL": "Cancel",
     "CHOOSE": "Choose",
     "SAVE": "Save",
