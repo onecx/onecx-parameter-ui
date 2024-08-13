@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
+import { ActivatedRoute, Router } from '@angular/router'
 
 import { ParameterDetailFormComponent } from '../parameter-detail-form/parameter-detail-form.component'
 import { TranslateService } from '@ngx-translate/core'
@@ -19,7 +20,9 @@ export class ParameterCreateComponent implements OnInit {
   constructor(
     private readonly messageService: PortalMessageService,
     private readonly translateService: TranslateService,
-    private readonly parametersApiService: ParametersAPIService
+    private readonly parametersApiService: ParametersAPIService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -32,6 +35,7 @@ export class ParameterCreateComponent implements OnInit {
         this.messageService.success({
           summaryKey: this.translatedData!['ACTIONS.CREATE.CREATE_SUCCESS']
         })
+        this.router.navigate(['..'], { relativeTo: this.route })
       },
       () => {
         this.messageService.error({

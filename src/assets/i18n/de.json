@@ -15,9 +15,7 @@
     },
     "CREATE": {
       "LABEL": "Erstellen",
-      "PARAMETER": "Parameter erstellen",
       "PARAMETER.TOOLTIP": "Einen neuen Parameter erstellen",
-      "CREATE_PARAMETER": "Erstellung eines Parameters",
       "CREATE_PARAMETER_SUB_HEADER": "Füllen Sie die Eingaben aus, um einen neuen Parameter zu erstellen",
       "BREADCRUMB": "Parameter-Erstellung",
       "CREATE_SUCCESS": "Parameter wurde erfolgreich erstellt",
@@ -93,7 +91,7 @@
     "PARAMETER_SEARCH_SUB_HEADER": "Suchen und verwalten von Parametern",
     "MSG_NO_RESULTS": "Die Suche ergab keine Treffer",
     "MSG_SEARCH_FAILED": "Suche ist fehlgeschlagen",
-    "ACTION": "Aktion",
+    "ACTION": "Verfügbare Aktionen zu einem Parameter",
     "SEARCH": "Suchen",
     "RESET": "Zurücksetzen",
     "SELECT_TYPE": "Wählen Sie einen Typ",
@@ -119,16 +117,16 @@
       "JSON": "Json"
     },
     "TOOLTIPS": {
-      "APP_ID": "Wählen Sie eine App-ID",
+      "APP_ID": "Basisname von Apps mit zugeordneten Parametern",
       "APPLICATION": "Wählen Sie eine App",
-      "PRODUCT_NAME": "Wählen Sie eine Applikation",
-      "KEY": "Tragen Sie einen eindeutigen Parameter-Schlüssel ein",
-      "VALUE": "Tragen Sie einen Wert ein",
-      "IMPORT_VALUE": "Werte importieren",
-      "UNIT": "Tragen Sie eine Einheit ein",
+      "PRODUCT_NAME": "Applikation, für die der Parameter angelegt ist",
+      "KEY": "Eindeutiger Identifikationsschlüssel des Parameters",
+      "VALUE": "Wert des Parameters",
+      "IMPORT_VALUE": "Importierter Wert",
+      "UNIT": "Einheit des Parameters",
       "RANGE_FROM": "Bereich von",
       "RANGE_TO": "Bereich bis",
-      "DESCRIPTION": "Bitte beschreiben Sie den Parameter",
+      "DESCRIPTION": "Detaillierte Beschreibung des Parameters",
       "FORM_TYPE": "Wählen Sie zwischen Standard- und erweiterter Form"
     }
   },

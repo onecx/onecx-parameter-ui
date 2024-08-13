@@ -1,4 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
+@import '/src/_mixins.scss';
+
+@include danger-action;
+@include table-inline-buttons;
+@include table-responsive-columns;
+
 ::ng-deep #ocx-search-button {
   display: none;
 }

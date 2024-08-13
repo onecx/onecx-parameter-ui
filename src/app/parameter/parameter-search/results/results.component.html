@@ -31,12 +31,12 @@
     <ng-template pTemplate="header" let-columns>
       <tr>
         <th [pTooltip]="'SEARCH.ACTION' | translate" tooltipPosition="top" tooltipEvent="hover">
-          {{ 'SEARCH.ACTION' | translate }}
+          {{ 'ACTIONS.LABEL' | translate }}
         </th>
         <th
           *ngFor="let col of columns"
           [pSortableColumn]="col.field"
-          [pTooltip]="'PARAMETER.' + col.header | translate"
+          [pTooltip]="'PARAMETER.TOOLTIPS.' + col.header | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
         >

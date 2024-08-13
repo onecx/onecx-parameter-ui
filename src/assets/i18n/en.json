@@ -15,9 +15,7 @@
     },
     "CREATE": {
       "LABEL": "Create",
-      "PARAMETER": "Create Parameter",
       "PARAMETER.TOOLTIP": "Create a new Parameter",
-      "CREATE_PARAMETER": "Create Parameter",
       "CREATE_PARAMETER_SUB_HEADER": "Fill in the inputs to create a new Parameter",
       "BREADCRUMB": "Parameter Creation",
       "CREATE_SUCCESS": "Parameter was sucessfully created",
@@ -93,7 +91,7 @@
     "PARAMETER_SEARCH_SUB_HEADER": "Searching and managing of Parameters",
     "MSG_NO_RESULTS": "Search returned no results",
     "MSG_SEARCH_FAILED": "Search failed",
-    "ACTION": "Action",
+    "ACTION": "Available actions for a Parameter item",
     "SEARCH": "Search",
     "RESET": "Reset",
     "SELECT_TYPE": "Select Type",
@@ -119,16 +117,16 @@
       "JSON": "Json"
     },
     "TOOLTIPS": {
-      "APP_ID": "Please choose an App ID",
-      "APPLICATION": "Please choose an App",
-      "PRODUCT_NAME": "Please choose an Application",
-      "KEY": "Please provide a Parameter Key",
-      "VALUE": "Please provide a value",
-      "IMPORT_VALUE": "Import Value",
-      "UNIT": "Please provide a Unit",
+      "APP_ID": "Base identifier for Apps with assigned Parameters",
+      "APPLICATION": "Business name of the App",
+      "PRODUCT_NAME": "Application for which the Parameter is created",
+      "KEY": "Unique identifier for the Parameter",
+      "VALUE": "Value of a Parameter",
+      "IMPORT_VALUE": "Imported value",
+      "UNIT": "Unit of the Parameter",
       "RANGE_FROM": "Range from",
       "RANGE_TO": "Range to",
-      "DESCRIPTION": "Provide a description of the parameter",
+      "DESCRIPTION": "Detailed description of the Parameter",
       "FORM_TYPE": "Choose between standard and advanced form"
     }
   },

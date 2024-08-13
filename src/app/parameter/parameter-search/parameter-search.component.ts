@@ -125,12 +125,12 @@ export class ParameterSearchComponent extends PortalSearchPage<ApplicationParame
   }
 
   private prepareActionButtons(): void {
-    this.actions$ = this.translateService.get(['ACTIONS.CREATE.CREATE_PARAMETER']).pipe(
+    this.actions$ = this.translateService.get(['ACTIONS.CREATE.LABEL', 'ACTIONS.CREATE.PARAMETER.TOOLTIP']).pipe(
       map((data) => {
         return [
           {
-            label: data['ACTIONS.CREATE.CREATE_PARAMETER'],
-            title: data['ACTIONS.CREATE.CREATE_PARAMETER'],
+            label: data['ACTIONS.CREATE.LABEL'],
+            title: data['ACTIONS.CREATE.PARAMETER.TOOLTIP'],
             actionCallback: () => this.router.navigate([`./create`], { relativeTo: this.route }),
             icon: 'pi pi-plus',
             show: 'always',
