@@ -54,5 +54,5 @@
       </form>
     </div>
   </ocx-search-header>
-  <app-results [results]="results" (deleteEvent)="deleteParameter($event)"></app-results>
+  <app-results [results]="results" (deleteEvent)="onDeleteConfirmation($event)"></app-results>
 </ocx-portal-page>

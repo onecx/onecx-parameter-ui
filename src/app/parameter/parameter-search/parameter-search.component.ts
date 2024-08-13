@@ -9,6 +9,8 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms'
 import { SelectItem } from 'primeng/api'
 
+type ChangeMode = 'VIEW' | 'NEW' | 'EDIT'
+
 @Component({
   selector: 'app-parameter-search',
   templateUrl: './parameter-search.component.html',
@@ -16,6 +18,7 @@ import { SelectItem } from 'primeng/api'
   providers: [provideParent(ParameterSearchComponent)]
 })
 export class ParameterSearchComponent extends PortalSearchPage<ApplicationParameter> implements OnInit {
+  public parameter: ApplicationParameter | undefined
   private translatedData: any
   public criteria: ParameterSearchCriteria = {}
   public actions$: Observable<Action[]> | undefined
@@ -23,6 +26,8 @@ export class ParameterSearchComponent extends PortalSearchPage<ApplicationParame
   public criteriaGroup!: UntypedFormGroup
   public applicationIds: string[] = []
   public productOptions: SelectItem[] = []
+  public changeMode: ChangeMode = 'NEW'
+  public displayDetailDialog = false
 
   constructor(
     private readonly messageService: PortalMessageService,
@@ -95,7 +100,34 @@ export class ParameterSearchComponent extends PortalSearchPage<ApplicationParame
     } else return 0
   }
 
-  public deleteParameter(id: string): void {
+  public onCreate() {
+    this.changeMode = 'NEW'
+    // this.appsChanged = false
+    this.parameter = undefined
+    this.displayDetailDialog = true
+  }
+  public onDetail(ev: MouseEvent, item: ApplicationParameter, mode: ChangeMode): void {
+    ev.stopPropagation()
+    this.changeMode = mode
+    // this.appsChanged = false
+    this.parameter = item
+    this.displayDetailDialog = true
+  }
+  public onCopy(ev: MouseEvent, item: ApplicationParameter) {
+    ev.stopPropagation()
+    this.changeMode = 'NEW'
+    // this.appsChanged = false
+    this.parameter = item
+    this.parameter.id = undefined
+    this.displayDetailDialog = true
+  }
+  public onDelete(ev: MouseEvent, item: ApplicationParameter): void {
+    ev.stopPropagation()
+    this.parameter = item
+    // this.appsChanged = false
+    // this.displayDeleteDialog = true
+  }
+  public onDeleteConfirmation(id: string): void {
     this.parametersApi.deleteParameter({ id }).subscribe(
       () => {
         this.messageService.success({
