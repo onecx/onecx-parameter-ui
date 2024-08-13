@@ -121,7 +121,7 @@
       "APPLICATION": "Business name of the App",
       "PRODUCT_NAME": "Application for which the Parameter is created",
       "KEY": "Unique identifier for the Parameter",
-      "VALUE": "Value of a Parameter",
+      "VALUE": "Value of the Parameter",
       "IMPORT_VALUE": "Imported value",
       "UNIT": "Unit of the Parameter",
       "RANGE_FROM": "Range from",
