@@ -11,6 +11,7 @@ import { ResultsComponent } from './parameter-search/results/results.component'
 import { ParameterDetailFormComponent } from './parameter-detail/parameter-detail-form/parameter-detail-form.component'
 import { ParameterDetailComponent } from './parameter-detail/parameter-detail/parameter-detail.component'
 import { ParameterCreateComponent } from './parameter-detail/parameter-create/parameter-create.component'
+import { ParameterCriteriaComponent } from './parameter-search/parameter-criteria/parameter-criteria.component'
 import { InitializeModuleGuard, addInitializeModuleGuard } from '@onecx/angular-integration-interface'
 
 const routes: Routes = [
@@ -33,6 +34,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     ParameterSearchComponent,
+    ParameterCriteriaComponent,
     ResultsComponent,
     ParameterDetailFormComponent,
     ParameterDetailComponent,

@@ -1,58 +1,12 @@
 <ocx-portal-page [helpArticleId]="'PAGE_PARAMETERS_SEARCH'" permission="PARAMETER#SEARCH">
   <div toolbarItems></div>
-  <ocx-search-header
-    [header]="'SEARCH.PARAMETER_SEARCH_HEADER' | translate"
-    [subheader]="'SEARCH.PARAMETER_SEARCH_SUB_HEADER' | translate"
-    (searched)="searchData(this.criteria || {})"
-    (resetted)="reset()"
-    [manualBreadcrumbs]="false"
-    [actions]="(this.actions$ | async) ?? []"
-  >
-    <div id="parameter_search_criteria">
-      <form [formGroup]="criteriaGroup">
-        <div class="flex flex-wrap gap-3 mb-3">
-          <span class="p-float-label">
-            <p-dropdown
-              formControlName="productName"
-              [options]="this.productOptions"
-              optionLabel="title"
-              optionValue="value"
-              id="parameter_search_criteria_productName"
-              appendTo="body"
-              [showClear]="true"
-              (onChange)="this.updateApplicationIds($event.value)"
-              [style]="{ minWidth: '200px' }"
-              [pTooltip]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label for="parameter_search_criteria_productName">{{ 'PARAMETER.PRODUCT_NAME' | translate }}</label>
-          </span>
-          <span class="p-float-label">
-            <p-dropdown
-              formControlName="applicationId"
-              [options]="this.applicationIds"
-              id="parameter_search_criteria_applicationId"
-              appendTo="body"
-              [style]="{ minWidth: '200px' }"
-              [pTooltip]="'PARAMETER.TOOLTIPS.APP_ID' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label for="parameter_search_criteria_applicationId">{{ 'PARAMETER.APPLICATION' | translate }}</label>
-          </span>
-          <span
-            class="p-float-label"
-            [pTooltip]="'PARAMETER.TOOLTIPS.KEY' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          >
-            <input id="parameter_search_criteria_key" pInputText type="text" formControlName="key" />
-            <label for="parameter_search_criteria_key">{{ 'PARAMETER.KEY' | translate }}</label>
-          </span>
-        </div>
-      </form>
-    </div>
-  </ocx-search-header>
-  <app-results [results]="results" (deleteEvent)="onDeleteConfirmation($event)"></app-results>
+  <app-parameter-criteria
+    [actions]="(actions$ | async) ?? []"
+    [products]="(productOptions$ | async) ?? []"
+    [applicationIds]="(appOptions$ | async) ?? []"
+    (criteriaEmitter)="search($event)"
+    (resetSearchEmitter)="onReset()"
+  ></app-parameter-criteria>
+
+  <app-results [results]="(results$ | async) ?? []" (deleteEvent)="onDeleteConfirmation($event)"></app-results>
 </ocx-portal-page>

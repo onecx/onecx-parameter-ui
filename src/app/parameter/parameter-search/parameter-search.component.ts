@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
-import { provideParent, PortalSearchPage, Action, PortalMessageService } from '@onecx/portal-integration-angular'
+import { Action, PortalMessageService } from '@onecx/portal-integration-angular'
 
-import { finalize, map, tap } from 'rxjs/operators'
-import { Observable, lastValueFrom } from 'rxjs'
+import { catchError, finalize, map, tap } from 'rxjs/operators'
+import { Observable, of } from 'rxjs'
 import { ApplicationParameter, ParameterSearchCriteria, ParametersAPIService, Product } from 'src/app/shared/generated'
 import { ActivatedRoute, Router } from '@angular/router'
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms'
@@ -14,20 +14,23 @@ type ChangeMode = 'VIEW' | 'NEW' | 'EDIT'
 @Component({
   selector: 'app-parameter-search',
   templateUrl: './parameter-search.component.html',
-  styleUrls: ['./parameter-search.component.scss'],
-  providers: [provideParent(ParameterSearchComponent)]
+  styleUrls: ['./parameter-search.component.scss']
 })
-export class ParameterSearchComponent extends PortalSearchPage<ApplicationParameter> implements OnInit {
+export class ParameterSearchComponent implements OnInit {
   public parameter: ApplicationParameter | undefined
+  public parameters: ApplicationParameter[] = []
   private translatedData: any
   public criteria: ParameterSearchCriteria = {}
   public actions$: Observable<Action[]> | undefined
   public products$: Observable<Product[]> | undefined
+  public productOptions$: Observable<SelectItem[]> | undefined
   public criteriaGroup!: UntypedFormGroup
   public applicationIds: string[] = []
-  public productOptions: SelectItem[] = []
+  public appOptions$: Observable<SelectItem[]> | undefined
   public changeMode: ChangeMode = 'NEW'
   public displayDetailDialog = false
+  public searching = false
+  public results$: Observable<ApplicationParameter[]> | undefined
 
   constructor(
     private readonly messageService: PortalMessageService,
@@ -36,28 +39,28 @@ export class ParameterSearchComponent extends PortalSearchPage<ApplicationParame
     private router: Router,
     private route: ActivatedRoute,
     private readonly fb: UntypedFormBuilder
-  ) {
-    super()
-  }
+  ) {}
 
   public ngOnInit(): void {
     this.loadTranslations()
-    this.searchData(this.criteria!)
+    // this.searchData(this.criteria!)
+    this.search({})
     this.prepareActionButtons()
     this.initializeForm()
     this.getAllProductNamesAndApplicationIds()
-    this.criteriaGroup.valueChanges.subscribe((v) => {
-      this.criteria = { ...v }
-    })
+    // this.criteriaGroup.valueChanges.subscribe((v) => {
+    //   this.criteria = { ...v }
+    // })
   }
 
-  public search(mode: 'basic' | 'advanced'): Observable<ApplicationParameter[]> {
-    return this.parametersApi
+  public search(criteria: ParameterSearchCriteria, reuseCriteria = false): void {
+    this.searching = true
+    this.results$ = this.parametersApi
       .searchApplicationParametersByCriteria({
         parameterSearchCriteria: { ...this.criteria }
       })
       .pipe(
-        finalize(() => (this.searchInProgress = false)),
+        finalize(() => (this.searching = false)),
         tap({
           next: (data: any) => {
             if (data.totalElements == 0) {
@@ -77,20 +80,24 @@ export class ParameterSearchComponent extends PortalSearchPage<ApplicationParame
       )
   }
 
-  public reset(): void {
-    this.results = []
-    this.criteriaGroup.reset()
+  // public reset(): void {
+  //   this.results = []
+  //   this.criteriaGroup.reset()
+  // }
+
+  public onReset(): void {
+    this.criteria = {}
     this.criteriaGroup.controls['applicationId'].disable()
   }
 
-  public searchData(criteria: ParameterSearchCriteria): void {
-    this.searchInProgress = true
-    this.criteria = criteria
-    const obs$ = this.search('basic')
-    obs$.subscribe((data) => {
-      this.results = data
-    })
-  }
+  // public searchData(criteria: ParameterSearchCriteria): void {
+  //   this.searching = true
+  //   this.criteria = criteria
+  //   const obs$ = this.search(criteria)
+  //   obs$.subscribe((data) => {
+  //     this.results = data
+  //   })
+  // }
 
   compareProductNames(nameOne: string, nametwo: string): number {
     if (nameOne < nametwo) {
@@ -133,7 +140,7 @@ export class ParameterSearchComponent extends PortalSearchPage<ApplicationParame
         this.messageService.success({
           summaryKey: this.translatedData['PARAMETER_DELETE.DELETE_SUCCESS']
         })
-        this.searchData(this.criteria!)
+        // this.searchData(this.criteria!)
       },
       () => {
         this.messageService.error({
@@ -183,41 +190,68 @@ export class ParameterSearchComponent extends PortalSearchPage<ApplicationParame
   }
 
   private getAllProductNamesAndApplicationIds(): void {
-    this.products$ = this.parametersApi.getAllApplications().pipe(
-      tap((data) => {
-        this.productOptions = []
-        data.sort((a, b) => this.compareStrings(a.productName!, b.productName!)).unshift({ productName: '' })
-        data.map((p) =>
-          this.productOptions.push({
-            title: p.productName,
-            value: p.productName
-          })
+    const products$ = this.parametersApi.getAllApplications()
+
+    this.productOptions$ = products$.pipe(
+      catchError((err) => {
+        console.error('getAllApplications', err)
+        return of([])
+      }),
+      map((data) =>
+        data.map(
+          (product: Product) =>
+            ({
+              label: product.productName,
+              value: product.productName
+            }) as SelectItem
         )
-      })
+      )
     )
-    this.products$!.subscribe()
+    this.appOptions$ = products$.pipe(
+      catchError((err) => {
+        console.error('getAllApplications', err)
+        return of([])
+      }),
+      map((data) =>
+        data.flatMap((product: Product) =>
+          (product.applications || []).map(
+            (name) =>
+              ({
+                label: name,
+                value: name
+              }) as SelectItem
+          )
+        )
+      )
+    )
   }
 
-  public async updateApplicationIds(productName: string) {
-    await lastValueFrom(this.products$!)
-      .then((data) => {
-        this.applicationIds = []
-        this.criteriaGroup.controls['applicationId'].reset()
-        data.map((p) => {
-          if (p.productName === productName && p.applications) {
-            this.applicationIds = p.applications!
-            this.applicationIds.unshift('')
-          }
-        })
-      })
-      .finally(() => {
-        if (this.applicationIds.length > 0) {
-          this.criteriaGroup.controls['applicationId'].enable()
-        } else {
-          this.criteriaGroup.controls['applicationId'].disable()
-        }
-      })
-  }
+  // public async updateApplicationIds(productName: string) {
+  //   await lastValueFrom(this.products$!)
+  //     .then((data) => {
+  //       this.applicationIds = []
+  //       this.criteriaGroup.controls['applicationId'].reset()
+  //       data.map((p) => {
+  //         if (p.productName === productName && p.applications) {
+  //           this.applicationIds = p.applications!
+  //           this.applicationIds.unshift('')
+  //         }
+  //         p.applications?.map((app) => {
+  //           this.appOptions.push({
+  //             title: app,
+  //             value: app
+  //           })
+  //         })
+  //       })
+  //     })
+  //     .finally(() => {
+  //       if (this.applicationIds.length > 0) {
+  //         this.criteriaGroup.controls['applicationId'].enable()
+  //       } else {
+  //         this.criteriaGroup.controls['applicationId'].disable()
+  //       }
+  //     })
+  // }
   compareStrings(a: string, b: string): number {
     if (a < b) {
       return -1

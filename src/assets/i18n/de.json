@@ -16,6 +16,7 @@
     "CREATE": {
       "LABEL": "Erstellen",
       "PARAMETER.TOOLTIP": "Einen neuen Parameter erstellen",
+      "CREATE_PARAMETER": "Einen neuen Parameter erstellen",
       "CREATE_PARAMETER_SUB_HEADER": "Füllen Sie die Eingaben aus, um einen neuen Parameter zu erstellen",
       "BREADCRUMB": "Parameter-Erstellung",
       "CREATE_SUCCESS": "Parameter wurde erfolgreich erstellt",

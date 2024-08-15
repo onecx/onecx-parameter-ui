@@ -33,6 +33,7 @@ speed-measure-plugin*.json
 
 # misc
 .angular/cache
+.eslintcache
 .sass-cache
 .gitlab*
 .scannerwork
