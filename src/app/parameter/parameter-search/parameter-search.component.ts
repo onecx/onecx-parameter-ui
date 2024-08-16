@@ -147,7 +147,7 @@ export class ParameterSearchComponent implements OnInit {
         this.messageService.success({
           summaryKey: this.translatedData['PARAMETER_DELETE.DELETE_SUCCESS']
         })
-        // this.searchData(this.criteria!)
+        this.search(this.criteria!)
       },
       () => {
         this.messageService.error({

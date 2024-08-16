@@ -1,5 +1,5 @@
 <p-dialog
-  header="{{ (this.changeMode === 'EDIT' ? 'ACTIONS.EDIT.ANNOUNCEMENT' : 'ACTIONS.CREATE.ANNOUNCEMENT') | translate }}"
+  header="{{ (changeMode === 'EDIT' ? 'ACTIONS.EDIT.EDIT_PARAMETER' : 'ACTIONS.CREATE.CREATE_PARAMETER') | translate }}"
   class="p-dialog-titlebar-close"
   [(visible)]="displayDetailDialog"
   (onHide)="onDialogHide()"
@@ -16,7 +16,190 @@
     '630px': '100vw'
   }"
 >
-  <form [formGroup]="formGroup" errorTailor>
+  <div>
+    <p-card>
+      <form [formGroup]="formGroup">
+        <div class="grid m-0">
+          <div class="p-fluid col-12 md:col-6">
+            <span class="p-float-label" controlErrorAnchor>
+              <p-dropdown
+                id="pm_parameter_detail_form_product_name"
+                class="input-field"
+                styleClass="w-full"
+                [options]="allProducts"
+                [autoDisplayFirst]="true"
+                [appendTo]="'body'"
+                formControlName="productName"
+                aria-label="'PARAMETER.PRODUCT' | translate"
+                [pTooltip]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+              </p-dropdown>
+              <label class="ocx-required-label" for="parameter_detail_form_productName">
+                {{ 'PARAMETER.PRODUCT_NAME' | translate }}</label
+              >
+            </span>
+          </div>
+          <div class="p-fluid col-12 md:col-6">
+            <span class="p-float-label" controlErrorAnchor>
+              <p-dropdown
+                id="am_parameter_detail_form_workspace_name"
+                class="input-field"
+                styleClass="w-full"
+                [options]="allApps"
+                [autoDisplayFirst]="true"
+                [appendTo]="'body'"
+                formControlName="applicationId"
+                aria-label="'PARAMETER.APPLICATION | translate"
+                [pTooltip]="'PARAMETER.TOOLTIPS.APPLICATION' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+              </p-dropdown>
+              <label class="ocx-required-label" for="parameter_detail_form_applicationId">
+                {{ 'PARAMETER.APP_ID' | translate }}</label
+              >
+            </span>
+          </div>
+
+          <div class="p-fluid col-12 md:col-6 mb-3">
+            <span class="p-float-label" controlErrorAnchor>
+              <input
+                pInputText
+                type="text"
+                id="parameter_detail_form_key"
+                formControlName="key"
+                [pTooltip]="'PARAMETER.TOOLTIPS.KEY' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              />
+              <label class="ocx-required-label" for="parameter_detail_form_key">
+                {{ 'PARAMETER.KEY' | translate }}</label
+              >
+            </span>
+          </div>
+
+          <div class="p-fluid col-12 md:col-6 mb-3">
+            <span class="p-float-label" controlErrorAnchor>
+              <input
+                pInputText
+                type="text"
+                id="parameter_detail_form_value"
+                formControlName="value"
+                [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              />
+              <label class="ocx-required-label" for="parameter_detail_form_value">
+                {{ 'PARAMETER.VALUE' | translate }}</label
+              >
+            </span>
+          </div>
+
+          <!-- <div class="p-fluid col-12 md:col-6 mb-3">
+            <span class="p-float-label" controlErrorAnchor>
+              <textarea
+                [rows]="5"
+                [cols]="30"
+                pInputTextarea
+                id="parameter_detail_form_value"
+                formControlName="value"
+                jsonColorize
+              >
+              </textarea>
+              <label class="ocx-required-label" for="parameter_detail_form_value">
+                {{ 'PARAMETER.VALUE' | translate }}</label
+              >
+            </span>
+          </div> -->
+
+          <div class="p-fluid col-12 md:col-6 mb-3">
+            <span class="p-float-label">
+              <input
+                pInputText
+                type="text"
+                id="parameter_detail_form_importValue"
+                [value]="parameter?.importValue"
+                disabled="true"
+                [pTooltip]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              />
+              <label for="parameter_detail_form_importValue">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
+            </span>
+          </div>
+
+          <div class="p-fluid col-12 md:col-6 mb-3">
+            <span class="p-float-label">
+              <input
+                pInputText
+                type="text"
+                id="parameter_detail_form_unit"
+                formControlName="unit"
+                [pTooltip]="'PARAMETER.TOOLTIPS.UNIT' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              />
+              <label for="parameter_detail_form_unit">{{ 'PARAMETER.UNIT' | translate }}</label>
+            </span>
+          </div>
+
+          <div class="p-fluid col-12 md:col-6 mb-3">
+            <span class="p-float-label">
+              <input
+                pInputText
+                type="text"
+                id="parameter_detail_form_rangeFrom"
+                formControlName="rangeFrom"
+                [pTooltip]="'PARAMETER.TOOLTIPS.RANGE_FROM' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              />
+              <label for="parameter_detail_form_rangeFrom">{{ 'PARAMETER.RANGE_FROM' | translate }}</label>
+            </span>
+          </div>
+
+          <div class="p-fluid col-12 md:col-6 mb-3">
+            <span class="p-float-label">
+              <input
+                pInputText
+                type="text"
+                id="parameter_detail_form_rangeTo"
+                formControlName="rangeTo"
+                [pTooltip]="'PARAMETER.TOOLTIPS.RANGE_TO' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              />
+              <label for="parameter_detail_form_rangeTo">{{ 'PARAMETER.RANGE_TO' | translate }}</label>
+            </span>
+          </div>
+
+          <div class="p-fluid col-12 md:col-12 mb-3">
+            <span class="p-float-label" controlErrorAnchor>
+              <textarea
+                rows="5"
+                cols="30"
+                pInputTextarea
+                id="parameter_detail_form_description"
+                formControlName="description"
+                class="w-full"
+                autoResize="false"
+                [pTooltip]="'PARAMETER.TOOLTIPS.DESCRIPTION' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+              </textarea>
+              <label class="ocx-required-label" for="parameter_detail_form_description">
+                {{ 'PARAMETER.DESCRIPTION' | translate }}
+              </label>
+            </span>
+          </div>
+        </div>
+      </form>
+    </p-card>
+  </div>
+  <!-- <form [formGroup]="formGroup" errorTailor>
     <div class="flex flex-wrap flex-column justify-content-between row-gap-3 sm:row-gap-4 mt-1">
       <div class="flex flex-wrap align-items-center justify-content-between">
         <div class="w-12">
@@ -47,35 +230,35 @@
             pInputTextarea
             id="am_parameter_detail_form_content"
             class="w-full textarea-md"
-            formControlName="content"
+            formControlName="description"
             rows="3"
             [autoResize]="true"
             appendTo="body"
-            [pTooltip]="'ANNOUNCEMENT.TOOLTIPS.CONTENT' | translate"
+            [pTooltip]="'PARAMETER.TOOLTIPS.DESCRIPTION' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           ></textarea>
-          <label for="parameter_detail_form_content">{{ 'ANNOUNCEMENT.CONTENT' | translate }}</label>
+          <label for="parameter_detail_form_content">{{ 'PARAMETER.DESCRIPTION' | translate }}</label>
         </span>
       </div>
 
       <div class="w-full">
         <span class="p-float-label">
           <p-dropdown
-            id="am_parameter_detail_form_application_name"
+            id="pm_parameter_detail_form_product_name"
             class="input-field"
             styleClass="w-full"
             [options]="allProducts"
             [autoDisplayFirst]="true"
             [appendTo]="'body'"
             formControlName="productName"
-            aria-label="'ANNOUNCEMENT.APPLICATION' | translate"
-            [pTooltip]="'ANNOUNCEMENT.TOOLTIPS.APPLICATION' | translate"
+            aria-label="'PARAMETER.PRODUCT' | translate"
+            [pTooltip]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           >
           </p-dropdown>
-          <label for="parameter_detail_form_application_name"> {{ 'ANNOUNCEMENT.APPLICATION' | translate }} </label>
+          <label for="parameter_detail_form_application_name"> {{ 'PARAMETER.PRODUCT_NAME' | translate }} </label>
         </span>
       </div>
 
@@ -88,18 +271,18 @@
             [options]="allApps"
             [autoDisplayFirst]="true"
             [appendTo]="'body'"
-            formControlName="workspaceName"
-            aria-label="'ANNOUNCEMENT.WORKSPACE' | translate"
-            [pTooltip]="'ANNOUNCEMENT.TOOLTIPS.WORKSPACE' | translate"
+            formControlName="applicationId"
+            aria-label="'PARAMETER.APPLICATION | translate"
+            [pTooltip]="'PARAMETER.TOOLTIPS.APPLICATION' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           >
           </p-dropdown>
-          <label for="parameter_detail_form_workspace_name"> {{ 'ANNOUNCEMENT.WORKSPACE' | translate }} </label>
+          <label for="parameter_detail_form_workspace_name"> {{ 'PARAMETER.APPLICATION' | translate }} </label>
         </span>
       </div>
     </div>
-  </form>
+  </form> -->
 
   <ng-template pTemplate="footer">
     <div class="flex flex-wrap justify-content-end gap-2 mb-1">

@@ -63,20 +63,20 @@ export class ParameterDetailNewComponent implements OnChanges {
     }
   }
 
-  // public async updateApplicationIds(productName: string) {
-  //   await lastValueFrom(this.allProducts!).then((data) => {
-  //     this.applicationIds = []
-  //     this.formGroup.controls['applicationId'].reset()
-  //     if (data.stream) {
-  //       data.stream.map((p) => {
-  //         if (p.productName === productName && p.applications) {
-  //           this.applicationIds = p.applications!
-  //           this.applicationIds.unshift('')
-  //         }
-  //       })
-  //     }
-  //   })
-  // }
+  public async updateApplicationIds(productName: string) {
+    // await lastValueFrom(this.allProducts!).then((data) => {
+    //   this.applicationIds = []
+    //   this.formGroup.controls['applicationId'].reset()
+    //   if (data.stream) {
+    //     data.stream.map((p) => {
+    //       if (p.productName === productName && p.applications) {
+    //         this.applicationIds = p.applications!
+    //         this.applicationIds.unshift('')
+    //       }
+    //     })
+    //   }
+    // })
+  }
 
   public onDialogHide() {
     this.displayDetailDialog = false
