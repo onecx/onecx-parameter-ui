@@ -24,11 +24,10 @@ export class ParameterDetailNewComponent implements OnChanges {
   parameterDeleteVisible = false
   workspaces: SelectItem[] = []
   products: SelectItem[] = []
+  public applicationIds: SelectItem[] = []
   public isLoading = false
-  public displayDateRangeError = false
   // form
   formGroup: FormGroup
-  autoResize!: boolean
 
   constructor(
     private user: UserService,
@@ -47,11 +46,9 @@ export class ParameterDetailNewComponent implements OnChanges {
       rangeFrom: new FormControl(null),
       rangeTo: new FormControl(null)
     })
-    this.autoResize = true
   }
 
   ngOnChanges() {
-    this.displayDateRangeError = false
     if (this.changeMode === 'EDIT') {
       this.parameterId = this.parameter?.id
       this.getParameter()
@@ -65,6 +62,21 @@ export class ParameterDetailNewComponent implements OnChanges {
       }
     }
   }
+
+  // public async updateApplicationIds(productName: string) {
+  //   await lastValueFrom(this.allProducts!).then((data) => {
+  //     this.applicationIds = []
+  //     this.formGroup.controls['applicationId'].reset()
+  //     if (data.stream) {
+  //       data.stream.map((p) => {
+  //         if (p.productName === productName && p.applications) {
+  //           this.applicationIds = p.applications!
+  //           this.applicationIds.unshift('')
+  //         }
+  //       })
+  //     }
+  //   })
+  // }
 
   public onDialogHide() {
     this.displayDetailDialog = false

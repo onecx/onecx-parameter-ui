@@ -23,20 +23,20 @@
           <span class="p-float-label" controlErrorAnchor>
             <textarea
               pInputTextarea
-              id="am_announcement_detail_form_title"
+              id="pm_parameter_detail_form_key"
               type="text"
               style="min-height: 2.5rem"
               class="w-full textarea-sm"
-              formControlName="title"
+              formControlName="key"
               rows="1"
               [autoResize]="true"
               appendTo="body"
-              [pTooltip]="'ANNOUNCEMENT.TOOLTIPS.TITLE' | translate"
+              [pTooltip]="'PARAMETER.TOOLTIPS.KEY' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
             ></textarea>
-            <label class="ocx-required-label" for="announcement_detail_form_title">
-              {{ 'ANNOUNCEMENT.TITLE' | translate }}
+            <label class="ocx-required-label" for="parameter_detail_form_key">
+              {{ 'PARAMETER.KEY' | translate }}
             </label>
           </span>
         </div>
@@ -45,7 +45,7 @@
         <span class="p-float-label" controlErrorAnchor>
           <textarea
             pInputTextarea
-            id="am_announcement_detail_form_content"
+            id="am_parameter_detail_form_content"
             class="w-full textarea-md"
             formControlName="content"
             rows="3"
@@ -55,14 +55,14 @@
             tooltipPosition="top"
             tooltipEvent="hover"
           ></textarea>
-          <label for="announcement_detail_form_content">{{ 'ANNOUNCEMENT.CONTENT' | translate }}</label>
+          <label for="parameter_detail_form_content">{{ 'ANNOUNCEMENT.CONTENT' | translate }}</label>
         </span>
       </div>
 
       <div class="w-full">
         <span class="p-float-label">
           <p-dropdown
-            id="am_announcement_detail_form_application_name"
+            id="am_parameter_detail_form_application_name"
             class="input-field"
             styleClass="w-full"
             [options]="allProducts"
@@ -75,14 +75,14 @@
             tooltipEvent="hover"
           >
           </p-dropdown>
-          <label for="announcement_detail_form_application_name"> {{ 'ANNOUNCEMENT.APPLICATION' | translate }} </label>
+          <label for="parameter_detail_form_application_name"> {{ 'ANNOUNCEMENT.APPLICATION' | translate }} </label>
         </span>
       </div>
 
       <div class="w-full">
         <span class="p-float-label">
           <p-dropdown
-            id="am_announcement_detail_form_workspace_name"
+            id="am_parameter_detail_form_workspace_name"
             class="input-field"
             styleClass="w-full"
             [options]="allApps"
@@ -95,7 +95,7 @@
             tooltipEvent="hover"
           >
           </p-dropdown>
-          <label for="announcement_detail_form_workspace_name"> {{ 'ANNOUNCEMENT.WORKSPACE' | translate }} </label>
+          <label for="parameter_detail_form_workspace_name"> {{ 'ANNOUNCEMENT.WORKSPACE' | translate }} </label>
         </span>
       </div>
     </div>
@@ -104,7 +104,7 @@
   <ng-template pTemplate="footer">
     <div class="flex flex-wrap justify-content-end gap-2 mb-1">
       <p-button
-        id="am_announcement_detail_button_cancel"
+        id="am_parameter_detail_button_cancel"
         icon="pi pi-times"
         (onClick)="onDialogHide()"
         [label]="'ACTIONS.CANCEL' | translate"
@@ -113,7 +113,7 @@
         tooltipEvent="hover"
       ></p-button>
       <p-button
-        id="am_announcement_detail_button_save"
+        id="am_parameter_detail_button_save"
         icon="pi pi-save"
         (onClick)="onSave()"
         [disabled]="!formGroup.valid"

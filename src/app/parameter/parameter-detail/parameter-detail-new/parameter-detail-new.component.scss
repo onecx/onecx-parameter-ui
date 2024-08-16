@@ -11,31 +11,4 @@
   .error-tailor-has-error ~ control-error {
     text-align: left;
   }
-  .p-inputtextarea {
-    &.textarea-sm {
-      min-height: 2rem;
-    }
-    &.textarea-md {
-      min-height: 3rem;
-    }
-  }
-  .p-inputtextarea-resizable {
-    resize: vertical;
-  }
-  .input-switch-xl {
-    .p-inputswitch {
-      height: 1rem;
-      width: 3rem;
-      &.p-inputswitch-checked {
-        .p-inputswitch-slider::before {
-          transform: translateX(1.7rem);
-        }
-      }
-      .p-inputswitch-slider::before {
-        width: 1.6rem;
-        height: 1.6rem;
-        margin-top: -0.8rem;
-      }
-    }
-  }
 }
