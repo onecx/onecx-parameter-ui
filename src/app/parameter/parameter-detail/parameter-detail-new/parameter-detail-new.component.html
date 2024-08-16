@@ -1,0 +1,127 @@
+<p-dialog
+  header="{{ (this.changeMode === 'EDIT' ? 'ACTIONS.EDIT.ANNOUNCEMENT' : 'ACTIONS.CREATE.ANNOUNCEMENT') | translate }}"
+  class="p-dialog-titlebar-close"
+  [(visible)]="displayDetailDialog"
+  (onHide)="onDialogHide()"
+  [baseZIndex]="10000"
+  [draggable]="true"
+  [resizable]="true"
+  [closable]="true"
+  [modal]="true"
+  [style]="{ width: '600px' }"
+  [showHeader]="true"
+  [breakpoints]="{
+    '992px': '75vw',
+    '768px': '90vw',
+    '630px': '100vw'
+  }"
+>
+  <form [formGroup]="formGroup" errorTailor>
+    <div class="flex flex-wrap flex-column justify-content-between row-gap-3 sm:row-gap-4 mt-1">
+      <div class="flex flex-wrap align-items-center justify-content-between">
+        <div class="w-12">
+          <span class="p-float-label" controlErrorAnchor>
+            <textarea
+              pInputTextarea
+              id="am_announcement_detail_form_title"
+              type="text"
+              style="min-height: 2.5rem"
+              class="w-full textarea-sm"
+              formControlName="title"
+              rows="1"
+              [autoResize]="true"
+              appendTo="body"
+              [pTooltip]="'ANNOUNCEMENT.TOOLTIPS.TITLE' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            ></textarea>
+            <label class="ocx-required-label" for="announcement_detail_form_title">
+              {{ 'ANNOUNCEMENT.TITLE' | translate }}
+            </label>
+          </span>
+        </div>
+      </div>
+      <div class="w-full">
+        <span class="p-float-label" controlErrorAnchor>
+          <textarea
+            pInputTextarea
+            id="am_announcement_detail_form_content"
+            class="w-full textarea-md"
+            formControlName="content"
+            rows="3"
+            [autoResize]="true"
+            appendTo="body"
+            [pTooltip]="'ANNOUNCEMENT.TOOLTIPS.CONTENT' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          ></textarea>
+          <label for="announcement_detail_form_content">{{ 'ANNOUNCEMENT.CONTENT' | translate }}</label>
+        </span>
+      </div>
+
+      <div class="w-full">
+        <span class="p-float-label">
+          <p-dropdown
+            id="am_announcement_detail_form_application_name"
+            class="input-field"
+            styleClass="w-full"
+            [options]="allProducts"
+            [autoDisplayFirst]="true"
+            [appendTo]="'body'"
+            formControlName="productName"
+            aria-label="'ANNOUNCEMENT.APPLICATION' | translate"
+            [pTooltip]="'ANNOUNCEMENT.TOOLTIPS.APPLICATION' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
+          </p-dropdown>
+          <label for="announcement_detail_form_application_name"> {{ 'ANNOUNCEMENT.APPLICATION' | translate }} </label>
+        </span>
+      </div>
+
+      <div class="w-full">
+        <span class="p-float-label">
+          <p-dropdown
+            id="am_announcement_detail_form_workspace_name"
+            class="input-field"
+            styleClass="w-full"
+            [options]="allApps"
+            [autoDisplayFirst]="true"
+            [appendTo]="'body'"
+            formControlName="workspaceName"
+            aria-label="'ANNOUNCEMENT.WORKSPACE' | translate"
+            [pTooltip]="'ANNOUNCEMENT.TOOLTIPS.WORKSPACE' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
+          </p-dropdown>
+          <label for="announcement_detail_form_workspace_name"> {{ 'ANNOUNCEMENT.WORKSPACE' | translate }} </label>
+        </span>
+      </div>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <div class="flex flex-wrap justify-content-end gap-2 mb-1">
+      <p-button
+        id="am_announcement_detail_button_cancel"
+        icon="pi pi-times"
+        (onClick)="onDialogHide()"
+        [label]="'ACTIONS.CANCEL' | translate"
+        [pTooltip]="'ACTIONS.TOOLTIPS.CANCEL_AND_CLOSE' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      ></p-button>
+      <p-button
+        id="am_announcement_detail_button_save"
+        icon="pi pi-save"
+        (onClick)="onSave()"
+        [disabled]="!formGroup.valid"
+        [label]="'ACTIONS.SAVE' | translate"
+        [pTooltip]="'ACTIONS.TOOLTIPS.SAVE' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      ></p-button>
+    </div>
+  </ng-template>
+</p-dialog>

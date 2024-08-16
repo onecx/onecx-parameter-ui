@@ -4,10 +4,19 @@ import { Action, PortalMessageService } from '@onecx/portal-integration-angular'
 
 import { catchError, finalize, map, tap } from 'rxjs/operators'
 import { Observable, of } from 'rxjs'
-import { ApplicationParameter, ParameterSearchCriteria, ParametersAPIService, Product } from 'src/app/shared/generated'
+import {
+  ApplicationParameter,
+  ParameterSearchCriteria,
+  ParametersAPIService,
+  Product,
+  ProductStorePageResult,
+  ProductsAPIService
+} from 'src/app/shared/generated'
 import { ActivatedRoute, Router } from '@angular/router'
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms'
 import { SelectItem } from 'primeng/api'
+
+import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
 
 type ChangeMode = 'VIEW' | 'NEW' | 'EDIT'
 
@@ -22,7 +31,7 @@ export class ParameterSearchComponent implements OnInit {
   private translatedData: any
   public criteria: ParameterSearchCriteria = {}
   public actions$: Observable<Action[]> | undefined
-  public products$: Observable<Product[]> | undefined
+  public allProducts$: Observable<SelectItem[]> | undefined
   public productOptions$: Observable<SelectItem[]> | undefined
   public criteriaGroup!: UntypedFormGroup
   public applicationIds: string[] = []
@@ -36,6 +45,7 @@ export class ParameterSearchComponent implements OnInit {
     private readonly messageService: PortalMessageService,
     private translateService: TranslateService,
     private readonly parametersApi: ParametersAPIService,
+    private readonly productsApi: ProductsAPIService,
     private router: Router,
     private route: ActivatedRoute,
     private readonly fb: UntypedFormBuilder
@@ -47,6 +57,7 @@ export class ParameterSearchComponent implements OnInit {
     this.search({})
     this.prepareActionButtons()
     this.initializeForm()
+    this.getUsedProductNamesAndApplicationIds()
     this.getAllProductNamesAndApplicationIds()
     // this.criteriaGroup.valueChanges.subscribe((v) => {
     //   this.criteria = { ...v }
@@ -80,13 +91,9 @@ export class ParameterSearchComponent implements OnInit {
       )
   }
 
-  // public reset(): void {
-  //   this.results = []
-  //   this.criteriaGroup.reset()
-  // }
-
   public onReset(): void {
     this.criteria = {}
+    this.criteriaGroup.reset()
     this.criteriaGroup.controls['applicationId'].disable()
   }
 
@@ -149,6 +156,13 @@ export class ParameterSearchComponent implements OnInit {
       }
     )
   }
+  public onCloseDetail(refresh: boolean): void {
+    this.displayDetailDialog = false
+    if (refresh) {
+      this.search({}, true)
+      this.getUsedProductNamesAndApplicationIds()
+    }
+  }
 
   private loadTranslations(): void {
     this.translateService
@@ -170,7 +184,7 @@ export class ParameterSearchComponent implements OnInit {
           {
             label: data['ACTIONS.CREATE.LABEL'],
             title: data['ACTIONS.CREATE.PARAMETER.TOOLTIP'],
-            actionCallback: () => this.router.navigate([`./create`], { relativeTo: this.route }),
+            actionCallback: () => this.onCreate() /* this.router.navigate([`./create`], { relativeTo: this.route }) */,
             icon: 'pi pi-plus',
             show: 'always',
             permission: 'PARAMETER#EDIT'
@@ -189,7 +203,29 @@ export class ParameterSearchComponent implements OnInit {
     this.criteriaGroup.controls['applicationId'].disable()
   }
 
+  // declare searching for ALL products
   private getAllProductNamesAndApplicationIds(): void {
+    const allProducts$ = this.productsApi.searchAllAvailableProducts({ productStoreSearchCriteria: {} }).pipe(
+      catchError((err) => {
+        console.error('getAllProductNames():', err)
+        return of([] as ProductStorePageResult)
+      })
+    )
+    this.allProducts$ = allProducts$.pipe(
+      map((data: ProductStorePageResult) => {
+        const si: SelectItem[] = []
+        if (data.stream) {
+          for (const product of data.stream) {
+            si.push({ label: product.productName, value: product.productName })
+          }
+          si.sort(dropDownSortItemsByLabel)
+        }
+        return si
+      })
+    )
+  }
+
+  private getUsedProductNamesAndApplicationIds(): void {
     const products$ = this.parametersApi.getAllApplications()
 
     this.productOptions$ = products$.pipe(
@@ -207,6 +243,7 @@ export class ParameterSearchComponent implements OnInit {
         )
       )
     )
+
     this.appOptions$ = products$.pipe(
       catchError((err) => {
         console.error('getAllApplications', err)

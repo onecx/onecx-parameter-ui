@@ -10,3 +10,12 @@
 
   <app-results [results]="(results$ | async) ?? []" (deleteEvent)="onDeleteConfirmation($event)"></app-results>
 </ocx-portal-page>
+
+<app-parameter-detail-new
+  [displayDetailDialog]="displayDetailDialog"
+  (hideDialogAndChanged)="onCloseDetail($event)"
+  [parameter]="parameter"
+  [allProducts]="(allProducts$ | async) ?? []"
+  [allApps]="(appOptions$ | async) ?? []"
+  [changeMode]="changeMode"
+></app-parameter-detail-new>

@@ -10,6 +10,7 @@ import { ParameterSearchComponent } from './parameter-search/parameter-search.co
 import { ResultsComponent } from './parameter-search/results/results.component'
 import { ParameterDetailFormComponent } from './parameter-detail/parameter-detail-form/parameter-detail-form.component'
 import { ParameterDetailComponent } from './parameter-detail/parameter-detail/parameter-detail.component'
+import { ParameterDetailNewComponent } from './parameter-detail/parameter-detail-new/parameter-detail-new.component'
 import { ParameterCreateComponent } from './parameter-detail/parameter-create/parameter-create.component'
 import { ParameterCriteriaComponent } from './parameter-search/parameter-criteria/parameter-criteria.component'
 import { InitializeModuleGuard, addInitializeModuleGuard } from '@onecx/angular-integration-interface'
@@ -38,6 +39,7 @@ const routes: Routes = [
     ResultsComponent,
     ParameterDetailFormComponent,
     ParameterDetailComponent,
+    ParameterDetailNewComponent,
     ParameterCreateComponent
   ],
   imports: [
