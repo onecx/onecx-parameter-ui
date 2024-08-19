@@ -25,19 +25,21 @@
       "CLOSE": "Schließen",
       "SAVE": "Erstellen",
       "MESSAGE": {
-        "CREATE_OK": "Der Parameter wurde erfolgreich erstellt",
-        "CREATE_NOK": "Ein Fehler ist aufgetreten. Der Parameter wurde nicht erstellt."
+        "OK": "Der Parameter wurde erfolgreich erstellt",
+        "NOK": "Ein Fehler ist aufgetreten. Der Parameter wurde nicht erstellt."
       }
     },
     "DELETE": {
       "LABEL": "Löschen",
-      "TOOLTIP": "Lösche diesen Parameter",
+      "TOOLTIP": "Diesen Parameter löschen",
       "PARAMETER": "Parameter löschen",
       "MENU": "Menüpunkt löschen",
-      "MESSAGE": "Möchten Sie \"{{ITEM}}\" löschen?",
-      "MESSAGE_INFO": "Diese Aktion kann nicht rückgängig gemacht werden!",
-      "MESSAGE_NOK": "Parameter konnte nicht gelöscht werden",
-      "MESSAGE_OK": "Parameter erfolgreich gelöscht"
+      "MESSAGES": {
+        "MESSAGE": "Möchten Sie \"{{ITEM}}\" löschen?",
+        "MESSAGE_INFO": "Diese Aktion kann nicht rückgängig gemacht werden!",
+        "NOK": "Parameter konnte nicht gelöscht werden",
+        "OK": "Parameter erfolgreich gelöscht"
+      }
     },
     "EDIT": {
       "LABEL": "Bearbeiten",

@@ -34,10 +34,12 @@
       "TOOLTIP": "Delete this Parameter",
       "PARAMETER": "Delete Parameter",
       "MENU": "Delete Menu Item",
-      "MESSAGE": "Do you want to delete \"{{ITEM}}\"?",
-      "MESSAGE_INFO": "This action cannot be undone!",
-      "MESSAGE_NOK": "Parameter could not be deleted",
-      "MESSAGE_OK": "Parameter deleted successfully"
+      "MESSAGES": {
+        "MESSAGE": "Do you want to delete \"{{ITEM}}\"?",
+        "MESSAGE_INFO": "This action cannot be undone!",
+        "NOK": "Parameter could not be deleted",
+        "OK": "Parameter deleted successfully"
+      }
     },
     "EDIT": {
       "LABEL": "Edit",

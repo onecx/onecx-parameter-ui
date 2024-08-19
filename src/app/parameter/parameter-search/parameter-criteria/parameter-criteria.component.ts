@@ -2,10 +2,12 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 import { SelectItem } from 'primeng/api'
+import { catchError, lastValueFrom, map, Observable, of } from 'rxjs'
 
 import { Action, UserService } from '@onecx/portal-integration-angular'
+
 import { ParametersAPIService, ParameterSearchCriteria, Product } from 'src/app/shared/generated'
-import { catchError, lastValueFrom, map, Observable, of } from 'rxjs'
+import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
 
 export interface ParameterCriteriaForm {
   applicationId: FormControl<string | null>
@@ -83,6 +85,7 @@ export class ParameterCriteriaComponent implements OnInit {
         }
       })
     })
+    this.applicationIds.sort(dropDownSortItemsByLabel) // does not work
   }
 
   public submitCriteria(): void {

@@ -146,7 +146,7 @@ export class ParameterSearchComponent implements OnInit {
     this.search({})
     this.prepareActionButtons()
     this.initializeForm()
-    this.getUsedProductNamesAndApplicationIds()
+    this.getUsedProductNames()
     this.getAllProductNamesAndApplicationIds()
     // this.criteriaGroup.valueChanges.subscribe((v) => {
     //   this.criteria = { ...v }
@@ -192,23 +192,6 @@ export class ParameterSearchComponent implements OnInit {
     this.criteriaGroup.controls['applicationId'].disable()
   }
 
-  // public searchData(criteria: ParameterSearchCriteria): void {
-  //   this.searching = true
-  //   this.criteria = criteria
-  //   const obs$ = this.search(criteria)
-  //   obs$.subscribe((data) => {
-  //     this.results = data
-  //   })
-  // }
-
-  compareProductNames(nameOne: string, nametwo: string): number {
-    if (nameOne < nametwo) {
-      return -1
-    } else if (nameOne > nametwo) {
-      return 1
-    } else return 0
-  }
-
   public onCreate() {
     this.changeMode = 'NEW'
     this.appsChanged = false
@@ -226,7 +209,7 @@ export class ParameterSearchComponent implements OnInit {
     this.displayDetailDialog = false
     if (refresh) {
       this.search({}, true)
-      this.getUsedProductNamesAndApplicationIds()
+      this.getUsedProductNames()
     }
   }
   public onCopy(ev: MouseEvent, item: ApplicationParameter) {
@@ -262,12 +245,13 @@ export class ParameterSearchComponent implements OnInit {
           this.parameters = this.parameters.filter((a) => a.key !== this.parameter?.key)
           this.parameter = undefined
           this.appsChanged = true
-          this.messageService.success({ summaryKey: 'ACTIONS.DELETE.MESSAGE.OK' })
-          if (usedProduct) this.getUsedProductNamesAndApplicationIds()
+          this.messageService.success({ summaryKey: 'ACTIONS.DELETE.MESSAGES.OK' })
+          if (usedProduct) this.getUsedProductNames()
         },
-        error: () => this.messageService.error({ summaryKey: 'ACTIONS.DELETE.MESSAGE.NOK' })
+        error: () => this.messageService.error({ summaryKey: 'ACTIONS.DELETE.MESSAGES.NOK' })
       })
     }
+    this.search({}, true)
   }
   public onColumnsChange(activeIds: string[]) {
     this.filteredColumns = activeIds.map((id) => this.columns.find((col) => col.field === id)) as Column[]
@@ -338,7 +322,7 @@ export class ParameterSearchComponent implements OnInit {
     )
   }
 
-  private getUsedProductNamesAndApplicationIds(): void {
+  private getUsedProductNames(): void {
     this.productOptions$ = this.parametersApi.getAllApplications().pipe(
       catchError((err) => {
         console.error('getAllApplications', err)
@@ -354,13 +338,5 @@ export class ParameterSearchComponent implements OnInit {
         )
       )
     )
-  }
-
-  private compareStrings(a: string, b: string): number {
-    if (a < b) {
-      return -1
-    } else if (a > b) {
-      return 1
-    } else return 0
   }
 }
