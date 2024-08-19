@@ -13,6 +13,7 @@ import { ParameterDetailComponent } from './parameter-detail/parameter-detail/pa
 import { ParameterDetailNewComponent } from './parameter-detail/parameter-detail-new/parameter-detail-new.component'
 import { ParameterCreateComponent } from './parameter-detail/parameter-create/parameter-create.component'
 import { ParameterCriteriaComponent } from './parameter-search/parameter-criteria/parameter-criteria.component'
+import { ParameterHistoryComponent } from './parameter-detail/parameter-history/parameter-history.component'
 import { InitializeModuleGuard, addInitializeModuleGuard } from '@onecx/angular-integration-interface'
 
 const routes: Routes = [
@@ -40,7 +41,8 @@ const routes: Routes = [
     ParameterDetailFormComponent,
     ParameterDetailComponent,
     ParameterDetailNewComponent,
-    ParameterCreateComponent
+    ParameterCreateComponent,
+    ParameterHistoryComponent
   ],
   imports: [
     CommonModule,

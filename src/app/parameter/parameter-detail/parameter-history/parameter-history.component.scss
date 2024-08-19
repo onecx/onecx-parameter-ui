@@ -1,0 +1,11 @@
+@import '/src/_mixins.scss';
+
+@include correct-select-button;
+@include dialog-footer-buttons;
+@include dialog-non-full-size-modal;
+
+:host ::ng-deep {
+  label.float-label {
+    color: var(--emphasis-medium);
+  }
+}

@@ -221,6 +221,13 @@ export class ParameterSearchComponent implements OnInit {
     this.parameter = item
     this.displayDetailDialog = true
   }
+  public onCloseDetail(refresh: boolean): void {
+    this.displayDetailDialog = false
+    if (refresh) {
+      this.search({}, true)
+      this.getUsedProductNamesAndApplicationIds()
+    }
+  }
   public onCopy(ev: MouseEvent, item: ApplicationParameter) {
     ev.stopPropagation()
     this.changeMode = 'NEW'
@@ -235,6 +242,9 @@ export class ParameterSearchComponent implements OnInit {
     this.appsChanged = false
     this.parameter = item
     this.displayHistoryDialog = true
+  }
+  public onCloseHistory() {
+    this.displayHistoryDialog = false
   }
   public onDelete(ev: MouseEvent, item: ApplicationParameter): void {
     ev.stopPropagation()
@@ -256,13 +266,6 @@ export class ParameterSearchComponent implements OnInit {
         },
         error: () => this.messageService.error({ summaryKey: 'ACTIONS.DELETE.MESSAGE.NOK' })
       })
-    }
-  }
-  public onCloseDetail(refresh: boolean): void {
-    this.displayDetailDialog = false
-    if (refresh) {
-      this.search({}, true)
-      this.getUsedProductNamesAndApplicationIds()
     }
   }
   public onColumnsChange(activeIds: string[]) {

@@ -34,7 +34,7 @@
           [columnTemplates]="[]"
           (columnsChange)="onColumnsChange($event)"
           (filterChange)="onFilterChange($event)"
-          [filterColumns]="['PARAMETER.TITLE' | translate, 'PARAMETER.WORKSPACE' | translate]"
+          [filterColumns]="['PARAMETER.KEY' | translate, 'PARAMETER.PRODUCT_NAME' | translate]"
         ></ocx-data-view-controls>
       </ng-template>
       <ng-template pTemplate="paginatorleft" let-state>
@@ -282,3 +282,9 @@
   [allApps]="(appOptions$ | async) ?? []"
   [changeMode]="changeMode"
 ></app-parameter-detail-new>
+
+<app-parameter-history
+  [displayHistoryDialog]="displayHistoryDialog"
+  (hideDialog)="onCloseHistory()"
+  [parameter]="parameter"
+></app-parameter-history>
