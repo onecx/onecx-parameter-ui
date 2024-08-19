@@ -11,9 +11,10 @@
       <p-dropdown
         id="pm_parameter_search_criteria_product_name"
         styleClass="w-13rem"
-        [options]="products"
+        [options]="productOptions"
         [autoDisplayFirst]="true"
         [appendTo]="'body'"
+        (onChange)="this.updateApplicationIds($event.value)"
         formControlName="productName"
         [pTooltip]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
         tooltipPosition="top"

@@ -41,6 +41,7 @@ export class ParameterSearchComponent implements OnInit {
   private translatedData: any
   public criteria: ParameterSearchCriteria = {}
   public actions$: Observable<Action[]> | undefined
+  public products$: Observable<ProductStorePageResult> | undefined
   public allProducts$: Observable<SelectItem[]> | undefined
   public productOptions$: Observable<SelectItem[]> | undefined
   public criteriaGroup!: UntypedFormGroup
@@ -317,13 +318,13 @@ export class ParameterSearchComponent implements OnInit {
 
   // declare searching for ALL products
   private getAllProductNamesAndApplicationIds(): void {
-    const allProducts$ = this.productsApi.searchAllAvailableProducts({ productStoreSearchCriteria: {} }).pipe(
+    this.products$ = this.productsApi.searchAllAvailableProducts({ productStoreSearchCriteria: {} }).pipe(
       catchError((err) => {
         console.error('getAllProductNames():', err)
         return of([] as ProductStorePageResult)
       })
     )
-    this.allProducts$ = allProducts$.pipe(
+    this.allProducts$ = this.products$.pipe(
       map((data: ProductStorePageResult) => {
         const si: SelectItem[] = []
         if (data.stream) {
@@ -338,9 +339,7 @@ export class ParameterSearchComponent implements OnInit {
   }
 
   private getUsedProductNamesAndApplicationIds(): void {
-    const products$ = this.parametersApi.getAllApplications()
-
-    this.productOptions$ = products$.pipe(
+    this.productOptions$ = this.parametersApi.getAllApplications().pipe(
       catchError((err) => {
         console.error('getAllApplications', err)
         return of([])
@@ -355,53 +354,9 @@ export class ParameterSearchComponent implements OnInit {
         )
       )
     )
-
-    this.appOptions$ = products$.pipe(
-      catchError((err) => {
-        console.error('getAllApplications', err)
-        return of([])
-      }),
-      map((data) =>
-        data.flatMap((product: Product) =>
-          (product.applications || []).map(
-            (name) =>
-              ({
-                label: name,
-                value: name
-              }) as SelectItem
-          )
-        )
-      )
-    )
   }
 
-  // public async updateApplicationIds(productName: string) {
-  //   await lastValueFrom(this.products$!)
-  //     .then((data) => {
-  //       this.applicationIds = []
-  //       this.criteriaGroup.controls['applicationId'].reset()
-  //       data.map((p) => {
-  //         if (p.productName === productName && p.applications) {
-  //           this.applicationIds = p.applications!
-  //           this.applicationIds.unshift('')
-  //         }
-  //         p.applications?.map((app) => {
-  //           this.appOptions.push({
-  //             title: app,
-  //             value: app
-  //           })
-  //         })
-  //       })
-  //     })
-  //     .finally(() => {
-  //       if (this.applicationIds.length > 0) {
-  //         this.criteriaGroup.controls['applicationId'].enable()
-  //       } else {
-  //         this.criteriaGroup.controls['applicationId'].disable()
-  //       }
-  //     })
-  // }
-  compareStrings(a: string, b: string): number {
+  private compareStrings(a: string, b: string): number {
     if (a < b) {
       return -1
     } else if (a > b) {

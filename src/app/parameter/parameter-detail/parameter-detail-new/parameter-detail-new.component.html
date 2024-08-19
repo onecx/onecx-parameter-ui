@@ -29,6 +29,7 @@
                 [options]="allProducts"
                 [autoDisplayFirst]="true"
                 [appendTo]="'body'"
+                (onChange)="this.updateApplicationIds($event.value)"
                 formControlName="productName"
                 aria-label="'PARAMETER.PRODUCT' | translate"
                 [pTooltip]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
@@ -44,10 +45,10 @@
           <div class="p-fluid col-12 md:col-6">
             <span class="p-float-label" controlErrorAnchor>
               <p-dropdown
-                id="am_parameter_detail_form_workspace_name"
+                id="pm_parameter_detail_form_app_id"
                 class="input-field"
                 styleClass="w-full"
-                [options]="allApps"
+                [options]="applicationIds"
                 [autoDisplayFirst]="true"
                 [appendTo]="'body'"
                 formControlName="applicationId"
@@ -86,7 +87,7 @@
                 pInputText
                 type="text"
                 id="parameter_detail_form_value"
-                formControlName="setValue"
+                formControlName="value"
                 [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"

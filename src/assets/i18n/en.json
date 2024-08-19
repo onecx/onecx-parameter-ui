@@ -25,8 +25,8 @@
       "CLOSE": "Close",
       "SAVE": "Create new Parameter",
       "MESSAGE": {
-        "CREATE_OK": "The Parameter was created successfully",
-        "CREATE_NOK": "An error has occurred. The Parameter was not created."
+        "OK": "The Parameter was created successfully",
+        "NOK": "An error has occurred. The Parameter was not created."
       }
     },
     "DELETE": {

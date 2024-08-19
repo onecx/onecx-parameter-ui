@@ -1,11 +1,10 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
-import { finalize } from 'rxjs'
 import { SelectItem } from 'primeng/api'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
-import { ApplicationParameter, ParametersAPIService } from 'src/app/shared/generated'
+import { ApplicationParameter, ParametersAPIService, ProductStorePageResult } from 'src/app/shared/generated'
 
 @Component({
   selector: 'app-parameter-detail-new',
@@ -16,18 +15,16 @@ export class ParameterDetailNewComponent implements OnChanges {
   @Input() public changeMode = 'NEW'
   @Input() public displayDetailDialog = false
   @Input() public parameter: ApplicationParameter | undefined
+  @Input() public products: ProductStorePageResult | undefined
   @Input() public allProducts: SelectItem[] = []
-  @Input() public allApps: SelectItem[] = []
   @Output() public hideDialogAndChanged = new EventEmitter<boolean>()
 
   parameterId: string | undefined
   parameterDeleteVisible = false
-  workspaces: SelectItem[] = []
-  products: SelectItem[] = []
   public applicationIds: SelectItem[] = []
   public isLoading = false
   // form
-  formGroup: FormGroup
+  public formGroup: FormGroup
 
   constructor(
     private parameterApi: ParametersAPIService,
@@ -39,7 +36,7 @@ export class ParameterDetailNewComponent implements OnChanges {
       productName: new FormControl(null, [Validators.required]),
       applicationId: new FormControl(null, [Validators.required]),
       key: new FormControl(null, [Validators.required]),
-      setValue: new FormControl(null, [Validators.required]),
+      value: new FormControl(null, [Validators.required]),
       description: new FormControl(null, [Validators.required]),
       unit: new FormControl(null),
       rangeFrom: new FormControl(null),
@@ -48,10 +45,8 @@ export class ParameterDetailNewComponent implements OnChanges {
   }
 
   ngOnChanges() {
-    console.log('PARAM', this.parameter)
     if (this.changeMode === 'EDIT') {
-      this.parameterId = this.parameter?.id
-      this.getParameter()
+      this.fillForm()
     }
     if (this.changeMode === 'NEW') {
       this.parameterId = undefined
@@ -63,52 +58,39 @@ export class ParameterDetailNewComponent implements OnChanges {
     }
   }
 
-  public async updateApplicationIds(productName: string) {
-    // await lastValueFrom(this.allProducts!).then((data) => {
-    //   this.applicationIds = []
-    //   this.formGroup.controls['applicationId'].reset()
-    //   if (data.stream) {
-    //     data.stream.map((p) => {
-    //       if (p.productName === productName && p.applications) {
-    //         this.applicationIds = p.applications!
-    //         this.applicationIds.unshift('')
-    //       }
-    //     })
-    //   }
-    // })
+  private fillForm(): void {
+    this.formGroup.patchValue({
+      ...this.parameter
+    })
+    this.formGroup.controls['value'].setValue(this.parameter?.setValue)
+    this.applicationIds.push({
+      label: this.parameter?.applicationId,
+      value: this.parameter?.applicationId
+    })
+    this.formGroup.controls['applicationId'].disable()
+  }
+
+  public updateApplicationIds(productName: string) {
+    this.applicationIds = []
+    this.formGroup.controls['applicationId'].reset()
+    if (this.products) {
+      this.products.stream?.forEach((p) => {
+        if (p.productName === productName && p.applications) {
+          p.applications.forEach((app) => {
+            this.applicationIds.push({
+              label: app,
+              value: app
+            })
+          })
+          this.formGroup.controls['applicationId'].enable()
+        }
+      })
+    }
   }
 
   public onDialogHide() {
     this.displayDetailDialog = false
     this.hideDialogAndChanged.emit(false)
-  }
-
-  /**
-   * READING data
-   */
-  private getParameter(): void {
-    if (this.parameterId) {
-      this.isLoading = true
-      this.parameter = undefined
-      this.parameterApi
-        .getParameterById({ id: this.parameterId })
-        .pipe(finalize(() => (this.isLoading = false)))
-        .subscribe({
-          next: (item) => {
-            this.parameter = item
-            this.fillForm()
-          },
-          error: () => this.msgService.error({ summaryKey: 'ACTIONS.SEARCH.SEARCH_FAILED' })
-        })
-    }
-  }
-
-  private fillForm(): void {
-    this.formGroup.patchValue({
-      ...this.parameter
-    })
-    // if (!this.parameter?.applicationId) this.formGroup.controls['workspaceName'].setValue('all')
-    // if (!this.parameter?.productName) this.formGroup.controls['productName'].setValue('all')
   }
 
   /**
@@ -152,8 +134,6 @@ export class ParameterDetailNewComponent implements OnChanges {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private submitFormValues(): any {
     const parameter: ApplicationParameter = { ...this.formGroup.value }
-    // if (parameter.appId === 'all') parameter.appId = undefined
-    // if (parameter.productName === 'all') parameter.productName = undefined
     return parameter
   }
 }

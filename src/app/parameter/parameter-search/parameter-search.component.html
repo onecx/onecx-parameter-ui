@@ -1,8 +1,7 @@
 <ocx-portal-page [helpArticleId]="'PAGE_PARAMETERS_SEARCH'" permission="PARAMETER#SEARCH">
   <app-parameter-criteria
     [actions]="(actions$ | async) ?? []"
-    [products]="(productOptions$ | async) ?? []"
-    [applicationIds]="(appOptions$ | async) ?? []"
+    [products]="productOptions$"
     (criteriaEmitter)="search($event)"
     (resetSearchEmitter)="onReset()"
   ></app-parameter-criteria>
@@ -115,20 +114,6 @@
             <button
               pbutton
               type="button"
-              *ocxIfPermission="'PARAMETER#DELETE'"
-              class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-              [id]="'pm_parameter_search_table_row_' + row + '_delete_action'"
-              (click)="onDelete($event, rowData)"
-              aria-label="'ACTIONS.DELETE.LABEL' | translate"
-              [pTooltip]="'ACTIONS.DELETE.TOOLTIP' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            >
-              <span class="danger-action-text font-medium p-button-icon pi pi-trash" aria-hidden="true"></span>
-            </button>
-            <button
-              pbutton
-              type="button"
               *ocxIfPermission="'PARAMETER#VIEW'"
               class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
               [id]="'pm_parameter_search_table_row_' + row + '_history_action'"
@@ -139,6 +124,20 @@
               tooltipEvent="hover"
             >
               <span class="danger-action-text font-medium p-button-icon pi pi-history" aria-hidden="true"></span>
+            </button>
+            <button
+              pbutton
+              type="button"
+              *ocxIfPermission="'PARAMETER#DELETE'"
+              class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
+              [id]="'pm_parameter_search_table_row_' + row + '_delete_action'"
+              (click)="onDelete($event, rowData)"
+              aria-label="'ACTIONS.DELETE.LABEL' | translate"
+              [pTooltip]="'ACTIONS.DELETE.TOOLTIP' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            >
+              <span class="danger-action-text font-medium p-button-icon pi pi-trash" aria-hidden="true"></span>
             </button>
           </td>
 
@@ -278,8 +277,8 @@
   [displayDetailDialog]="displayDetailDialog"
   (hideDialogAndChanged)="onCloseDetail($event)"
   [parameter]="parameter"
+  [products]="(products$ | async) ?? []"
   [allProducts]="(allProducts$ | async) ?? []"
-  [allApps]="(appOptions$ | async) ?? []"
   [changeMode]="changeMode"
 ></app-parameter-detail-new>
 

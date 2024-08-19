@@ -4,7 +4,8 @@ import { TranslateService } from '@ngx-translate/core'
 import { SelectItem } from 'primeng/api'
 
 import { Action, UserService } from '@onecx/portal-integration-angular'
-import { ParameterSearchCriteria } from 'src/app/shared/generated'
+import { ParametersAPIService, ParameterSearchCriteria, Product } from 'src/app/shared/generated'
+import { catchError, lastValueFrom, map, Observable, of } from 'rxjs'
 
 export interface ParameterCriteriaForm {
   applicationId: FormControl<string | null>
@@ -19,17 +20,19 @@ export interface ParameterCriteriaForm {
 })
 export class ParameterCriteriaComponent implements OnInit {
   @Input() public actions: Action[] = []
-  @Input() public products: SelectItem[] = []
-  @Input() public applicationIds: SelectItem[] = []
   @Output() public criteriaEmitter = new EventEmitter<ParameterSearchCriteria>()
   @Output() public resetSearchEmitter = new EventEmitter<boolean>()
 
+  public products$: Observable<Product[]> | undefined
   public displayCreateDialog = false
   public parameterCriteria!: FormGroup<ParameterCriteriaForm>
+  public productOptions: SelectItem[] = []
+  public applicationIds: SelectItem[] = []
 
   constructor(
     private user: UserService,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private readonly parametersApi: ParametersAPIService
   ) {}
 
   ngOnInit(): void {
@@ -37,6 +40,48 @@ export class ParameterCriteriaComponent implements OnInit {
       productName: new FormControl<string | null>(null),
       applicationId: new FormControl<string | null>(null),
       key: new FormControl<string | null>(null)
+    })
+    this.getUsedProductNamesAndApplicationIds()
+  }
+
+  private getUsedProductNamesAndApplicationIds(): void {
+    this.products$ = this.parametersApi.getAllApplications()
+
+    this.products$
+      .pipe(
+        catchError((err) => {
+          console.error('getAllApplications', err)
+          return of([])
+        }),
+        map((data) => {
+          return data.map(
+            (product: Product) =>
+              ({
+                label: product.productName,
+                value: product.productName
+              }) as SelectItem
+          )
+        })
+      )
+      .subscribe((productOptions: SelectItem[]) => {
+        this.productOptions = productOptions
+      })
+  }
+
+  public async updateApplicationIds(productName: string) {
+    await lastValueFrom(this.products$!).then((data) => {
+      this.applicationIds = []
+      this.parameterCriteria.controls['applicationId'].reset()
+      data.map((p) => {
+        if (p.productName === productName && p.applications) {
+          p.applications.forEach((app) => {
+            this.applicationIds.push({
+              label: app,
+              value: app
+            })
+          })
+        }
+      })
     })
   }
 
