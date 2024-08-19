@@ -9,6 +9,7 @@
     },
     "COPY": {
       "LABEL": "Kopieren",
+      "TOOLTIP": "Kopie des Parameters erstellen",
       "OF": "Kopie von ",
       "DATA": "Mit den Daten einen neuen Parameter anlegen",
       "CLIPBOARD": "In die Zwischenablage kopieren"
@@ -30,7 +31,7 @@
     },
     "DELETE": {
       "LABEL": "Löschen",
-      "PARAMETERS.TOOLTIP": "Lösche diesen Parameter",
+      "TOOLTIP": "Lösche diesen Parameter",
       "PARAMETER": "Parameter löschen",
       "MENU": "Menüpunkt löschen",
       "MESSAGE": "Möchten Sie \"{{ITEM}}\" löschen?",
@@ -68,6 +69,9 @@
     "VIEW": {
       "TOOLTIP": "Parameter-Details ansehen"
     },
+    "HISTORY": {
+      "TOOLTIP": "Verlaufsdaten ansehen"
+    },
     "CANCEL": "Cancel",
     "CHOOSE": "Choose",
     "SAVE": "Save",
@@ -95,12 +99,15 @@
     "PARAMETER_SEARCH_SUB_HEADER": "Suchen und verwalten von Parametern",
     "MSG_NO_RESULTS": "Die Suche ergab keine Treffer",
     "MSG_SEARCH_FAILED": "Suche ist fehlgeschlagen",
-    "ACTION": "Verfügbare Aktionen zu einem Parameter",
+    "NO_DATA": "Keine Ergebnisse",
     "SEARCH": "Suchen",
     "RESET": "Zurücksetzen",
     "SELECT_TYPE": "Wählen Sie einen Typ",
     "DROPDOWN_PLACEHOLDER": "Irgendein",
-    "APPLICATION_ID_IS_MANDATORY": "Das Feld Anwendung-ID ist obligatorisch"
+    "APPLICATION_ID_IS_MANDATORY": "Das Feld Anwendung-ID ist obligatorisch",
+    "TOOLTIPS": {
+      "ACTIONS": "Verfügbare Aktionen zu einem Parameter"
+    }
   },
   "PARAMETER": {
     "APP_ID": "App-ID",

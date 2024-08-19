@@ -9,6 +9,7 @@
     },
     "COPY": {
       "LABEL": "Copy",
+      "TOOLTIP": "Create a copy of the Parameter",
       "OF": "Copy of ",
       "DATA": "Create a new Parameter with the data",
       "CLIPBOARD": "Copy to clipboard"
@@ -30,7 +31,7 @@
     },
     "DELETE": {
       "LABEL": "Delete",
-      "PARAMETERS.TOOLTIP": "Delete this Parameter",
+      "TOOLTIP": "Delete this Parameter",
       "PARAMETER": "Delete Parameter",
       "MENU": "Delete Menu Item",
       "MESSAGE": "Do you want to delete \"{{ITEM}}\"?",
@@ -68,6 +69,9 @@
     "VIEW": {
       "TOOLTIP": "View Parameter details"
     },
+    "HISTORY": {
+      "TOOLTIP": "View history"
+    },
     "CANCEL": "Cancel",
     "CHOOSE": "Choose",
     "SAVE": "Save",
@@ -95,12 +99,15 @@
     "PARAMETER_SEARCH_SUB_HEADER": "Searching and managing of Parameters",
     "MSG_NO_RESULTS": "Search returned no results",
     "MSG_SEARCH_FAILED": "Search failed",
-    "ACTION": "Available actions for a Parameter item",
+    "NO_DATA": "No data",
     "SEARCH": "Search",
     "RESET": "Reset",
     "SELECT_TYPE": "Select Type",
     "DROPDOWN_PLACEHOLDER": "Any",
-    "APPLICATION_ID_IS_MANDATORY": "Application Id field is mandatory"
+    "APPLICATION_ID_IS_MANDATORY": "Application Id field is mandatory",
+    "TOOLTIPS": {
+      "ACTIONS": "Available actions for a Parameter item"
+    }
   },
   "PARAMETER": {
     "APP_ID": "App-ID",

@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, ViewChild } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
-import { Action, PortalMessageService } from '@onecx/portal-integration-angular'
+import { Action, Column, PortalMessageService } from '@onecx/portal-integration-angular'
 
 import { catchError, finalize, map, tap } from 'rxjs/operators'
 import { Observable, of } from 'rxjs'
@@ -17,7 +17,15 @@ import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms'
 import { SelectItem } from 'primeng/api'
 
 import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
+import { Table } from 'primeng/table'
 
+type ExtendedColumn = Column & {
+  hasFilter?: boolean
+  isDate?: boolean
+  isDropdown?: true
+  css?: string
+  limit?: boolean
+}
 type ChangeMode = 'VIEW' | 'NEW' | 'EDIT'
 
 @Component({
@@ -26,6 +34,8 @@ type ChangeMode = 'VIEW' | 'NEW' | 'EDIT'
   styleUrls: ['./parameter-search.component.scss']
 })
 export class ParameterSearchComponent implements OnInit {
+  @ViewChild('parameterTable', { static: false }) parameterTable: Table | undefined
+
   public parameter: ApplicationParameter | undefined
   public parameters: ApplicationParameter[] = []
   private translatedData: any
@@ -38,8 +48,86 @@ export class ParameterSearchComponent implements OnInit {
   public appOptions$: Observable<SelectItem[]> | undefined
   public changeMode: ChangeMode = 'NEW'
   public displayDetailDialog = false
+  public displayDeleteDialog = false
+  public displayHistoryDialog = false
   public searching = false
+  public appsChanged = false
   public results$: Observable<ApplicationParameter[]> | undefined
+
+  public columns: ExtendedColumn[] = [
+    {
+      field: 'productName',
+      header: 'PRODUCT_NAME',
+      active: true,
+      translationPrefix: 'PARAMETER',
+      limit: true
+    },
+    {
+      field: 'applicationId',
+      header: 'APP_ID',
+      active: true,
+      translationPrefix: 'PARAMETER',
+      css: 'text-center hidden xl:table-cell'
+    },
+    {
+      field: 'key',
+      header: 'KEY',
+      active: true,
+      translationPrefix: 'PARAMETER',
+      css: 'hidden sm:table-cell'
+    },
+    {
+      field: 'setValue',
+      header: 'VALUE',
+      active: true,
+      translationPrefix: 'PARAMETER',
+      css: 'text-center hidden xl:table-cell',
+      isDropdown: true
+    },
+    {
+      field: 'importValue',
+      header: 'IMPORT_VALUE',
+      active: true,
+      translationPrefix: 'PARAMETER',
+      css: 'text-center hidden lg:table-cell',
+      isDropdown: true
+    },
+    {
+      field: 'description',
+      header: 'DESCRIPTION',
+      active: false,
+      translationPrefix: 'PARAMETER',
+      css: 'text-center hidden lg:table-cell',
+      isDropdown: true
+    },
+    {
+      field: 'unit',
+      header: 'UNIT',
+      active: false,
+      translationPrefix: 'PARAMETER',
+      css: 'text-center hidden lg:table-cell',
+      isDropdown: true
+    },
+    {
+      field: 'rangeFrom',
+      header: 'RANGE_FROM',
+      active: false,
+      translationPrefix: 'PARAMETER',
+      css: 'text-center hidden lg:table-cell',
+      isDropdown: true
+    },
+    {
+      field: 'rangeTo',
+      header: 'RANGE_TO',
+      active: false,
+      translationPrefix: 'PARAMETER',
+      css: 'text-center hidden lg:table-cell',
+      isDropdown: true
+    }
+  ]
+
+  public filteredColumns: Column[] = []
+  public deleteDialogVisible = false
 
   constructor(
     private readonly messageService: PortalMessageService,
@@ -62,10 +150,16 @@ export class ParameterSearchComponent implements OnInit {
     // this.criteriaGroup.valueChanges.subscribe((v) => {
     //   this.criteria = { ...v }
     // })
+    this.filteredColumns = this.columns.filter((a) => {
+      return a.active === true
+    })
   }
 
   public search(criteria: ParameterSearchCriteria, reuseCriteria = false): void {
     this.searching = true
+    if (!reuseCriteria) {
+      this.criteria = { ...criteria }
+    }
     this.results$ = this.parametersApi
       .searchApplicationParametersByCriteria({
         parameterSearchCriteria: { ...this.criteria }
@@ -116,45 +210,53 @@ export class ParameterSearchComponent implements OnInit {
 
   public onCreate() {
     this.changeMode = 'NEW'
-    // this.appsChanged = false
+    this.appsChanged = false
     this.parameter = undefined
     this.displayDetailDialog = true
   }
   public onDetail(ev: MouseEvent, item: ApplicationParameter, mode: ChangeMode): void {
     ev.stopPropagation()
     this.changeMode = mode
-    // this.appsChanged = false
+    this.appsChanged = false
     this.parameter = item
     this.displayDetailDialog = true
   }
   public onCopy(ev: MouseEvent, item: ApplicationParameter) {
     ev.stopPropagation()
     this.changeMode = 'NEW'
-    // this.appsChanged = false
+    this.appsChanged = false
     this.parameter = item
     this.parameter.id = undefined
     this.displayDetailDialog = true
   }
+  public onHistory(ev: MouseEvent, item: ApplicationParameter) {
+    ev.stopPropagation()
+    this.changeMode = 'VIEW'
+    this.appsChanged = false
+    this.parameter = item
+    this.displayHistoryDialog = true
+  }
   public onDelete(ev: MouseEvent, item: ApplicationParameter): void {
     ev.stopPropagation()
     this.parameter = item
-    // this.appsChanged = false
-    // this.displayDeleteDialog = true
+    this.appsChanged = false
+    this.displayDeleteDialog = true
   }
-  public onDeleteConfirmation(id: string): void {
-    this.parametersApi.deleteParameter({ id }).subscribe(
-      () => {
-        this.messageService.success({
-          summaryKey: this.translatedData['PARAMETER_DELETE.DELETE_SUCCESS']
-        })
-        this.search(this.criteria!)
-      },
-      () => {
-        this.messageService.error({
-          summaryKey: this.translatedData['PARAMETER_DELETE.DELETE_ERROR']
-        })
-      }
-    )
+  public onDeleteConfirmation(): void {
+    if (this.parameter?.id) {
+      const usedProduct = this.parameter?.productName !== undefined
+      this.parametersApi.deleteParameter({ id: this.parameter?.id }).subscribe({
+        next: () => {
+          this.displayDeleteDialog = false
+          this.parameters = this.parameters.filter((a) => a.key !== this.parameter?.key)
+          this.parameter = undefined
+          this.appsChanged = true
+          this.messageService.success({ summaryKey: 'ACTIONS.DELETE.MESSAGE.OK' })
+          if (usedProduct) this.getUsedProductNamesAndApplicationIds()
+        },
+        error: () => this.messageService.error({ summaryKey: 'ACTIONS.DELETE.MESSAGE.NOK' })
+      })
+    }
   }
   public onCloseDetail(refresh: boolean): void {
     this.displayDetailDialog = false
@@ -162,6 +264,13 @@ export class ParameterSearchComponent implements OnInit {
       this.search({}, true)
       this.getUsedProductNamesAndApplicationIds()
     }
+  }
+  public onColumnsChange(activeIds: string[]) {
+    this.filteredColumns = activeIds.map((id) => this.columns.find((col) => col.field === id)) as Column[]
+  }
+
+  public onFilterChange(event: string): void {
+    this.parameterTable?.filterGlobal(event, 'contains')
   }
 
   private loadTranslations(): void {
@@ -184,7 +293,7 @@ export class ParameterSearchComponent implements OnInit {
           {
             label: data['ACTIONS.CREATE.LABEL'],
             title: data['ACTIONS.CREATE.PARAMETER.TOOLTIP'],
-            actionCallback: () => this.onCreate() /* this.router.navigate([`./create`], { relativeTo: this.route }) */,
+            actionCallback: () => this.onCreate(),
             icon: 'pi pi-plus',
             show: 'always',
             permission: 'PARAMETER#EDIT'

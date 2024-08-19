@@ -4,16 +4,17 @@
 @include danger-action;
 @include table-inline-buttons;
 @include table-responsive-columns;
+@include dialog-footer-buttons;
 
-::ng-deep #ocx-search-button {
-  display: none;
-}
+// ::ng-deep #ocx-search-button {
+//   display: none;
+// }
 
-::ng-deep ocx-page-header .search-criteria-container {
-  width: 100%;
-  display: inline !important;
-}
+// ::ng-deep ocx-page-header .search-criteria-container {
+//   width: 100%;
+//   display: inline !important;
+// }
 
-::ng-deep ocx-page-header .basic-criteria {
-  display: inline !important;
-}
+// ::ng-deep ocx-page-header .basic-criteria {
+//   display: inline !important;
+// }
