@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core'
 import { finalize } from 'rxjs'
 import { SelectItem } from 'primeng/api'
 
-import { PortalMessageService, UserService } from '@onecx/portal-integration-angular'
+import { PortalMessageService } from '@onecx/portal-integration-angular'
 import { ApplicationParameter, ParametersAPIService } from 'src/app/shared/generated'
 
 @Component({
@@ -30,7 +30,6 @@ export class ParameterDetailNewComponent implements OnChanges {
   formGroup: FormGroup
 
   constructor(
-    private user: UserService,
     private parameterApi: ParametersAPIService,
     private fb: FormBuilder,
     private translate: TranslateService,
@@ -40,7 +39,7 @@ export class ParameterDetailNewComponent implements OnChanges {
       productName: new FormControl(null, [Validators.required]),
       applicationId: new FormControl(null, [Validators.required]),
       key: new FormControl(null, [Validators.required]),
-      value: new FormControl(null, [Validators.required]),
+      setValue: new FormControl(null, [Validators.required]),
       description: new FormControl(null, [Validators.required]),
       unit: new FormControl(null),
       rangeFrom: new FormControl(null),
@@ -49,6 +48,7 @@ export class ParameterDetailNewComponent implements OnChanges {
   }
 
   ngOnChanges() {
+    console.log('PARAM', this.parameter)
     if (this.changeMode === 'EDIT') {
       this.parameterId = this.parameter?.id
       this.getParameter()
@@ -152,7 +152,7 @@ export class ParameterDetailNewComponent implements OnChanges {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private submitFormValues(): any {
     const parameter: ApplicationParameter = { ...this.formGroup.value }
-    // if (parameter.workspaceName === 'all') parameter.workspaceName = undefined
+    // if (parameter.appId === 'all') parameter.appId = undefined
     // if (parameter.productName === 'all') parameter.productName = undefined
     return parameter
   }
