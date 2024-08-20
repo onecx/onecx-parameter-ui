@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "license": "Apache-2.0",
   "contributors": [
-    "OneCX Development Team <onecx-development-team@onecx.org>"
+    "OneCX Development Team <onecx_dev@1000kit.org>"
   ],
   "config": {
     "openapiYaml": "src/assets/api/openapi-bff.yaml",
@@ -49,14 +49,14 @@
     "@ngneat/error-tailor": "^5.0.1",
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
-    "@onecx/accelerator": "^5.3.1",
-    "@onecx/angular-auth": "^5.3.1",
-    "@onecx/angular-webcomponents": "^5.3.1",
-    "@onecx/angular-accelerator": "^5.3.1",
-    "@onecx/integration-interface": "^5.3.1",
-    "@onecx/keycloak-auth": "^5.3.1",
-    "@onecx/portal-integration-angular": "^5.3.1",
-    "@onecx/portal-layout-styles": "^5.3.1",
+    "@onecx/accelerator": "^5.4.0",
+    "@onecx/angular-auth": "^5.4.0",
+    "@onecx/angular-webcomponents": "^5.4.0",
+    "@onecx/angular-accelerator": "^5.4.0",
+    "@onecx/integration-interface": "^5.4.0",
+    "@onecx/keycloak-auth": "^5.4.0",
+    "@onecx/portal-integration-angular": "^5.4.0",
+    "@onecx/portal-layout-styles": "^5.4.0",
     "@webcomponents/webcomponentsjs": "^2.8.0",
     "file-saver": "^2.0.5",
     "keycloak-angular": "^16.0.1",
