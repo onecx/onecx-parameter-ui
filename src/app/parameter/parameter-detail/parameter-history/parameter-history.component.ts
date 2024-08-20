@@ -125,9 +125,9 @@ export class ParameterHistoryComponent implements OnChanges {
           this.chartData = data
           this.setChartData()
           if (data.length == 0) {
-            this.msgService.success({
-              summaryKey: this.translatedData!['SEARCH.MSG_NO_RESULTS']
-            })
+            // this.msgService.success({
+            //   summaryKey: this.translatedData!['SEARCH.MSG_NO_RESULTS']
+            // })
           }
         },
         error: () => {

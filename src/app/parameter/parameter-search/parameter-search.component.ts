@@ -12,7 +12,6 @@ import {
   ProductStorePageResult,
   ProductsAPIService
 } from 'src/app/shared/generated'
-import { ActivatedRoute, Router } from '@angular/router'
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms'
 import { SelectItem } from 'primeng/api'
 
@@ -135,22 +134,16 @@ export class ParameterSearchComponent implements OnInit {
     private translateService: TranslateService,
     private readonly parametersApi: ParametersAPIService,
     private readonly productsApi: ProductsAPIService,
-    private router: Router,
-    private route: ActivatedRoute,
     private readonly fb: UntypedFormBuilder
   ) {}
 
   public ngOnInit(): void {
     this.loadTranslations()
-    // this.searchData(this.criteria!)
     this.search({})
     this.prepareActionButtons()
     this.initializeForm()
     this.getUsedProductNames()
     this.getAllProductNamesAndApplicationIds()
-    // this.criteriaGroup.valueChanges.subscribe((v) => {
-    //   this.criteria = { ...v }
-    // })
     this.filteredColumns = this.columns.filter((a) => {
       return a.active === true
     })

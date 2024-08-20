@@ -51,8 +51,8 @@
       "FETCH_ERROR": "Parameter mit angegebener Id konnte nicht abgerufen werden",
       "EDIT_PARAMETER_SUB_HEADER": "Ändern Sie die Eingaben, um den Parameter anzupassen",
       "MESSAGE": {
-        "CHANGE_OK": "Der Parameter wurde erfolgreich geändert.",
-        "CHANGE_NOK": "Ein Fehler ist aufgetreten. Der Parameter wurde nicht geändert."
+        "OK": "Der Parameter wurde erfolgreich geändert.",
+        "NOK": "Ein Fehler ist aufgetreten. Der Parameter wurde nicht geändert."
       }
     },
     "EXPORT": {
@@ -164,7 +164,7 @@
     "USED_VALUE": "Verwendeter Wert",
     "LAST_USED": "Zuletzt verwendet",
     "HISTORY_RELOAD": "Verlaufsdaten aktualisieren",
-    "APPLICATION": "Applikation",
+    "APPLICATION": "App-ID",
     "PRODUCT": "Applikation",
     "KEY": "Parameter-Schlüssel"
   },

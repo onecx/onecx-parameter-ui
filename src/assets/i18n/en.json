@@ -51,8 +51,8 @@
       "FETCH_ERROR": "Couldn't fetch parameter with given Id.",
       "EDIT_PARAMETER_SUB_HEADER": "Change the inputs to adjust the Parameter",
       "MESSAGE": {
-        "CHANGE_OK": "The Parameter was changed successfully",
-        "CHANGE_NOK": "An error has occurred. The Parameter was not changed."
+        "OK": "The Parameter was changed successfully",
+        "NOK": "An error has occurred. The Parameter was not changed."
       }
     },
     "EXPORT": {
@@ -164,7 +164,7 @@
     "USED_VALUE": "Used Value",
     "LAST_USED": "Last used",
     "HISTORY_RELOAD": "Reload history",
-    "APPLICATION": "App",
+    "APPLICATION": "App ID",
     "PRODUCT": "Application",
     "KEY": "Key"
   },

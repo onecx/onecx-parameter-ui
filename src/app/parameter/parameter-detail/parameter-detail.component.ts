@@ -45,8 +45,10 @@ export class ParameterDetailComponent implements OnChanges {
   }
 
   ngOnChanges() {
+    this.applicationIds = []
     if (this.changeMode === 'EDIT') {
       this.fillForm()
+      this.parameterId = this.parameter?.id
     }
     if (this.changeMode === 'NEW') {
       this.parameterId = undefined
@@ -62,12 +64,16 @@ export class ParameterDetailComponent implements OnChanges {
     this.formGroup.patchValue({
       ...this.parameter
     })
+    if (this.changeMode === 'EDIT' || this.changeMode === 'VIEW') {
+      this.formGroup.controls['key'].disable()
+    } else {
+      this.formGroup.controls['key'].enable()
+    }
     this.formGroup.controls['value'].setValue(this.parameter?.setValue)
     this.applicationIds.push({
       label: this.parameter?.applicationId,
       value: this.parameter?.applicationId
     })
-    this.formGroup.controls['applicationId'].disable()
   }
 
   public updateApplicationIds(productName: string) {
@@ -97,11 +103,7 @@ export class ParameterDetailComponent implements OnChanges {
    * SAVING => create or update
    */
   public onSave(): void {
-    if (this.formGroup.errors?.['dateRange']) {
-      this.msgService.warning({
-        summaryKey: 'VALIDATION.ERRORS.INVALID_DATE_RANGE'
-      })
-    } else if (this.formGroup.valid) {
+    if (this.formGroup.valid) {
       if (this.changeMode === 'EDIT' && this.parameterId) {
         this.parameterApi
           .updateParameterValue({
