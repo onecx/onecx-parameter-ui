@@ -7,11 +7,11 @@ import { PortalMessageService } from '@onecx/portal-integration-angular'
 import { ApplicationParameter, ParametersAPIService, ProductStorePageResult } from 'src/app/shared/generated'
 
 @Component({
-  selector: 'app-parameter-detail-new',
-  templateUrl: './parameter-detail-new.component.html',
-  styleUrls: ['./parameter-detail-new.component.scss']
+  selector: 'app-parameter-detail',
+  templateUrl: './parameter-detail.component.html',
+  styleUrls: ['./parameter-detail.component.scss']
 })
-export class ParameterDetailNewComponent implements OnChanges {
+export class ParameterDetailComponent implements OnChanges {
   @Input() public changeMode = 'NEW'
   @Input() public displayDetailDialog = false
   @Input() public parameter: ApplicationParameter | undefined

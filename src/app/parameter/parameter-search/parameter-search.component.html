@@ -6,8 +6,6 @@
     (resetSearchEmitter)="onReset()"
   ></app-parameter-criteria>
 
-  <app-results [results]="(results$ | async) ?? []" (deleteEvent)="onDeleteConfirmation()"></app-results>
-
   <ocx-page-content *ngIf="results$ | async as results" styleClass="px-3">
     <p-table
       #parameterTable
@@ -140,6 +138,11 @@
               <span class="danger-action-text font-medium p-button-icon pi pi-trash" aria-hidden="true"></span>
             </button>
           </td>
+          <ng-container *ngFor="let col of columns">
+            <td [class]="col.css">
+              <div>{{ rowData[col.field] }}</div>
+            </td>
+          </ng-container>
         </tr>
       </ng-template>
     </p-table>
@@ -187,14 +190,14 @@
   </ng-template>
 </p-dialog>
 
-<app-parameter-detail-new
+<app-parameter-detail
   [displayDetailDialog]="displayDetailDialog"
   (hideDialogAndChanged)="onCloseDetail($event)"
   [parameter]="parameter"
   [products]="(products$ | async) ?? []"
   [allProducts]="(allProducts$ | async) ?? []"
   [changeMode]="changeMode"
-></app-parameter-detail-new>
+></app-parameter-detail>
 
 <app-parameter-history
   [displayHistoryDialog]="displayHistoryDialog"

@@ -222,8 +222,6 @@ export class ParameterSearchComponent implements OnInit {
   }
   public onHistory(ev: MouseEvent, item: ApplicationParameter) {
     ev.stopPropagation()
-    this.changeMode = 'VIEW'
-    this.appsChanged = false
     this.parameter = item
     this.displayHistoryDialog = true
   }
