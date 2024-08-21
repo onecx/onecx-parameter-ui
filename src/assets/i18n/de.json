@@ -9,15 +9,15 @@
     },
     "COPY": {
       "LABEL": "Kopieren",
+      "TOOLTIP": "Kopie des Parameters erstellen",
       "OF": "Kopie von ",
       "DATA": "Mit den Daten einen neuen Parameter anlegen",
       "CLIPBOARD": "In die Zwischenablage kopieren"
     },
     "CREATE": {
       "LABEL": "Erstellen",
-      "PARAMETER": "Parameter erstellen",
       "PARAMETER.TOOLTIP": "Einen neuen Parameter erstellen",
-      "CREATE_PARAMETER": "Erstellung eines Parameters",
+      "CREATE_PARAMETER": "Parameter erstellen",
       "CREATE_PARAMETER_SUB_HEADER": "Füllen Sie die Eingaben aus, um einen neuen Parameter zu erstellen",
       "BREADCRUMB": "Parameter-Erstellung",
       "CREATE_SUCCESS": "Parameter wurde erfolgreich erstellt",
@@ -25,19 +25,21 @@
       "CLOSE": "Schließen",
       "SAVE": "Erstellen",
       "MESSAGE": {
-        "CREATE_OK": "Der Parameter wurde erfolgreich erstellt",
-        "CREATE_NOK": "Ein Fehler ist aufgetreten. Der Parameter wurde nicht erstellt."
+        "OK": "Der Parameter wurde erfolgreich erstellt",
+        "NOK": "Ein Fehler ist aufgetreten. Der Parameter wurde nicht erstellt."
       }
     },
     "DELETE": {
       "LABEL": "Löschen",
-      "PARAMETERS.TOOLTIP": "Lösche diesen Parameter",
+      "TOOLTIP": "Diesen Parameter löschen",
       "PARAMETER": "Parameter löschen",
       "MENU": "Menüpunkt löschen",
-      "MESSAGE": "Möchten Sie \"{{ITEM}}\" löschen?",
-      "MESSAGE_INFO": "Diese Aktion kann nicht rückgängig gemacht werden!",
-      "MESSAGE_NOK": "Parameter konnte nicht gelöscht werden",
-      "MESSAGE_OK": "Parameter erfolgreich gelöscht"
+      "MESSAGES": {
+        "MESSAGE": "Möchten Sie \"{{ITEM}}\" löschen?",
+        "MESSAGE_INFO": "Diese Aktion kann nicht rückgängig gemacht werden!",
+        "NOK": "Parameter konnte nicht gelöscht werden",
+        "OK": "Parameter erfolgreich gelöscht"
+      }
     },
     "EDIT": {
       "LABEL": "Bearbeiten",
@@ -49,8 +51,8 @@
       "FETCH_ERROR": "Parameter mit angegebener Id konnte nicht abgerufen werden",
       "EDIT_PARAMETER_SUB_HEADER": "Ändern Sie die Eingaben, um den Parameter anzupassen",
       "MESSAGE": {
-        "CHANGE_OK": "Der Parameter wurde erfolgreich geändert.",
-        "CHANGE_NOK": "Ein Fehler ist aufgetreten. Der Parameter wurde nicht geändert."
+        "OK": "Der Parameter wurde erfolgreich geändert.",
+        "NOK": "Ein Fehler ist aufgetreten. Der Parameter wurde nicht geändert."
       }
     },
     "EXPORT": {
@@ -65,6 +67,12 @@
       "LABEL": "Import",
       "TOOLTIP": "Definition als JSON hochladen",
       "PARAMETER": "Die Parameter-Definition im JSON Format importieren."
+    },
+    "VIEW": {
+      "TOOLTIP": "Parameter-Details ansehen"
+    },
+    "HISTORY": {
+      "TOOLTIP": "Verlaufsdaten ansehen"
     },
     "CANCEL": "Cancel",
     "CHOOSE": "Choose",
@@ -93,12 +101,15 @@
     "PARAMETER_SEARCH_SUB_HEADER": "Suchen und verwalten von Parametern",
     "MSG_NO_RESULTS": "Die Suche ergab keine Treffer",
     "MSG_SEARCH_FAILED": "Suche ist fehlgeschlagen",
-    "ACTION": "Aktion",
+    "NO_DATA": "Keine Ergebnisse",
     "SEARCH": "Suchen",
     "RESET": "Zurücksetzen",
     "SELECT_TYPE": "Wählen Sie einen Typ",
     "DROPDOWN_PLACEHOLDER": "Irgendein",
-    "APPLICATION_ID_IS_MANDATORY": "Das Feld Anwendung-ID ist obligatorisch"
+    "APPLICATION_ID_IS_MANDATORY": "Das Feld Anwendung-ID ist obligatorisch",
+    "TOOLTIPS": {
+      "ACTIONS": "Verfügbare Aktionen zu einem Parameter"
+    }
   },
   "PARAMETER": {
     "APP_ID": "App-ID",
@@ -119,16 +130,16 @@
       "JSON": "Json"
     },
     "TOOLTIPS": {
-      "APP_ID": "Wählen Sie eine App-ID",
+      "APP_ID": "Basisname von Apps mit zugeordneten Parametern",
       "APPLICATION": "Wählen Sie eine App",
-      "PRODUCT_NAME": "Wählen Sie eine Applikation",
-      "KEY": "Tragen Sie einen eindeutigen Parameter-Schlüssel ein",
-      "VALUE": "Tragen Sie einen Wert ein",
-      "IMPORT_VALUE": "Werte importieren",
-      "UNIT": "Tragen Sie eine Einheit ein",
+      "PRODUCT_NAME": "Applikation, für die der Parameter angelegt ist",
+      "KEY": "Eindeutiger Identifikationsschlüssel des Parameters",
+      "VALUE": "Wert des Parameters",
+      "IMPORT_VALUE": "Importierter Wert",
+      "UNIT": "Einheit des Parameters",
       "RANGE_FROM": "Bereich von",
       "RANGE_TO": "Bereich bis",
-      "DESCRIPTION": "Bitte beschreiben Sie den Parameter",
+      "DESCRIPTION": "Detaillierte Beschreibung des Parameters",
       "FORM_TYPE": "Wählen Sie zwischen Standard- und erweiterter Form"
     }
   },
@@ -153,7 +164,7 @@
     "USED_VALUE": "Verwendeter Wert",
     "LAST_USED": "Zuletzt verwendet",
     "HISTORY_RELOAD": "Verlaufsdaten aktualisieren",
-    "APPLICATION": "Applikation",
+    "APPLICATION": "App-ID",
     "PRODUCT": "Applikation",
     "KEY": "Parameter-Schlüssel"
   },

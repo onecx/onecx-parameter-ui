@@ -9,13 +9,13 @@
     },
     "COPY": {
       "LABEL": "Copy",
+      "TOOLTIP": "Create a copy of the Parameter",
       "OF": "Copy of ",
       "DATA": "Create a new Parameter with the data",
       "CLIPBOARD": "Copy to clipboard"
     },
     "CREATE": {
       "LABEL": "Create",
-      "PARAMETER": "Create Parameter",
       "PARAMETER.TOOLTIP": "Create a new Parameter",
       "CREATE_PARAMETER": "Create Parameter",
       "CREATE_PARAMETER_SUB_HEADER": "Fill in the inputs to create a new Parameter",
@@ -25,19 +25,21 @@
       "CLOSE": "Close",
       "SAVE": "Create new Parameter",
       "MESSAGE": {
-        "CREATE_OK": "The Parameter was created successfully",
-        "CREATE_NOK": "An error has occurred. The Parameter was not created."
+        "OK": "The Parameter was created successfully",
+        "NOK": "An error has occurred. The Parameter was not created."
       }
     },
     "DELETE": {
       "LABEL": "Delete",
-      "PARAMETERS.TOOLTIP": "Delete this Parameter",
+      "TOOLTIP": "Delete this Parameter",
       "PARAMETER": "Delete Parameter",
       "MENU": "Delete Menu Item",
-      "MESSAGE": "Do you want to delete \"{{ITEM}}\"?",
-      "MESSAGE_INFO": "This action cannot be undone!",
-      "MESSAGE_NOK": "Parameter could not be deleted",
-      "MESSAGE_OK": "Parameter deleted successfully"
+      "MESSAGES": {
+        "MESSAGE": "Do you want to delete \"{{ITEM}}\"?",
+        "MESSAGE_INFO": "This action cannot be undone!",
+        "NOK": "Parameter could not be deleted",
+        "OK": "Parameter deleted successfully"
+      }
     },
     "EDIT": {
       "LABEL": "Edit",
@@ -49,8 +51,8 @@
       "FETCH_ERROR": "Couldn't fetch parameter with given Id.",
       "EDIT_PARAMETER_SUB_HEADER": "Change the inputs to adjust the Parameter",
       "MESSAGE": {
-        "CHANGE_OK": "The Parameter was changed successfully",
-        "CHANGE_NOK": "An error has occurred. The Parameter was not changed."
+        "OK": "The Parameter was changed successfully",
+        "NOK": "An error has occurred. The Parameter was not changed."
       }
     },
     "EXPORT": {
@@ -65,6 +67,12 @@
       "LABEL": "Import",
       "TOOLTIP": "Upload definition in JSON format",
       "PARAMETER": "Import Parameter in JSON format."
+    },
+    "VIEW": {
+      "TOOLTIP": "View Parameter details"
+    },
+    "HISTORY": {
+      "TOOLTIP": "View history"
     },
     "CANCEL": "Cancel",
     "CHOOSE": "Choose",
@@ -93,12 +101,15 @@
     "PARAMETER_SEARCH_SUB_HEADER": "Searching and managing of Parameters",
     "MSG_NO_RESULTS": "Search returned no results",
     "MSG_SEARCH_FAILED": "Search failed",
-    "ACTION": "Action",
+    "NO_DATA": "No data",
     "SEARCH": "Search",
     "RESET": "Reset",
     "SELECT_TYPE": "Select Type",
     "DROPDOWN_PLACEHOLDER": "Any",
-    "APPLICATION_ID_IS_MANDATORY": "Application Id field is mandatory"
+    "APPLICATION_ID_IS_MANDATORY": "Application Id field is mandatory",
+    "TOOLTIPS": {
+      "ACTIONS": "Available actions for a Parameter item"
+    }
   },
   "PARAMETER": {
     "APP_ID": "App-ID",
@@ -119,16 +130,16 @@
       "JSON": "Json"
     },
     "TOOLTIPS": {
-      "APP_ID": "Please choose an App ID",
-      "APPLICATION": "Please choose an App",
-      "PRODUCT_NAME": "Please choose an Application",
-      "KEY": "Please provide a Parameter Key",
-      "VALUE": "Please provide a value",
-      "IMPORT_VALUE": "Import Value",
-      "UNIT": "Please provide a Unit",
+      "APP_ID": "Base identifier for Apps with assigned Parameters",
+      "APPLICATION": "Business name of the App",
+      "PRODUCT_NAME": "Application for which the Parameter is created",
+      "KEY": "Unique identifier for the Parameter",
+      "VALUE": "Value of the Parameter",
+      "IMPORT_VALUE": "Imported value",
+      "UNIT": "Unit of the Parameter",
       "RANGE_FROM": "Range from",
       "RANGE_TO": "Range to",
-      "DESCRIPTION": "Provide a description of the parameter",
+      "DESCRIPTION": "Detailed description of the Parameter",
       "FORM_TYPE": "Choose between standard and advanced form"
     }
   },
@@ -153,7 +164,7 @@
     "USED_VALUE": "Used Value",
     "LAST_USED": "Last used",
     "HISTORY_RELOAD": "Reload history",
-    "APPLICATION": "App",
+    "APPLICATION": "App ID",
     "PRODUCT": "Application",
     "KEY": "Key"
   },

@@ -76,7 +76,7 @@
         "serve": {
           "builder": "ngx-build-plus:dev-server",
           "options": {
-            "browserTarget": "onecx-parameter-ui:build",
+            "buildTarget": "onecx-parameter-ui:build",
             "port": 5032,
             "publicHost": "http://localhost:5032",
             "extraWebpackConfig": "webpack.config.js",
@@ -84,10 +84,10 @@
           },
           "configurations": {
             "development": {
-              "browserTarget": "onecx-parameter-ui:build:development"
+              "buildTarget": "onecx-parameter-ui:build:development"
             },
             "production": {
-              "browserTarget": "onecx-parameter-ui:build:production",
+              "buildTarget": "onecx-parameter-ui:build:production",
               "extraWebpackConfig": "webpack.prod.config.js"
             }
           }
@@ -95,7 +95,7 @@
         "extract-i18n": {
           "builder": "ngx-build-plus:extract-i18n",
           "options": {
-            "browserTarget": "onecx-parameter-ui:build",
+            "buildTarget": "onecx-parameter-ui:build",
             "extraWebpackConfig": "webpack.config.js"
           }
         },

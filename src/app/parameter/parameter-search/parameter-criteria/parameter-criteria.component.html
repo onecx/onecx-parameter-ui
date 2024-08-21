@@ -1,0 +1,60 @@
+<ocx-search-header
+  [header]="'SEARCH.PARAMETER_SEARCH_HEADER' | translate"
+  [subheader]="'SEARCH.PARAMETER_SEARCH_SUB_HEADER' | translate"
+  (searched)="submitCriteria()"
+  (resetted)="resetCriteria()"
+  [manualBreadcrumbs]="false"
+  [actions]="actions"
+>
+  <div [formGroup]="parameterCriteria" class="flex flex-wrap gap-3">
+    <span class="p-float-label">
+      <p-dropdown
+        id="pm_parameter_search_criteria_product_name"
+        styleClass="w-15rem text-responsive"
+        [emptyMessage]="'SEARCH.NO_DATA' | translate"
+        [options]="productOptions"
+        [autoDisplayFirst]="true"
+        [appendTo]="'body'"
+        (onChange)="this.updateApplicationIds($event.value)"
+        formControlName="productName"
+        [aria-label]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
+        [pTooltip]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      >
+      </p-dropdown>
+      <label for="parameter_search_criteria_product_name"> {{ 'PARAMETER.PRODUCT_NAME' | translate }}</label>
+    </span>
+    <span class="p-float-label">
+      <p-dropdown
+        id="pm_parameter_search_criteria_application_id"
+        styleClass="w-15rem text-responsive"
+        [options]="applicationIds"
+        [emptyMessage]="'SEARCH.NO_DATA' | translate"
+        [autoDisplayFirst]="true"
+        [appendTo]="'body'"
+        formControlName="applicationId"
+        [aria-label]="'PARAMETER.TOOLTIPS.APP_ID' | translate"
+        [pTooltip]="'PARAMETER.TOOLTIPS.APP_ID' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      >
+      </p-dropdown>
+      <label for="parameter_search_criteria_application_id"> {{ 'PARAMETER.APP_ID' | translate }}</label>
+    </span>
+    <span class="p-float-label">
+      <input
+        id="pm_parameter_search_criteria_key"
+        pInputText
+        type="text"
+        formControlName="key"
+        class="w-15rem text-responsive"
+        [aria-label]="'PARAMETER.TOOLTIPS.KEY' | translate"
+        [pTooltip]="'PARAMETER.TOOLTIPS.KEY' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      />
+      <label for="parameter_search_criteria_key">{{ 'PARAMETER.KEY' | translate }}</label>
+    </span>
+  </div>
+</ocx-search-header>

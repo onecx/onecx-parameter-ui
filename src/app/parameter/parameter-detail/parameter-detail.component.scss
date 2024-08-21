@@ -1,0 +1,15 @@
+@import '/src/_mixins.scss';
+
+@include correct-select-button;
+@include dialog-footer-buttons;
+@include dialog-non-full-size-modal;
+@include displaying-text-responsive;
+
+:host ::ng-deep {
+  label.float-label {
+    color: var(--emphasis-medium);
+  }
+  .error-tailor-has-error ~ control-error {
+    text-align: left;
+  }
+}

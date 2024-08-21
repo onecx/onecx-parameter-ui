@@ -7,10 +7,9 @@ import { PortalCoreModule, providePortalDialogService } from '@onecx/portal-inte
 import { SharedModule } from '../shared/shared.module'
 
 import { ParameterSearchComponent } from './parameter-search/parameter-search.component'
-import { ResultsComponent } from './parameter-search/results/results.component'
-import { ParameterDetailFormComponent } from './parameter-detail/parameter-detail-form/parameter-detail-form.component'
-import { ParameterDetailComponent } from './parameter-detail/parameter-detail/parameter-detail.component'
-import { ParameterCreateComponent } from './parameter-detail/parameter-create/parameter-create.component'
+import { ParameterCriteriaComponent } from './parameter-search/parameter-criteria/parameter-criteria.component'
+import { ParameterDetailComponent } from './parameter-detail/parameter-detail.component'
+import { ParameterHistoryComponent } from './parameter-detail/parameter-history/parameter-history.component'
 import { InitializeModuleGuard, addInitializeModuleGuard } from '@onecx/angular-integration-interface'
 
 const routes: Routes = [
@@ -18,25 +17,14 @@ const routes: Routes = [
     path: '',
     component: ParameterSearchComponent,
     pathMatch: 'full'
-  },
-  {
-    path: 'create',
-    component: ParameterCreateComponent,
-    pathMatch: 'full'
-  },
-  {
-    path: 'edit/:id',
-    component: ParameterDetailComponent,
-    pathMatch: 'full'
   }
 ]
 @NgModule({
   declarations: [
     ParameterSearchComponent,
-    ResultsComponent,
-    ParameterDetailFormComponent,
+    ParameterCriteriaComponent,
     ParameterDetailComponent,
-    ParameterCreateComponent
+    ParameterHistoryComponent
   ],
   imports: [
     CommonModule,
