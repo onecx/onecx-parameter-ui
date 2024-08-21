@@ -14,7 +14,7 @@
       [columns]="filteredColumns"
       styleClass="p-datatable-striped"
       dataKey="id"
-      [globalFilterFields]="['key', 'productName']"
+      [globalFilterFields]="['productName', 'applicationId', 'key']"
       [reorderableColumns]="false"
       [paginator]="true"
       [alwaysShowPaginator]="true"
@@ -31,7 +31,11 @@
           [columnTemplates]="[]"
           (columnsChange)="onColumnsChange($event)"
           (filterChange)="onFilterChange($event)"
-          [filterColumns]="['PARAMETER.KEY' | translate, 'PARAMETER.PRODUCT_NAME' | translate]"
+          [filterColumns]="[
+            'PARAMETER.PRODUCT_NAME' | translate,
+            'PARAMETER.APP_ID' | translate,
+            'PARAMETER.KEY' | translate
+          ]"
         ></ocx-data-view-controls>
       </ng-template>
       <ng-template pTemplate="paginatorleft" let-state>
@@ -54,6 +58,7 @@
             [id]="'pm_parameter_search_table_header_col_' + col.field"
             [class]="col.css"
             [pSortableColumn]="col.field"
+            [aria-label]="'PARAMETER.TOOLTIPS.' + col.header | translate"
             [pTooltip]="'PARAMETER.TOOLTIPS.' + col.header | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
@@ -73,10 +78,10 @@
                 pbutton
                 *ocxIfPermission="'PARAMETER#VIEW'"
                 class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-                [id]="'am_parameter_search_table_row_' + row + '_view_action'"
+                [id]="'pm_parameter_search_table_row_' + row + '_view_action'"
                 (click)="onDetail($event, rowData, 'VIEW')"
-                aria-label="'ACTIONS.VIEW' | translate"
-                [pTooltip]="'ACTIONS.VIEW' | translate"
+                [aria-label]="'ACTIONS.VIEW.TOOLTIP' | translate"
+                [pTooltip]="'ACTIONS.VIEW.TOOLTIP' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
@@ -89,7 +94,7 @@
               class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
               [id]="'pm_parameter_search_table_row_' + row + '_edit_action'"
               (click)="onDetail($event, rowData, 'EDIT')"
-              aria-label="'ACTIONS.EDIT.LABEL' | translate"
+              [aria-label]="'ACTIONS.EDIT.LABEL' | translate"
               [pTooltip]="'ACTIONS.EDIT.TOOLTIP' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -102,7 +107,7 @@
               class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
               [id]="'pm_parameter_search_table_row_' + row + '_copy_action'"
               (click)="onCopy($event, rowData)"
-              aria-label="'ACTIONS.COPY.LABEL' | translate"
+              [aria-label]="'ACTIONS.COPY.LABEL' | translate"
               [pTooltip]="'ACTIONS.COPY.TOOLTIP' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -116,7 +121,7 @@
               class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
               [id]="'pm_parameter_search_table_row_' + row + '_history_action'"
               (click)="onHistory($event, rowData)"
-              aria-label="'ACTIONS.HISTORY.LABEL' | translate"
+              [aria-label]="'ACTIONS.HISTORY.LABEL' | translate"
               [pTooltip]="'ACTIONS.HISTORY.TOOLTIP' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -130,7 +135,7 @@
               class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
               [id]="'pm_parameter_search_table_row_' + row + '_delete_action'"
               (click)="onDelete($event, rowData)"
-              aria-label="'ACTIONS.DELETE.LABEL' | translate"
+              [aria-label]="'ACTIONS.DELETE.LABEL' | translate"
               [pTooltip]="'ACTIONS.DELETE.TOOLTIP' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -140,7 +145,8 @@
           </td>
           <ng-container *ngFor="let col of columns">
             <td [class]="col.css">
-              <div>{{ rowData[col.field] }}</div>
+              <div *ngIf="col.limit">{{ limitText(rowData[col.field], 25) }}</div>
+              <div *ngIf="!col.limit">{{ rowData[col.field] }}</div>
             </td>
           </ng-container>
         </tr>
@@ -173,6 +179,7 @@
         icon="pi pi-times"
         (onClick)="displayDeleteDialog = false"
         [label]="'ACTIONS.CONFIRMATION.NO' | translate"
+        [aria-label]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
         [pTooltip]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
@@ -182,6 +189,7 @@
         icon="pi pi-check"
         (onClick)="onDeleteConfirmation()"
         [label]="'ACTIONS.CONFIRMATION.YES' | translate"
+        [ariaLabel]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
         [pTooltip]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"

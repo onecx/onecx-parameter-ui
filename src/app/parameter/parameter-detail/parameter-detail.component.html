@@ -23,21 +23,22 @@
           <div class="p-fluid col-12 md:col-6">
             <span class="p-float-label" controlErrorAnchor>
               <p-dropdown
-                id="parameter_detail_form_product_name"
+                id="pm_parameter_detail_form_product_name"
                 class="input-field"
-                styleClass="w-full"
+                styleClass="w-full text-responsive"
+                [emptyMessage]="'SEARCH.NO_DATA' | translate"
                 [options]="allProducts"
                 [autoDisplayFirst]="true"
                 [appendTo]="'body'"
                 (onChange)="this.updateApplicationIds($event.value)"
                 formControlName="productName"
-                aria-label="'PARAMETER.PRODUCT' | translate"
+                [aria-label]="'PARAMETER.PRODUCT' | translate"
                 [pTooltip]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
               </p-dropdown>
-              <label class="ocx-required-label" for="parameter_detail_form_productName">
+              <label class="ocx-required-label" for="pm_parameter_detail_form_productName">
                 {{ 'PARAMETER.PRODUCT_NAME' | translate }}</label
               >
             </span>
@@ -45,89 +46,78 @@
           <div class="p-fluid col-12 md:col-6">
             <span class="p-float-label" controlErrorAnchor>
               <p-dropdown
-                id="parameter_detail_form_applicationId"
+                id="pm_parameter_detail_form_applicationId"
                 class="input-field"
-                styleClass="w-full"
+                styleClass="w-full text-responsive"
+                [emptyMessage]="'SEARCH.NO_DATA' | translate"
                 [options]="applicationIds"
                 [autoDisplayFirst]="true"
                 [appendTo]="'body'"
                 formControlName="applicationId"
-                aria-label="'PARAMETER.APPLICATION | translate"
+                [aria-label]="'PARAMETER.APPLICATION' | translate"
                 [pTooltip]="'PARAMETER.TOOLTIPS.APPLICATION' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
               </p-dropdown>
-              <label class="ocx-required-label" for="parameter_detail_form_applicationId">
+              <label class="ocx-required-label" for="pm_parameter_detail_form_applicationId">
                 {{ 'PARAMETER.APP_ID' | translate }}</label
               >
             </span>
           </div>
 
-          <div class="p-fluid col-12 md:col-6 mb-3">
+          <div class="p-fluid col-12 mb-3">
             <span class="p-float-label" controlErrorAnchor>
               <input
                 pInputText
                 type="text"
-                id="parameter_detail_form_key"
+                id="pm_parameter_detail_form_key"
                 formControlName="key"
+                [aria-label]="'PARAMETER.TOOLTIPS.KEY' | translate"
                 [pTooltip]="'PARAMETER.TOOLTIPS.KEY' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label class="ocx-required-label" for="parameter_detail_form_key">
+              <label class="ocx-required-label" for="pm_parameter_detail_form_key">
                 {{ 'PARAMETER.KEY' | translate }}</label
               >
             </span>
           </div>
 
-          <div class="p-fluid col-12 md:col-6 mb-3">
-            <span class="p-float-label" controlErrorAnchor>
-              <input
-                pInputText
-                type="text"
-                id="parameter_detail_form_value"
+          <div class="p-fluid col-12 mb-3">
+            <span class="p-float-label w-full" controlErrorAnchor>
+              <textarea
+                [rows]="3"
+                pInputTextarea
+                id="pm_parameter_detail_form_value"
                 formControlName="value"
+                jsonColorize
+                [aria-label]="'PARAMETER.TOOLTIPS.VALUE' | translate"
                 [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
-              />
-              <label class="ocx-required-label" for="parameter_detail_form_value">
+              >
+              </textarea>
+              <label class="ocx-required-label" for="pm_parameter_detail_form_value">
                 {{ 'PARAMETER.VALUE' | translate }}</label
               >
             </span>
           </div>
-
-          <!-- <div class="p-fluid col-12 md:col-6 mb-3">
-            <span class="p-float-label" controlErrorAnchor>
-              <textarea
-                [rows]="5"
-                [cols]="30"
-                pInputTextarea
-                id="parameter_detail_form_value"
-                formControlName="value"
-                jsonColorize
-              >
-              </textarea>
-              <label class="ocx-required-label" for="parameter_detail_form_value">
-                {{ 'PARAMETER.VALUE' | translate }}</label
-              >
-            </span>
-          </div> -->
 
           <div class="p-fluid col-12 md:col-6 mb-3">
             <span class="p-float-label">
               <input
                 pInputText
                 type="text"
-                id="parameter_detail_form_importValue"
+                id="pm_parameter_detail_form_importValue"
                 [value]="parameter?.importValue"
                 disabled="true"
+                [aria-label]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
                 [pTooltip]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label for="parameter_detail_form_importValue">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
+              <label for="pm_parameter_detail_form_importValue">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
             </span>
           </div>
 
@@ -138,6 +128,7 @@
                 type="text"
                 id="parameter_detail_form_unit"
                 formControlName="unit"
+                [aria-label]="'PARAMETER.TOOLTIPS.UNIT' | translate"
                 [pTooltip]="'PARAMETER.TOOLTIPS.UNIT' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -153,6 +144,7 @@
                 type="text"
                 id="parameter_detail_form_rangeFrom"
                 formControlName="rangeFrom"
+                [aria-label]="'PARAMETER.TOOLTIPS.RANGE_FROM' | translate"
                 [pTooltip]="'PARAMETER.TOOLTIPS.RANGE_FROM' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -168,6 +160,7 @@
                 type="text"
                 id="parameter_detail_form_rangeTo"
                 formControlName="rangeTo"
+                [aria-label]="'PARAMETER.TOOLTIPS.RANGE_TO' | translate"
                 [pTooltip]="'PARAMETER.TOOLTIPS.RANGE_TO' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -186,6 +179,7 @@
                 formControlName="description"
                 class="w-full"
                 autoResize="false"
+                [aria-label]="'PARAMETER.TOOLTIPS.DESCRIPTION' | translate"
                 [pTooltip]="'PARAMETER.TOOLTIPS.DESCRIPTION' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -208,6 +202,7 @@
         icon="pi pi-times"
         (onClick)="onDialogHide()"
         [label]="'ACTIONS.CANCEL' | translate"
+        [aria-label]="'ACTIONS.TOOLTIPS.CANCEL_AND_CLOSE' | translate"
         [pTooltip]="'ACTIONS.TOOLTIPS.CANCEL_AND_CLOSE' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
@@ -218,6 +213,7 @@
         (onClick)="onSave()"
         [disabled]="!formGroup.valid"
         [label]="'ACTIONS.SAVE' | translate"
+        [aria-label]="'ACTIONS.TOOLTIPS.SAVE' | translate"
         [pTooltip]="'ACTIONS.TOOLTIPS.SAVE' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"

@@ -1,9 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
 import { Action, Column, PortalMessageService } from '@onecx/portal-integration-angular'
-
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms'
+import { Table } from 'primeng/table'
+import { SelectItem } from 'primeng/api'
 import { catchError, finalize, map, tap } from 'rxjs/operators'
 import { Observable, of } from 'rxjs'
+
 import {
   ApplicationParameter,
   ParameterSearchCriteria,
@@ -12,11 +15,8 @@ import {
   ProductStorePageResult,
   ProductsAPIService
 } from 'src/app/shared/generated'
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms'
-import { SelectItem } from 'primeng/api'
 
-import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
-import { Table } from 'primeng/table'
+import { dropDownSortItemsByLabel, limitText } from 'src/app/shared/utils'
 
 type ExtendedColumn = Column & {
   hasFilter?: boolean
@@ -54,6 +54,8 @@ export class ParameterSearchComponent implements OnInit {
   public appsChanged = false
   public results$: Observable<ApplicationParameter[]> | undefined
 
+  public limitText = limitText
+
   public columns: ExtendedColumn[] = [
     {
       field: 'productName',
@@ -67,29 +69,32 @@ export class ParameterSearchComponent implements OnInit {
       header: 'APP_ID',
       active: true,
       translationPrefix: 'PARAMETER',
-      css: 'text-center hidden xl:table-cell'
+      css: 'hidden xl:table-cell',
+      limit: true
     },
     {
       field: 'key',
       header: 'KEY',
       active: true,
       translationPrefix: 'PARAMETER',
-      css: 'hidden sm:table-cell'
+      css: 'hidden sm:table-cell',
+      limit: true
     },
     {
       field: 'setValue',
       header: 'VALUE',
       active: true,
       translationPrefix: 'PARAMETER',
-      css: 'text-center hidden xl:table-cell',
-      isDropdown: true
+      css: 'hidden xl:table-cell',
+      isDropdown: true,
+      limit: true
     },
     {
       field: 'importValue',
       header: 'IMPORT_VALUE',
       active: true,
       translationPrefix: 'PARAMETER',
-      css: 'text-center hidden lg:table-cell',
+      css: 'hidden lg:table-cell',
       isDropdown: true
     },
     {
@@ -97,7 +102,7 @@ export class ParameterSearchComponent implements OnInit {
       header: 'DESCRIPTION',
       active: false,
       translationPrefix: 'PARAMETER',
-      css: 'text-center hidden lg:table-cell',
+      css: 'hidden lg:table-cell',
       isDropdown: true
     },
     {
@@ -105,7 +110,7 @@ export class ParameterSearchComponent implements OnInit {
       header: 'UNIT',
       active: false,
       translationPrefix: 'PARAMETER',
-      css: 'text-center hidden lg:table-cell',
+      css: 'hidden lg:table-cell',
       isDropdown: true
     },
     {
@@ -113,7 +118,7 @@ export class ParameterSearchComponent implements OnInit {
       header: 'RANGE_FROM',
       active: false,
       translationPrefix: 'PARAMETER',
-      css: 'text-center hidden lg:table-cell',
+      css: 'hidden lg:table-cell',
       isDropdown: true
     },
     {
@@ -121,7 +126,7 @@ export class ParameterSearchComponent implements OnInit {
       header: 'RANGE_TO',
       active: false,
       translationPrefix: 'PARAMETER',
-      css: 'text-center hidden lg:table-cell',
+      css: 'hidden lg:table-cell',
       isDropdown: true
     }
   ]
@@ -154,6 +159,7 @@ export class ParameterSearchComponent implements OnInit {
     if (!reuseCriteria) {
       this.criteria = { ...criteria }
     }
+    console.log('CRITERIA', this.criteria)
     this.results$ = this.parametersApi
       .searchApplicationParametersByCriteria({
         parameterSearchCriteria: { ...this.criteria }

@@ -17,8 +17,11 @@
         <p-button
           icon="pi pi-refresh"
           styleClass="p-button-text"
-          pTooltip="{{ 'HISTORY.HISTORY_RELOAD' | translate }}"
           (onClick)="this.getParameterHistoryArray()"
+          [aria-label]="'HISTORY.HISTORY_RELOAD' | translate"
+          [pTooltip]="'HISTORY.HISTORY_RELOAD' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
         ></p-button>
       </span>
       <p-card>
@@ -73,6 +76,7 @@
         icon="pi pi-times"
         (onClick)="onDialogHide()"
         [label]="'ACTIONS.CANCEL' | translate"
+        [aria-label]="'ACTIONS.TOOLTIPS.CANCEL_AND_CLOSE' | translate"
         [pTooltip]="'ACTIONS.TOOLTIPS.CANCEL_AND_CLOSE' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"

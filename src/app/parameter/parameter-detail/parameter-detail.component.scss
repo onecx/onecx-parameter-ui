@@ -3,6 +3,7 @@
 @include correct-select-button;
 @include dialog-footer-buttons;
 @include dialog-non-full-size-modal;
+@include displaying-text-responsive;
 
 :host ::ng-deep {
   label.float-label {

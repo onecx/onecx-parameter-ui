@@ -10,12 +10,14 @@
     <span class="p-float-label">
       <p-dropdown
         id="pm_parameter_search_criteria_product_name"
-        styleClass="w-13rem"
+        styleClass="w-15rem text-responsive"
+        [emptyMessage]="'SEARCH.NO_DATA' | translate"
         [options]="productOptions"
         [autoDisplayFirst]="true"
         [appendTo]="'body'"
         (onChange)="this.updateApplicationIds($event.value)"
         formControlName="productName"
+        [aria-label]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
         [pTooltip]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
@@ -26,11 +28,13 @@
     <span class="p-float-label">
       <p-dropdown
         id="pm_parameter_search_criteria_application_id"
-        styleClass="w-11rem sm:w-13rem"
+        styleClass="w-15rem text-responsive"
         [options]="applicationIds"
+        [emptyMessage]="'SEARCH.NO_DATA' | translate"
         [autoDisplayFirst]="true"
         [appendTo]="'body'"
         formControlName="applicationId"
+        [aria-label]="'PARAMETER.TOOLTIPS.APP_ID' | translate"
         [pTooltip]="'PARAMETER.TOOLTIPS.APP_ID' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
@@ -44,7 +48,8 @@
         pInputText
         type="text"
         formControlName="key"
-        class="w-11rem sm:w-13rem"
+        class="w-15rem text-responsive"
+        [aria-label]="'PARAMETER.TOOLTIPS.KEY' | translate"
         [pTooltip]="'PARAMETER.TOOLTIPS.KEY' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
