@@ -11,7 +11,6 @@ import {
   ApplicationParameter,
   ParameterSearchCriteria,
   ParametersAPIService,
-  Product,
   ProductStorePageResult,
   ProductsAPIService
 } from 'src/app/shared/generated'
@@ -35,24 +34,22 @@ type ChangeMode = 'VIEW' | 'NEW' | 'EDIT'
 export class ParameterSearchComponent implements OnInit {
   @ViewChild('parameterTable', { static: false }) parameterTable: Table | undefined
 
+  public actions$: Observable<Action[]> | undefined
   public parameter: ApplicationParameter | undefined
   public parameters: ApplicationParameter[] = []
-  private translatedData: any
   public criteria: ParameterSearchCriteria = {}
-  public actions$: Observable<Action[]> | undefined
-  public products$: Observable<ProductStorePageResult> | undefined
-  public allProducts$: Observable<SelectItem[]> | undefined
-  public productOptions$: Observable<SelectItem[]> | undefined
   public criteriaGroup!: UntypedFormGroup
-  public applicationIds: string[] = []
-  public appOptions$: Observable<SelectItem[]> | undefined
+  public results$: Observable<ApplicationParameter[]> | undefined
+  public products$: Observable<ProductStorePageResult> | undefined
+  public allProductNames$: Observable<SelectItem[]> | undefined
+  private translatedData: any
+
   public changeMode: ChangeMode = 'NEW'
   public displayDetailDialog = false
   public displayDeleteDialog = false
   public displayHistoryDialog = false
   public searching = false
-  public appsChanged = false
-  public results$: Observable<ApplicationParameter[]> | undefined
+  public usedProductsChanged = false
 
   public limitText = limitText
 
@@ -132,7 +129,6 @@ export class ParameterSearchComponent implements OnInit {
   ]
 
   public filteredColumns: Column[] = []
-  public deleteDialogVisible = false
 
   constructor(
     private readonly messageService: PortalMessageService,
@@ -147,7 +143,6 @@ export class ParameterSearchComponent implements OnInit {
     this.search({})
     this.prepareActionButtons()
     this.initializeForm()
-    this.getUsedProductNames()
     this.getAllProductNamesAndApplicationIds()
     this.filteredColumns = this.columns.filter((a) => {
       return a.active === true
@@ -192,31 +187,31 @@ export class ParameterSearchComponent implements OnInit {
 
   public onCreate() {
     this.changeMode = 'NEW'
-    this.appsChanged = false
     this.parameter = undefined
     this.displayDetailDialog = true
+    this.usedProductsChanged = false
   }
   public onDetail(ev: MouseEvent, item: ApplicationParameter, mode: ChangeMode): void {
     ev.stopPropagation()
     this.changeMode = mode
-    this.appsChanged = false
     this.parameter = item
     this.displayDetailDialog = true
+    this.usedProductsChanged = false
   }
   public onCloseDetail(refresh: boolean): void {
     this.displayDetailDialog = false
     if (refresh) {
       this.search({}, true)
-      this.getUsedProductNames()
+      this.usedProductsChanged = true
     }
   }
   public onCopy(ev: MouseEvent, item: ApplicationParameter) {
     ev.stopPropagation()
     this.changeMode = 'NEW'
-    this.appsChanged = false
     this.parameter = item
     this.parameter.id = undefined
     this.displayDetailDialog = true
+    this.usedProductsChanged = false
   }
   public onHistory(ev: MouseEvent, item: ApplicationParameter) {
     ev.stopPropagation()
@@ -229,25 +224,24 @@ export class ParameterSearchComponent implements OnInit {
   public onDelete(ev: MouseEvent, item: ApplicationParameter): void {
     ev.stopPropagation()
     this.parameter = item
-    this.appsChanged = false
     this.displayDeleteDialog = true
+    this.usedProductsChanged = false
   }
   public onDeleteConfirmation(): void {
+    this.usedProductsChanged = false
     if (this.parameter?.id) {
-      const usedProduct = this.parameter?.productName !== undefined
       this.parametersApi.deleteParameter({ id: this.parameter?.id }).subscribe({
         next: () => {
           this.displayDeleteDialog = false
           this.parameters = this.parameters.filter((a) => a.key !== this.parameter?.key)
           this.parameter = undefined
-          this.appsChanged = true
           this.messageService.success({ summaryKey: 'ACTIONS.DELETE.MESSAGES.OK' })
-          if (usedProduct) this.getUsedProductNames()
+          this.search({}, true)
+          this.usedProductsChanged = true
         },
         error: () => this.messageService.error({ summaryKey: 'ACTIONS.DELETE.MESSAGES.NOK' })
       })
     }
-    this.search({}, true)
   }
   public onColumnsChange(activeIds: string[]) {
     this.filteredColumns = activeIds.map((id) => this.columns.find((col) => col.field === id)) as Column[]
@@ -304,7 +298,7 @@ export class ParameterSearchComponent implements OnInit {
         return of([] as ProductStorePageResult)
       })
     )
-    this.allProducts$ = this.products$.pipe(
+    this.allProductNames$ = this.products$.pipe(
       map((data: ProductStorePageResult) => {
         const si: SelectItem[] = []
         if (data.stream) {
@@ -318,21 +312,21 @@ export class ParameterSearchComponent implements OnInit {
     )
   }
 
-  private getUsedProductNames(): void {
-    this.productOptions$ = this.parametersApi.getAllApplications().pipe(
-      catchError((err) => {
-        console.error('getAllApplications', err)
-        return of([])
-      }),
-      map((data) =>
-        data.map(
-          (product: Product) =>
-            ({
-              label: product.productName,
-              value: product.productName
-            }) as SelectItem
-        )
-      )
-    )
-  }
+  // private getUsedProductNames(): void {
+  //   this.productOptions$ = this.parametersApi.getAllApplications().pipe(
+  //     catchError((err) => {
+  //       console.error('getAllApplications', err)
+  //       return of([])
+  //     }),
+  //     map((data) =>
+  //       data.map(
+  //         (product: Product) =>
+  //           ({
+  //             label: product.productName,
+  //             value: product.productName
+  //           }) as SelectItem
+  //       )
+  //     )
+  //   )
+  // }
 }

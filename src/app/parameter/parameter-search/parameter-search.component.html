@@ -1,9 +1,9 @@
 <ocx-portal-page [helpArticleId]="'PAGE_PARAMETERS_SEARCH'" permission="PARAMETER#SEARCH">
   <app-parameter-criteria
     [actions]="(actions$ | async) ?? []"
-    [products]="productOptions$"
     (criteriaEmitter)="search($event)"
     (resetSearchEmitter)="onReset()"
+    [productsChanged]="usedProductsChanged"
   ></app-parameter-criteria>
 
   <ocx-page-content *ngIf="results$ | async as results" styleClass="px-3">
@@ -203,7 +203,7 @@
   (hideDialogAndChanged)="onCloseDetail($event)"
   [parameter]="parameter"
   [products]="(products$ | async) ?? []"
-  [allProducts]="(allProducts$ | async) ?? []"
+  [allProducts]="(allProductNames$ | async) ?? []"
   [changeMode]="changeMode"
 ></app-parameter-detail>
 

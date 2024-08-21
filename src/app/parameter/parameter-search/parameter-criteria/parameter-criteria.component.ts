@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 import { SelectItem } from 'primeng/api'
@@ -20,8 +20,9 @@ export interface ParameterCriteriaForm {
   templateUrl: './parameter-criteria.component.html',
   styleUrls: ['./parameter-criteria.component.scss']
 })
-export class ParameterCriteriaComponent implements OnInit {
+export class ParameterCriteriaComponent implements OnInit, OnChanges {
   @Input() public actions: Action[] = []
+  @Input() public productsChanged: boolean = false
   @Output() public criteriaEmitter = new EventEmitter<ParameterSearchCriteria>()
   @Output() public resetSearchEmitter = new EventEmitter<boolean>()
 
@@ -43,6 +44,9 @@ export class ParameterCriteriaComponent implements OnInit {
       applicationId: new FormControl<string | null>(null),
       key: new FormControl<string | null>(null)
     })
+  }
+
+  ngOnChanges(): void {
     this.getUsedProductNamesAndApplicationIds()
   }
 
