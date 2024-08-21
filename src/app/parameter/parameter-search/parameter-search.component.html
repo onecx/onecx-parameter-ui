@@ -121,7 +121,7 @@
               class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
               [id]="'pm_parameter_search_table_row_' + row + '_history_action'"
               (click)="onHistory($event, rowData)"
-              [aria-label]="'ACTIONS.HISTORY.LABEL' | translate"
+              [aria-label]="'ACTIONS.HISTORY.TOOLTIP' | translate"
               [pTooltip]="'ACTIONS.HISTORY.TOOLTIP' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -144,7 +144,7 @@
             </button>
           </td>
           <ng-container *ngFor="let col of columns">
-            <td [class]="col.css">
+            <td *ngIf="!searching" [class]="col.css">
               <div *ngIf="col.limit">{{ limitText(rowData[col.field], 25) }}</div>
               <div *ngIf="!col.limit">{{ rowData[col.field] }}</div>
             </td>

@@ -159,7 +159,6 @@ export class ParameterSearchComponent implements OnInit {
     if (!reuseCriteria) {
       this.criteria = { ...criteria }
     }
-    console.log('CRITERIA', this.criteria)
     this.results$ = this.parametersApi
       .searchApplicationParametersByCriteria({
         parameterSearchCriteria: { ...this.criteria }
