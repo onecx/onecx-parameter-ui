@@ -85,7 +85,7 @@ export class ParameterHistoryComponent implements OnChanges {
       },
       error: () => {
         this.msgService.error({
-          summaryKey: this.translatedData!['SEARCH.MSG_SEARCH_FAILED']
+          summaryKey: 'SEARCH.MSG_SEARCH_FAILED'
         })
       }
     })
@@ -105,7 +105,7 @@ export class ParameterHistoryComponent implements OnChanges {
         },
         error: () => {
           this.msgService.error({
-            summaryKey: this.translatedData!['SEARCH.MSG_SEARCH_FAILED']
+            summaryKey: 'SEARCH.MSG_SEARCH_FAILED'
           })
         }
       })
@@ -126,13 +126,13 @@ export class ParameterHistoryComponent implements OnChanges {
           this.setChartData()
           if (data.length == 0) {
             // this.msgService.success({
-            //   summaryKey: this.translatedData!['SEARCH.MSG_NO_RESULTS']
+            //   summaryKey: 'SEARCH.MSG_NO_RESULTS'
             // })
           }
         },
         error: () => {
           this.msgService.error({
-            summaryKey: this.translatedData!['SEARCH.MSG_SEARCH_FAILED']
+            summaryKey: 'SEARCH.MSG_SEARCH_FAILED'
           })
         }
       })

@@ -42,7 +42,6 @@ export class ParameterSearchComponent implements OnInit {
   public results$: Observable<ApplicationParameter[]> | undefined
   public products$: Observable<ProductStorePageResult> | undefined
   public allProductNames$: Observable<SelectItem[]> | undefined
-  private translatedData: any
 
   public changeMode: ChangeMode = 'NEW'
   public displayDetailDialog = false
@@ -139,11 +138,10 @@ export class ParameterSearchComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
-    this.loadTranslations()
     this.search({})
     this.prepareActionButtons()
     this.initializeForm()
-    this.getAllProductNamesAndApplicationIds()
+    this.getAllProductNames()
     this.filteredColumns = this.columns.filter((a) => {
       return a.active === true
     })
@@ -164,14 +162,14 @@ export class ParameterSearchComponent implements OnInit {
           next: (data: any) => {
             if (data.totalElements == 0) {
               this.messageService.success({
-                summaryKey: this.translatedData['SEARCH.MSG_NO_RESULTS']
+                summaryKey: 'SEARCH.MSG_NO_RESULTS'
               })
               return data.size
             }
           },
           error: () => {
             this.messageService.error({
-              summaryKey: this.translatedData['SEARCH.MSG_SEARCH_FAILED']
+              summaryKey: 'SEARCH.MSG_SEARCH_FAILED'
             })
           }
         }),
@@ -251,19 +249,6 @@ export class ParameterSearchComponent implements OnInit {
     this.parameterTable?.filterGlobal(event, 'contains')
   }
 
-  private loadTranslations(): void {
-    this.translateService
-      .get([
-        'SEARCH.MSG_NO_RESULTS',
-        'SEARCH.MSG_SEARCH_FAILED',
-        'PARAMETER_DELETE.DELETE_SUCCESS',
-        'PARAMETER_DELETE.DELETE_ERROR'
-      ])
-      .subscribe((text: Record<string, string>) => {
-        this.translatedData = text
-      })
-  }
-
   private prepareActionButtons(): void {
     this.actions$ = this.translateService.get(['ACTIONS.CREATE.LABEL', 'ACTIONS.CREATE.PARAMETER.TOOLTIP']).pipe(
       map((data) => {
@@ -291,7 +276,7 @@ export class ParameterSearchComponent implements OnInit {
   }
 
   // declare searching for ALL products
-  private getAllProductNamesAndApplicationIds(): void {
+  private getAllProductNames(): void {
     this.products$ = this.productsApi.searchAllAvailableProducts({ productStoreSearchCriteria: {} }).pipe(
       catchError((err) => {
         console.error('getAllProductNames():', err)
@@ -311,22 +296,4 @@ export class ParameterSearchComponent implements OnInit {
       })
     )
   }
-
-  // private getUsedProductNames(): void {
-  //   this.productOptions$ = this.parametersApi.getAllApplications().pipe(
-  //     catchError((err) => {
-  //       console.error('getAllApplications', err)
-  //       return of([])
-  //     }),
-  //     map((data) =>
-  //       data.map(
-  //         (product: Product) =>
-  //           ({
-  //             label: product.productName,
-  //             value: product.productName
-  //           }) as SelectItem
-  //       )
-  //     )
-  //   )
-  // }
 }
