@@ -15,13 +15,13 @@ import {
 import { ApplicationParameter, ParametersAPIService, ProductStorePageResult } from 'src/app/shared/generated'
 import { ParameterDetailComponent } from './parameter-detail.component'
 
-const workspaceName = 'w1'
-const productName = 'app1'
+const productName = 'prod1'
+const app = 'app1'
 
 const parameter: ApplicationParameter = {
   id: 'id',
   productName: productName,
-  applicationId: workspaceName,
+  applicationId: app,
   key: 'key',
   setValue: 'value'
 }
