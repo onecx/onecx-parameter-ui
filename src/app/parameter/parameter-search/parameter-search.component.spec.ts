@@ -121,17 +121,6 @@ describe('ParameterSearchComponent', () => {
   })
 
   describe('getAllProductNames', () => {
-    // it('should set products$ observable and handle errors', () => {
-    //   const productResult []
-
-    //   component['getAllProductNames']()
-
-    //   component.products$!.subscribe((data) => {
-    //     expect(data).toEqual(productResult)
-    //   })
-    //   expect(productApiSpy.searchAllAvailableProducts).toHaveBeenCalledWith({ productStoreSearchCriteria: {} })
-    // })
-
     it('should log an error if the API call fails', () => {
       const mockError = new Error('API error')
       spyOn(console, 'error')
