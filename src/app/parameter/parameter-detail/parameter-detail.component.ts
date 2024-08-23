@@ -88,7 +88,6 @@ export class ParameterDetailComponent implements OnChanges {
               value: app
             })
           })
-          this.formGroup.controls['applicationId'].enable()
         }
       })
     }
@@ -133,7 +132,6 @@ export class ParameterDetailComponent implements OnChanges {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private submitFormValues(): any {
     const parameter: ApplicationParameter = { ...this.formGroup.value }
     return parameter

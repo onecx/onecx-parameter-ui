@@ -161,7 +161,7 @@ export class ParameterSearchComponent implements OnInit {
         tap({
           next: (data: any) => {
             if (data.totalElements == 0) {
-              this.messageService.success({
+              this.messageService.info({
                 summaryKey: 'SEARCH.MSG_NO_RESULTS'
               })
               return data.size
