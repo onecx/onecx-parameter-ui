@@ -1,4 +1,4 @@
-== OneCX IAM UI
+== OneCX Parameter UI
 
 === What is Parameter Management?
 OneCX Parameter Management refers to the systematic process of capturing,
