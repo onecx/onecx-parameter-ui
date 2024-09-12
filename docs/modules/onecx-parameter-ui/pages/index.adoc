@@ -1,0 +1,4 @@
+
+== onecx-parameter-ui
+
+include::onecx-parameter-ui-docs.adoc[opts=optional]
