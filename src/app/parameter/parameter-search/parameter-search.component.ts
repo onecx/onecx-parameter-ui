@@ -11,6 +11,7 @@ import {
   ApplicationParameter,
   ParameterSearchCriteria,
   ParametersAPIService,
+  Product,
   ProductStorePageResult,
   ProductsAPIService
 } from 'src/app/shared/generated'
@@ -173,7 +174,16 @@ export class ParameterSearchComponent implements OnInit {
             })
           }
         }),
-        map((data: any) => data.stream)
+        map((data: any) => {
+          console.log('STREAM', data.stream)
+          const products: Product[] = data.stream
+          products.forEach((prod) => {
+            if (prod.productName) {
+              prod.displayName = this.getDisplayNameFromProductName(prod.productName)
+            }
+          })
+          return products
+        })
       )
   }
 
@@ -288,12 +298,25 @@ export class ParameterSearchComponent implements OnInit {
         const si: SelectItem[] = []
         if (data.stream) {
           for (const product of data.stream) {
-            si.push({ label: product.productName, value: product.productName })
+            si.push({ label: product.displayName, value: product.productName })
           }
           si.sort(dropDownSortItemsByLabel)
         }
         return si
       })
     )
+  }
+
+  private getDisplayNameFromProductName(productName: string): string {
+    let product: Product | undefined
+    this.products$?.pipe(
+      map((data) => {
+        if (data.stream) {
+          product = data.stream.find((prod) => prod.displayName === productName)
+        }
+      })
+    )
+    if (product?.displayName) return product.displayName
+    else return productName
   }
 }

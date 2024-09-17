@@ -33,7 +33,7 @@ export class ParameterDetailComponent implements OnChanges {
     private msgService: PortalMessageService
   ) {
     this.formGroup = fb.nonNullable.group({
-      productName: new FormControl(null, [Validators.required]),
+      displayName: new FormControl(null, [Validators.required]),
       applicationId: new FormControl(null, [Validators.required]),
       key: new FormControl(null, [Validators.required]),
       value: new FormControl(null, [Validators.required]),
