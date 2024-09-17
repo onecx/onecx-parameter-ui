@@ -13,6 +13,7 @@
 
 export interface Product { 
     productName?: string;
+    displayName?: string;
     applications?: Array<string>;
 }
 

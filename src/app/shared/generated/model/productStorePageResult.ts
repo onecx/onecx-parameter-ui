@@ -12,8 +12,7 @@
 import { Product } from './product';
 
 
-export interface ProductStorePageResult {
-    map(arg0: (p: any) => number): unknown; 
+export interface ProductStorePageResult { 
     /**
      * The total elements in the resource.
      */

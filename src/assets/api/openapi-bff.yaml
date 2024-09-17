@@ -1,4 +1,3 @@
----
 openapi: 3.0.3
 info:
   title: onecx-parameters-bff
@@ -192,7 +191,7 @@ paths:
             - read
       tags:
         - parameters
-      description: Find all parameters
+      description: Find all applications
       operationId: getAllApplications
       responses:
         '200':
@@ -571,6 +570,8 @@ components:
       type: object
       properties:
         productName:
+          type: string
+        displayName:
           type: string
         applications:
           type: array
