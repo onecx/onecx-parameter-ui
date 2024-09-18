@@ -16,7 +16,7 @@ import {
   ProductsAPIService
 } from 'src/app/shared/generated'
 
-import { dropDownSortItemsByLabel, limitText } from 'src/app/shared/utils'
+import { dropDownSortItemsByLabel, limitText, getDisplayNameProduct } from 'src/app/shared/utils'
 
 type ExtendedColumn = Column & {
   hasFilter?: boolean
@@ -179,7 +179,7 @@ export class ParameterSearchComponent implements OnInit {
         const products: Product[] = data.stream
         products.forEach((prod) => {
           if (prod.productName) {
-            prod.displayName = this.getDisplayNameProduct(prod.productName, allProducts)
+            prod.displayName = getDisplayNameProduct(prod.productName, allProducts)
           }
         })
         return products
@@ -306,10 +306,5 @@ export class ParameterSearchComponent implements OnInit {
       })
     )
     return this.allProductNames$
-  }
-
-  public getDisplayNameProduct(productName: string, allProducts: SelectItem[]): any {
-    const foundProduct = allProducts.find((prod) => prod.value === productName)
-    return foundProduct ? foundProduct.label : productName
   }
 }

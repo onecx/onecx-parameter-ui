@@ -4,6 +4,7 @@
     (criteriaEmitter)="search($event)"
     (resetSearchEmitter)="onReset()"
     [productsChanged]="usedProductsChanged"
+    [allProducts]="(allProductNames$ | async) ?? []"
   ></app-parameter-criteria>
 
   <ocx-page-content *ngIf="results$ | async as results" styleClass="px-3">
