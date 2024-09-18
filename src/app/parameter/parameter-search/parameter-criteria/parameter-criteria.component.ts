@@ -61,13 +61,15 @@ export class ParameterCriteriaComponent implements OnInit, OnChanges {
           return of([])
         }),
         map((data) => {
-          return data.map(
-            (product: Product) =>
-              ({
-                label: getDisplayNameProduct(product.productName!, this.allProducts),
-                value: product.productName
-              }) as SelectItem
-          )
+          return data
+            .map(
+              (product: Product) =>
+                ({
+                  label: getDisplayNameProduct(product.productName!, this.allProducts),
+                  value: product.productName
+                }) as SelectItem
+            )
+            .sort(dropDownSortItemsByLabel)
         })
       )
       .subscribe((productOptions: SelectItem[]) => {
