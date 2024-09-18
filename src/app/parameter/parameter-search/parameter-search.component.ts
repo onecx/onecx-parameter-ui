@@ -5,7 +5,7 @@ import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms'
 import { Table } from 'primeng/table'
 import { SelectItem } from 'primeng/api'
 import { catchError, finalize, map, tap } from 'rxjs/operators'
-import { Observable, of } from 'rxjs'
+import { combineLatest, Observable, of } from 'rxjs'
 
 import {
   ApplicationParameter,
@@ -55,7 +55,7 @@ export class ParameterSearchComponent implements OnInit {
 
   public columns: ExtendedColumn[] = [
     {
-      field: 'productName',
+      field: 'displayName',
       header: 'PRODUCT_NAME',
       active: true,
       translationPrefix: 'PARAMETER',
@@ -153,38 +153,38 @@ export class ParameterSearchComponent implements OnInit {
     if (!reuseCriteria) {
       this.criteria = { ...criteria }
     }
-    this.results$ = this.parametersApi
-      .searchApplicationParametersByCriteria({
+    this.results$ = combineLatest([
+      this.parametersApi.searchApplicationParametersByCriteria({
         parameterSearchCriteria: { ...this.criteria }
-      })
-      .pipe(
-        finalize(() => (this.searching = false)),
-        tap({
-          next: (data: any) => {
-            if (data.totalElements == 0) {
-              this.messageService.info({
-                summaryKey: 'SEARCH.MSG_NO_RESULTS'
-              })
-              return data.size
-            }
-          },
-          error: () => {
-            this.messageService.error({
-              summaryKey: 'SEARCH.MSG_SEARCH_FAILED'
+      }),
+      this.getAllProductNames()
+    ]).pipe(
+      finalize(() => (this.searching = false)),
+      tap({
+        next: (data: any) => {
+          if (data.totalElements == 0) {
+            this.messageService.info({
+              summaryKey: 'SEARCH.MSG_NO_RESULTS'
             })
+            return data.size
           }
-        }),
-        map((data: any) => {
-          console.log('STREAM', data.stream)
-          const products: Product[] = data.stream
-          products.forEach((prod) => {
-            if (prod.productName) {
-              prod.displayName = this.getDisplayNameFromProductName(prod.productName)
-            }
+        },
+        error: () => {
+          this.messageService.error({
+            summaryKey: 'SEARCH.MSG_SEARCH_FAILED'
           })
-          return products
+        }
+      }),
+      map(([data, allProducts]) => {
+        const products: Product[] = data.stream
+        products.forEach((prod) => {
+          if (prod.productName) {
+            prod.displayName = this.getDisplayNameProduct(prod.productName, allProducts)
+          }
         })
-      )
+        return products
+      })
+    )
   }
 
   public onReset(): void {
@@ -286,7 +286,7 @@ export class ParameterSearchComponent implements OnInit {
   }
 
   // declare searching for ALL products
-  private getAllProductNames(): void {
+  private getAllProductNames(): Observable<SelectItem[]> {
     this.products$ = this.productsApi.searchAllAvailableProducts({ productStoreSearchCriteria: {} }).pipe(
       catchError((err) => {
         console.error('getAllProductNames():', err)
@@ -305,18 +305,11 @@ export class ParameterSearchComponent implements OnInit {
         return si
       })
     )
+    return this.allProductNames$
   }
 
-  private getDisplayNameFromProductName(productName: string): string {
-    let product: Product | undefined
-    this.products$?.pipe(
-      map((data) => {
-        if (data.stream) {
-          product = data.stream.find((prod) => prod.displayName === productName)
-        }
-      })
-    )
-    if (product?.displayName) return product.displayName
-    else return productName
+  public getDisplayNameProduct(productName: string, allProducts: SelectItem[]): any {
+    const foundProduct = allProducts.find((prod) => prod.value === productName)
+    return foundProduct ? foundProduct.label : productName
   }
 }
