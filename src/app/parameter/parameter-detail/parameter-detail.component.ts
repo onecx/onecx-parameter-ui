@@ -33,7 +33,8 @@ export class ParameterDetailComponent implements OnChanges {
     private msgService: PortalMessageService
   ) {
     this.formGroup = fb.nonNullable.group({
-      productName: new FormControl(null, [Validators.required]),
+      productName: new FormControl(null),
+      displayName: new FormControl(null, [Validators.required]),
       applicationId: new FormControl(null, [Validators.required]),
       key: new FormControl(null, [Validators.required]),
       value: new FormControl(null, [Validators.required]),
@@ -134,6 +135,10 @@ export class ParameterDetailComponent implements OnChanges {
 
   private submitFormValues(): any {
     const parameter: ApplicationParameter = { ...this.formGroup.value }
+    parameter.productName = this.getProductNameFromDisplayName(this.formGroup.controls['displayName'].value)
     return parameter
+  }
+  private getProductNameFromDisplayName(displayName?: string): string | undefined {
+    return this.allProducts.find((item) => item.label === displayName)?.value ?? displayName
   }
 }

@@ -4,6 +4,7 @@
     (criteriaEmitter)="search($event)"
     (resetSearchEmitter)="onReset()"
     [productsChanged]="usedProductsChanged"
+    [allProducts]="(allProductNames$ | async) ?? []"
   ></app-parameter-criteria>
 
   <ocx-page-content *ngIf="results$ | async as results" styleClass="px-3">
@@ -202,7 +203,7 @@
   [displayDetailDialog]="displayDetailDialog"
   (hideDialogAndChanged)="onCloseDetail($event)"
   [parameter]="parameter"
-  [products]="(products$ | async) ?? []"
+  [products]="(products$ | async) ?? {}"
   [allProducts]="(allProductNames$ | async) ?? []"
   [changeMode]="changeMode"
 ></app-parameter-detail>

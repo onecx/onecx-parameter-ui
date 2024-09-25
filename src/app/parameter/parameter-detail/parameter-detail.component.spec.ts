@@ -40,6 +40,7 @@ describe('ParameterDetailComponent', () => {
     key: new FormControl('key'),
     value: new FormControl('value'),
     productName: new FormControl('prod name'),
+    displayName: new FormControl('display name'),
     applicationId: new FormControl('app')
   })
   const mockUserService = {
@@ -89,7 +90,7 @@ describe('ParameterDetailComponent', () => {
   })
 
   describe('ngOnChange, i.e. opening detail dialog', () => {
-    it('should prepare editing an parameter', () => {
+    it('should prepare editing a parameter', () => {
       component.changeMode = 'EDIT'
       component.parameter = parameter
 
@@ -98,7 +99,7 @@ describe('ParameterDetailComponent', () => {
       expect(component.parameterId).toEqual(parameter.id)
     })
 
-    it('should prepare copying an parameter', () => {
+    it('should prepare copying a parameter', () => {
       component.changeMode = 'NEW'
       component.parameter = parameter
       component.ngOnChanges()
@@ -106,7 +107,7 @@ describe('ParameterDetailComponent', () => {
       expect(component.parameterId).toBeUndefined()
     })
 
-    it('should prepare creating an parameter', () => {
+    it('should prepare creating a parameter', () => {
       component.changeMode = 'NEW'
       spyOn(component.formGroup, 'reset')
 
@@ -116,8 +117,8 @@ describe('ParameterDetailComponent', () => {
     })
   })
 
-  describe('onSave - creating and updating an parameter', () => {
-    it('should create an parameter', () => {
+  describe('onSave - creating and updating a parameter', () => {
+    it('should create a parameter', () => {
       apiServiceSpy.createParameterValue.and.returnValue(of({}))
       component.changeMode = 'NEW'
       spyOn(component.hideDialogAndChanged, 'emit')
@@ -144,7 +145,7 @@ describe('ParameterDetailComponent', () => {
       })
     })
 
-    it('should update an parameter', () => {
+    it('should update a parameter', () => {
       apiServiceSpy.updateParameterValue.and.returnValue(of({}))
       component.changeMode = 'EDIT'
       spyOn(component.hideDialogAndChanged, 'emit')

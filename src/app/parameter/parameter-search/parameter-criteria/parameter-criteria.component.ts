@@ -7,7 +7,7 @@ import { catchError, lastValueFrom, map, Observable, of } from 'rxjs'
 import { Action, UserService } from '@onecx/portal-integration-angular'
 
 import { ParametersAPIService, ParameterSearchCriteria, Product } from 'src/app/shared/generated'
-import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
+import { dropDownSortItemsByLabel, getDisplayNameProduct } from 'src/app/shared/utils'
 
 export interface ParameterCriteriaForm {
   applicationId: FormControl<string | null>
@@ -23,6 +23,7 @@ export interface ParameterCriteriaForm {
 export class ParameterCriteriaComponent implements OnInit, OnChanges {
   @Input() public actions: Action[] = []
   @Input() public productsChanged: boolean = false
+  @Input() public allProducts: SelectItem[] = []
   @Output() public criteriaEmitter = new EventEmitter<ParameterSearchCriteria>()
   @Output() public resetSearchEmitter = new EventEmitter<boolean>()
 
@@ -60,13 +61,15 @@ export class ParameterCriteriaComponent implements OnInit, OnChanges {
           return of([])
         }),
         map((data) => {
-          return data.map(
-            (product: Product) =>
-              ({
-                label: product.productName,
-                value: product.productName
-              }) as SelectItem
-          )
+          return data
+            .map(
+              (product: Product) =>
+                ({
+                  label: getDisplayNameProduct(product.productName!, this.allProducts),
+                  value: product.productName
+                }) as SelectItem
+            )
+            .sort(dropDownSortItemsByLabel)
         })
       )
       .subscribe((productOptions: SelectItem[]) => {
