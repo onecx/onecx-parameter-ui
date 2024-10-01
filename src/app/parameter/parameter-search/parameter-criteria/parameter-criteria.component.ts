@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core'
 import { SelectItem } from 'primeng/api'
 import { catchError, lastValueFrom, map, Observable, of } from 'rxjs'
 
-import { Action, UserService } from '@onecx/portal-integration-angular'
+import { Action } from '@onecx/portal-integration-angular'
 
 import { ParametersAPIService, ParameterSearchCriteria, Product } from 'src/app/shared/generated'
 import { dropDownSortItemsByLabel, getDisplayNameProduct } from 'src/app/shared/utils'
@@ -34,8 +34,7 @@ export class ParameterCriteriaComponent implements OnInit, OnChanges {
   public applicationIds: SelectItem[] = []
 
   constructor(
-    private user: UserService,
-    public translate: TranslateService,
+    public readonly translate: TranslateService,
     private readonly parametersApi: ParametersAPIService
   ) {}
 

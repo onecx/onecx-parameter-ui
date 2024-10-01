@@ -132,7 +132,7 @@ export class ParameterSearchComponent implements OnInit {
 
   constructor(
     private readonly messageService: PortalMessageService,
-    private translateService: TranslateService,
+    private readonly translateService: TranslateService,
     private readonly parametersApi: ParametersAPIService,
     private readonly productsApi: ProductsAPIService,
     private readonly fb: UntypedFormBuilder

@@ -27,10 +27,10 @@ export class ParameterDetailComponent implements OnChanges {
   public formGroup: FormGroup
 
   constructor(
-    private parameterApi: ParametersAPIService,
-    private fb: FormBuilder,
-    private translate: TranslateService,
-    private msgService: PortalMessageService
+    private readonly parameterApi: ParametersAPIService,
+    private readonly fb: FormBuilder,
+    private readonly translate: TranslateService,
+    private readonly msgService: PortalMessageService
   ) {
     this.formGroup = fb.nonNullable.group({
       productName: new FormControl(null),

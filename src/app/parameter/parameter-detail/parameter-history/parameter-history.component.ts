@@ -37,9 +37,9 @@ export class ParameterHistoryComponent implements OnChanges {
   public isLoading = false
 
   constructor(
-    private fb: FormBuilder,
-    private translate: TranslateService,
-    private msgService: PortalMessageService,
+    private readonly fb: FormBuilder,
+    private readonly translate: TranslateService,
+    private readonly msgService: PortalMessageService,
     private readonly parameterApiService: ParametersAPIService,
     private readonly historyApiService: HistoriesAPIService,
     private readonly datePipe: DatePipe

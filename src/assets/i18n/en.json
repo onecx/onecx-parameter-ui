@@ -94,7 +94,8 @@
     "RELOAD": "Reload",
     "SAVE": "Save",
     "CREATE": "Create",
-    "NO_DATA": "No data"
+    "NO_DATA": "No data",
+    "OF": "of"
   },
   "SEARCH": {
     "PARAMETER_SEARCH_HEADER": "Parameter Management",
