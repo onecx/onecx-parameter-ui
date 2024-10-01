@@ -94,7 +94,8 @@
     "RELOAD": "Neuladen",
     "SAVE": "Speichern",
     "CREATE": "Erstellen",
-    "NO_DATA": "Keine Ergebnisse"
+    "NO_DATA": "Keine Ergebnisse",
+    "OF": "von"
   },
   "SEARCH": {
     "PARAMETER_SEARCH_HEADER": "Parameter Management",
