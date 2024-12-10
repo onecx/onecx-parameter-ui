@@ -1,7 +1,7 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { HttpClient } from '@angular/common/http'
-import { HttpClientTestingModule } from '@angular/common/http/testing'
+import { provideHttpClient, HttpClient } from '@angular/common/http'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { of } from 'rxjs'
 import { DatePipe } from '@angular/common'
@@ -43,7 +43,6 @@ describe('ParameterHistoryComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ParameterHistoryComponent],
       imports: [
-        HttpClientTestingModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
@@ -55,6 +54,8 @@ describe('ParameterHistoryComponent', () => {
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
         FormBuilder,
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: PortalMessageService, useValue: msgServiceSpy },
         { provide: ParametersAPIService, useValue: apiServiceSpy },
         { provide: HistoriesAPIService, useValue: historyServiceSpy },

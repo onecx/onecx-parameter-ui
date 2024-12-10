@@ -1,9 +1,9 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
-import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { HttpClient } from '@angular/common/http'
+import { provideHttpClient, HttpClient } from '@angular/common/http'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
-import { TranslateServiceMock } from '../../shared/TranslateServiceMock'
+import { TranslateServiceMock } from 'src/app/shared/TranslateServiceMock'
 import { of, throwError } from 'rxjs'
 
 import { AppStateService, Column, createTranslateLoader, PortalMessageService } from '@onecx/portal-integration-angular'
@@ -43,7 +43,6 @@ describe('ParameterSearchComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ParameterSearchComponent],
       imports: [
-        HttpClientTestingModule,
         TranslateModule.forRoot({
           isolate: true,
           loader: {
@@ -55,6 +54,8 @@ describe('ParameterSearchComponent', () => {
       ],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: TranslateService, useClass: TranslateServiceMock },
         { provide: PortalMessageService, useValue: msgServiceSpy },
         { provide: ParametersAPIService, useValue: apiServiceSpy },

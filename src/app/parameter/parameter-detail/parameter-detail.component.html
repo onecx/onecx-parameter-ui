@@ -1,13 +1,13 @@
 <p-dialog
-  header="{{ (changeMode === 'EDIT' ? 'ACTIONS.EDIT.EDIT_PARAMETER' : 'ACTIONS.CREATE.CREATE_PARAMETER') | translate }}"
-  class="p-dialog-titlebar-close"
+  [header]="(changeMode === 'EDIT' ? 'ACTIONS.EDIT.EDIT_PARAMETER' : 'ACTIONS.CREATE.CREATE_PARAMETER') | translate"
   [(visible)]="displayDetailDialog"
+  class="p-dialog-titlebar-close"
   (onHide)="onDialogHide()"
   [baseZIndex]="10000"
+  [modal]="true"
+  [closable]="true"
   [draggable]="true"
   [resizable]="true"
-  [closable]="true"
-  [modal]="true"
   [style]="{ width: '600px' }"
   [showHeader]="true"
   [breakpoints]="{
@@ -23,7 +23,7 @@
           <div class="p-fluid col-12 md:col-6">
             <span class="p-float-label" controlErrorAnchor>
               <p-dropdown
-                id="pm_parameter_detail_form_product_name"
+                id="pm_detail_form_product_name"
                 class="input-field"
                 styleClass="w-full text-responsive"
                 [emptyMessage]="'SEARCH.NO_DATA' | translate"
@@ -38,7 +38,7 @@
                 tooltipEvent="hover"
               >
               </p-dropdown>
-              <label class="ocx-required-label" for="pm_parameter_detail_form_productName">
+              <label class="ocx-required-label" for="pm_detail_form_productName">
                 {{ 'PARAMETER.PRODUCT_NAME' | translate }}</label
               >
             </span>
@@ -46,7 +46,7 @@
           <div class="p-fluid col-12 md:col-6">
             <span class="p-float-label" controlErrorAnchor>
               <p-dropdown
-                id="pm_parameter_detail_form_applicationId"
+                id="pm_detail_form_applicationId"
                 class="input-field"
                 styleClass="w-full text-responsive"
                 [emptyMessage]="'SEARCH.NO_DATA' | translate"
@@ -60,7 +60,7 @@
                 tooltipEvent="hover"
               >
               </p-dropdown>
-              <label class="ocx-required-label" for="pm_parameter_detail_form_applicationId">
+              <label class="ocx-required-label" for="pm_detail_form_applicationId">
                 {{ 'PARAMETER.APP_ID' | translate }}</label
               >
             </span>
@@ -71,16 +71,14 @@
               <input
                 pInputText
                 type="text"
-                id="pm_parameter_detail_form_key"
+                id="pm_detail_form_key"
                 formControlName="key"
                 [aria-label]="'PARAMETER.TOOLTIPS.KEY' | translate"
                 [pTooltip]="'PARAMETER.TOOLTIPS.KEY' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label class="ocx-required-label" for="pm_parameter_detail_form_key">
-                {{ 'PARAMETER.KEY' | translate }}</label
-              >
+              <label class="ocx-required-label" for="pm_detail_form_key"> {{ 'PARAMETER.KEY' | translate }}</label>
             </span>
           </div>
 
@@ -89,7 +87,7 @@
               <textarea
                 [rows]="3"
                 pInputTextarea
-                id="pm_parameter_detail_form_value"
+                id="pm_detail_form_value"
                 formControlName="value"
                 jsonColorize
                 [aria-label]="'PARAMETER.TOOLTIPS.VALUE' | translate"
@@ -98,9 +96,7 @@
                 tooltipEvent="hover"
               >
               </textarea>
-              <label class="ocx-required-label" for="pm_parameter_detail_form_value">
-                {{ 'PARAMETER.VALUE' | translate }}</label
-              >
+              <label class="ocx-required-label" for="pm_detail_form_value"> {{ 'PARAMETER.VALUE' | translate }}</label>
             </span>
           </div>
 
@@ -109,7 +105,7 @@
               <input
                 pInputText
                 type="text"
-                id="pm_parameter_detail_form_importValue"
+                id="pm_detail_form_importValue"
                 [value]="parameter?.importValue"
                 disabled="true"
                 [aria-label]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
@@ -117,7 +113,7 @@
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label for="pm_parameter_detail_form_importValue">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
+              <label for="pm_detail_form_importValue">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
             </span>
           </div>
 

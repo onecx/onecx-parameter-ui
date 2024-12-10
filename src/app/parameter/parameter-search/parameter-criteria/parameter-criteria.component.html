@@ -9,7 +9,7 @@
   <div [formGroup]="parameterCriteria" class="flex flex-wrap gap-3">
     <span class="p-float-label">
       <p-dropdown
-        id="pm_parameter_search_criteria_product_name"
+        id="pm_search_criteria_product_name"
         styleClass="w-15rem text-responsive"
         [emptyMessage]="'SEARCH.NO_DATA' | translate"
         [options]="productOptions"
@@ -27,7 +27,7 @@
     </span>
     <span class="p-float-label">
       <p-dropdown
-        id="pm_parameter_search_criteria_application_id"
+        id="pm_search_criteria_application_id"
         styleClass="w-15rem text-responsive"
         [options]="applicationIds"
         [emptyMessage]="'SEARCH.NO_DATA' | translate"
@@ -44,7 +44,7 @@
     </span>
     <span class="p-float-label">
       <input
-        id="pm_parameter_search_criteria_key"
+        id="pm_search_criteria_key"
         pInputText
         type="text"
         formControlName="key"
