@@ -1,27 +1,29 @@
-<ocx-portal-page [helpArticleId]="'PAGE_PARAMETERS_SEARCH'" permission="PARAMETER#SEARCH">
+<ocx-portal-page permission="PARAMETER#SEARCH" [helpArticleId]="'PAGE_PARAMETERS_SEARCH'">
   <app-parameter-criteria
     [actions]="(actions$ | async) ?? []"
-    (criteriaEmitter)="search($event)"
-    (resetSearchEmitter)="onReset()"
     [productsChanged]="usedProductsChanged"
     [allProducts]="(allProductNames$ | async) ?? []"
+    (criteriaEmitter)="search($event)"
+    (resetSearchEmitter)="onReset()"
   ></app-parameter-criteria>
 
-  <ocx-page-content *ngIf="results$ | async as results" styleClass="px-3">
+  <ocx-page-content *ngIf="results$ | async as results">
     <p-table
       #parameterTable
-      id="pm_parameter_search_table"
+      id="pm_search_table"
+      styleClass="mx-3 mb-2"
       [value]="results"
       [columns]="filteredColumns"
-      styleClass="p-datatable-striped"
       dataKey="id"
       [globalFilterFields]="['productName', 'applicationId', 'key']"
       [reorderableColumns]="false"
+      [scrollable]="true"
+      scrollHeight="590px"
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 30, 100]"
       [paginator]="true"
       [alwaysShowPaginator]="true"
       paginatorPosition="bottom"
-      [rows]="10"
-      [rowsPerPageOptions]="[10, 20, 100]"
       [showCurrentPageReport]="true"
       currentPageReportTemplate="{first} - {last} {{ 'GENERAL.OF' | translate }} {totalRecords}"
     >
@@ -31,7 +33,6 @@
           [enableFiltering]="true"
           [enableSorting]="false"
           [columnDefinitions]="columns"
-          [columnTemplates]="[]"
           (columnsChange)="onColumnsChange($event)"
           (filterChange)="onFilterChange($event)"
           [filterColumns]="[
@@ -44,41 +45,42 @@
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td id="pm_parameter_search_table_emptymessage" colspan="16">{{ 'SEARCH.NO_DATA' | translate }}</td>
+          <td id="pm_search_table_emptymessage" colspan="16">{{ 'SEARCH.NO_DATA' | translate }}</td>
         </tr>
       </ng-template>
 
       <ng-template pTemplate="header" let-columns>
         <tr>
-          <th id="pm_parameter_search_table_header_actions" class="text-center white-space-nowrap">
+          <th pFrozencolumn id="pm_search_table_header_actions" class="border-right-1 text-center white-space-nowrap">
             {{ 'ACTIONS.LABEL' | translate }}
           </th>
           <th
             *ngFor="let col of columns"
-            [id]="'pm_parameter_search_table_header_col_' + col.field"
-            [class]="col.css"
+            [id]="'pm_search_table_header_col_' + col.field"
+            [class]="col.css + ' white-space-nowrap'"
             [pSortableColumn]="col.field"
             [aria-label]="'PARAMETER.TOOLTIPS.' + col.header | translate"
             [pTooltip]="'PARAMETER.TOOLTIPS.' + col.header | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           >
-            {{ col.translationPrefix + '.' + col.header | translate }}
+            <span>{{ col.translationPrefix + '.' + col.header | translate }}</span>
             <p-sortIcon [field]="col.field"></p-sortIcon>
             <p-columnFilter *ngIf="col.hasFilter" type="text" [field]="col.field" display="menu"></p-columnFilter>
           </th>
         </tr>
       </ng-template>
 
-      <ng-template pTemplate="body" let-row="rowIndex" let-rowData let-columns="columns">
+      <ng-template pTemplate="body" let-i="rowIndex" let-rowData let-columns="columns">
         <tr [pSelectableRow]="results">
-          <td class="px-0 text-center white-space-nowrap">
+          <!-- actions -->
+          <td pFrozencolumn class="px-0 border-right-1 text-center white-space-nowrap">
             <ng-container *ocxIfNotPermission="'PARAMETER#EDIT'">
               <button
                 pbutton
                 *ocxIfPermission="'PARAMETER#VIEW'"
                 class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-                [id]="'pm_parameter_search_table_row_' + row + '_view_action'"
+                [id]="'pm_search_table_row_' + i + '_view_action'"
                 (click)="onDetail($event, rowData, 'VIEW')"
                 [aria-label]="'ACTIONS.VIEW.TOOLTIP' | translate"
                 [pTooltip]="'ACTIONS.VIEW.TOOLTIP' | translate"
@@ -92,7 +94,7 @@
               pbutton
               *ocxIfPermission="'PARAMETER#EDIT'"
               class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-              [id]="'pm_parameter_search_table_row_' + row + '_edit_action'"
+              [id]="'pm_search_table_row_' + i + '_edit_action'"
               (click)="onDetail($event, rowData, 'EDIT')"
               [aria-label]="'ACTIONS.EDIT.LABEL' | translate"
               [pTooltip]="'ACTIONS.EDIT.TOOLTIP' | translate"
@@ -105,7 +107,7 @@
               pbutton
               *ocxIfPermission="'PARAMETER#EDIT'"
               class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-              [id]="'pm_parameter_search_table_row_' + row + '_copy_action'"
+              [id]="'pm_search_table_row_' + i + '_copy_action'"
               (click)="onCopy($event, rowData)"
               [aria-label]="'ACTIONS.COPY.LABEL' | translate"
               [pTooltip]="'ACTIONS.COPY.TOOLTIP' | translate"
@@ -119,7 +121,7 @@
               type="button"
               *ocxIfPermission="'PARAMETER#VIEW'"
               class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-              [id]="'pm_parameter_search_table_row_' + row + '_history_action'"
+              [id]="'pm_search_table_row_' + i + '_history_action'"
               (click)="onHistory($event, rowData)"
               [aria-label]="'ACTIONS.HISTORY.TOOLTIP' | translate"
               [pTooltip]="'ACTIONS.HISTORY.TOOLTIP' | translate"
@@ -133,7 +135,7 @@
               type="button"
               *ocxIfPermission="'PARAMETER#DELETE'"
               class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-              [id]="'pm_parameter_search_table_row_' + row + '_delete_action'"
+              [id]="'pm_search_table_row_' + i + '_delete_action'"
               (click)="onDelete($event, rowData)"
               [aria-label]="'ACTIONS.DELETE.LABEL' | translate"
               [pTooltip]="'ACTIONS.DELETE.TOOLTIP' | translate"
@@ -143,10 +145,10 @@
               <span class="danger-action-text font-medium p-button-icon pi pi-trash" aria-hidden="true"></span>
             </button>
           </td>
-          <ng-container *ngFor="let col of columns">
+          <ng-container *ngFor="let col of columns" [id]="'am_search_table_row_' + i + '_' + col.field">
             <td *ngIf="!searching" [class]="col.css">
-              <div *ngIf="col.limit">{{ limitText(rowData[col.field], 25) }}</div>
-              <div *ngIf="!col.limit">{{ rowData[col.field] }}</div>
+              <ng-container *ngIf="col.limit">{{ limitText(rowData[col.field], 25) }}</ng-container>
+              <ng-container *ngIf="!col.limit">{{ rowData[col.field] }}</ng-container>
             </td>
           </ng-container>
         </tr>
@@ -155,27 +157,30 @@
   </ocx-page-content>
 </ocx-portal-page>
 
+<!-- DELETE -->
 <p-dialog
-  [(visible)]="displayDeleteDialog"
   [header]="'ACTIONS.DELETE.PARAMETER' | translate"
+  [(visible)]="displayDeleteDialog"
   [modal]="true"
+  [closable]="true"
+  [draggable]="true"
   [resizable]="false"
   [dismissableMask]="true"
   [style]="{ 'max-width': '500px' }"
 >
   <div class="flex column-gap-3 row-gap-1 justify-content-start align-items-center">
     <div class="pi pi-question-circle text-3xl danger-action-text"></div>
-    <div>
-      <div id="pm_announcement_delete_message_text" class="font-bold">
+    <div class="flex flex-column row-gap-2">
+      <div id="pm_delete_message_text" class="font-bold">
         {{('ACTIONS.DELETE.MESSAGES.MESSAGE' | translate).replace('{{ITEM}}', parameter?.key)}}
       </div>
-      <div class="mt-2">{{ 'ACTIONS.DELETE.MESSAGES.MESSAGE_INFO' | translate }}</div>
+      <div>{{ 'ACTIONS.DELETE.MESSAGES.MESSAGE_INFO' | translate }}</div>
     </div>
   </div>
   <ng-template pTemplate="footer">
     <div class="flex flex-wrap justify-content-end column-gap-2 row-gap-1">
       <p-button
-        id="pm_announcement_delete_button_no"
+        id="pm_delete_action_no"
         icon="pi pi-times"
         (onClick)="displayDeleteDialog = false"
         [label]="'ACTIONS.CONFIRMATION.NO' | translate"
@@ -185,7 +190,7 @@
         tooltipEvent="hover"
       ></p-button>
       <p-button
-        id="pm_announcement_delete_button_yes"
+        id="pm_delete_action_yes"
         icon="pi pi-check"
         (onClick)="onDeleteConfirmation()"
         [label]="'ACTIONS.CONFIRMATION.YES' | translate"

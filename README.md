@@ -1,2 +1,2 @@
 # onecx-parameter-ui
-OneCX Parameter Management UI
+OneCX Parameter UI
