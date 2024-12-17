@@ -3,40 +3,76 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient, HttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
-import { TranslateServiceMock } from 'src/app/shared/TranslateServiceMock'
 import { of, throwError } from 'rxjs'
 
-import { AppStateService, Column, createTranslateLoader, PortalMessageService } from '@onecx/portal-integration-angular'
+import { AppStateService, UserService } from '@onecx/angular-integration-interface'
+import { Column, createTranslateLoader, PortalMessageService } from '@onecx/portal-integration-angular'
 
+import { Parameter, ParametersAPIService, Product, ProductsAPIService } from 'src/app/shared/generated'
+import { TranslateServiceMock } from 'src/app/shared/TranslateServiceMock'
 import { ParameterSearchComponent } from './parameter-search.component'
-import {
-  ApplicationParameter,
-  ParametersAPIService,
-  ProductsAPIService,
-  ProductStorePageResult
-} from 'src/app/shared/generated'
-import { SelectItem } from 'primeng/api'
 
-const parameterData: ApplicationParameter[] = [
-  { id: 'id', productName: 'prod1', applicationId: 'app1', key: 'key1', setValue: 'value1' },
-  { id: 'id2', productName: 'prod2', applicationId: 'app2', key: 'key2', setValue: 'value2' },
-  { id: 'id3', productName: 'prod3', applicationId: 'app3', key: 'key3', setValue: 'value3' }
+let params: Parameter[] = []
+const parameterData: Parameter[] = [
+  {
+    modificationCount: 0,
+    id: 'id1',
+    productName: 'product1',
+    applicationId: 'app1',
+    name: 'name1',
+    value: 'val1',
+    importValue: 'val1'
+  },
+  {
+    modificationCount: 0,
+    id: 'id2',
+    productName: 'product1',
+    applicationId: 'app2',
+    name: 'name1',
+    value: { v: 'v2' },
+    importValue: { v: 'v2' }
+  },
+  {
+    modificationCount: 0,
+    id: 'id3',
+    productName: 'product3',
+    applicationId: 'app3',
+    name: 'name3',
+    value: 3,
+    importValue: 4
+  }
+]
+// Original form BFF: unsorted and not complete
+const usedProductsOrg: Product[] = [
+  { productName: 'product3', displayName: undefined, applications: ['p3-svc'] },
+  { productName: 'product1', displayName: undefined, applications: ['p1-svc'] }
+]
+// Final: sorted and complete
+const usedProducts: Product[] = [
+  { productName: 'product1', displayName: 'Product 1', applications: ['p1-svc'] },
+  { productName: 'product3', displayName: 'product3', applications: ['p3-svc'] }
+]
+const allProducts: Product[] = [
+  { productName: 'product1', displayName: 'Product 1', applications: ['p1-svc', 'p1-bff'] },
+  { productName: 'product2', displayName: 'Product 2', applications: ['p2-svc', 'p2-bff'] },
+  { productName: 'product3', displayName: undefined, applications: ['p3-svc', 'p3-bff'] },
+  { productName: 'product5', displayName: undefined, applications: ['p5-svc', 'p5-bff'] },
+  { productName: 'product4', displayName: undefined, applications: ['p4-svc', 'p4-bff'] }
 ]
 
-describe('ParameterSearchComponent', () => {
+fdescribe('ParameterSearchComponent', () => {
   let component: ParameterSearchComponent
   let fixture: ComponentFixture<ParameterSearchComponent>
 
+  const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
   const apiServiceSpy = {
-    searchApplicationParametersByCriteria: jasmine
-      .createSpy('searchApplicationParametersByCriteria')
-      .and.returnValue(of({})),
-    deleteParameter: jasmine.createSpy('deleteParameter').and.returnValue(of({}))
+    getAllApplications: jasmine.createSpy('getAllApplications').and.returnValue(of([])),
+    searchParametersByCriteria: jasmine.createSpy('searchParametersByCriteria').and.returnValue(of({})),
+    deleteParameter: jasmine.createSpy('deleteParameter').and.returnValue(of(null))
   }
   const productApiSpy = {
-    searchAllAvailableProducts: jasmine.createSpy('searchAllAvailableProducts').and.returnValue(of({})),
-    deleteParameter: jasmine.createSpy('deleteParameter').and.returnValue(of({}))
+    searchAllAvailableProducts: jasmine.createSpy('searchAllAvailableProducts').and.returnValue(of({}))
   }
 
   beforeEach(waitForAsync(() => {
@@ -56,6 +92,7 @@ describe('ParameterSearchComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        { provide: UserService, useValue: mockUserService },
         { provide: TranslateService, useClass: TranslateServiceMock },
         { provide: PortalMessageService, useValue: msgServiceSpy },
         { provide: ParametersAPIService, useValue: apiServiceSpy },
@@ -64,95 +101,181 @@ describe('ParameterSearchComponent', () => {
     }).compileComponents()
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
-    apiServiceSpy.searchApplicationParametersByCriteria.calls.reset()
+    msgServiceSpy.info.calls.reset()
+    mockUserService.lang$.getValue.and.returnValue('de')
+    // reset data services
+    apiServiceSpy.searchParametersByCriteria.calls.reset()
+    apiServiceSpy.getAllApplications.calls.reset()
     apiServiceSpy.deleteParameter.calls.reset()
     productApiSpy.searchAllAvailableProducts.calls.reset()
+    // to spy data: refill with neutral data
+    apiServiceSpy.searchParametersByCriteria.and.returnValue(of({}))
+    apiServiceSpy.getAllApplications.and.returnValue(of([]))
+    apiServiceSpy.deleteParameter.and.returnValue(of(null))
+    productApiSpy.searchAllAvailableProducts.and.returnValue(of({}))
   }))
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ParameterSearchComponent)
     component = fixture.componentInstance
+    component.displayDetailDialog = false
+    component.displayDeleteDialog = false
+    component.displayHistoryDialog = false
     fixture.detectChanges()
   })
 
-  it('should create', () => {
-    expect(component).toBeTruthy()
+  describe('construction', () => {
+    it('should create', () => {
+      expect(component).toBeTruthy()
+    })
+
+    it('should call OnInit and populate filteredColumns/actions correctly', () => {
+      component.ngOnInit()
+
+      expect(component.filteredColumns[0]).toEqual(component.columns[0])
+    })
   })
 
   describe('search', () => {
-    it('should search parameters without search criteria', () => {
-      apiServiceSpy.searchApplicationParametersByCriteria.and.returnValue(of({ stream: parameterData }))
+    it('should search parameters without search criteria', (done) => {
+      apiServiceSpy.searchParametersByCriteria.and.returnValue(of({ stream: parameterData }))
 
-      component.search({})
+      component.onSearch({})
 
-      component.results$?.subscribe({
+      component.data$?.subscribe({
         next: (data) => {
           expect(data).toEqual(parameterData)
-        }
+          done()
+        },
+        error: done.fail
       })
     })
 
-    it('should display an info message if there are no parameters', () => {
-      apiServiceSpy.searchApplicationParametersByCriteria.and.returnValue(of({ totalElements: 0, stream: [] }))
+    it('should display an info message if there is no result', (done) => {
+      apiServiceSpy.searchParametersByCriteria.and.returnValue(of({ totalElements: 0, stream: [] }))
 
-      component.search({})
+      component.onSearch({})
 
-      component.results$?.subscribe({
+      component.data$?.subscribe({
         next: (data) => {
           expect(data.length).toEqual(0)
-          // expect(msgServiceSpy.info).toHaveBeenCalledOnceWith({ summaryKey: 'SEARCH.MSG_NO_RESULTS' })
-        }
+          expect(msgServiceSpy.info).toHaveBeenCalledOnceWith({ summaryKey: 'ACTIONS.SEARCH.MSG_NO_RESULTS' })
+          done()
+        },
+        error: done.fail
       })
     })
 
-    it('should display an error message if the search call fails', () => {
-      const err = { status: '400' }
-      apiServiceSpy.searchApplicationParametersByCriteria.and.returnValue(throwError(() => err))
+    it('should display an error message if the search fails', (done) => {
+      const errorResponse = { status: '403', statusText: 'Not authorized' }
+      apiServiceSpy.searchParametersByCriteria.and.returnValue(throwError(() => errorResponse))
+      spyOn(console, 'error')
 
-      component.search({})
+      component.onSearch({})
 
-      component.results$?.subscribe({
+      component.data$?.subscribe({
+        next: (data) => {
+          expect(data).toEqual([])
+          done()
+        },
         error: () => {
-          expect(msgServiceSpy.error).toHaveBeenCalledWith({
-            summaryKey: 'SEARCH.MSG_SEARCH_FAILED'
-          })
+          expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.SEARCH.MSG_SEARCH_FAILED' })
+          expect(console.error).toHaveBeenCalledWith('searchParametersByCriteria', errorResponse)
+          done.fail
         }
       })
     })
   })
 
-  describe('getAllProductNames', () => {
-    it('should log an error if the API call fails', () => {
-      const mockError = new Error('API error')
-      spyOn(console, 'error')
-      productApiSpy.searchAllAvailableProducts.and.returnValue(throwError(() => mockError))
+  /**
+   * META data: which were assigned to data
+   */
+  describe('META data: load used products', () => {
+    it('should get all products which are assigned to data', (done) => {
+      apiServiceSpy.getAllApplications.and.returnValue(of(usedProductsOrg))
 
-      component['getAllProductNames']()
+      component.ngOnInit()
 
-      component.products$!.subscribe((data) => {
-        expect(data).toEqual([] as any)
+      component.allUsedProducts$?.subscribe({
+        next: (data) => {
+          expect(data).toEqual(usedProductsOrg)
+          done()
+        },
+        error: done.fail
       })
-
-      expect(console.error).toHaveBeenCalledWith('getAllProductNames():', mockError)
     })
 
-    it('should set allProductNames$ observable and map product names correctly', () => {
-      const mockProductStorePageResult: ProductStorePageResult = {
-        stream: [
-          { displayName: 'Prod A', productName: 'prod-a' },
-          { displayName: 'Prod B', productName: 'prod-b' }
-        ]
-      } as ProductStorePageResult
-      const sortedItems: SelectItem[] = [
-        { label: 'Prod A', value: 'prod-a' },
-        { label: 'Prod B', value: 'prod-b' }
-      ]
-      productApiSpy.searchAllAvailableProducts.and.returnValue(of(mockProductStorePageResult))
+    it('should get all announcements assigned to workspaces', (done) => {
+      const errorResponse = { status: '404', statusText: 'An error occur' }
+      apiServiceSpy.getAllApplications.and.returnValue(throwError(() => errorResponse))
+      spyOn(console, 'error')
 
-      component['getAllProductNames']()
+      component.ngOnInit()
 
-      component.allProductNames$!.subscribe((data) => {
-        expect(data).toEqual(sortedItems)
+      component.allUsedProducts$?.subscribe({
+        next: (data) => {
+          expect(data).toEqual([])
+          done()
+        },
+        error: () => {
+          expect(console.error).toHaveBeenCalledOnceWith('getAllApplications', errorResponse)
+          done.fail
+        }
+      })
+    })
+  })
+
+  describe('META data: load all products', () => {
+    it('should get all existing products - successful', (done) => {
+      productApiSpy.searchAllAvailableProducts.and.returnValue(of({ stream: allProducts }))
+
+      component.ngOnInit()
+
+      component.allProducts$.subscribe({
+        next: (products) => {
+          if (products) {
+            expect(products.length).toBe(allProducts.length)
+            expect(products[0].applications?.length).toBe(allProducts[0].applications?.length)
+            done()
+          }
+        },
+        error: done.fail
+      })
+    })
+
+    it('should get all existing products - failed', (done) => {
+      const errorResponse = { status: '404', statusText: 'Not found' }
+      productApiSpy.searchAllAvailableProducts.and.returnValue(throwError(() => errorResponse))
+      spyOn(console, 'error')
+
+      component.ngOnInit()
+
+      component.allProducts$.subscribe({
+        next: () => {
+          expect(console.error).toHaveBeenCalledWith('getAllProductNames', errorResponse)
+          done()
+        },
+        error: done.fail
+      })
+    })
+  })
+
+  describe('META data: load all meta data together and check enrichments', () => {
+    it('should get all meta data - successful', (done) => {
+      productApiSpy.searchAllAvailableProducts.and.returnValue(of({ stream: allProducts }))
+      apiServiceSpy.getAllApplications.and.returnValue(of(usedProductsOrg))
+
+      component.ngOnInit()
+
+      component.metaData$.subscribe({
+        next: (meta) => {
+          if (meta) {
+            expect(meta.allProducts.length).toBe(5)
+            expect(meta.usedProducts?.length).toBe(2)
+            expect(meta.usedProducts).toEqual(usedProducts)
+            done()
+          }
+        }
       })
     })
   })
@@ -160,105 +283,110 @@ describe('ParameterSearchComponent', () => {
   /*
    * UI ACTIONS
    */
-  it('should prepare the creation of a new parameter', () => {
-    component.onCreate()
+  describe('create + copy', () => {
+    it('should prepare the creation of a new parameter', () => {
+      const ev: MouseEvent = new MouseEvent('type')
+      spyOn(ev, 'stopPropagation')
+      const mode = 'CREATE'
 
-    expect(component.changeMode).toEqual('NEW')
-    expect(component.usedProductsChanged).toBeFalse()
-    expect(component.parameter).toBe(undefined)
-    expect(component.displayDetailDialog).toBeTrue()
+      component.onDetail(mode, undefined, ev)
+
+      expect(ev.stopPropagation).toHaveBeenCalled()
+      expect(component.changeMode).toEqual(mode)
+      expect(component.usedProductsChanged).toBeFalse()
+      expect(component.parameter).toBe(undefined)
+      expect(component.displayDetailDialog).toBeTrue()
+
+      component.onCloseDetail(false)
+
+      expect(component.displayDetailDialog).toBeFalse()
+    })
+
+    it('should show details of a parameter', () => {
+      const mode = 'EDIT'
+
+      component.onDetail(mode, parameterData[0])
+
+      expect(component.changeMode).toEqual(mode)
+      expect(component.usedProductsChanged).toBeFalse()
+      expect(component.parameter).toBe(parameterData[0])
+      expect(component.displayDetailDialog).toBeTrue()
+    })
+
+    it('should prepare the copy of a parameter', () => {
+      const mode = 'COPY'
+
+      component.onDetail(mode, parameterData[0])
+
+      expect(component.changeMode).toEqual(mode)
+      expect(component.usedProductsChanged).toBeFalse()
+      expect(component.parameter).toBe(parameterData[0])
+      expect(component.parameter?.id).toBe(undefined) // this does change the test data!
+      expect(component.displayDetailDialog).toBeTrue()
+
+      component.onCloseDetail(false)
+
+      expect(component.displayDetailDialog).toBeFalse()
+    })
   })
 
-  it('should show details of a parameter', () => {
-    const ev: MouseEvent = new MouseEvent('type')
-    spyOn(ev, 'stopPropagation')
-    const mode = 'EDIT'
+  describe('deletion', () => {
+    beforeEach(() => {
+      params = [
+        { id: 'id1', productName: 'product1', applicationId: 'app1', name: 'name1' },
+        { id: 'id2', productName: 'product1', applicationId: 'app1', name: 'name2' }
+      ]
+    })
+    it('should prepare the deletion of a parameter', () => {
+      const ev: MouseEvent = new MouseEvent('type')
+      spyOn(ev, 'stopPropagation')
 
-    component.onDetail(ev, parameterData[0], mode)
+      component.onDelete(ev, params[0])
 
-    expect(ev.stopPropagation).toHaveBeenCalled()
-    expect(component.changeMode).toEqual(mode)
-    expect(component.usedProductsChanged).toBeFalse()
-    expect(component.parameter).toBe(parameterData[0])
-    expect(component.displayDetailDialog).toBeTrue()
-  })
+      expect(ev.stopPropagation).toHaveBeenCalled()
+      expect(component.usedProductsChanged).toBeFalse()
+      expect(component.parameter).toBe(params[0])
+      expect(component.displayDeleteDialog).toBeTrue()
+    })
 
-  it('should prepare the copy of a parameter', () => {
-    const ev: MouseEvent = new MouseEvent('type')
-    spyOn(ev, 'stopPropagation')
+    it('should delete a parameter', () => {
+      apiServiceSpy.deleteParameter.and.returnValue(of(null))
+      const ev: MouseEvent = new MouseEvent('type')
 
-    component.onCopy(ev, parameterData[0])
+      component.onDelete(ev, params[0])
+      component.onDeleteConfirmation(params)
 
-    expect(ev.stopPropagation).toHaveBeenCalled()
-    expect(component.changeMode).toEqual('NEW')
-    expect(component.usedProductsChanged).toBeFalse()
-    expect(component.parameter).toBe(parameterData[0])
-    expect(component.displayDetailDialog).toBeTrue()
-  })
+      expect(component.displayDeleteDialog).toBeFalse()
+      expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.MESSAGE.OK' })
+    })
 
-  it('should prepare the deletion of a parameter', () => {
-    const ev: MouseEvent = new MouseEvent('type')
-    spyOn(ev, 'stopPropagation')
+    it('should display error if deleting a parameter fails', () => {
+      const errorResponse = { status: '400', statusText: 'Error on deletion' }
+      apiServiceSpy.deleteParameter.and.returnValue(throwError(() => errorResponse))
+      const ev: MouseEvent = new MouseEvent('type')
+      spyOn(console, 'error')
 
-    component.onDelete(ev, parameterData[0])
+      component.onDelete(ev, params[0])
+      component.onDeleteConfirmation(params)
 
-    expect(ev.stopPropagation).toHaveBeenCalled()
-    expect(component.usedProductsChanged).toBeFalse()
-    expect(component.parameter).toBe(parameterData[0])
-    expect(component.displayDeleteDialog).toBeTrue()
-  })
-
-  it('should delete a parameter item', () => {
-    const ev: MouseEvent = new MouseEvent('type')
-    apiServiceSpy.deleteParameter.and.returnValue(of({}))
-    component.parameters = [
-      { id: 'a1', key: 'a1' },
-      { id: 'a2', key: 'a2', productName: 'prod' }
-    ]
-    component.onDelete(ev, component.parameters[0])
-    component.onDeleteConfirmation()
-
-    expect(component.parameters.length).toBe(1)
-    expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.MESSAGES.OK' })
-
-    component.onDelete(ev, component.parameters[0])
-    component.onDeleteConfirmation()
-    expect(component.parameters.length).toBe(0)
-  })
-
-  it('should display error if deleting an parameter fails', () => {
-    apiServiceSpy.deleteParameter.and.returnValue(throwError(() => new Error()))
-    component.parameter = {
-      id: 'definedHere'
-    }
-    component.parameters = [{ id: 'id', productName: 'prod1', applicationId: 'app1', key: 'key1', setValue: 'value1' }]
-
-    component.onDeleteConfirmation()
-
-    expect(msgServiceSpy.error).toHaveBeenCalledWith({
-      summaryKey: 'ACTIONS.DELETE.MESSAGES.NOK'
+      expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.MESSAGE.NOK' })
+      expect(console.error).toHaveBeenCalledWith('deleteParameter', errorResponse)
     })
   })
 
   it('should set correct values when detail dialog is closed', () => {
-    spyOn(component, 'search')
+    spyOn(component, 'onSearch')
 
     component.onCloseDetail(true)
 
-    expect(component.search).toHaveBeenCalled()
+    expect(component.onSearch).toHaveBeenCalled()
     expect(component.displayDeleteDialog).toBeFalse()
   })
 
-  it('should update the columns that are seen in results', () => {
+  it('should update the columns that are seen in data', () => {
     const columns: Column[] = [
-      {
-        field: 'productName',
-        header: 'PRODUCT_NAME'
-      },
-      {
-        field: 'description',
-        header: 'DESCRIPTION'
-      }
+      { field: 'productName', header: 'PRODUCT_NAME' },
+      { field: 'description', header: 'DESCRIPTION' }
     ]
     const expectedColumn = { field: 'productName', header: 'PRODUCT_NAME' }
     component.columns = columns
@@ -270,22 +398,21 @@ describe('ParameterSearchComponent', () => {
   })
 
   it('should apply a filter to the result table', () => {
-    component.parameterTable = jasmine.createSpyObj('parameterTable', ['filterGlobal'])
+    component.dataTable = jasmine.createSpyObj('dataTable', ['filterGlobal'])
 
     component.onFilterChange('test')
 
-    expect(component.parameterTable?.filterGlobal).toHaveBeenCalledWith('test', 'contains')
+    expect(component.dataTable?.filterGlobal).toHaveBeenCalledWith('test', 'contains')
   })
 
-  it('should open create dialog', () => {
-    spyOn(component, 'onCreate')
-
+  it('should open create dialog using UI action', () => {
+    spyOn(component, 'onDetail')
     component.ngOnInit()
     component.actions$?.subscribe((action) => {
       action[0].actionCallback()
     })
 
-    expect(component.onCreate).toHaveBeenCalled()
+    expect(component.onDetail).toHaveBeenCalled()
   })
 
   describe('onHistory', () => {
@@ -309,17 +436,30 @@ describe('ParameterSearchComponent', () => {
     expect(component.displayHistoryDialog).toBeFalse()
   })
 
-  describe('onReset', () => {
+  describe('onCriteriaReset', () => {
     it('should reset criteria, reset the form group, and disable the applicationId control', () => {
-      component.criteria = { key: 'key' }
-      component.criteriaGroup.controls['applicationId'].enable()
+      component.criteria = { name: 'name' }
 
-      component.onReset()
+      component.onCriteriaReset()
 
       expect(component.criteria).toEqual({})
-      expect(component.criteriaGroup.pristine).toBeTrue()
-      expect(component.criteriaGroup.dirty).toBeFalse()
-      expect(component.criteriaGroup.controls['applicationId'].disabled).toBeTrue()
+    })
+  })
+
+  /**
+   * Language tests
+   */
+  describe('Language tests', () => {
+    it('should set a German date format', () => {
+      expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm')
+    })
+
+    it('should set default date format', () => {
+      mockUserService.lang$.getValue.and.returnValue('en')
+      fixture = TestBed.createComponent(ParameterSearchComponent)
+      component = fixture.componentInstance
+      fixture.detectChanges()
+      expect(component.dateFormat).toEqual('M/d/yy, h:mm a')
     })
   })
 })

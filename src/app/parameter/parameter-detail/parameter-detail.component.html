@@ -1,215 +1,197 @@
 <p-dialog
-  [header]="(changeMode === 'EDIT' ? 'ACTIONS.EDIT.EDIT_PARAMETER' : 'ACTIONS.CREATE.CREATE_PARAMETER') | translate"
-  [(visible)]="displayDetailDialog"
-  class="p-dialog-titlebar-close"
+  [header]="'DIALOG.' + changeMode + '.HEADER' | translate"
+  [(visible)]="displayDialog"
   (onHide)="onDialogHide()"
-  [baseZIndex]="10000"
   [modal]="true"
   [closable]="true"
   [draggable]="true"
   [resizable]="true"
   [style]="{ width: '600px' }"
-  [showHeader]="true"
   [breakpoints]="{
     '992px': '75vw',
     '768px': '90vw',
     '630px': '100vw'
   }"
 >
-  <div>
-    <p-card>
-      <form [formGroup]="formGroup">
-        <div class="grid m-0">
-          <div class="p-fluid col-12 md:col-6">
+  <p-tabView #panelDetail [formGroup]="formGroup" [(activeIndex)]="selectedTabIndex">
+    <p-tabPanel [header]="'DIALOG.DETAIL.TAB.PROPS' | translate">
+      <div class="flex flex-column row-gap-4">
+        <div class="flex flex-row row-gap-4">
+          <div class="mt-1 px-2 w-12 sm:w-6">
             <span class="p-float-label" controlErrorAnchor>
               <p-dropdown
                 id="pm_detail_form_product_name"
                 class="input-field"
                 styleClass="w-full text-responsive"
-                [emptyMessage]="'SEARCH.NO_DATA' | translate"
-                [options]="allProducts"
+                formControlName="productName"
+                [options]="allProductOptions"
+                (onChange)="onChangeProductName($event.value)"
                 [autoDisplayFirst]="true"
                 [appendTo]="'body'"
-                (onChange)="this.updateApplicationIds($event.value)"
-                formControlName="displayName"
-                [aria-label]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
+                [readonly]="['EDIT', 'VIEW'].includes(this.changeMode)"
+                [showClear]="['COPY', 'CREATE'].includes(this.changeMode)"
+                [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_PRODUCT' | translate"
+                [ariaLabel]="'PARAMETER.PRODUCT_NAME' | translate"
                 [pTooltip]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
               </p-dropdown>
-              <label class="ocx-required-label" for="pm_detail_form_productName">
+              <label class="ocx-required-label" for="pm_detail_form_product_name">
                 {{ 'PARAMETER.PRODUCT_NAME' | translate }}</label
               >
             </span>
           </div>
-          <div class="p-fluid col-12 md:col-6">
+          <div class="mt-1 px-2 w-12 sm:w-6">
             <span class="p-float-label" controlErrorAnchor>
               <p-dropdown
-                id="pm_detail_form_applicationId"
+                id="pm_detail_form_app_id"
                 class="input-field"
                 styleClass="w-full text-responsive"
-                [emptyMessage]="'SEARCH.NO_DATA' | translate"
-                [options]="applicationIds"
+                formControlName="applicationId"
+                [options]="appIdOptions"
                 [autoDisplayFirst]="true"
                 [appendTo]="'body'"
-                formControlName="applicationId"
-                [aria-label]="'PARAMETER.TOOLTIPS.APPLICATION' | translate"
+                [readonly]="['EDIT', 'VIEW'].includes(this.changeMode)"
+                [showClear]="['COPY', 'CREATE'].includes(this.changeMode)"
+                [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_APP' | translate"
+                [ariaLabel]="'PARAMETER.APP_ID' | translate"
                 [pTooltip]="'PARAMETER.TOOLTIPS.APPLICATION' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
               </p-dropdown>
-              <label class="ocx-required-label" for="pm_detail_form_applicationId">
+              <label class="ocx-required-label" for="pm_detail_form_app_id">
                 {{ 'PARAMETER.APP_ID' | translate }}</label
               >
             </span>
           </div>
+        </div>
 
-          <div class="p-fluid col-12 mb-3">
+        <div class="flex flex-row row-gap-4">
+          <div class="p-fluid mx-2 w-12">
             <span class="p-float-label" controlErrorAnchor>
               <input
                 pInputText
                 type="text"
-                id="pm_detail_form_key"
-                formControlName="key"
-                [aria-label]="'PARAMETER.TOOLTIPS.KEY' | translate"
-                [pTooltip]="'PARAMETER.TOOLTIPS.KEY' | translate"
+                id="pm_detail_form_name"
+                formControlName="name"
+                class="w-full pt-3 pb-2 text-responsive"
+                [ariaLabel]="'PARAMETER.NAME' | translate"
+                [pTooltip]="'PARAMETER.TOOLTIPS.NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label class="ocx-required-label" for="pm_detail_form_key"> {{ 'PARAMETER.KEY' | translate }}</label>
+              <label class="ocx-required-label" for="pm_detail_form_name"> {{ 'PARAMETER.NAME' | translate }}</label>
             </span>
           </div>
+        </div>
 
-          <div class="p-fluid col-12 mb-3">
-            <span class="p-float-label w-full" controlErrorAnchor>
-              <textarea
-                [rows]="3"
-                pInputTextarea
-                id="pm_detail_form_value"
-                formControlName="value"
-                jsonColorize
-                [aria-label]="'PARAMETER.TOOLTIPS.VALUE' | translate"
-                [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
+        <div class="flex flex-row row-gap-4">
+          <div class="p-fluid mx-2 w-12">
+            <span class="p-float-label" controlErrorAnchor>
+              <input
+                pInputText
+                type="text"
+                id="pm_detail_form_display_name"
+                formControlName="name"
+                class="w-full pt-3 pb-2 text-responsive"
+                [ariaLabel]="'PARAMETER.DISPLAY_NAME' | translate"
+                [pTooltip]="'PARAMETER.TOOLTIPS.DISPLAY_NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
+              />
+              <label class="ocx-required-label" for="pm_detail_form_display_name">
+                {{ 'PARAMETER.DISPLAY_NAME' | translate }}</label
               >
-              </textarea>
-              <label class="ocx-required-label" for="pm_detail_form_value"> {{ 'PARAMETER.VALUE' | translate }}</label>
             </span>
           </div>
+        </div>
 
-          <div class="p-fluid col-12 md:col-6 mb-3">
-            <span class="p-float-label">
-              <input
-                pInputText
-                type="text"
-                id="pm_detail_form_importValue"
-                [value]="parameter?.importValue"
-                disabled="true"
-                [aria-label]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
-                [pTooltip]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              />
-              <label for="pm_detail_form_importValue">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
-            </span>
-          </div>
-
-          <div class="p-fluid col-12 md:col-6 mb-3">
-            <span class="p-float-label">
-              <input
-                pInputText
-                type="text"
-                id="parameter_detail_form_unit"
-                formControlName="unit"
-                [aria-label]="'PARAMETER.TOOLTIPS.UNIT' | translate"
-                [pTooltip]="'PARAMETER.TOOLTIPS.UNIT' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              />
-              <label for="parameter_detail_form_unit">{{ 'PARAMETER.UNIT' | translate }}</label>
-            </span>
-          </div>
-
-          <div class="p-fluid col-12 md:col-6 mb-3">
-            <span class="p-float-label">
-              <input
-                pInputText
-                type="text"
-                id="parameter_detail_form_rangeFrom"
-                formControlName="rangeFrom"
-                [aria-label]="'PARAMETER.TOOLTIPS.RANGE_FROM' | translate"
-                [pTooltip]="'PARAMETER.TOOLTIPS.RANGE_FROM' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              />
-              <label for="parameter_detail_form_rangeFrom">{{ 'PARAMETER.RANGE_FROM' | translate }}</label>
-            </span>
-          </div>
-
-          <div class="p-fluid col-12 md:col-6 mb-3">
-            <span class="p-float-label">
-              <input
-                pInputText
-                type="text"
-                id="parameter_detail_form_rangeTo"
-                formControlName="rangeTo"
-                [aria-label]="'PARAMETER.TOOLTIPS.RANGE_TO' | translate"
-                [pTooltip]="'PARAMETER.TOOLTIPS.RANGE_TO' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              />
-              <label for="parameter_detail_form_rangeTo">{{ 'PARAMETER.RANGE_TO' | translate }}</label>
-            </span>
-          </div>
-
-          <div class="p-fluid col-12 md:col-12 mb-3">
+        <div class="flex flex-row row-gap-4">
+          <div class="p-fluid mx-2 w-12">
             <span class="p-float-label" controlErrorAnchor>
               <textarea
-                rows="5"
-                cols="30"
                 pInputTextarea
-                id="parameter_detail_form_description"
+                id="pm_detail_form_description"
                 formControlName="description"
-                class="w-full"
+                rows="2"
                 autoResize="false"
-                [aria-label]="'PARAMETER.TOOLTIPS.DESCRIPTION' | translate"
+                [ariaLabel]="'PARAMETER.DESCRIPTION' | translate"
                 [pTooltip]="'PARAMETER.TOOLTIPS.DESCRIPTION' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
               </textarea>
-              <label class="ocx-required-label" for="parameter_detail_form_description">
-                {{ 'PARAMETER.DESCRIPTION' | translate }}
-              </label>
+              <label for="pm_detail_form_description"> {{ 'PARAMETER.DESCRIPTION' | translate }} </label>
             </span>
           </div>
         </div>
-      </form>
-    </p-card>
-  </div>
+      </div>
+    </p-tabPanel>
+
+    <p-tabPanel [header]="'DIALOG.DETAIL.TAB.VALUE' | translate">
+      <div class="p-fluid mx-2">
+        <span class="p-float-label" controlErrorAnchor>
+          <textarea
+            pInputTextarea
+            id="pm_detail_form_value_2"
+            class="w-full"
+            formControlName="value"
+            [rows]="10"
+            jsonColorize
+            [ariaLabel]="'PARAMETER.VALUE' | translate"
+            [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
+          </textarea>
+          <label for="pm_detail_form_value_2"> {{ 'PARAMETER.VALUE' | translate }}</label>
+        </span>
+      </div>
+    </p-tabPanel>
+
+    <p-tabPanel [header]="'DIALOG.DETAIL.TAB.IMPORT_VALUE' | translate">
+      <div class="p-fluid mx-2">
+        <span class="p-float-label">
+          <textarea
+            pInputTextarea
+            id="pm_detail_import_value_2"
+            class="w-full"
+            [value]="parameter?.importValue"
+            [rows]="10"
+            jsonColorize
+            [ariaLabel]="'PARAMETER.IMPORT_VALUE' | translate"
+            [pTooltip]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
+          </textarea>
+          <label for="pm_detail_import_value_2">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
+        </span>
+      </div>
+    </p-tabPanel>
+  </p-tabView>
 
   <ng-template pTemplate="footer">
     <div class="flex flex-wrap justify-content-end gap-2 mb-1">
       <p-button
-        id="parameter_detail_button_cancel"
+        id="pm_detail_action_cancel"
         icon="pi pi-times"
         (onClick)="onDialogHide()"
         [label]="'ACTIONS.CANCEL' | translate"
-        [aria-label]="'ACTIONS.TOOLTIPS.CANCEL_AND_CLOSE' | translate"
+        [ariaLabel]="'ACTIONS.CANCEL' | translate"
         [pTooltip]="'ACTIONS.TOOLTIPS.CANCEL_AND_CLOSE' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
       ></p-button>
       <p-button
-        id="parameter_detail_button_save"
+        id="pm_detail_action_save"
         icon="pi pi-save"
         (onClick)="onSave()"
         [disabled]="!formGroup.valid"
         [label]="'ACTIONS.SAVE' | translate"
-        [aria-label]="'ACTIONS.TOOLTIPS.SAVE' | translate"
+        [ariaLabel]="'ACTIONS.SAVE' | translate"
         [pTooltip]="'ACTIONS.TOOLTIPS.SAVE' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"

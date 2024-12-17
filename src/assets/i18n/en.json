@@ -1,6 +1,7 @@
 {
   "ACTIONS": {
     "LABEL": "Actions",
+    "TOOLTIP": "Actions for the data of the table row",
     "CONFIRMATION": {
       "NO": "No",
       "YES": "Yes",
@@ -31,12 +32,11 @@
     },
     "DELETE": {
       "LABEL": "Delete",
-      "TOOLTIP": "Delete this Parameter",
+      "TOOLTIP": "Delete Parameter",
       "PARAMETER": "Delete Parameter",
-      "MENU": "Delete Menu Item",
-      "MESSAGES": {
-        "MESSAGE": "Do you want to delete \"{{ITEM}}\"?",
-        "MESSAGE_INFO": "This action cannot be undone!",
+      "MESSAGE": {
+        "TEXT": "Do you want to delete this Parameter?",
+        "INFO": "This action cannot be undone!",
         "NOK": "Parameter could not be deleted",
         "OK": "Parameter deleted successfully"
       }
@@ -68,6 +68,26 @@
       "TOOLTIP": "Upload definition in JSON format",
       "PARAMETER": "Import Parameter in JSON format."
     },
+    "NAVIGATION": {
+      "CLOSE": "Close",
+      "CLOSE.TOOLTIP": "Close dialog",
+      "CLOSE_WITHOUT_SAVE": "Close dialog without changes",
+      "BACK": "Back",
+      "NEXT": "Next",
+      "NEXT.TOOLTIP": "Next page",
+      "BACK.TOOLTIP": "Previous page"
+    },
+    "SEARCH": {
+      "CRITERIA": {
+        "NO_PRODUCT": "No Application",
+        "NO_APP": "Select Application first"
+      },
+      "FILTER_BY": "Filter by",
+      "OF": "of",
+      "MSG_NO_RESULTS": "Search returned no results",
+      "MSG_SEARCH_FAILED": "Search failed",
+      "NO_DATA": "No data"
+    },
     "VIEW": {
       "TOOLTIP": "View Parameter details"
     },
@@ -76,6 +96,7 @@
     },
     "CANCEL": "Cancel",
     "CHOOSE": "Choose",
+    "RELOAD": "Reload",
     "SAVE": "Save",
     "SAVE_AS": "Save as ...",
     "UPLOAD": "Upload",
@@ -85,44 +106,32 @@
       "SAVE_AS": "Save as new Parameter"
     }
   },
-  "GENERAL": {
-    "YES": "Yes",
-    "NO": "No",
-    "SWITCH_TO_EDIT": "Switch to edit mode",
-    "SWITCH_TO_VIEW": "Switch to view mode",
-    "CLOSE": "Close",
-    "RELOAD": "Reload",
-    "SAVE": "Save",
-    "CREATE": "Create",
-    "NO_DATA": "No data",
-    "OF": "of"
-  },
-  "SEARCH": {
-    "PARAMETER_SEARCH_HEADER": "Parameter Management",
-    "PARAMETER_SEARCH_SUB_HEADER": "Searching and managing of Parameters",
-    "MSG_NO_RESULTS": "Search returned no results",
-    "MSG_SEARCH_FAILED": "Search failed",
-    "NO_DATA": "No data",
-    "SEARCH": "Search",
-    "RESET": "Reset",
-    "SELECT_TYPE": "Select Type",
-    "DROPDOWN_PLACEHOLDER": "Any",
-    "APPLICATION_ID_IS_MANDATORY": "Application Id field is mandatory",
-    "TOOLTIPS": {
-      "ACTIONS": "Available actions for a Parameter item"
-    }
+  "DIALOG": {
+    "SEARCH": {
+      "HEADER": "Parameter Management",
+      "SUBHEADER": "Searching and managing of Application Parameters"
+    },
+    "DETAIL": {
+      "TAB": {
+        "PROPS": "Base Properties",
+        "VALUE": "Value",
+        "IMPORT_VALUE": "Imported Value"
+      }
+    },
+    "COPY.HEADER": "Create Parameter",
+    "CREATE.HEADER": "Create Parameter",
+    "EDIT.HEADER": "Edit Parameter",
+    "DELETE.HEADER": "Delete Parameter"
   },
   "PARAMETER": {
     "APP_ID": "App-ID",
     "APPLICATION": "App",
     "PRODUCT_NAME": "Application",
-    "KEY": "Key",
+    "NAME": "Name",
+    "DISPLAY_NAME": "Display Name",
     "VALUE": "Value",
     "IMPORT_VALUE": "Import Value",
     "DESCRIPTION": "Description",
-    "UNIT": "Unit",
-    "RANGE_FROM": "Range from",
-    "RANGE_TO": "Range to",
     "PARAMETER_TYPE": {
       "UNAVAILABLE": "Unavailable",
       "STRING": "String",
@@ -131,15 +140,13 @@
       "JSON": "Json"
     },
     "TOOLTIPS": {
-      "APP_ID": "Base identifier for Apps with assigned Parameters",
+      "APP_ID": "App identifier for which the Parameter is created",
       "APPLICATION": "Business name of the App",
       "PRODUCT_NAME": "Application for which the Parameter is created",
-      "KEY": "Unique identifier for the Parameter",
+      "NAME": "Name of the Parameter",
+      "DISPLAY_NAME": "Business Name of the Parameter",
       "VALUE": "Value of the Parameter",
       "IMPORT_VALUE": "Imported value",
-      "UNIT": "Unit of the Parameter",
-      "RANGE_FROM": "Range from",
-      "RANGE_TO": "Range to",
       "DESCRIPTION": "Detailed description of the Parameter",
       "FORM_TYPE": "Choose between standard and advanced form"
     }
@@ -168,11 +175,6 @@
     "APPLICATION": "App ID",
     "PRODUCT": "Application",
     "KEY": "Key"
-  },
-  "DIALOG": {
-    "SELECT_APPLICATION_ID": "Select App Id",
-    "SELECT_KEY": "Select Key",
-    "FILTER_BY": "Filter by"
   },
   "CHART": {
     "NUMBER_OF_REQUESTS": "Number of requests"

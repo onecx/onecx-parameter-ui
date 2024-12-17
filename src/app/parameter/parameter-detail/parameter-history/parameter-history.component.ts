@@ -4,11 +4,11 @@ import { TranslateService } from '@ngx-translate/core'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
 import {
-  ApplicationParameter,
-  ApplicationParameterHistory,
-  ApplicationParameterHistoryCriteria,
+  Parameter,
+  History,
+  HistoryCriteria,
   HistoriesAPIService,
-  ParameterHistoryCount,
+  HistoryCount,
   ParametersAPIService
 } from 'src/app/shared/generated'
 import { DatePipe } from '@angular/common'
@@ -19,22 +19,20 @@ import { DatePipe } from '@angular/common'
   styleUrls: ['./parameter-history.component.scss']
 })
 export class ParameterHistoryComponent implements OnChanges {
-  @Input() public displayHistoryDialog = false
-  @Input() public parameter: ApplicationParameter | undefined
+  @Input() public displayDialog = false
+  @Input() public parameter: Parameter | undefined
   @Output() public hideDialog = new EventEmitter()
 
-  public selectedHistoryParam: ApplicationParameterHistory | undefined
-  formGroup: FormGroup
+  public loading = false
+  public selectedHistoryParam: History | undefined
+  public formGroup: FormGroup
   public parameterForm: UntypedFormGroup = this.initializeForm()
   public translatedData: Record<string, string> | undefined
-  public parameterDTO: ApplicationParameter | undefined
+  public parameterDTO: Parameter | undefined
   public parameterHistoryArray: any[] = []
   public chartData: any = []
   data: any
   options: any
-  criteriaGroup: any
-
-  public isLoading = false
 
   constructor(
     private readonly fb: FormBuilder,
@@ -47,16 +45,15 @@ export class ParameterHistoryComponent implements OnChanges {
     this.formGroup = fb.nonNullable.group({
       productName: new FormControl(null, [Validators.required]),
       applicationId: new FormControl(null, [Validators.required]),
-      key: new FormControl(null, [Validators.required]),
+      name: new FormControl(null, [Validators.required]),
       value: new FormControl(null, [Validators.required]),
       description: new FormControl(null, [Validators.required]),
-      unit: new FormControl(null),
-      rangeFrom: new FormControl(null),
-      rangeTo: new FormControl(null)
+      unit: new FormControl(null)
     })
   }
 
   ngOnChanges() {
+    if (!this.displayDialog) return
     if (this.parameter) {
       this.getParameter(this.parameter.id!)
     }
@@ -67,57 +64,49 @@ export class ParameterHistoryComponent implements OnChanges {
     return this.fb.group({
       productName: new UntypedFormControl(null, [Validators.required]),
       applicationId: new UntypedFormControl(null, [Validators.required]),
-      key: new UntypedFormControl(null, [Validators.required]),
+      name: new UntypedFormControl(null, [Validators.required]),
       value: new UntypedFormControl(null, [Validators.required]),
       description: new UntypedFormControl(null, [Validators.required]),
-      unit: new UntypedFormControl(null),
-      rangeFrom: new UntypedFormControl(null),
-      rangeTo: new UntypedFormControl(null)
+      unit: new UntypedFormControl(null)
     })
   }
 
   private getParameter(applicationParameterId: string): void {
     this.parameterApiService.getParameterById({ id: applicationParameterId }).subscribe({
-      next: (result: ApplicationParameter) => {
+      next: (result: Parameter) => {
         this.parameterDTO = result
-        this.getParameterHistoryArray()
+        this.getHistoryArray()
         this.loadChartData()
       },
       error: () => {
-        this.msgService.error({
-          summaryKey: 'SEARCH.MSG_SEARCH_FAILED'
-        })
+        this.msgService.error({ summaryKey: 'ACTIONS.SEARCH.MSG_SEARCH_FAILED' })
       }
     })
   }
 
-  public getParameterHistoryArray(): void {
-    const criteria: ApplicationParameterHistoryCriteria = {
+  public getHistoryArray(): void {
+    const criteria: HistoryCriteria = {
       applicationId: this.parameterForm.value.applicationId || this.parameterDTO?.applicationId,
       productName: this.parameterForm.value.productName || this.parameterDTO?.productName,
-      key: this.parameterForm.value.key || this.parameterDTO?.key
+      name: this.parameterForm.value.name || this.parameterDTO?.name
     }
-    this.historyApiService
-      .getAllApplicationParametersHistory({ applicationParameterHistoryCriteria: criteria })
-      .subscribe({
-        next: (results) => {
-          this.parameterHistoryArray = results.stream as ApplicationParameterHistory[]
-        },
-        error: () => {
-          this.msgService.error({
-            summaryKey: 'SEARCH.MSG_SEARCH_FAILED'
-          })
-        }
-      })
+    this.historyApiService.getAllHistory({ historyCriteria: criteria }).subscribe({
+      next: (results) => {
+        this.parameterHistoryArray = results.stream as History[]
+      },
+      error: () => {
+        this.msgService.error({ summaryKey: 'ACTIONS.SEARCH.MSG_SEARCH_FAILED' })
+      }
+    })
   }
 
   private loadChartData(): void {
     this.historyApiService
       .getCountsByCriteria({
-        parameterHistoryCountCriteria: {
+        historyCountCriteria: {
           applicationId: this.parameterDTO?.applicationId,
           productName: this.parameterDTO?.productName,
-          key: this.parameterDTO?.key
+          name: this.parameterDTO?.name
         }
       })
       .subscribe({
@@ -126,14 +115,12 @@ export class ParameterHistoryComponent implements OnChanges {
           this.setChartData()
           if (data.length == 0) {
             // this.msgService.success({
-            //   summaryKey: 'SEARCH.MSG_NO_RESULTS'
+            //   summaryKey: 'ACTIONS.SEARCH.MSG_NO_RESULTS'
             // })
           }
         },
         error: () => {
-          this.msgService.error({
-            summaryKey: 'SEARCH.MSG_SEARCH_FAILED'
-          })
+          this.msgService.error({ summaryKey: 'ACTIONS.SEARCH.MSG_SEARCH_FAILED' })
         }
       })
   }
@@ -143,10 +130,8 @@ export class ParameterHistoryComponent implements OnChanges {
     const textColor = documentStyle.getPropertyValue('--text-color')
     const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary')
     const surfaceBorder = documentStyle.getPropertyValue('--surface-border')
-    const dates = this.chartData.map((item1: ParameterHistoryCount) =>
-      this.datePipe.transform(item1.creationDate, 'medium')
-    )
-    const counts = this.chartData.map((item2: ParameterHistoryCount) => item2.count)
+    const dates = this.chartData.map((item1: HistoryCount) => this.datePipe.transform(item1.creationDate, 'medium'))
+    const counts = this.chartData.map((item2: HistoryCount) => item2.count)
     this.data = {
       labels: dates,
       datasets: [
@@ -194,10 +179,10 @@ export class ParameterHistoryComponent implements OnChanges {
   }
 
   public useHistoryParam() {
-    this.parameterForm.controls['value'].setValue(this.selectedHistoryParam?.usedValue)
     this.parameterForm.controls['productName'].setValue(this.selectedHistoryParam?.productName)
     this.parameterForm.controls['applicationId'].setValue(this.selectedHistoryParam?.applicationId)
-    this.parameterForm.controls['key'].setValue(this.selectedHistoryParam?.key)
+    this.parameterForm.controls['name'].setValue(this.selectedHistoryParam?.name)
+    this.parameterForm.controls['value'].setValue(this.selectedHistoryParam?.usedValue)
   }
 
   private loadTranslations(): void {
@@ -211,8 +196,8 @@ export class ParameterHistoryComponent implements OnChanges {
         'PARAMETER.VALUE',
         'PARAMETER.DESCRIPTION',
         'CHART.NUMBER_OF_REQUESTS',
-        'SEARCH.MSG_SEARCH_FAILED',
-        'SEARCH.MSG_NO_RESULTS',
+        'ACTIONS.SEARCH.MSG_SEARCH_FAILED',
+        'ACTIONS.SEARCH.MSG_NO_RESULTS',
         'VALIDATION.ERRORS.EMPTY_REQUIRED_FIELD'
       ])
       .subscribe((data) => {
@@ -221,7 +206,7 @@ export class ParameterHistoryComponent implements OnChanges {
   }
 
   public onDialogHide() {
-    this.displayHistoryDialog = false
+    this.displayDialog = false
     this.hideDialog.emit()
   }
 }

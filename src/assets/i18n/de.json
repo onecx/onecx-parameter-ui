@@ -1,6 +1,7 @@
 {
   "ACTIONS": {
     "LABEL": "Aktionen",
+    "TOOLTIP": "Aktionen für die Daten der Taellenzeile",
     "CONFIRMATION": {
       "NO": "Nein",
       "YES": "Ja",
@@ -9,6 +10,7 @@
     },
     "COPY": {
       "LABEL": "Kopieren",
+      "HEADER": "Parameter erstellen",
       "TOOLTIP": "Kopie des Parameters erstellen",
       "OF": "Kopie von ",
       "DATA": "Mit den Daten einen neuen Parameter anlegen",
@@ -31,12 +33,11 @@
     },
     "DELETE": {
       "LABEL": "Löschen",
-      "TOOLTIP": "Diesen Parameter löschen",
+      "TOOLTIP": "Parameter löschen",
       "PARAMETER": "Parameter löschen",
-      "MENU": "Menüpunkt löschen",
-      "MESSAGES": {
-        "MESSAGE": "Möchten Sie \"{{ITEM}}\" löschen?",
-        "MESSAGE_INFO": "Diese Aktion kann nicht rückgängig gemacht werden!",
+      "MESSAGE": {
+        "TEXT": "Möchten Sie diesen Parameter löschen?",
+        "INFO": "Diese Aktion kann nicht rückgängig gemacht werden!",
         "NOK": "Parameter konnte nicht gelöscht werden",
         "OK": "Parameter erfolgreich gelöscht"
       }
@@ -68,6 +69,26 @@
       "TOOLTIP": "Definition als JSON hochladen",
       "PARAMETER": "Die Parameter-Definition im JSON Format importieren."
     },
+    "NAVIGATION": {
+      "CLOSE": "Schließen",
+      "CLOSE.TOOLTIP": "Dialog schließen",
+      "CLOSE_WITHOUT_SAVE": "Dialog ohne Änderungen schließen",
+      "BACK": "Zurück",
+      "NEXT": "Weiter",
+      "NEXT.TOOLTIP": "Nächste Seite",
+      "BACK.TOOLTIP": "Vorherige Seite"
+    },
+    "SEARCH": {
+      "CRITERIA": {
+        "NO_PRODUCT": "Keine Applikation",
+        "NO_APP": "Zuerst Applikation wählen"
+      },
+      "FILTER_BY": "Filtern nach",
+      "OF": "von",
+      "MSG_NO_RESULTS": "Die Suche ergab keine Treffer",
+      "MSG_SEARCH_FAILED": "Suche ist fehlgeschlagen",
+      "NO_DATA": "Keine Ergebnisse"
+    },
     "VIEW": {
       "TOOLTIP": "Parameter-Details ansehen"
     },
@@ -76,6 +97,7 @@
     },
     "CANCEL": "Cancel",
     "CHOOSE": "Choose",
+    "RELOAD": "Neuladen",
     "SAVE": "Save",
     "SAVE_AS": "Save as ...",
     "UPLOAD": "Upload",
@@ -85,44 +107,32 @@
       "SAVE_AS": "Save as new Theme"
     }
   },
-  "GENERAL": {
-    "YES": "Ja",
-    "NO": "Nein",
-    "SWITCH_TO_EDIT": "In den Änderungsmodus schalten",
-    "SWITCH_TO_VIEW": "Wechseln Sie in den Ansichtsmodus",
-    "CLOSE": "Schließen",
-    "RELOAD": "Neuladen",
-    "SAVE": "Speichern",
-    "CREATE": "Erstellen",
-    "NO_DATA": "Keine Ergebnisse",
-    "OF": "von"
-  },
-  "SEARCH": {
-    "PARAMETER_SEARCH_HEADER": "Parameter Management",
-    "PARAMETER_SEARCH_SUB_HEADER": "Suchen und verwalten von Parametern",
-    "MSG_NO_RESULTS": "Die Suche ergab keine Treffer",
-    "MSG_SEARCH_FAILED": "Suche ist fehlgeschlagen",
-    "NO_DATA": "Keine Ergebnisse",
-    "SEARCH": "Suchen",
-    "RESET": "Zurücksetzen",
-    "SELECT_TYPE": "Wählen Sie einen Typ",
-    "DROPDOWN_PLACEHOLDER": "Irgendein",
-    "APPLICATION_ID_IS_MANDATORY": "Das Feld Anwendung-ID ist obligatorisch",
-    "TOOLTIPS": {
-      "ACTIONS": "Verfügbare Aktionen zu einem Parameter"
-    }
+  "DIALOG": {
+    "SEARCH": {
+      "HEADER": "Parameter Management",
+      "SUBHEADER": "Suchen und verwalten von Parametern für Applikationen"
+    },
+    "DETAIL": {
+      "TAB": {
+        "PROPS": "Basiseigenschaften",
+        "VALUE": "Wert",
+        "IMPORT_VALUE": "Importierter Wert"
+      }
+    },
+    "COPY.HEADER": "Parameter erstellen",
+    "CREATE.HEADER": "Parameter erstellen",
+    "EDIT.HEADER": "Parameter ändern",
+    "DELETE.HEADER": "Parameter löschen"
   },
   "PARAMETER": {
     "APP_ID": "App-ID",
     "APPLICATION": "App",
     "PRODUCT_NAME": "Applikation",
-    "KEY": "Schlüssel",
+    "NAME": "Name",
+    "DISPLAY_NAME": "Anzeigename",
     "VALUE": "Wert",
     "IMPORT_VALUE": "Importwert",
     "DESCRIPTION": "Beschreibung",
-    "UNIT": "Einheit",
-    "RANGE_FROM": "Bereich von",
-    "RANGE_TO": "Bereich bis",
     "PARAMETER_TYPE": {
       "UNAVAILABLE": "Nicht verfügbar",
       "STRING": "Zeichenfolge",
@@ -131,15 +141,13 @@
       "JSON": "Json"
     },
     "TOOLTIPS": {
-      "APP_ID": "Basisname von Apps mit zugeordneten Parametern",
+      "APP_ID": "App ID, für die der Parameter angelegt ist",
       "APPLICATION": "Wählen Sie eine App",
       "PRODUCT_NAME": "Applikation, für die der Parameter angelegt ist",
-      "KEY": "Eindeutiger Identifikationsschlüssel des Parameters",
+      "NAME": "Name des Parameters",
+      "DISPLAY_NAME": "Anzeigename des Parameters",
       "VALUE": "Wert des Parameters",
       "IMPORT_VALUE": "Importierter Wert",
-      "UNIT": "Einheit des Parameters",
-      "RANGE_FROM": "Bereich von",
-      "RANGE_TO": "Bereich bis",
       "DESCRIPTION": "Detaillierte Beschreibung des Parameters",
       "FORM_TYPE": "Wählen Sie zwischen Standard- und erweiterter Form"
     }
@@ -168,11 +176,6 @@
     "APPLICATION": "App-ID",
     "PRODUCT": "Applikation",
     "KEY": "Parameter-Schlüssel"
-  },
-  "DIALOG": {
-    "SELECT_APPLICATION_ID": "Wählen Sie Anwendungs-ID aus",
-    "SELECT_KEY": "Wählen Sie den Schlüssel",
-    "FILTER_BY": "Filtern nach"
   },
   "CHART": {
     "NUMBER_OF_REQUESTS": "Anzahl der Anfragen"

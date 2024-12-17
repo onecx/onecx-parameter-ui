@@ -1,6 +1,6 @@
 /**
- * onecx-parameters-bff
- * OneCx parameters Bff
+ * onecx-parameter-bff
+ * OneCX parameter Bff
  *
  * The version of the OpenAPI document: 2.0
  * 
@@ -11,16 +11,16 @@
  */
 
 
-export interface ApplicationParameterHistory { 
-    id?: string;
+export interface History { 
+    id: string;
     modificationCount?: number;
     creationDate?: string;
     creationUser?: string;
     modificationDate?: string;
     modificationUser?: string;
-    applicationId?: string;
-    productName?: string;
-    key?: string;
+    applicationId: string;
+    productName: string;
+    name: string;
     usedValue?: string;
     defaultValue?: string;
     type?: string;

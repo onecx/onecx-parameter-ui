@@ -9,20 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { ParameterCreateValue } from './parameterCreateValue';
 
 
-export interface ParameterSearchCriteria { 
-    applicationId?: string;
-    productName?: string;
-    name?: string;
+export interface ParameterUpdate { 
+    value?: ParameterCreateValue;
+    description?: string;
     displayName?: string;
-    /**
-     * The number of page
-     */
-    pageNumber?: number;
-    /**
-     * The size of page
-     */
-    pageSize?: number;
 }
 

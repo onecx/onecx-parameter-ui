@@ -1,14 +1,13 @@
 <p-dialog
   header=""
   class="p-dialog-titlebar-close"
-  [(visible)]="displayHistoryDialog"
+  [(visible)]="displayDialog"
   [baseZIndex]="10000"
+  [modal]="true"
+  [closable]="true"
   [draggable]="true"
   [resizable]="true"
-  [closable]="true"
-  [modal]="true"
   [style]="{ width: '600px' }"
-  [showHeader]="true"
 >
   <ocx-page-content>
     <div class="mt-3 flex flex-column gap-3">
@@ -49,7 +48,7 @@
             <tr [pSelectableRow]="parameterHistory">
               <td>{{ parameterHistory.productName }}</td>
               <td>{{ parameterHistory.applicationId }}</td>
-              <td>{{ parameterHistory.key }}</td>
+              <td>{{ parameterHistory.name }}</td>
               <td>{{ parameterHistory.instanceId }}</td>
               <td>{{ parameterHistory.defaultValue }}</td>
               <td>{{ parameterHistory.usedValue }}</td>
@@ -58,7 +57,7 @@
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr>
-              <td colspan="16">{{ 'GENERAL.NO_DATA' | translate }}</td>
+              <td colspan="16">{{ 'ACTIONS.SEARCH.NO_DATA' | translate }}</td>
             </tr>
           </ng-template>
         </p-table>
@@ -72,12 +71,12 @@
   <ng-template pTemplate="footer">
     <div class="flex flex-wrap justify-content-end gap-2 mb-1">
       <p-button
-        id="pm_parameter_detail_button_cancel"
+        id="pm_history_action_close"
         icon="pi pi-times"
         (onClick)="onDialogHide()"
-        [label]="'ACTIONS.CANCEL' | translate"
-        [aria-label]="'ACTIONS.TOOLTIPS.CANCEL_AND_CLOSE' | translate"
-        [pTooltip]="'ACTIONS.TOOLTIPS.CANCEL_AND_CLOSE' | translate"
+        [label]="'ACTIONS.CLOSE' | translate"
+        [ariaLabel]="'ACTIONS.CLOSE' | translate"
+        [pTooltip]="'ACTIONS.TOOLTIPS.CLOSE' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
       ></p-button>

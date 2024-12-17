@@ -21,6 +21,7 @@ import { ListboxModule } from 'primeng/listbox'
 import { MultiSelectModule } from 'primeng/multiselect'
 import { SelectButtonModule } from 'primeng/selectbutton'
 import { TableModule } from 'primeng/table'
+import { TabViewModule } from 'primeng/tabview'
 import { ToastModule } from 'primeng/toast'
 import { TooltipModule } from 'primeng/tooltip'
 
@@ -51,6 +52,7 @@ import { LabelResolver } from './label.resolver'
     ReactiveFormsModule,
     SelectButtonModule,
     TableModule,
+    TabViewModule,
     ToastModule,
     TooltipModule,
     TranslateModule,
@@ -76,6 +78,7 @@ import { LabelResolver } from './label.resolver'
     ReactiveFormsModule,
     SelectButtonModule,
     TableModule,
+    TabViewModule,
     ToastModule,
     TooltipModule,
     TranslateModule,

@@ -1,6 +1,6 @@
 /**
- * onecx-parameters-bff
- * OneCx parameters Bff
+ * onecx-parameter-bff
+ * OneCX parameter Bff
  *
  * The version of the OpenAPI document: 2.0
  * 
@@ -11,8 +11,9 @@
  */
 
 
-export interface ParameterHistoryCount { 
-    creationDate?: string;
-    count?: number;
-}
+/**
+ * @type ParameterCreateValue
+ * @export
+ */
+export type ParameterCreateValue = boolean | number | object | string;
 

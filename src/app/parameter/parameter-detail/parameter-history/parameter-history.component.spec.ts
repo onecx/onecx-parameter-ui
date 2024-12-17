@@ -9,21 +9,21 @@ import { FormBuilder } from '@angular/forms'
 
 import { AppStateService, createTranslateLoader, PortalMessageService } from '@onecx/portal-integration-angular'
 
-import { ParametersAPIService, HistoriesAPIService, ApplicationParameter } from 'src/app/shared/generated'
+import { ParametersAPIService, HistoriesAPIService, Parameter } from 'src/app/shared/generated'
 import { ParameterHistoryComponent } from './parameter-history.component'
 
 const productName = 'prod1'
 const app = 'app1'
 
-const parameter: ApplicationParameter = {
+const parameter: Parameter = {
   id: 'id',
   productName: productName,
   applicationId: app,
-  key: 'key',
-  setValue: 'value'
+  name: 'name',
+  value: 'value'
 }
 
-describe('ParameterHistoryComponent', () => {
+describe('HistoryComponent', () => {
   let component: ParameterHistoryComponent
   let fixture: ComponentFixture<ParameterHistoryComponent>
   let datePipe: DatePipe
@@ -33,7 +33,7 @@ describe('ParameterHistoryComponent', () => {
     getParameterById: jasmine.createSpy('getParameterById').and.returnValue(of({}))
   }
   const historyServiceSpy = {
-    getAllApplicationParametersHistory: jasmine.createSpy('getAllApplicationParametersHistory').and.returnValue(of({})),
+    getAllHistory: jasmine.createSpy('getAllHistory').and.returnValue(of({})),
     getCountsByCriteria: jasmine.createSpy('getCountsByCriteria').and.returnValue(of({}))
   }
 
@@ -65,7 +65,7 @@ describe('ParameterHistoryComponent', () => {
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
     apiServiceSpy.getParameterById.calls.reset()
-    historyServiceSpy.getAllApplicationParametersHistory.calls.reset()
+    historyServiceSpy.getAllHistory.calls.reset()
     historyServiceSpy.getCountsByCriteria.calls.reset()
   }))
 
@@ -114,7 +114,7 @@ describe('ParameterHistoryComponent', () => {
     spyOn(component.hideDialog, 'emit')
     component.onDialogHide()
 
-    expect(component.displayHistoryDialog).toBeFalse()
+    expect(component.displayDialog).toBeFalse()
     expect(component.hideDialog.emit).toHaveBeenCalled()
   })
 })
