@@ -104,7 +104,7 @@ describe('ParameterDetailComponent', () => {
   })
 
   describe('ngOnChange', () => {
-    it('should reject if dialog is not open', () => {
+    it('should reject initializing if dialog is not open', () => {
       apiServiceSpy.getParameterById.and.returnValue(of(parameter))
       component.parameter = parameter
       component.changeMode = 'VIEW'

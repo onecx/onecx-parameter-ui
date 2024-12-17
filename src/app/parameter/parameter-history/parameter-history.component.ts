@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
 import { FormBuilder, FormControl, FormGroup, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
+import { DatePipe } from '@angular/common'
 import { TranslateService } from '@ngx-translate/core'
+import { finalize } from 'rxjs'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
 import {
@@ -11,7 +13,6 @@ import {
   HistoryCount,
   ParametersAPIService
 } from 'src/app/shared/generated'
-import { DatePipe } from '@angular/common'
 
 @Component({
   selector: 'app-parameter-history',
@@ -24,6 +25,7 @@ export class ParameterHistoryComponent implements OnChanges {
   @Output() public hideDialog = new EventEmitter()
 
   public loading = false
+  public exceptionKey: string | undefined = undefined
   public selectedHistoryParam: History | undefined
   public formGroup: FormGroup
   public parameterForm: UntypedFormGroup = this.initializeForm()
@@ -31,8 +33,8 @@ export class ParameterHistoryComponent implements OnChanges {
   public parameterDTO: Parameter | undefined
   public historyArray: any[] = []
   public chartData: any = []
-  data: any
-  options: any
+  public data: any
+  public chartOptions: any
 
   constructor(
     private readonly fb: FormBuilder,
@@ -46,18 +48,16 @@ export class ParameterHistoryComponent implements OnChanges {
       productName: new FormControl(null, [Validators.required]),
       applicationId: new FormControl(null, [Validators.required]),
       name: new FormControl(null, [Validators.required]),
+      displayName: new FormControl(null, [Validators.required]),
       value: new FormControl(null, [Validators.required]),
-      description: new FormControl(null, [Validators.required]),
-      unit: new FormControl(null)
+      description: new FormControl(null)
     })
+    this.loadTranslations()
   }
 
-  ngOnChanges() {
+  public ngOnChanges() {
     if (!this.displayDialog) return
-    if (this.parameter) {
-      this.getParameter(this.parameter.id!)
-    }
-    this.loadTranslations()
+    this.getData(this.parameter?.id)
   }
 
   private initializeForm(): UntypedFormGroup {
@@ -71,17 +71,25 @@ export class ParameterHistoryComponent implements OnChanges {
     })
   }
 
-  private getParameter(applicationParameterId: string): void {
-    this.parameterApiService.getParameterById({ id: applicationParameterId }).subscribe({
-      next: (result: Parameter) => {
-        this.parameterDTO = result
-        this.getHistoryArray()
-        this.loadChartData()
-      },
-      error: () => {
-        this.msgService.error({ summaryKey: 'ACTIONS.SEARCH.MSG_SEARCH_FAILED' })
-      }
-    })
+  private getData(id?: string): void {
+    if (!id) return
+    this.loading = true
+    this.exceptionKey = undefined
+    this.parameterApiService
+      .getParameterById({ id: id })
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: (data: Parameter) => {
+          //this.parameterDTO = data
+          //this.getHistoryArray()
+          //this.loadChartData()
+        },
+        error: (err) => {
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
+          this.msgService.error({ summaryKey: 'ACTIONS.SEARCH.SEARCH_FAILED' })
+          console.error('getParameterById', err)
+        }
+      })
   }
 
   public getHistoryArray(): void {
@@ -145,7 +153,7 @@ export class ParameterHistoryComponent implements OnChanges {
       ]
     }
 
-    this.options = {
+    this.chartOptions = {
       maintainAspectRatio: false,
       aspectRatio: 0.6,
       plugins: {
@@ -157,22 +165,12 @@ export class ParameterHistoryComponent implements OnChanges {
       },
       scales: {
         x: {
-          ticks: {
-            color: textColorSecondary
-          },
-          grid: {
-            color: 'green',
-            drawBorder: false
-          }
+          ticks: { color: textColorSecondary },
+          grid: { color: 'green', drawBorder: false }
         },
         y: {
-          ticks: {
-            color: textColorSecondary
-          },
-          grid: {
-            color: surfaceBorder,
-            drawBorder: false
-          }
+          ticks: { color: textColorSecondary },
+          grid: { color: surfaceBorder, drawBorder: false }
         }
       }
     }

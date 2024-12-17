@@ -1,25 +1,26 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { DatePipe } from '@angular/common'
 import { provideHttpClient, HttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
-import { of } from 'rxjs'
-import { DatePipe } from '@angular/common'
 import { FormBuilder } from '@angular/forms'
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
+import { of, throwError } from 'rxjs'
 
-import { AppStateService, createTranslateLoader, PortalMessageService } from '@onecx/portal-integration-angular'
+import { AppStateService, UserService } from '@onecx/angular-integration-interface'
+import { createTranslateLoader, PortalMessageService } from '@onecx/portal-integration-angular'
 
 import { ParametersAPIService, HistoriesAPIService, Parameter } from 'src/app/shared/generated'
 import { ParameterHistoryComponent } from './parameter-history.component'
 
 const productName = 'prod1'
 const app = 'app1'
-
 const parameter: Parameter = {
-  id: 'id',
+  id: 'pid',
   productName: productName,
   applicationId: app,
   name: 'name',
+  displayName: 'displayName',
   value: 'value'
 }
 
@@ -36,6 +37,7 @@ describe('HistoryComponent', () => {
     getAllHistory: jasmine.createSpy('getAllHistory').and.returnValue(of({})),
     getCountsByCriteria: jasmine.createSpy('getCountsByCriteria').and.returnValue(of({}))
   }
+  const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
 
   beforeEach(waitForAsync(() => {
     datePipe = new DatePipe('en-US')
@@ -56,6 +58,7 @@ describe('HistoryComponent', () => {
         FormBuilder,
         provideHttpClient(),
         provideHttpClientTesting(),
+        { provide: UserService, useValue: mockUserService },
         { provide: PortalMessageService, useValue: msgServiceSpy },
         { provide: ParametersAPIService, useValue: apiServiceSpy },
         { provide: HistoriesAPIService, useValue: historyServiceSpy },
@@ -64,46 +67,72 @@ describe('HistoryComponent', () => {
     }).compileComponents()
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
+    // to spy data: reset
     apiServiceSpy.getParameterById.calls.reset()
     historyServiceSpy.getAllHistory.calls.reset()
     historyServiceSpy.getCountsByCriteria.calls.reset()
+    // to spy data: refill with neutral data
+    apiServiceSpy.getParameterById.and.returnValue(of({}))
   }))
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ParameterHistoryComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
+    component.displayDialog = true
   })
 
   afterEach(() => {
     component.formGroup.reset()
   })
 
-  it('should create', () => {
-    expect(component).toBeTruthy()
+  describe('construction', () => {
+    it('should create', () => {
+      expect(component).toBeTruthy()
+    })
   })
 
   describe('ngOnChanges', () => {
-    it('should call getParameter and loadTranslations if parameter is defined', () => {
+    it('should reject initializing if dialog is not open', () => {
+      apiServiceSpy.getParameterById.and.returnValue(of(parameter))
       component.parameter = parameter
-
-      spyOn(component as any, 'getParameter')
-      spyOn(component as any, 'loadTranslations')
+      component.displayDialog = false
 
       component.ngOnChanges()
 
-      expect(component['getParameter']).toHaveBeenCalledWith('id')
-      expect(component['loadTranslations']).toHaveBeenCalled()
+      expect(apiServiceSpy.getParameterById).not.toHaveBeenCalled()
     })
 
-    it('should only loadTranslations if parameter is undefined', () => {
-      spyOn(component as any, 'getParameter')
-      spyOn(component as any, 'loadTranslations')
+    it('should getting parameter ', () => {
+      apiServiceSpy.getParameterById.and.returnValue(of(parameter))
+      component.parameter = { id: 'id' }
 
       component.ngOnChanges()
 
-      expect(component['getParameter']).not.toHaveBeenCalled()
-      expect(component['loadTranslations']).toHaveBeenCalled()
+      expect(apiServiceSpy.getParameterById).toHaveBeenCalled()
+    })
+
+    it('should prepare viewing a parameter - failed: missing id', () => {
+      apiServiceSpy.getParameterById.and.returnValue(of(parameter))
+      component.parameter = { ...parameter, id: undefined }
+
+      component.ngOnChanges()
+
+      expect(apiServiceSpy.getParameterById).not.toHaveBeenCalled()
+    })
+
+    it('should getting parameter - failed: missing permissions', () => {
+      const errorResponse = { status: 403, statusText: 'No permissions' }
+      apiServiceSpy.getParameterById.and.returnValue(throwError(() => errorResponse))
+      component.parameter = parameter
+      spyOn(console, 'error')
+
+      component.ngOnChanges()
+
+      expect(apiServiceSpy.getParameterById).toHaveBeenCalled()
+      expect(component.exceptionKey).toBe('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PARAMETER')
+      expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.SEARCH.SEARCH_FAILED' })
+      expect(console.error).toHaveBeenCalledWith('getParameterById', errorResponse)
     })
   })
 
