@@ -60,6 +60,7 @@ export class ParameterCriteriaComponent implements OnChanges {
     this.criteriaForm.reset()
     this.resetSearchEmitter.emit(true)
   }
+
   public onChangeProductName(name: string) {
     this.appIdOptions = []
     this.usedProducts

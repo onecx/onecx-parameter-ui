@@ -97,8 +97,10 @@ describe('ParameterDetailComponent', () => {
     component.formGroup.reset()
   })
 
-  it('should create', () => {
-    expect(component).toBeTruthy()
+  describe('construction', () => {
+    it('should create', () => {
+      expect(component).toBeTruthy()
+    })
   })
 
   describe('ngOnChange', () => {
