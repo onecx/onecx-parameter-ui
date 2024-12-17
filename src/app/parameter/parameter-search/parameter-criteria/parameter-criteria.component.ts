@@ -5,7 +5,7 @@ import { SelectItem } from 'primeng/api'
 
 import { Action } from '@onecx/portal-integration-angular'
 
-import { ParametersAPIService, ParameterSearchCriteria, Product } from 'src/app/shared/generated'
+import { ParameterSearchCriteria, Product } from 'src/app/shared/generated'
 import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
 
 export interface ParameterCriteriaForm {
@@ -30,10 +30,7 @@ export class ParameterCriteriaComponent implements OnChanges {
   public productOptions: SelectItem[] = []
   public appIdOptions: SelectItem[] = []
 
-  constructor(
-    public readonly translate: TranslateService,
-    private readonly parametersApi: ParametersAPIService
-  ) {
+  constructor(public readonly translate: TranslateService) {
     this.criteriaForm = new FormGroup<ParameterCriteriaForm>({
       productName: new FormControl<string | null>(null),
       applicationId: new FormControl<string | null>(null),
@@ -42,8 +39,9 @@ export class ParameterCriteriaComponent implements OnChanges {
   }
 
   public ngOnChanges(): void {
-    console.log(this.usedProducts)
-    this.productOptions = this.usedProducts.map((p) => ({ label: p.displayName, value: p.productName }) as SelectItem)
+    this.productOptions = []
+    if (this.usedProducts.length > 0)
+      this.productOptions = this.usedProducts.map((p) => ({ label: p.displayName, value: p.productName }) as SelectItem)
   }
 
   /****************************************************************************

@@ -48,8 +48,3 @@ export function dropDownGetLabelByValue(ddArray: SelectItem[], val: string): str
 export function sortByLocale(a: any, b: any): number {
   return a.toUpperCase().localeCompare(b.toUpperCase())
 }
-
-export function getDisplayNameProduct(productName: string, allProducts: SelectItem[]): any {
-  const foundProduct = allProducts.find((prod) => prod.value === productName)
-  return foundProduct ? foundProduct.label : productName
-}

@@ -16,7 +16,7 @@
         <p-button
           icon="pi pi-refresh"
           styleClass="p-button-text"
-          (onClick)="this.getParameterHistoryArray()"
+          (onClick)="this.getHistoryArray()"
           [aria-label]="'HISTORY.HISTORY_RELOAD' | translate"
           [pTooltip]="'HISTORY.HISTORY_RELOAD' | translate"
           tooltipPosition="top"
@@ -25,7 +25,7 @@
       </span>
       <p-card>
         <p-table
-          [value]="parameterHistoryArray"
+          [value]="historyArray"
           styleClass="p-datatable-striped"
           [resizableColumns]="true"
           [autoLayout]="true"

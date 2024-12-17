@@ -9,7 +9,4 @@ export class TranslateServiceMock {
   public get(value: any): Observable<any> {
     return of(value)
   }
-  public instant(value: string) {
-    return value
-  }
 }

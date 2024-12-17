@@ -87,7 +87,7 @@ export class ParameterDetailComponent implements OnChanges {
           this.formGroup.disable()
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
           this.msgService.error({ summaryKey: 'ACTIONS.SEARCH.SEARCH_FAILED' })
-          console.error('getAnnouncementById', err)
+          console.error('getParameterById', err)
         }
       })
   }
@@ -104,18 +104,15 @@ export class ParameterDetailComponent implements OnChanges {
   // load appId dropdown with app ids from product
   public onChangeProductName(name: string | undefined) {
     if (!name) return
-    console.log('onChangeProductName ' + name)
     this.formGroup.controls['productName'].setValue(name)
     this.appIdOptions = []
     this.allProducts
       .filter((p) => p.productName === name)
       .map((p) => {
-        console.log('onChangeProductName ' + p.displayName)
         p.applications?.forEach((a) => {
           this.appIdOptions.push({ label: a, value: a })
         })
       })
-    console.log('onChangeProductName ', this.appIdOptions)
     this.appIdOptions.sort(dropDownSortItemsByLabel)
   }
 

@@ -75,7 +75,7 @@ export class ParameterSearchComponent implements OnInit {
     },
     {
       field: 'name',
-      header: 'KEY',
+      header: 'NAME',
       active: true,
       translationPrefix: 'PARAMETER',
       limit: true
@@ -220,7 +220,8 @@ export class ParameterSearchComponent implements OnInit {
         return data.stream ? data.stream.sort(this.sortProductsByDisplayName) : []
       }),
       catchError((err) => {
-        console.error('getAllProductNames', err)
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+        console.error('searchAllAvailableProducts', err)
         return of([] as Product[])
       })
     )
@@ -228,13 +229,15 @@ export class ParameterSearchComponent implements OnInit {
     this.allUsedProducts$ = this.parameterApi.getAllApplications().pipe(
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
-        console.error('getAllProductNames', err)
+        console.error('getAllApplications', err)
         return of([] as Product[])
       })
     )
   }
   // complete refresh: getting meta data and trigger search
   private loadData(): void {
+    this.loading = true
+    this.exceptionKey = undefined
     this.metaData$ = combineLatest([this.allProducts$, this.allUsedProducts$]).pipe(
       map(([aP, uP]: [Product[], Product[]]) => {
         // enrich
@@ -242,7 +245,7 @@ export class ParameterSearchComponent implements OnInit {
           uP.forEach((p) => (p.displayName = this.getProductDisplayName(p.productName, aP)))
           uP.sort(this.sortProductsByDisplayName)
         }
-        this.onSearch({})
+        if (!this.exceptionKey) this.onSearch({})
         return { allProducts: aP, usedProducts: uP }
       }),
       finalize(() => (this.loading = false))

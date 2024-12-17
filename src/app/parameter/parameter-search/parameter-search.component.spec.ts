@@ -60,7 +60,7 @@ const allProducts: Product[] = [
   { productName: 'product4', displayName: undefined, applications: ['p4-svc', 'p4-bff'] }
 ]
 
-fdescribe('ParameterSearchComponent', () => {
+describe('ParameterSearchComponent', () => {
   let component: ParameterSearchComponent
   let fixture: ComponentFixture<ParameterSearchComponent>
 
@@ -118,9 +118,6 @@ fdescribe('ParameterSearchComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ParameterSearchComponent)
     component = fixture.componentInstance
-    component.displayDetailDialog = false
-    component.displayDeleteDialog = false
-    component.displayHistoryDialog = false
     fixture.detectChanges()
   })
 
@@ -252,7 +249,7 @@ fdescribe('ParameterSearchComponent', () => {
 
       component.allProducts$.subscribe({
         next: () => {
-          expect(console.error).toHaveBeenCalledWith('getAllProductNames', errorResponse)
+          expect(console.error).toHaveBeenCalledWith('searchAllAvailableProducts', errorResponse)
           done()
         },
         error: done.fail

@@ -87,6 +87,7 @@
       "OF": "von",
       "MSG_NO_RESULTS": "Die Suche ergab keine Treffer",
       "MSG_SEARCH_FAILED": "Suche ist fehlgeschlagen",
+      "IN_PROGRESS": "Suche...",
       "NO_DATA": "Keine Ergebnisse"
     },
     "VIEW": {
@@ -97,6 +98,7 @@
     },
     "CANCEL": "Cancel",
     "CHOOSE": "Choose",
+    "LOADING": "Laden...",
     "RELOAD": "Neuladen",
     "SAVE": "Save",
     "SAVE_AS": "Save as ...",
@@ -119,10 +121,12 @@
         "IMPORT_VALUE": "Importierter Wert"
       }
     },
+    "CHARACTERS": "Noch mögliche Zeichen",
     "COPY.HEADER": "Parameter erstellen",
     "CREATE.HEADER": "Parameter erstellen",
+    "DELETE.HEADER": "Parameter löschen",
     "EDIT.HEADER": "Parameter ändern",
-    "DELETE.HEADER": "Parameter löschen"
+    "VIEW.HEADER": "Parameter Details"
   },
   "PARAMETER": {
     "APP_ID": "App-ID",
@@ -183,6 +187,28 @@
   "VALIDATION": {
     "ERRORS": {
       "EMPTY_REQUIRED_FIELD": "Pflichtfeld"
+    }
+  },
+  "EXCEPTIONS": {
+    "HTTP_STATUS_0": {
+      "PARAMETER": "Unbekanntes Problem beim Abrufen von Parametern - bitte versuchen Sie es noch einmal.",
+      "PRODUCTS": "Unbekanntes Problem beim Abrufen von Applikationen - bitte versuchen Sie es noch einmal."
+    },
+    "HTTP_STATUS_401": {
+      "PARAMETER": "Sie sind nicht autorisiert, um Parameter zu sehen.",
+      "PRODUCTS": "Sie sind nicht autorisiert, um Applikationen zu sehen."
+    },
+    "HTTP_STATUS_403": {
+      "PARAMETER": "Sie haben keine Rechte, um Parameter zu sehen.",
+      "PRODUCTS": "Sie haben keine Rechte, um Applikationen zu sehen."
+    },
+    "HTTP_STATUS_404": {
+      "PARAMETER": "Parameter nicht gefunden.",
+      "PRODUCTS": "Es konnten keine Applikationen geladen werden."
+    },
+    "HTTP_STATUS_500": {
+      "PARAMETER": "Unbekanntes Server-Problem beim Abrufen der Parameter - bitte versuchen Sie es noch einmal.",
+      "PRODUCTS": "Unbekanntes Server-Problem beim Abrufen von Applikationen - bitte versuchen Sie es noch einmal."
     }
   }
 }

@@ -29,7 +29,7 @@ export class ParameterHistoryComponent implements OnChanges {
   public parameterForm: UntypedFormGroup = this.initializeForm()
   public translatedData: Record<string, string> | undefined
   public parameterDTO: Parameter | undefined
-  public parameterHistoryArray: any[] = []
+  public historyArray: any[] = []
   public chartData: any = []
   data: any
   options: any
@@ -92,7 +92,7 @@ export class ParameterHistoryComponent implements OnChanges {
     }
     this.historyApiService.getAllHistory({ historyCriteria: criteria }).subscribe({
       next: (results) => {
-        this.parameterHistoryArray = results.stream as History[]
+        this.historyArray = results.stream as History[]
       },
       error: () => {
         this.msgService.error({ summaryKey: 'ACTIONS.SEARCH.MSG_SEARCH_FAILED' })
@@ -192,7 +192,7 @@ export class ParameterHistoryComponent implements OnChanges {
         'DETAILS.FORM_MANDATORY',
         'DETAILS.FORM_KEY_MIN_LEN',
         'PARAMETER.APP_ID',
-        'PARAMETER.KEY',
+        'PARAMETER.NAME',
         'PARAMETER.VALUE',
         'PARAMETER.DESCRIPTION',
         'CHART.NUMBER_OF_REQUESTS',
