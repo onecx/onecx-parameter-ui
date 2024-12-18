@@ -1,6 +1,6 @@
 /**
- * onecx-parameters-bff
- * OneCx parameters Bff
+ * onecx-parameter-bff
+ * OneCX parameter Bff
  *
  * The version of the OpenAPI document: 2.0
  * 
@@ -19,51 +19,53 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { ApplicationParameter } from '../model/applicationParameter';
+import { NamesPageResult } from '../model/namesPageResult';
 // @ts-ignore
-import { ApplicationParameterCreate } from '../model/applicationParameterCreate';
+import { Parameter } from '../model/parameter';
 // @ts-ignore
-import { ApplicationParameterPageResult } from '../model/applicationParameterPageResult';
+import { ParameterCreate } from '../model/parameterCreate';
 // @ts-ignore
-import { ApplicationParameterUpdate } from '../model/applicationParameterUpdate';
-// @ts-ignore
-import { KeysPageResult } from '../model/keysPageResult';
+import { ParameterPageResult } from '../model/parameterPageResult';
 // @ts-ignore
 import { ParameterSearchCriteria } from '../model/parameterSearchCriteria';
+// @ts-ignore
+import { ParameterUpdate } from '../model/parameterUpdate';
 // @ts-ignore
 import { ProblemDetailResponse } from '../model/problemDetailResponse';
 // @ts-ignore
 import { Product } from '../model/product';
+// @ts-ignore
+import { ProductWrapper } from '../model/productWrapper';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
 
 
-export interface CreateParameterValueRequestParams {
-    applicationParameterCreate: ApplicationParameterCreate;
+export interface CreateParameterRequestParams {
+    parameterCreate: ParameterCreate;
 }
 
 export interface DeleteParameterRequestParams {
     id: string;
 }
 
-export interface GetAllKeysRequestParams {
+export interface GetAllNamesRequestParams {
+    productName: string;
     applicationId?: string;
-    productName?: string;
 }
 
 export interface GetParameterByIdRequestParams {
     id: string;
 }
 
-export interface SearchApplicationParametersByCriteriaRequestParams {
+export interface SearchParametersByCriteriaRequestParams {
     parameterSearchCriteria: ParameterSearchCriteria;
 }
 
-export interface UpdateParameterValueRequestParams {
+export interface UpdateParameterRequestParams {
     id: string;
-    applicationParameterUpdate: ApplicationParameterUpdate;
+    parameterUpdate: ParameterUpdate;
 }
 
 
@@ -72,7 +74,7 @@ export interface UpdateParameterValueRequestParams {
 })
 export class ParametersAPIService {
 
-    protected basePath = 'http://onecx-parameters-bff:8080';
+    protected basePath = 'http://onecx-parameter-bff:8080';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
@@ -137,13 +139,13 @@ export class ParametersAPIService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public createParameterValue(requestParameters: CreateParameterValueRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
-    public createParameterValue(requestParameters: CreateParameterValueRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
-    public createParameterValue(requestParameters: CreateParameterValueRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
-    public createParameterValue(requestParameters: CreateParameterValueRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
-        const applicationParameterCreate = requestParameters.applicationParameterCreate;
-        if (applicationParameterCreate === null || applicationParameterCreate === undefined) {
-            throw new Error('Required parameter applicationParameterCreate was null or undefined when calling createParameterValue.');
+    public createParameter(requestParameters: CreateParameterRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public createParameter(requestParameters: CreateParameterRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public createParameter(requestParameters: CreateParameterRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public createParameter(requestParameters: CreateParameterRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+        const parameterCreate = requestParameters.parameterCreate;
+        if (parameterCreate === null || parameterCreate === undefined) {
+            throw new Error('Required parameter parameterCreate was null or undefined when calling createParameter.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -190,7 +192,7 @@ export class ParametersAPIService {
         return this.httpClient.request<any>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: applicationParameterCreate,
+                body: parameterCreate,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -319,21 +321,20 @@ export class ParametersAPIService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getAllKeys(requestParameters: GetAllKeysRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<KeysPageResult>;
-    public getAllKeys(requestParameters: GetAllKeysRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<KeysPageResult>>;
-    public getAllKeys(requestParameters: GetAllKeysRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<KeysPageResult>>;
-    public getAllKeys(requestParameters: GetAllKeysRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
-        const applicationId = requestParameters.applicationId;
+    public getAllNames(requestParameters: GetAllNamesRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<NamesPageResult>;
+    public getAllNames(requestParameters: GetAllNamesRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<NamesPageResult>>;
+    public getAllNames(requestParameters: GetAllNamesRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<NamesPageResult>>;
+    public getAllNames(requestParameters: GetAllNamesRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         const productName = requestParameters.productName;
+        if (productName === null || productName === undefined) {
+            throw new Error('Required parameter productName was null or undefined when calling getAllNames.');
+        }
+        const applicationId = requestParameters.applicationId;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (applicationId !== undefined && applicationId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>applicationId, 'applicationId');
-        }
-        if (productName !== undefined && productName !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>productName, 'productName');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -367,8 +368,8 @@ export class ParametersAPIService {
             }
         }
 
-        let localVarPath = `/parameters/keys`;
-        return this.httpClient.request<KeysPageResult>('get', `${this.configuration.basePath}${localVarPath}`,
+        let localVarPath = `/parameters/names/${this.configuration.encodeParam({name: "productName", value: productName, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        return this.httpClient.request<NamesPageResult>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -387,9 +388,9 @@ export class ParametersAPIService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getParameterById(requestParameters: GetParameterByIdRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ApplicationParameter>;
-    public getParameterById(requestParameters: GetParameterByIdRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ApplicationParameter>>;
-    public getParameterById(requestParameters: GetParameterByIdRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ApplicationParameter>>;
+    public getParameterById(requestParameters: GetParameterByIdRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Parameter>;
+    public getParameterById(requestParameters: GetParameterByIdRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Parameter>>;
+    public getParameterById(requestParameters: GetParameterByIdRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Parameter>>;
     public getParameterById(requestParameters: GetParameterByIdRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         const id = requestParameters.id;
         if (id === null || id === undefined) {
@@ -428,7 +429,61 @@ export class ParametersAPIService {
         }
 
         let localVarPath = `/parameters/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<ApplicationParameter>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Parameter>('get', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Find all products
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public getProducts(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<ProductWrapper>>;
+    public getProducts(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<ProductWrapper>>>;
+    public getProducts(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<ProductWrapper>>>;
+    public getProducts(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/parameters/products`;
+        return this.httpClient.request<Array<ProductWrapper>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -446,13 +501,13 @@ export class ParametersAPIService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public searchApplicationParametersByCriteria(requestParameters: SearchApplicationParametersByCriteriaRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ApplicationParameterPageResult>;
-    public searchApplicationParametersByCriteria(requestParameters: SearchApplicationParametersByCriteriaRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ApplicationParameterPageResult>>;
-    public searchApplicationParametersByCriteria(requestParameters: SearchApplicationParametersByCriteriaRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ApplicationParameterPageResult>>;
-    public searchApplicationParametersByCriteria(requestParameters: SearchApplicationParametersByCriteriaRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public searchParametersByCriteria(requestParameters: SearchParametersByCriteriaRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ParameterPageResult>;
+    public searchParametersByCriteria(requestParameters: SearchParametersByCriteriaRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ParameterPageResult>>;
+    public searchParametersByCriteria(requestParameters: SearchParametersByCriteriaRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ParameterPageResult>>;
+    public searchParametersByCriteria(requestParameters: SearchParametersByCriteriaRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         const parameterSearchCriteria = requestParameters.parameterSearchCriteria;
         if (parameterSearchCriteria === null || parameterSearchCriteria === undefined) {
-            throw new Error('Required parameter parameterSearchCriteria was null or undefined when calling searchApplicationParametersByCriteria.');
+            throw new Error('Required parameter parameterSearchCriteria was null or undefined when calling searchParametersByCriteria.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -496,7 +551,7 @@ export class ParametersAPIService {
         }
 
         let localVarPath = `/parameters/search`;
-        return this.httpClient.request<ApplicationParameterPageResult>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ParameterPageResult>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: parameterSearchCriteria,
@@ -515,17 +570,17 @@ export class ParametersAPIService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateParameterValue(requestParameters: UpdateParameterValueRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
-    public updateParameterValue(requestParameters: UpdateParameterValueRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
-    public updateParameterValue(requestParameters: UpdateParameterValueRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
-    public updateParameterValue(requestParameters: UpdateParameterValueRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public updateParameter(requestParameters: UpdateParameterRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public updateParameter(requestParameters: UpdateParameterRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public updateParameter(requestParameters: UpdateParameterRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public updateParameter(requestParameters: UpdateParameterRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         const id = requestParameters.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling updateParameterValue.');
+            throw new Error('Required parameter id was null or undefined when calling updateParameter.');
         }
-        const applicationParameterUpdate = requestParameters.applicationParameterUpdate;
-        if (applicationParameterUpdate === null || applicationParameterUpdate === undefined) {
-            throw new Error('Required parameter applicationParameterUpdate was null or undefined when calling updateParameterValue.');
+        const parameterUpdate = requestParameters.parameterUpdate;
+        if (parameterUpdate === null || parameterUpdate === undefined) {
+            throw new Error('Required parameter parameterUpdate was null or undefined when calling updateParameter.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -572,7 +627,7 @@ export class ParametersAPIService {
         return this.httpClient.request<any>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: applicationParameterUpdate,
+                body: parameterUpdate,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

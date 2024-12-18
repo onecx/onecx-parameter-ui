@@ -1,10 +1,11 @@
+---
 openapi: 3.0.3
 info:
-  title: onecx-parameters-bff
-  description: OneCx parameters Bff
-  version: '2.0'
+  title: onecx-parameter-bff
+  description: OneCX parameter Bff
+  version: "2.0"
 servers:
-  - url: http://onecx-parameters-bff:8080/
+  - url: http://onecx-parameter-bff:8080/
 tags:
   - name: histories
   - name: parameters
@@ -17,21 +18,21 @@ paths:
             - read
       tags:
         - histories
-      description: Find all parameters history
-      operationId: getAllApplicationParametersHistory
+      description: Find all history entries
+      operationId: getAllHistory
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ApplicationParameterHistoryCriteria'
+              $ref: '#/components/schemas/HistoryCriteria'
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApplicationParameterHistoryPageResult'
-        '400':
+                $ref: '#/components/schemas/HistoryPageResult'
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -51,17 +52,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ParameterHistoryCountCriteria'
+              $ref: '#/components/schemas/HistoryCountCriteria'
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ParameterHistoryCount'
-        '400':
+                  $ref: '#/components/schemas/HistoryCount'
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -75,22 +76,22 @@ paths:
             - read
       tags:
         - histories
-      description: Find all parameters history latest
-      operationId: getAllApplicationParametersHistoryLatest
+      description: Find all latest history
+      operationId: getAllHistoryLatest
 
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ApplicationParameterHistoryCriteria'
+              $ref: '#/components/schemas/HistoryCriteria'
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApplicationParameterHistoryPageResult'
-        '400':
+                $ref: '#/components/schemas/HistoryPageResult'
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -104,8 +105,8 @@ paths:
             - read
       tags:
         - histories
-      description: Find parameters history by Id
-      operationId: getApplicationParametersHistoryById
+      description: Find history by Id
+      operationId: getHistoryById
       parameters:
         - name: id
           in: path
@@ -113,19 +114,19 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApplicationParameterHistory'
-        '400':
+                $ref: '#/components/schemas/History'
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-        '404':
+        "404":
           description: Not Found
   /parameters/search:
     post:
@@ -136,7 +137,7 @@ paths:
       tags:
         - parameters
       description: Find all parameters by criteria
-      operationId: searchApplicationParametersByCriteria
+      operationId: searchParametersByCriteria
       requestBody:
         required: true
         content:
@@ -144,13 +145,13 @@ paths:
             schema:
               $ref: '#/components/schemas/ParameterSearchCriteria'
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApplicationParameterPageResult'
-        '400':
+                $ref: '#/components/schemas/ParameterPageResult'
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -165,23 +166,23 @@ paths:
       tags:
         - parameters
       description: Create parameter
-      operationId: createParameterValue
+      operationId: createParameter
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ApplicationParameterCreate'
+              $ref: '#/components/schemas/ParameterCreate'
       responses:
-        '204':
+        "204":
           description: No Content
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-        '404':
+        "404":
           description: Not Found
   /parameters/applications:
     get:
@@ -194,7 +195,7 @@ paths:
       description: Find all applications
       operationId: getAllApplications
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -202,13 +203,38 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Product'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /parameters/keys:
+  /parameters/products:
+    get:
+      x-onecx:
+        permissions:
+          parameter:
+            - read
+      tags:
+        - parameters
+      description: Find all products
+      operationId: getProducts
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductWrapper'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /parameters/names/{productName}:
     get:
       x-onecx:
         permissions:
@@ -217,7 +243,7 @@ paths:
       tags:
         - parameters
       description: Find all parameters
-      operationId: getAllKeys
+      operationId: getAllNames
       parameters:
         - name: applicationId
           in: query
@@ -225,18 +251,19 @@ paths:
             description: The application parameter id.
             type: string
         - name: productName
-          in: query
+          required: true
+          in: path
           schema:
             description: The product name.
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/KeysPageResult'
-        '400':
+                $ref: '#/components/schemas/NamesPageResult'
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -259,19 +286,19 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApplicationParameter'
-        '400':
+                $ref: '#/components/schemas/Parameter'
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-        '404':
+        "404":
           description: Not Found
     put:
       x-onecx:
@@ -281,7 +308,7 @@ paths:
       tags:
         - parameters
       description: Update parameter
-      operationId: updateParameterValue
+      operationId: updateParameter
       parameters:
         - name: id
           in: path
@@ -293,17 +320,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ApplicationParameterUpdate'
+              $ref: '#/components/schemas/ParameterUpdate'
       responses:
-        '204':
+        "204":
           description: No Content
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-        '404':
+        "404":
           description: Not Found
     delete:
       x-onecx:
@@ -321,9 +348,9 @@ paths:
           schema:
             type: string
       responses:
-        '204':
+        "204":
           description: No Content
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -346,13 +373,13 @@ paths:
             schema:
               $ref: '#/components/schemas/ProductStoreSearchCriteria'
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductStorePageResult'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -394,28 +421,26 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Product'
-    ApplicationParameterCreate:
+    ParameterCreate:
       type: object
+      required:
+        - name
+        - productName
+        - applicationId
       properties:
-        key:
+        name:
+          type: string
+        displayName:
           type: string
         applicationId:
           type: string
         productName:
           type: string
         value:
-          type: string
+          $ref: '#/components/schemas/ParameterValue'
         description:
           type: string
-        unit:
-          type: string
-        rangeFrom:
-          format: int32
-          type: integer
-        rangeTo:
-          format: int32
-          type: integer
-    ApplicationParameter:
+    Parameter:
       type: object
       properties:
         id:
@@ -434,31 +459,35 @@ components:
           type: string
           example: 2022-03-10T12:15:50-04:00
         modificationUser:
+          type: string
+        description:
+          type: string
+        applicationId:
+          type: string
+        productName:
           type: string
         name:
           type: string
-        description:
+        displayName:
           type: string
-        applicationId:
-          type: string
-        productName:
-          type: string
-        key:
-          type: string
-        setValue:
-          type: string
+        value:
+          $ref: '#/components/schemas/ParameterValue'
         importValue:
-          type: string
-        unit:
-          type: string
-        rangeFrom:
-          format: int32
-          type: integer
-        rangeTo:
-          format: int32
-          type: integer
-    ApplicationParameterHistory:
+          $ref: '#/components/schemas/ParameterValue'
+    ParameterValue:
+      oneOf:
+        - type: string
+        - type: number
+        - type: boolean
+        - type: integer
+        - type: object
+    History:
       type: object
+      required:
+        - name
+        - productName
+        - applicationId
+        - id
       properties:
         id:
           type: string
@@ -481,24 +510,24 @@ components:
           type: string
         productName:
           type: string
-        key:
+        name:
           type: string
         usedValue:
-          type: string
+          $ref: '#/components/schemas/ParameterValue'
         defaultValue:
-          type: string
+          $ref: '#/components/schemas/ParameterValue'
         type:
           type: string
         instanceId:
           type: string
-    ApplicationParameterHistoryCriteria:
+    HistoryCriteria:
       type: object
       properties:
         applicationId:
           type: string
         productName:
           type: string
-        key:
+        name:
           type: string
         pageNumber:
           type: integer
@@ -512,7 +541,7 @@ components:
           type: array
           items:
             type: string
-    ApplicationParameterHistoryPageResult:
+    HistoryPageResult:
       type: object
       properties:
         totalElements:
@@ -531,8 +560,8 @@ components:
         stream:
           type: array
           items:
-            $ref: '#/components/schemas/ApplicationParameterHistory'
-    ApplicationParameterPageResult:
+            $ref: '#/components/schemas/History'
+    ParameterPageResult:
       type: object
       properties:
         totalElements:
@@ -551,21 +580,27 @@ components:
         stream:
           type: array
           items:
-            $ref: '#/components/schemas/ApplicationParameter'
-    ApplicationParameterUpdate:
+            $ref: '#/components/schemas/Parameter'
+    ParameterUpdate:
       type: object
       properties:
-        value: {}
+        value:
+          $ref: '#/components/schemas/ParameterValue'
         description:
           type: string
-        unit:
+        displayName:
           type: string
-        rangeFrom:
-          format: int32
-          type: integer
-        rangeTo:
-          format: int32
-          type: integer
+    ProductWrapper:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        usedProducts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
     Product:
       type: object
       properties:
@@ -577,7 +612,7 @@ components:
           type: array
           items:
             type: string
-    KeysPageResult:
+    NamesPageResult:
       type: object
       properties:
         totalElements:
@@ -597,14 +632,14 @@ components:
           type: array
           items:
             type: string
-    ParameterHistoryCountCriteria:
+    HistoryCountCriteria:
       type: object
       properties:
         applicationId:
           type: string
         productName:
           type: string
-        key:
+        name:
           type: string
         pageNumber:
           format: int32
@@ -618,7 +653,7 @@ components:
           type: array
           items:
             type: string
-    ParameterHistoryCount:
+    HistoryCount:
       type: object
       properties:
         creationDate:
@@ -635,9 +670,9 @@ components:
           type: string
         productName:
           type: string
-        key:
-          type: string
         name:
+          type: string
+        displayName:
           type: string
         pageNumber:
           format: int32

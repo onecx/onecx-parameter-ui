@@ -1,6 +1,6 @@
 /**
- * onecx-parameters-bff
- * OneCx parameters Bff
+ * onecx-parameter-bff
+ * OneCX parameter Bff
  *
  * The version of the OpenAPI document: 2.0
  * 
@@ -9,21 +9,22 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { ParameterValue } from './parameterValue';
 
 
-export interface ApplicationParameterHistory { 
+export interface Parameter { 
     id?: string;
     modificationCount?: number;
     creationDate?: string;
     creationUser?: string;
     modificationDate?: string;
     modificationUser?: string;
+    description?: string;
     applicationId?: string;
     productName?: string;
-    key?: string;
-    usedValue?: string;
-    defaultValue?: string;
-    type?: string;
-    instanceId?: string;
+    name?: string;
+    displayName?: string;
+    value?: ParameterValue;
+    importValue?: ParameterValue;
 }
 

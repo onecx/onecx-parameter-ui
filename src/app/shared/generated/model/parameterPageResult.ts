@@ -1,6 +1,6 @@
 /**
- * onecx-parameters-bff
- * OneCx parameters Bff
+ * onecx-parameter-bff
+ * OneCX parameter Bff
  *
  * The version of the OpenAPI document: 2.0
  * 
@@ -9,10 +9,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ApplicationParameterHistory } from './applicationParameterHistory';
+import { Parameter } from './parameter';
 
 
-export interface ApplicationParameterHistoryPageResult { 
+export interface ParameterPageResult { 
     /**
      * The total elements in the resource.
      */
@@ -20,6 +20,6 @@ export interface ApplicationParameterHistoryPageResult {
     number?: number;
     size?: number;
     totalPages?: number;
-    stream?: Array<ApplicationParameterHistory>;
+    stream?: Array<Parameter>;
 }
 

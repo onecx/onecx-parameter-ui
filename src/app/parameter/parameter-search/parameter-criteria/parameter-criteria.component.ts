@@ -1,18 +1,17 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core'
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 import { SelectItem } from 'primeng/api'
-import { catchError, lastValueFrom, map, Observable, of } from 'rxjs'
 
 import { Action } from '@onecx/portal-integration-angular'
 
-import { ParametersAPIService, ParameterSearchCriteria, Product } from 'src/app/shared/generated'
-import { dropDownSortItemsByLabel, getDisplayNameProduct } from 'src/app/shared/utils'
+import { ParameterSearchCriteria, Product } from 'src/app/shared/generated'
+import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
 
 export interface ParameterCriteriaForm {
   applicationId: FormControl<string | null>
   productName: FormControl<string | null>
-  key: FormControl<string | null>
+  name: FormControl<string | null>
 }
 
 @Component({
@@ -20,93 +19,57 @@ export interface ParameterCriteriaForm {
   templateUrl: './parameter-criteria.component.html',
   styleUrls: ['./parameter-criteria.component.scss']
 })
-export class ParameterCriteriaComponent implements OnInit, OnChanges {
+export class ParameterCriteriaComponent implements OnChanges {
   @Input() public actions: Action[] = []
-  @Input() public productsChanged: boolean = false
-  @Input() public allProducts: SelectItem[] = []
-  @Output() public criteriaEmitter = new EventEmitter<ParameterSearchCriteria>()
+  @Input() public usedProducts: Product[] = [] // products used with data
+  @Output() public searchEmitter = new EventEmitter<ParameterSearchCriteria>()
   @Output() public resetSearchEmitter = new EventEmitter<boolean>()
 
-  public products$: Observable<Product[]> | undefined
-  public displayCreateDialog = false
-  public parameterCriteria!: FormGroup<ParameterCriteriaForm>
+  //public products$: Observable<Product[]> | undefined
+  public criteriaForm: FormGroup<ParameterCriteriaForm>
   public productOptions: SelectItem[] = []
-  public applicationIds: SelectItem[] = []
+  public appIdOptions: SelectItem[] = []
 
-  constructor(
-    public readonly translate: TranslateService,
-    private readonly parametersApi: ParametersAPIService
-  ) {}
-
-  ngOnInit(): void {
-    this.parameterCriteria = new FormGroup<ParameterCriteriaForm>({
+  constructor(public readonly translate: TranslateService) {
+    this.criteriaForm = new FormGroup<ParameterCriteriaForm>({
       productName: new FormControl<string | null>(null),
       applicationId: new FormControl<string | null>(null),
-      key: new FormControl<string | null>(null)
+      name: new FormControl<string | null>(null)
     })
   }
 
-  ngOnChanges(): void {
-    this.getUsedProductNamesAndApplicationIds()
+  public ngOnChanges(): void {
+    this.productOptions = []
+    if (this.usedProducts.length > 0)
+      this.productOptions = this.usedProducts.map((p) => ({ label: p.displayName, value: p.productName }) as SelectItem)
   }
 
-  private getUsedProductNamesAndApplicationIds(): void {
-    this.products$ = this.parametersApi.getAllApplications()
-
-    this.products$
-      .pipe(
-        catchError((err) => {
-          console.error('getAllApplications', err)
-          return of([])
-        }),
-        map((data) => {
-          return data
-            .map(
-              (product: Product) =>
-                ({
-                  label: getDisplayNameProduct(product.productName!, this.allProducts),
-                  value: product.productName
-                }) as SelectItem
-            )
-            .sort(dropDownSortItemsByLabel)
-        })
-      )
-      .subscribe((productOptions: SelectItem[]) => {
-        this.productOptions = productOptions
-      })
-  }
-
-  public async updateApplicationIds(productName: string) {
-    await lastValueFrom(this.products$!).then((data) => {
-      this.applicationIds = []
-      this.parameterCriteria.controls['applicationId'].reset()
-      data.map((p) => {
-        if (p.productName === productName && p.applications) {
-          p.applications.forEach((app) => {
-            this.applicationIds.push({
-              label: app,
-              value: app
-            })
-          })
-        }
-      })
-    })
-    this.applicationIds.sort(dropDownSortItemsByLabel) // does not work
-  }
-
-  public submitCriteria(): void {
+  /****************************************************************************
+   *  UI Events
+   */
+  public onSearch(): void {
     const criteriaRequest: ParameterSearchCriteria = {
-      productName:
-        this.parameterCriteria.value.productName === null ? undefined : this.parameterCriteria.value.productName,
-      applicationId:
-        this.parameterCriteria.value.applicationId === null ? undefined : this.parameterCriteria.value.applicationId,
-      key: this.parameterCriteria.value.key === null ? undefined : this.parameterCriteria.value.key
+      productName: this.criteriaForm.value.productName === null ? undefined : this.criteriaForm.value.productName,
+      applicationId: this.criteriaForm.value.applicationId === null ? undefined : this.criteriaForm.value.applicationId,
+      name: this.criteriaForm.value.name === null ? undefined : this.criteriaForm.value.name
     }
-    this.criteriaEmitter.emit(criteriaRequest)
+    this.searchEmitter.emit(criteriaRequest)
   }
 
-  public resetCriteria(): void {
-    this.parameterCriteria.reset()
+  public onResetCriteria(): void {
+    this.criteriaForm.reset()
     this.resetSearchEmitter.emit(true)
+  }
+
+  public onChangeProductName(name: string) {
+    this.appIdOptions = []
+    this.usedProducts
+      .filter((p) => p.productName === name)
+      .forEach((p) => {
+        p.applications?.forEach((a) => {
+          this.appIdOptions.push({ label: a, value: a })
+        })
+      })
+    this.appIdOptions.sort(dropDownSortItemsByLabel)
   }
 }

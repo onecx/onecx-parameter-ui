@@ -25,4 +25,8 @@
   ocx-data-view-controls div {
     justify-content: center !important;
   }
+
+  .text-ellipsis-2-lines {
+    @include displaying-text-ellipsis(2);
+  }
 }

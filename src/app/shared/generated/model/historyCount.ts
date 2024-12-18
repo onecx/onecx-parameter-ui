@@ -11,18 +11,8 @@
  */
 
 
-export interface ParameterSearchCriteria { 
-    applicationId?: string;
-    productName?: string;
-    name?: string;
-    displayName?: string;
-    /**
-     * The number of page
-     */
-    pageNumber?: number;
-    /**
-     * The size of page
-     */
-    pageSize?: number;
+export interface HistoryCount { 
+    creationDate?: string;
+    count?: number;
 }
 

@@ -1,6 +1,6 @@
 /**
- * onecx-parameters-bff
- * OneCx parameters Bff
+ * onecx-parameter-bff
+ * OneCX parameter Bff
  *
  * The version of the OpenAPI document: 2.0
  * 
@@ -11,14 +11,12 @@
  */
 
 
-export interface ApplicationParameterCreate { 
-    key?: string;
+export interface HistoryCountCriteria { 
     applicationId?: string;
     productName?: string;
-    value?: string;
-    description?: string;
-    unit?: string;
-    rangeFrom?: number;
-    rangeTo?: number;
+    name?: string;
+    pageNumber?: number;
+    pageSize?: number;
+    type?: Array<string>;
 }
 

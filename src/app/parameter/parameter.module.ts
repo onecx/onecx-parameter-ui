@@ -3,14 +3,15 @@ import { CommonModule, DatePipe } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { RouterModule, Routes } from '@angular/router'
 
+import { InitializeModuleGuard, addInitializeModuleGuard } from '@onecx/angular-integration-interface'
 import { PortalCoreModule, providePortalDialogService } from '@onecx/portal-integration-angular'
-import { SharedModule } from '../shared/shared.module'
+
+import { SharedModule } from 'src/app/shared/shared.module'
 
 import { ParameterSearchComponent } from './parameter-search/parameter-search.component'
 import { ParameterCriteriaComponent } from './parameter-search/parameter-criteria/parameter-criteria.component'
 import { ParameterDetailComponent } from './parameter-detail/parameter-detail.component'
-import { ParameterHistoryComponent } from './parameter-detail/parameter-history/parameter-history.component'
-import { InitializeModuleGuard, addInitializeModuleGuard } from '@onecx/angular-integration-interface'
+import { ParameterHistoryComponent } from './parameter-history/parameter-history.component'
 
 const routes: Routes = [
   {

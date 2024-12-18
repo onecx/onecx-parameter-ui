@@ -1,6 +1,6 @@
 /**
- * onecx-parameters-bff
- * OneCx parameters Bff
+ * onecx-parameter-bff
+ * OneCX parameter Bff
  *
  * The version of the OpenAPI document: 2.0
  * 
@@ -9,13 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { Product } from './product';
 
 
-export interface ApplicationParameterUpdate { 
-    value?: object | null;
-    description?: string;
-    unit?: string;
-    rangeFrom?: number;
-    rangeTo?: number;
+export interface ProductWrapper { 
+    products?: Array<Product>;
+    usedProducts?: Array<Product>;
 }
 

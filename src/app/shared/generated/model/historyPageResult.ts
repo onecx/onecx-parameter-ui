@@ -1,6 +1,6 @@
 /**
- * onecx-parameters-bff
- * OneCx parameters Bff
+ * onecx-parameter-bff
+ * OneCX parameter Bff
  *
  * The version of the OpenAPI document: 2.0
  * 
@@ -9,9 +9,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { History } from './history';
 
 
-export interface KeysPageResult { 
+export interface HistoryPageResult { 
     /**
      * The total elements in the resource.
      */
@@ -19,6 +20,6 @@ export interface KeysPageResult {
     number?: number;
     size?: number;
     totalPages?: number;
-    stream?: Array<string>;
+    stream?: Array<History>;
 }
 

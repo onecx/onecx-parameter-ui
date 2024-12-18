@@ -1,7 +1,7 @@
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms'
 import { SelectItem } from 'primeng/api'
 
-export function limitText(text: string, limit: number): string {
+export function limitText(text: string | undefined, limit: number): string {
   if (text) {
     return text.length < limit ? text : text.substring(0, limit) + '...'
   } else {
@@ -47,9 +47,4 @@ export function dropDownGetLabelByValue(ddArray: SelectItem[], val: string): str
 }
 export function sortByLocale(a: any, b: any): number {
   return a.toUpperCase().localeCompare(b.toUpperCase())
-}
-
-export function getDisplayNameProduct(productName: string, allProducts: SelectItem[]): any {
-  const foundProduct = allProducts.find((prod) => prod.value === productName)
-  return foundProduct ? foundProduct.label : productName
 }

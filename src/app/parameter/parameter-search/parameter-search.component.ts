@@ -1,31 +1,33 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
-import { Action, Column, PortalMessageService } from '@onecx/portal-integration-angular'
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms'
+import { combineLatest, catchError, finalize, map, tap, Observable, of } from 'rxjs'
 import { Table } from 'primeng/table'
-import { SelectItem } from 'primeng/api'
-import { catchError, finalize, map, tap } from 'rxjs/operators'
-import { combineLatest, Observable, of } from 'rxjs'
+
+import { UserService } from '@onecx/angular-integration-interface'
+import { Action, Column, PortalMessageService } from '@onecx/portal-integration-angular'
 
 import {
-  ApplicationParameter,
+  Parameter,
   ParameterSearchCriteria,
   ParametersAPIService,
   Product,
-  ProductStorePageResult,
   ProductsAPIService
 } from 'src/app/shared/generated'
+import { limitText } from 'src/app/shared/utils'
 
-import { dropDownSortItemsByLabel, limitText, getDisplayNameProduct } from 'src/app/shared/utils'
-
+export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 type ExtendedColumn = Column & {
   hasFilter?: boolean
   isDate?: boolean
   isDropdown?: true
   css?: string
   limit?: boolean
+  isObject?: boolean
 }
-type ChangeMode = 'VIEW' | 'NEW' | 'EDIT'
+type AllMetaData = {
+  allProducts: Product[]
+  usedProducts?: Product[]
+}
 
 @Component({
   selector: 'app-parameter-search',
@@ -33,29 +35,32 @@ type ChangeMode = 'VIEW' | 'NEW' | 'EDIT'
   styleUrls: ['./parameter-search.component.scss']
 })
 export class ParameterSearchComponent implements OnInit {
-  @ViewChild('parameterTable', { static: false }) parameterTable: Table | undefined
+  @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
 
+  // dialog
+  public loading = false
+  public searching = false
+  public exceptionKey: string | undefined = undefined
+  public changeMode: ChangeMode = 'VIEW'
+  public dateFormat: string
   public actions$: Observable<Action[]> | undefined
-  public parameter: ApplicationParameter | undefined
-  public parameters: ApplicationParameter[] = []
-  public criteria: ParameterSearchCriteria = {}
-  public criteriaGroup!: UntypedFormGroup
-  public results$: Observable<ApplicationParameter[]> | undefined
-  public products$: Observable<ProductStorePageResult> | undefined
-  public allProductNames$: Observable<SelectItem[]> | undefined
-
-  public changeMode: ChangeMode = 'NEW'
   public displayDetailDialog = false
   public displayDeleteDialog = false
   public displayHistoryDialog = false
-  public searching = false
   public usedProductsChanged = false
 
+  // data
+  public data$: Observable<Parameter[]> | undefined
+  public metaData$!: Observable<AllMetaData> // collection of data used in UI
+  public allProducts$!: Observable<Product[]> // getting data from bff endpoint
+  public allUsedProducts$!: Observable<Product[]> // getting data from bff endpoint
+  public criteria: ParameterSearchCriteria = {}
+  public parameter: Parameter | undefined
   public limitText = limitText
-
+  public filteredColumns: Column[] = []
   public columns: ExtendedColumn[] = [
     {
-      field: 'displayName',
+      field: 'productDisplayName',
       header: 'PRODUCT_NAME',
       active: true,
       translationPrefix: 'PARAMETER',
@@ -66,24 +71,20 @@ export class ParameterSearchComponent implements OnInit {
       header: 'APP_ID',
       active: true,
       translationPrefix: 'PARAMETER',
-      css: 'hidden xl:table-cell',
       limit: true
     },
     {
-      field: 'key',
-      header: 'KEY',
+      field: 'name',
+      header: 'NAME',
       active: true,
       translationPrefix: 'PARAMETER',
-      css: 'hidden sm:table-cell',
       limit: true
     },
     {
-      field: 'setValue',
+      field: 'value',
       header: 'VALUE',
       active: true,
       translationPrefix: 'PARAMETER',
-      css: 'hidden xl:table-cell',
-      isDropdown: true,
       limit: true
     },
     {
@@ -91,182 +92,35 @@ export class ParameterSearchComponent implements OnInit {
       header: 'IMPORT_VALUE',
       active: true,
       translationPrefix: 'PARAMETER',
-      css: 'hidden lg:table-cell',
-      isDropdown: true
-    },
-    {
-      field: 'description',
-      header: 'DESCRIPTION',
-      active: false,
-      translationPrefix: 'PARAMETER',
-      css: 'hidden lg:table-cell',
-      isDropdown: true
-    },
-    {
-      field: 'unit',
-      header: 'UNIT',
-      active: false,
-      translationPrefix: 'PARAMETER',
-      css: 'hidden lg:table-cell',
-      isDropdown: true
-    },
-    {
-      field: 'rangeFrom',
-      header: 'RANGE_FROM',
-      active: false,
-      translationPrefix: 'PARAMETER',
-      css: 'hidden lg:table-cell',
-      isDropdown: true
-    },
-    {
-      field: 'rangeTo',
-      header: 'RANGE_TO',
-      active: false,
-      translationPrefix: 'PARAMETER',
-      css: 'hidden lg:table-cell',
-      isDropdown: true
+      limit: true
     }
   ]
 
-  public filteredColumns: Column[] = []
-
   constructor(
+    private readonly user: UserService,
     private readonly messageService: PortalMessageService,
     private readonly translateService: TranslateService,
-    private readonly parametersApi: ParametersAPIService,
-    private readonly productsApi: ProductsAPIService,
-    private readonly fb: UntypedFormBuilder
-  ) {}
+    private readonly parameterApi: ParametersAPIService,
+    private readonly productsApi: ProductsAPIService
+  ) {
+    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm' : 'M/d/yy, h:mm a'
+    this.filteredColumns = this.columns.filter((a) => a.active === true)
+  }
 
   public ngOnInit(): void {
-    this.search({})
+    this.prepareDataLoad()
+    this.loadData()
     this.prepareActionButtons()
-    this.initializeForm()
-    this.getAllProductNames()
-    this.filteredColumns = this.columns.filter((a) => {
-      return a.active === true
-    })
-  }
-
-  public search(criteria: ParameterSearchCriteria, reuseCriteria = false): void {
-    this.searching = true
-    if (!reuseCriteria) {
-      this.criteria = { ...criteria }
-    }
-    this.results$ = combineLatest([
-      this.parametersApi.searchApplicationParametersByCriteria({
-        parameterSearchCriteria: { ...this.criteria }
-      }),
-      this.getAllProductNames()
-    ]).pipe(
-      finalize(() => (this.searching = false)),
-      tap({
-        next: (data: any) => {
-          if (data.totalElements == 0) {
-            this.messageService.info({
-              summaryKey: 'SEARCH.MSG_NO_RESULTS'
-            })
-            return data.size
-          }
-        },
-        error: () => {
-          this.messageService.error({
-            summaryKey: 'SEARCH.MSG_SEARCH_FAILED'
-          })
-        }
-      }),
-      map(([data, allProducts]) => {
-        const products: Product[] = data.stream
-        products.forEach((prod) => {
-          if (prod.productName) {
-            prod.displayName = getDisplayNameProduct(prod.productName, allProducts)
-          }
-        })
-        return products
-      })
-    )
-  }
-
-  public onReset(): void {
-    this.criteria = {}
-    this.criteriaGroup.reset()
-    this.criteriaGroup.controls['applicationId'].disable()
-  }
-
-  public onCreate() {
-    this.changeMode = 'NEW'
-    this.parameter = undefined
-    this.displayDetailDialog = true
-    this.usedProductsChanged = false
-  }
-  public onDetail(ev: MouseEvent, item: ApplicationParameter, mode: ChangeMode): void {
-    ev.stopPropagation()
-    this.changeMode = mode
-    this.parameter = item
-    this.displayDetailDialog = true
-    this.usedProductsChanged = false
-  }
-  public onCloseDetail(refresh: boolean): void {
-    this.displayDetailDialog = false
-    if (refresh) {
-      this.search({}, true)
-      this.usedProductsChanged = true
-    }
-  }
-  public onCopy(ev: MouseEvent, item: ApplicationParameter) {
-    ev.stopPropagation()
-    this.changeMode = 'NEW'
-    this.parameter = item
-    this.parameter.id = undefined
-    this.displayDetailDialog = true
-    this.usedProductsChanged = false
-  }
-  public onHistory(ev: MouseEvent, item: ApplicationParameter) {
-    ev.stopPropagation()
-    this.parameter = item
-    this.displayHistoryDialog = true
-  }
-  public onCloseHistory() {
-    this.displayHistoryDialog = false
-  }
-  public onDelete(ev: MouseEvent, item: ApplicationParameter): void {
-    ev.stopPropagation()
-    this.parameter = item
-    this.displayDeleteDialog = true
-    this.usedProductsChanged = false
-  }
-  public onDeleteConfirmation(): void {
-    this.usedProductsChanged = false
-    if (this.parameter?.id) {
-      this.parametersApi.deleteParameter({ id: this.parameter?.id }).subscribe({
-        next: () => {
-          this.displayDeleteDialog = false
-          this.parameters = this.parameters.filter((a) => a.key !== this.parameter?.key)
-          this.parameter = undefined
-          this.messageService.success({ summaryKey: 'ACTIONS.DELETE.MESSAGES.OK' })
-          this.search({}, true)
-          this.usedProductsChanged = true
-        },
-        error: () => this.messageService.error({ summaryKey: 'ACTIONS.DELETE.MESSAGES.NOK' })
-      })
-    }
-  }
-  public onColumnsChange(activeIds: string[]) {
-    this.filteredColumns = activeIds.map((id) => this.columns.find((col) => col.field === id)) as Column[]
-  }
-
-  public onFilterChange(event: string): void {
-    this.parameterTable?.filterGlobal(event, 'contains')
   }
 
   private prepareActionButtons(): void {
-    this.actions$ = this.translateService.get(['ACTIONS.CREATE.LABEL', 'ACTIONS.CREATE.PARAMETER.TOOLTIP']).pipe(
+    this.actions$ = this.translateService.get(['ACTIONS.CREATE.LABEL', 'ACTIONS.CREATE.TOOLTIP']).pipe(
       map((data) => {
         return [
           {
             label: data['ACTIONS.CREATE.LABEL'],
-            title: data['ACTIONS.CREATE.PARAMETER.TOOLTIP'],
-            actionCallback: () => this.onCreate(),
+            title: data['ACTIONS.CREATE.TOOLTIP'],
+            actionCallback: () => this.onDetail('CREATE', undefined),
             icon: 'pi pi-plus',
             show: 'always',
             permission: 'PARAMETER#EDIT'
@@ -276,35 +130,148 @@ export class ParameterSearchComponent implements OnInit {
     )
   }
 
-  private initializeForm(): void {
-    this.criteriaGroup = this.fb.group({
-      applicationId: null,
-      productName: null,
-      key: null
-    })
-    this.criteriaGroup.controls['applicationId'].disable()
+  /****************************************************************************
+   *  UI Events
+   */
+  public onCriteriaReset(): void {
+    this.criteria = {}
   }
 
-  // declare searching for ALL products
-  private getAllProductNames(): Observable<SelectItem[]> {
-    this.products$ = this.productsApi.searchAllAvailableProducts({ productStoreSearchCriteria: {} }).pipe(
-      catchError((err) => {
-        console.error('getAllProductNames():', err)
-        return of([] as ProductStorePageResult)
-      })
-    )
-    this.allProductNames$ = this.products$.pipe(
-      map((data: ProductStorePageResult) => {
-        const si: SelectItem[] = []
-        if (data.stream) {
-          for (const product of data.stream) {
-            si.push({ label: product.displayName, value: product.productName })
-          }
-          si.sort(dropDownSortItemsByLabel)
+  // CREATE, COPY, EDIT, VIEW
+  public onDetail(mode: ChangeMode, item: Parameter | undefined, ev?: MouseEvent): void {
+    ev?.stopPropagation()
+    this.changeMode = mode
+    this.parameter = item
+    if (this.parameter && ['COPY', 'CREATE'].includes(mode)) this.parameter.id = undefined
+    this.displayDetailDialog = true
+    this.usedProductsChanged = false
+  }
+  public onCloseDetail(refresh: boolean): void {
+    this.changeMode = 'VIEW'
+    this.parameter = undefined
+    this.displayDetailDialog = false
+    this.displayDeleteDialog = false
+    if (refresh) {
+      this.onSearch({}, true)
+      this.usedProductsChanged = true
+    }
+  }
+  public onHistory(ev: MouseEvent, item: Parameter) {
+    ev.stopPropagation()
+    this.parameter = item
+    this.displayHistoryDialog = true
+  }
+  public onCloseHistory() {
+    this.displayHistoryDialog = false
+  }
+
+  public onDelete(ev: MouseEvent, item: Parameter): void {
+    ev.stopPropagation()
+    this.parameter = item
+    this.displayDeleteDialog = true
+    this.usedProductsChanged = false
+  }
+  // user confirmed deletion
+  public onDeleteConfirmation(data: Parameter[]): void {
+    if (this.parameter?.id) {
+      this.parameterApi.deleteParameter({ id: this.parameter?.id }).subscribe({
+        next: () => {
+          this.messageService.success({ summaryKey: 'ACTIONS.DELETE.MESSAGE.OK' })
+          // remove item form data
+          data = data?.filter((a) => a.name !== this.parameter?.name)
+          // check remaing data if product still exists
+          const d = data?.filter((d) => d.productName !== this.parameter?.productName)
+          if (d?.length === 0) this.loadData()
+          this.onCloseDetail(false)
+        },
+        error: (err) => {
+          this.messageService.error({ summaryKey: 'ACTIONS.DELETE.MESSAGE.NOK' })
+          console.error('deleteParameter', err)
         }
-        return si
+      })
+    }
+  }
+  public onColumnsChange(activeIds: string[]) {
+    this.filteredColumns = activeIds.map((id) => this.columns.find((col) => col.field === id)) as Column[]
+  }
+
+  public onFilterChange(event: string): void {
+    this.dataTable?.filterGlobal(event, 'contains')
+  }
+
+  public getProductDisplayName(name: string | undefined, allProducts: Product[]): string | undefined {
+    return allProducts.find((item) => item.productName === name)?.displayName ?? name
+  }
+  private sortProductsByDisplayName(a: Product, b: Product): number {
+    return (a.displayName ? a.displayName.toUpperCase() : '').localeCompare(
+      b.displayName ? b.displayName.toUpperCase() : ''
+    )
+  }
+
+  /****************************************************************************
+   *  SEARCHING
+   *   1. Loading META DATA used to display drop down lists => products
+   *   2. Trigger searching data
+   */
+  private prepareDataLoad(): void {
+    // declare search for ALL products privided by bff
+    this.allProducts$ = this.productsApi.searchAllAvailableProducts({ productStoreSearchCriteria: {} }).pipe(
+      map((data) => {
+        return data.stream ? data.stream.sort(this.sortProductsByDisplayName) : []
+      }),
+      catchError((err) => {
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+        console.error('searchAllAvailableProducts', err)
+        return of([] as Product[])
       })
     )
-    return this.allProductNames$
+    // declare search for used products (used === assigned to data)
+    this.allUsedProducts$ = this.parameterApi.getAllApplications().pipe(
+      catchError((err) => {
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+        console.error('getAllApplications', err)
+        return of([] as Product[])
+      })
+    )
+  }
+  // complete refresh: getting meta data and trigger search
+  private loadData(): void {
+    this.loading = true
+    this.exceptionKey = undefined
+    this.metaData$ = combineLatest([this.allProducts$, this.allUsedProducts$]).pipe(
+      map(([aP, uP]: [Product[], Product[]]) => {
+        // enrich
+        if (uP.length > 0) {
+          uP.forEach((p) => (p.displayName = this.getProductDisplayName(p.productName, aP)))
+          uP.sort(this.sortProductsByDisplayName)
+        }
+        if (!this.exceptionKey) this.onSearch({})
+        return { allProducts: aP, usedProducts: uP }
+      }),
+      finalize(() => (this.loading = false))
+    )
+  }
+
+  /****************************************************************************
+   *  SEARCH data
+   */
+  public onSearch(criteria: ParameterSearchCriteria, reuseCriteria = false): void {
+    this.searching = true
+    if (!reuseCriteria) this.criteria = { ...criteria }
+    this.data$ = this.parameterApi.searchParametersByCriteria({ parameterSearchCriteria: { ...this.criteria } }).pipe(
+      tap((data: any) => {
+        if (data.totalElements === 0) {
+          this.messageService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
+          return data.size
+        }
+      }),
+      map((data) => data.stream),
+      catchError((err) => {
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
+        console.error('searchParametersByCriteria', err)
+        return of([] as Parameter[])
+      }),
+      finalize(() => (this.searching = false))
+    )
   }
 }

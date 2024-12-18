@@ -1,6 +1,6 @@
 /**
- * onecx-parameters-bff
- * OneCx parameters Bff
+ * onecx-parameter-bff
+ * OneCX parameter Bff
  *
  * The version of the OpenAPI document: 2.0
  * 
@@ -19,15 +19,15 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { ApplicationParameterHistory } from '../model/applicationParameterHistory';
+import { History } from '../model/history';
 // @ts-ignore
-import { ApplicationParameterHistoryCriteria } from '../model/applicationParameterHistoryCriteria';
+import { HistoryCount } from '../model/historyCount';
 // @ts-ignore
-import { ApplicationParameterHistoryPageResult } from '../model/applicationParameterHistoryPageResult';
+import { HistoryCountCriteria } from '../model/historyCountCriteria';
 // @ts-ignore
-import { ParameterHistoryCount } from '../model/parameterHistoryCount';
+import { HistoryCriteria } from '../model/historyCriteria';
 // @ts-ignore
-import { ParameterHistoryCountCriteria } from '../model/parameterHistoryCountCriteria';
+import { HistoryPageResult } from '../model/historyPageResult';
 // @ts-ignore
 import { ProblemDetailResponse } from '../model/problemDetailResponse';
 
@@ -36,20 +36,20 @@ import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables'
 import { Configuration }                                     from '../configuration';
 
 
-export interface GetAllApplicationParametersHistoryRequestParams {
-    applicationParameterHistoryCriteria?: ApplicationParameterHistoryCriteria;
+export interface GetAllHistoryRequestParams {
+    historyCriteria?: HistoryCriteria;
 }
 
-export interface GetAllApplicationParametersHistoryLatestRequestParams {
-    applicationParameterHistoryCriteria?: ApplicationParameterHistoryCriteria;
-}
-
-export interface GetApplicationParametersHistoryByIdRequestParams {
-    id: string;
+export interface GetAllHistoryLatestRequestParams {
+    historyCriteria?: HistoryCriteria;
 }
 
 export interface GetCountsByCriteriaRequestParams {
-    parameterHistoryCountCriteria?: ParameterHistoryCountCriteria;
+    historyCountCriteria?: HistoryCountCriteria;
+}
+
+export interface GetHistoryByIdRequestParams {
+    id: string;
 }
 
 
@@ -58,7 +58,7 @@ export interface GetCountsByCriteriaRequestParams {
 })
 export class HistoriesAPIService {
 
-    protected basePath = 'http://onecx-parameters-bff:8080';
+    protected basePath = 'http://onecx-parameter-bff:8080';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
@@ -118,16 +118,16 @@ export class HistoriesAPIService {
     }
 
     /**
-     * Find all parameters history
+     * Find all history entries
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getAllApplicationParametersHistory(requestParameters: GetAllApplicationParametersHistoryRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ApplicationParameterHistoryPageResult>;
-    public getAllApplicationParametersHistory(requestParameters: GetAllApplicationParametersHistoryRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ApplicationParameterHistoryPageResult>>;
-    public getAllApplicationParametersHistory(requestParameters: GetAllApplicationParametersHistoryRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ApplicationParameterHistoryPageResult>>;
-    public getAllApplicationParametersHistory(requestParameters: GetAllApplicationParametersHistoryRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
-        const applicationParameterHistoryCriteria = requestParameters.applicationParameterHistoryCriteria;
+    public getAllHistory(requestParameters: GetAllHistoryRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HistoryPageResult>;
+    public getAllHistory(requestParameters: GetAllHistoryRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<HistoryPageResult>>;
+    public getAllHistory(requestParameters: GetAllHistoryRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<HistoryPageResult>>;
+    public getAllHistory(requestParameters: GetAllHistoryRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+        const historyCriteria = requestParameters.historyCriteria;
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -170,10 +170,10 @@ export class HistoriesAPIService {
         }
 
         let localVarPath = `/histories`;
-        return this.httpClient.request<ApplicationParameterHistoryPageResult>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<HistoryPageResult>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: applicationParameterHistoryCriteria,
+                body: historyCriteria,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -184,16 +184,16 @@ export class HistoriesAPIService {
     }
 
     /**
-     * Find all parameters history latest
+     * Find all latest history
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getAllApplicationParametersHistoryLatest(requestParameters: GetAllApplicationParametersHistoryLatestRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ApplicationParameterHistoryPageResult>;
-    public getAllApplicationParametersHistoryLatest(requestParameters: GetAllApplicationParametersHistoryLatestRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ApplicationParameterHistoryPageResult>>;
-    public getAllApplicationParametersHistoryLatest(requestParameters: GetAllApplicationParametersHistoryLatestRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ApplicationParameterHistoryPageResult>>;
-    public getAllApplicationParametersHistoryLatest(requestParameters: GetAllApplicationParametersHistoryLatestRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
-        const applicationParameterHistoryCriteria = requestParameters.applicationParameterHistoryCriteria;
+    public getAllHistoryLatest(requestParameters: GetAllHistoryLatestRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HistoryPageResult>;
+    public getAllHistoryLatest(requestParameters: GetAllHistoryLatestRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<HistoryPageResult>>;
+    public getAllHistoryLatest(requestParameters: GetAllHistoryLatestRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<HistoryPageResult>>;
+    public getAllHistoryLatest(requestParameters: GetAllHistoryLatestRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+        const historyCriteria = requestParameters.historyCriteria;
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -236,69 +236,10 @@ export class HistoriesAPIService {
         }
 
         let localVarPath = `/histories/latest`;
-        return this.httpClient.request<ApplicationParameterHistoryPageResult>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<HistoryPageResult>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: applicationParameterHistoryCriteria,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: localVarHeaders,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * Find parameters history by Id
-     * @param requestParameters
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public getApplicationParametersHistoryById(requestParameters: GetApplicationParametersHistoryByIdRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ApplicationParameterHistory>;
-    public getApplicationParametersHistoryById(requestParameters: GetApplicationParametersHistoryByIdRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ApplicationParameterHistory>>;
-    public getApplicationParametersHistoryById(requestParameters: GetApplicationParametersHistoryByIdRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ApplicationParameterHistory>>;
-    public getApplicationParametersHistoryById(requestParameters: GetApplicationParametersHistoryByIdRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
-        const id = requestParameters.id;
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling getApplicationParametersHistoryById.');
-        }
-
-        let localVarHeaders = this.defaultHeaders;
-
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (localVarHttpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-        }
-
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
-        if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
-        }
-
-
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
-        if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
-            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
-            } else {
-                responseType_ = 'blob';
-            }
-        }
-
-        let localVarPath = `/histories/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<ApplicationParameterHistory>('get', `${this.configuration.basePath}${localVarPath}`,
-            {
-                context: localVarHttpContext,
+                body: historyCriteria,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -314,11 +255,11 @@ export class HistoriesAPIService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getCountsByCriteria(requestParameters: GetCountsByCriteriaRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<ParameterHistoryCount>>;
-    public getCountsByCriteria(requestParameters: GetCountsByCriteriaRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<ParameterHistoryCount>>>;
-    public getCountsByCriteria(requestParameters: GetCountsByCriteriaRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<ParameterHistoryCount>>>;
+    public getCountsByCriteria(requestParameters: GetCountsByCriteriaRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<HistoryCount>>;
+    public getCountsByCriteria(requestParameters: GetCountsByCriteriaRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<HistoryCount>>>;
+    public getCountsByCriteria(requestParameters: GetCountsByCriteriaRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<HistoryCount>>>;
     public getCountsByCriteria(requestParameters: GetCountsByCriteriaRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
-        const parameterHistoryCountCriteria = requestParameters.parameterHistoryCountCriteria;
+        const historyCountCriteria = requestParameters.historyCountCriteria;
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -361,10 +302,69 @@ export class HistoriesAPIService {
         }
 
         let localVarPath = `/histories/counts`;
-        return this.httpClient.request<Array<ParameterHistoryCount>>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<HistoryCount>>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: parameterHistoryCountCriteria,
+                body: historyCountCriteria,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Find history by Id
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public getHistoryById(requestParameters: GetHistoryByIdRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<History>;
+    public getHistoryById(requestParameters: GetHistoryByIdRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<History>>;
+    public getHistoryById(requestParameters: GetHistoryByIdRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<History>>;
+    public getHistoryById(requestParameters: GetHistoryByIdRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+        const id = requestParameters.id;
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling getHistoryById.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/histories/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        return this.httpClient.request<History>('get', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

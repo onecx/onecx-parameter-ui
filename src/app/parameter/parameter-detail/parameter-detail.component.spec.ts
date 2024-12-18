@@ -2,28 +2,34 @@ import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient, HttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
+import { FormControl, FormGroup } from '@angular/forms'
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { of, throwError } from 'rxjs'
-import { FormControl, FormGroup } from '@angular/forms'
+import { SelectItem } from 'primeng/api'
 
-import {
-  AppStateService,
-  createTranslateLoader,
-  PortalMessageService,
-  UserService
-} from '@onecx/portal-integration-angular'
-import { ApplicationParameter, ParametersAPIService, ProductStorePageResult } from 'src/app/shared/generated'
+import { AppStateService, UserService } from '@onecx/angular-integration-interface'
+import { createTranslateLoader, PortalMessageService } from '@onecx/portal-integration-angular'
+
+import { Parameter, ParametersAPIService, Product } from 'src/app/shared/generated'
 import { ParameterDetailComponent } from './parameter-detail.component'
 
 const productName = 'prod1'
 const app = 'app1'
-
-const parameter: ApplicationParameter = {
+const allProducts: Product[] = [
+  { productName: 'prod1', displayName: 'prod1_display' },
+  { productName: 'prod2', displayName: 'prod2_display' }
+]
+const allProductsSI: SelectItem[] = [
+  { label: 'prod1_display', value: 'prod1' },
+  { label: 'prod2_display', value: 'prod2' }
+]
+const parameter: Parameter = {
   id: 'id',
   productName: productName,
   applicationId: app,
-  key: 'key',
-  setValue: 'value'
+  name: 'name',
+  displayName: 'displayName',
+  value: 'value'
 }
 
 describe('ParameterDetailComponent', () => {
@@ -32,22 +38,19 @@ describe('ParameterDetailComponent', () => {
 
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error'])
   const apiServiceSpy = {
-    createParameterValue: jasmine.createSpy('createParameterValue').and.returnValue(of({})),
-    updateParameterValue: jasmine.createSpy('updateParameterValue').and.returnValue(of({}))
+    getParameterById: jasmine.createSpy('getParameterById').and.returnValue(of({})),
+    createParameter: jasmine.createSpy('createParameter').and.returnValue(of({})),
+    updateParameter: jasmine.createSpy('updateParameter').and.returnValue(of({}))
   }
   const formGroup = new FormGroup({
     id: new FormControl('id'),
-    key: new FormControl('key'),
+    name: new FormControl('name'),
     value: new FormControl('value'),
     productName: new FormControl('prod name'),
     displayName: new FormControl('display name'),
     applicationId: new FormControl('app')
   })
-  const mockUserService = {
-    lang$: {
-      getValue: jasmine.createSpy('getValue')
-    }
-  }
+  const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -65,163 +68,206 @@ describe('ParameterDetailComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        { provide: UserService, useValue: mockUserService },
         { provide: PortalMessageService, useValue: msgServiceSpy },
-        { provide: ParametersAPIService, useValue: apiServiceSpy },
-        { provide: UserService, useValue: mockUserService }
+        { provide: ParametersAPIService, useValue: apiServiceSpy }
       ]
     }).compileComponents()
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
-    apiServiceSpy.createParameterValue.calls.reset()
-    apiServiceSpy.updateParameterValue.calls.reset()
+    // to spy data: reset
+    apiServiceSpy.getParameterById.calls.reset()
+    apiServiceSpy.createParameter.calls.reset()
+    apiServiceSpy.updateParameter.calls.reset()
+    // to spy data: refill with neutral data
+    apiServiceSpy.getParameterById.and.returnValue(of({}))
+    apiServiceSpy.createParameter.and.returnValue(of({}))
+    apiServiceSpy.updateParameter.and.returnValue(of({}))
   }))
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ParameterDetailComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
+    component.displayDialog = true
+    component.allProducts = allProducts
   })
 
   afterEach(() => {
     component.formGroup.reset()
   })
 
-  it('should create', () => {
-    expect(component).toBeTruthy()
+  describe('construction', () => {
+    it('should create', () => {
+      expect(component).toBeTruthy()
+    })
   })
 
-  describe('ngOnChange, i.e. opening detail dialog', () => {
-    it('should prepare editing a parameter', () => {
-      component.changeMode = 'EDIT'
+  describe('ngOnChange', () => {
+    it('should reject initializing if dialog is not open', () => {
+      apiServiceSpy.getParameterById.and.returnValue(of(parameter))
       component.parameter = parameter
+      component.changeMode = 'VIEW'
+      component.displayDialog = false
 
       component.ngOnChanges()
 
-      expect(component.parameterId).toEqual(parameter.id)
+      expect(apiServiceSpy.getParameterById).not.toHaveBeenCalled()
     })
 
-    it('should prepare copying a parameter', () => {
-      component.changeMode = 'NEW'
+    it('should prepare viewing a parameter - successful', () => {
+      apiServiceSpy.getParameterById.and.returnValue(of(parameter))
       component.parameter = parameter
+      component.changeMode = 'VIEW'
+
       component.ngOnChanges()
 
-      expect(component.parameterId).toBeUndefined()
+      expect(apiServiceSpy.getParameterById).toHaveBeenCalled()
+      expect(component.formGroup.disabled).toBeTrue()
+      expect(component.formGroup.controls['name'].value).toBe(parameter.name)
+      expect(component.loading).toBeFalse()
+      expect(component.allProductOptions).toEqual(allProductsSI)
+    })
+
+    it('should prepare viewing a parameter - failed: missing id', () => {
+      apiServiceSpy.getParameterById.and.returnValue(of(parameter))
+      component.parameter = { ...parameter, id: undefined }
+      component.changeMode = 'VIEW'
+
+      component.ngOnChanges()
+
+      expect(apiServiceSpy.getParameterById).not.toHaveBeenCalled()
+    })
+
+    it('should prepare viewing a parameter - failed: missing permissions', () => {
+      const errorResponse = { status: 403, statusText: 'No permissions' }
+      apiServiceSpy.getParameterById.and.returnValue(throwError(() => errorResponse))
+      component.parameter = parameter
+      component.changeMode = 'VIEW'
+      spyOn(component.formGroup, 'reset')
+      spyOn(console, 'error')
+
+      component.ngOnChanges()
+
+      expect(apiServiceSpy.getParameterById).toHaveBeenCalled()
+      expect(component.formGroup.reset).toHaveBeenCalled()
+      expect(component.formGroup.disabled).toBeTrue()
+      expect(component.exceptionKey).toBe('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PARAMETER')
+      expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: component.exceptionKey })
+      expect(console.error).toHaveBeenCalledWith('getParameterById', errorResponse)
+    })
+
+    it('should prepare editing a parameter', () => {
+      apiServiceSpy.getParameterById.and.returnValue(of(parameter))
+      component.parameter = parameter
+      component.changeMode = 'EDIT'
+
+      component.ngOnChanges()
+
+      expect(apiServiceSpy.getParameterById).toHaveBeenCalled()
+      expect(component.formGroup.enabled).toBeTrue()
+      expect(component.formGroup.controls['name'].value).toBe(parameter.name)
+      expect(component.loading).toBeFalse()
     })
 
     it('should prepare creating a parameter', () => {
-      component.changeMode = 'NEW'
+      component.changeMode = 'CREATE'
       spyOn(component.formGroup, 'reset')
 
       component.ngOnChanges()
 
       expect(component.formGroup.reset).toHaveBeenCalled()
+      expect(component.formGroup.enabled).toBeTrue()
+      expect(component.formGroup.controls['name'].value).toBe(null)
+    })
+
+    it('should prepare copying a parameter', () => {
+      component.changeMode = 'COPY'
+      component.parameter = { ...parameter, id: undefined }
+
+      component.ngOnChanges()
+
+      expect(component.formGroup.enabled).toBeTrue()
+      expect(component.formGroup.controls['name'].value).toBe(parameter.name)
+      expect(component.parameter.id).toBeUndefined()
     })
   })
 
   describe('onSave - creating and updating a parameter', () => {
     it('should create a parameter', () => {
-      apiServiceSpy.createParameterValue.and.returnValue(of({}))
-      component.changeMode = 'NEW'
+      apiServiceSpy.createParameter.and.returnValue(of({}))
+      component.changeMode = 'CREATE'
       spyOn(component.hideDialogAndChanged, 'emit')
       component.formGroup = formGroup
 
       component.onSave()
 
-      expect(msgServiceSpy.success).toHaveBeenCalledWith({
-        summaryKey: 'ACTIONS.CREATE.MESSAGE.OK'
-      })
+      expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.MESSAGE.OK' })
       expect(component.hideDialogAndChanged.emit).toHaveBeenCalledWith(true)
     })
 
     it('should display error if creation fails', () => {
-      apiServiceSpy.createParameterValue.and.returnValue(throwError(() => new Error()))
-      component.changeMode = 'NEW'
+      const errorResponse = { status: 400, statusText: 'Error on creating a parameter' }
+      apiServiceSpy.createParameter.and.returnValue(throwError(() => errorResponse))
+      component.changeMode = 'CREATE'
       component.formGroup = formGroup
+      spyOn(console, 'error')
 
       component.onSave()
 
       expect(component.formGroup.valid).toBeTrue()
-      expect(msgServiceSpy.error).toHaveBeenCalledWith({
-        summaryKey: 'ACTIONS.CREATE.MESSAGE.NOK'
-      })
+      expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.MESSAGE.NOK' })
+      expect(console.error).toHaveBeenCalledWith('createParameter', errorResponse)
     })
 
     it('should update a parameter', () => {
-      apiServiceSpy.updateParameterValue.and.returnValue(of({}))
+      apiServiceSpy.updateParameter.and.returnValue(of({}))
       component.changeMode = 'EDIT'
-      spyOn(component.hideDialogAndChanged, 'emit')
-      component.parameterId = 'id'
+      component.parameter = parameter
       component.formGroup = formGroup
+      spyOn(component.hideDialogAndChanged, 'emit')
 
       component.onSave()
 
-      expect(msgServiceSpy.success).toHaveBeenCalledWith({
-        summaryKey: 'ACTIONS.EDIT.MESSAGE.OK'
-      })
+      expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.EDIT.MESSAGE.OK' })
       expect(component.hideDialogAndChanged.emit).toHaveBeenCalledWith(true)
     })
 
     it('should display error if update fails', () => {
-      apiServiceSpy.updateParameterValue.and.returnValue(throwError(() => new Error()))
+      const errorResponse = { status: 400, statusText: 'Error on updating a parameter' }
+      apiServiceSpy.updateParameter.and.returnValue(throwError(() => errorResponse))
+      component.parameter = parameter
       component.changeMode = 'EDIT'
-      component.parameterId = 'id'
       component.formGroup = formGroup
+      spyOn(console, 'error')
 
       component.onSave()
 
-      expect(msgServiceSpy.error).toHaveBeenCalledWith({
-        summaryKey: 'ACTIONS.EDIT.MESSAGE.NOK'
-      })
+      expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.EDIT.MESSAGE.NOK' })
+      expect(console.error).toHaveBeenCalledWith('updateParameter', errorResponse)
     })
   })
 
-  describe('updateApplicationIds', () => {
-    it('should update applicationIds based on the product name', () => {
-      component.products = {
-        stream: [
-          {
-            productName: 'Product A',
-            applications: ['App1', 'App2']
-          },
-          {
-            productName: 'Product B',
-            applications: ['App3']
-          }
-        ]
-      } as ProductStorePageResult
+  describe('onChangeProductName', () => {
+    it('should update appIdOptions based on the product name', () => {
+      component.allProducts = [
+        { productName: 'productA', applications: ['app1', 'app2'] },
+        { productName: 'productB', displayName: 'Prouct B', applications: ['app3'] }
+      ]
+      component.onChangeProductName('productA')
 
-      component.updateApplicationIds('Product A')
-
-      expect(component.applicationIds).toEqual([
-        { label: 'App1', value: 'App1' },
-        { label: 'App2', value: 'App2' }
+      expect(component.appIdOptions).toEqual([
+        { label: 'app1', value: 'app1' },
+        { label: 'app2', value: 'app2' }
       ])
       expect(component.formGroup.controls['applicationId'].value).toBeNull()
     })
 
-    it('should clear applicationIds if productName does not match', () => {
-      component.products = {
-        stream: [
-          {
-            productName: 'Product A',
-            applications: ['App1', 'App2']
-          }
-        ]
-      } as ProductStorePageResult
+    it('should clear appIdOptions if productName does not match', () => {
+      component.allProducts = [{ productName: 'Product A', applications: ['App1', 'App2'] }]
+      component.onChangeProductName('Product C')
 
-      component.updateApplicationIds('Product C')
-
-      expect(component.applicationIds).toEqual([])
-      expect(component.formGroup.controls['applicationId'].value).toBeNull()
-    })
-
-    it('should handle empty or undefined products', () => {
-      component.products = undefined
-
-      component.updateApplicationIds('Product A')
-
-      expect(component.applicationIds).toEqual([])
-
+      expect(component.appIdOptions).toEqual([])
       expect(component.formGroup.controls['applicationId'].value).toBeNull()
     })
   })
@@ -233,7 +279,7 @@ describe('ParameterDetailComponent', () => {
     spyOn(component.hideDialogAndChanged, 'emit')
     component.onDialogHide()
 
-    expect(component.displayDetailDialog).toBeFalse()
+    expect(component.displayDialog).toBeFalse()
     expect(component.hideDialogAndChanged.emit).toHaveBeenCalledWith(false)
   })
 })

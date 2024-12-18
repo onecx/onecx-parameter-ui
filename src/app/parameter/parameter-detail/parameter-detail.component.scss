@@ -1,9 +1,12 @@
 @import '/src/app/_pm-mixins.scss';
 
+@include text-badges;
 @include correct-select-button;
 @include dialog-footer-buttons;
 @include dialog-non-full-size-modal;
 @include displaying-text-responsive;
+@include tabview-reduce-padding;
+@include tabview-fix-color-selected-tab;
 
 :host ::ng-deep {
   label.float-label {

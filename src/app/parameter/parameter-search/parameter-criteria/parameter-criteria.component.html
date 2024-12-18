@@ -1,60 +1,57 @@
 <ocx-search-header
-  [header]="'SEARCH.PARAMETER_SEARCH_HEADER' | translate"
-  [subheader]="'SEARCH.PARAMETER_SEARCH_SUB_HEADER' | translate"
-  (searched)="submitCriteria()"
-  (resetted)="resetCriteria()"
+  [header]="'DIALOG.SEARCH.HEADER' | translate"
+  [subheader]="'DIALOG.SEARCH.SUBHEADER' | translate"
+  (searched)="onSearch()"
+  (resetted)="onResetCriteria()"
   [manualBreadcrumbs]="false"
   [actions]="actions"
 >
-  <div [formGroup]="parameterCriteria" class="flex flex-wrap gap-3">
+  <div [formGroup]="criteriaForm" class="flex flex-wrap gap-3">
     <span class="p-float-label">
       <p-dropdown
         id="pm_search_criteria_product_name"
-        styleClass="w-15rem text-responsive"
-        [emptyMessage]="'SEARCH.NO_DATA' | translate"
-        [options]="productOptions"
-        [autoDisplayFirst]="true"
-        [appendTo]="'body'"
-        (onChange)="this.updateApplicationIds($event.value)"
+        styleClass="w-13rem sm:w-18rem text-responsive"
         formControlName="productName"
-        [aria-label]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
+        [options]="productOptions"
+        (onChange)="onChangeProductName($event.value)"
+        [showClear]="true"
+        [appendTo]="'body'"
+        [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_PRODUCT' | translate"
         [pTooltip]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
       >
       </p-dropdown>
-      <label for="parameter_search_criteria_product_name"> {{ 'PARAMETER.PRODUCT_NAME' | translate }}</label>
+      <label for="pm_search_criteria_product_name">{{ 'PARAMETER.PRODUCT_NAME' | translate }}</label>
     </span>
     <span class="p-float-label">
       <p-dropdown
         id="pm_search_criteria_application_id"
-        styleClass="w-15rem text-responsive"
-        [options]="applicationIds"
-        [emptyMessage]="'SEARCH.NO_DATA' | translate"
-        [autoDisplayFirst]="true"
-        [appendTo]="'body'"
+        styleClass="w-13rem sm:w-18rem text-responsive"
         formControlName="applicationId"
-        [aria-label]="'PARAMETER.TOOLTIPS.APP_ID' | translate"
+        [options]="appIdOptions"
+        [showClear]="true"
+        [appendTo]="'body'"
+        [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_APP' | translate"
         [pTooltip]="'PARAMETER.TOOLTIPS.APP_ID' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
       >
       </p-dropdown>
-      <label for="parameter_search_criteria_application_id"> {{ 'PARAMETER.APP_ID' | translate }}</label>
+      <label for="pm_search_criteria_application_id">{{ 'PARAMETER.APP_ID' | translate }}</label>
     </span>
     <span class="p-float-label">
       <input
-        id="pm_search_criteria_key"
+        id="pm_search_criteria_name"
         pInputText
         type="text"
-        formControlName="key"
-        class="w-15rem text-responsive"
-        [aria-label]="'PARAMETER.TOOLTIPS.KEY' | translate"
-        [pTooltip]="'PARAMETER.TOOLTIPS.KEY' | translate"
+        formControlName="name"
+        class="w-13rem sm:w-18rem text-responsive"
+        [pTooltip]="'PARAMETER.TOOLTIPS.NAME' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
       />
-      <label for="parameter_search_criteria_key">{{ 'PARAMETER.KEY' | translate }}</label>
+      <label for="pm_search_criteria_name">{{ 'PARAMETER.NAME' | translate }}</label>
     </span>
   </div>
 </ocx-search-header>

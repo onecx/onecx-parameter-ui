@@ -1,6 +1,6 @@
 /**
- * onecx-parameters-bff
- * OneCx parameters Bff
+ * onecx-parameter-bff
+ * OneCX parameter Bff
  *
  * The version of the OpenAPI document: 2.0
  * 
@@ -40,7 +40,7 @@ export interface SearchAllAvailableProductsRequestParams {
 })
 export class ProductsAPIService {
 
-    protected basePath = 'http://onecx-parameters-bff:8080';
+    protected basePath = 'http://onecx-parameter-bff:8080';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
