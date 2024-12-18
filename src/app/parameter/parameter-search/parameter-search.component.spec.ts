@@ -318,7 +318,6 @@ describe('ParameterSearchComponent', () => {
       expect(component.changeMode).toEqual(mode)
       expect(component.usedProductsChanged).toBeFalse()
       expect(component.parameter).toBe(parameterData[0])
-      expect(component.parameter?.id).toBe(undefined) // this does change the test data!
       expect(component.displayDetailDialog).toBeTrue()
 
       component.onCloseDetail(false)

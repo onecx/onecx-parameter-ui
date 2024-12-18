@@ -141,8 +141,7 @@ export class ParameterSearchComponent implements OnInit {
   public onDetail(mode: ChangeMode, item: Parameter | undefined, ev?: MouseEvent): void {
     ev?.stopPropagation()
     this.changeMode = mode
-    this.parameter = item
-    if (this.parameter && ['COPY', 'CREATE'].includes(mode)) this.parameter.id = undefined
+    this.parameter = item // do not manipulate the items here
     this.displayDetailDialog = true
     this.usedProductsChanged = false
   }
