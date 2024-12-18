@@ -9,16 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { Product } from './product';
 
 
-export interface KeysPageResult { 
-    /**
-     * The total elements in the resource.
-     */
-    totalElements?: number;
-    number?: number;
-    size?: number;
-    totalPages?: number;
-    stream?: Array<string>;
+export interface ProductWrapper { 
+    products?: Array<Product>;
+    usedProducts?: Array<Product>;
 }
 

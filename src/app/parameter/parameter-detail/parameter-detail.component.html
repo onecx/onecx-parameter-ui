@@ -94,7 +94,7 @@
                 pInputText
                 type="text"
                 id="pm_detail_form_display_name"
-                formControlName="name"
+                formControlName="displayName"
                 class="w-full pt-3 pb-2 text-responsive"
                 [ariaLabel]="'PARAMETER.DISPLAY_NAME' | translate"
                 [pTooltip]="'PARAMETER.TOOLTIPS.DISPLAY_NAME' | translate"
@@ -178,7 +178,7 @@
           <textarea
             #parameterInputValue
             pInputTextarea
-            id="pm_detail_import_value_2"
+            id="pm_detail_import_value"
             class="w-full"
             [value]="parameter?.importValue"
             [rows]="13"
@@ -189,7 +189,7 @@
             tooltipEvent="hover"
           >
           </textarea>
-          <label for="pm_detail_import_value_2">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
+          <label for="pm_detail_import_value">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
         </span>
       </div>
     </p-tabPanel>

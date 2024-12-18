@@ -9,7 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ParameterCreateValue } from './parameterCreateValue';
+import { ParameterValue } from './parameterValue';
 
 
 export interface Parameter { 
@@ -24,7 +24,7 @@ export interface Parameter {
     productName?: string;
     name?: string;
     displayName?: string;
-    value?: ParameterCreateValue;
-    importValue?: ParameterCreateValue;
+    value?: ParameterValue;
+    importValue?: ParameterValue;
 }
 

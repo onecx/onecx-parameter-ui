@@ -39,8 +39,8 @@ describe('ParameterDetailComponent', () => {
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error'])
   const apiServiceSpy = {
     getParameterById: jasmine.createSpy('getParameterById').and.returnValue(of({})),
-    createParameterValue: jasmine.createSpy('createParameterValue').and.returnValue(of({})),
-    updateParameterValue: jasmine.createSpy('updateParameterValue').and.returnValue(of({}))
+    createParameter: jasmine.createSpy('createParameter').and.returnValue(of({})),
+    updateParameter: jasmine.createSpy('updateParameter').and.returnValue(of({}))
   }
   const formGroup = new FormGroup({
     id: new FormControl('id'),
@@ -77,12 +77,12 @@ describe('ParameterDetailComponent', () => {
     msgServiceSpy.error.calls.reset()
     // to spy data: reset
     apiServiceSpy.getParameterById.calls.reset()
-    apiServiceSpy.createParameterValue.calls.reset()
-    apiServiceSpy.updateParameterValue.calls.reset()
+    apiServiceSpy.createParameter.calls.reset()
+    apiServiceSpy.updateParameter.calls.reset()
     // to spy data: refill with neutral data
     apiServiceSpy.getParameterById.and.returnValue(of({}))
-    apiServiceSpy.createParameterValue.and.returnValue(of({}))
-    apiServiceSpy.updateParameterValue.and.returnValue(of({}))
+    apiServiceSpy.createParameter.and.returnValue(of({}))
+    apiServiceSpy.updateParameter.and.returnValue(of({}))
   }))
 
   beforeEach(() => {
@@ -195,7 +195,7 @@ describe('ParameterDetailComponent', () => {
 
   describe('onSave - creating and updating a parameter', () => {
     it('should create a parameter', () => {
-      apiServiceSpy.createParameterValue.and.returnValue(of({}))
+      apiServiceSpy.createParameter.and.returnValue(of({}))
       component.changeMode = 'CREATE'
       spyOn(component.hideDialogAndChanged, 'emit')
       component.formGroup = formGroup
@@ -208,7 +208,7 @@ describe('ParameterDetailComponent', () => {
 
     it('should display error if creation fails', () => {
       const errorResponse = { status: 400, statusText: 'Error on creating a parameter' }
-      apiServiceSpy.createParameterValue.and.returnValue(throwError(() => errorResponse))
+      apiServiceSpy.createParameter.and.returnValue(throwError(() => errorResponse))
       component.changeMode = 'CREATE'
       component.formGroup = formGroup
       spyOn(console, 'error')
@@ -217,11 +217,11 @@ describe('ParameterDetailComponent', () => {
 
       expect(component.formGroup.valid).toBeTrue()
       expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.MESSAGE.NOK' })
-      expect(console.error).toHaveBeenCalledWith('createParameterValue', errorResponse)
+      expect(console.error).toHaveBeenCalledWith('createParameter', errorResponse)
     })
 
     it('should update a parameter', () => {
-      apiServiceSpy.updateParameterValue.and.returnValue(of({}))
+      apiServiceSpy.updateParameter.and.returnValue(of({}))
       component.changeMode = 'EDIT'
       component.parameter = parameter
       component.formGroup = formGroup
@@ -235,7 +235,7 @@ describe('ParameterDetailComponent', () => {
 
     it('should display error if update fails', () => {
       const errorResponse = { status: 400, statusText: 'Error on updating a parameter' }
-      apiServiceSpy.updateParameterValue.and.returnValue(throwError(() => errorResponse))
+      apiServiceSpy.updateParameter.and.returnValue(throwError(() => errorResponse))
       component.parameter = parameter
       component.changeMode = 'EDIT'
       component.formGroup = formGroup
@@ -244,7 +244,7 @@ describe('ParameterDetailComponent', () => {
       component.onSave()
 
       expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.EDIT.MESSAGE.NOK' })
-      expect(console.error).toHaveBeenCalledWith('updateParameterValue', errorResponse)
+      expect(console.error).toHaveBeenCalledWith('updateParameter', errorResponse)
     })
   })
 

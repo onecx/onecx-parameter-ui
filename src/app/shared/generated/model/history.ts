@@ -9,6 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { ParameterValue } from './parameterValue';
 
 
 export interface History { 
@@ -21,8 +22,8 @@ export interface History {
     applicationId: string;
     productName: string;
     name: string;
-    usedValue?: string;
-    defaultValue?: string;
+    usedValue?: ParameterValue;
+    defaultValue?: ParameterValue;
     type?: string;
     instanceId?: string;
 }

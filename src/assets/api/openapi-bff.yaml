@@ -166,7 +166,7 @@ paths:
       tags:
         - parameters
       description: Create parameter
-      operationId: createParameterValue
+      operationId: createParameter
       requestBody:
         required: true
         content:
@@ -209,7 +209,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /parameters/keys:
+  /parameters/products:
+    get:
+      x-onecx:
+        permissions:
+          parameter:
+            - read
+      tags:
+        - parameters
+      description: Find all products
+      operationId: getProducts
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductWrapper'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /parameters/names/{productName}:
     get:
       x-onecx:
         permissions:
@@ -218,7 +243,7 @@ paths:
       tags:
         - parameters
       description: Find all parameters
-      operationId: getAllKeys
+      operationId: getAllNames
       parameters:
         - name: applicationId
           in: query
@@ -226,7 +251,8 @@ paths:
             description: The application parameter id.
             type: string
         - name: productName
-          in: query
+          required: true
+          in: path
           schema:
             description: The product name.
             type: string
@@ -236,7 +262,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/KeysPageResult'
+                $ref: '#/components/schemas/NamesPageResult'
         "400":
           description: Bad Request
           content:
@@ -282,7 +308,7 @@ paths:
       tags:
         - parameters
       description: Update parameter
-      operationId: updateParameterValue
+      operationId: updateParameter
       parameters:
         - name: id
           in: path
@@ -411,12 +437,7 @@ components:
         productName:
           type: string
         value:
-          oneOf:
-            - type: string
-            - type: number
-            - type: boolean
-            - type: integer
-            - type: object
+          $ref: '#/components/schemas/ParameterValue'
         description:
           type: string
     Parameter:
@@ -450,19 +471,16 @@ components:
         displayName:
           type: string
         value:
-          oneOf:
-            - type: string
-            - type: number
-            - type: boolean
-            - type: integer
-            - type: object
+          $ref: '#/components/schemas/ParameterValue'
         importValue:
-          oneOf:
-            - type: string
-            - type: number
-            - type: boolean
-            - type: integer
-            - type: object
+          $ref: '#/components/schemas/ParameterValue'
+    ParameterValue:
+      oneOf:
+        - type: string
+        - type: number
+        - type: boolean
+        - type: integer
+        - type: object
     History:
       type: object
       required:
@@ -495,9 +513,9 @@ components:
         name:
           type: string
         usedValue:
-          type: string
+          $ref: '#/components/schemas/ParameterValue'
         defaultValue:
-          type: string
+          $ref: '#/components/schemas/ParameterValue'
         type:
           type: string
         instanceId:
@@ -567,16 +585,22 @@ components:
       type: object
       properties:
         value:
-          oneOf:
-            - type: string
-            - type: number
-            - type: boolean
-            - type: integer
-            - type: object
+          $ref: '#/components/schemas/ParameterValue'
         description:
           type: string
         displayName:
           type: string
+    ProductWrapper:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        usedProducts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
     Product:
       type: object
       properties:
@@ -588,7 +612,7 @@ components:
           type: array
           items:
             type: string
-    KeysPageResult:
+    NamesPageResult:
       type: object
       properties:
         totalElements:

@@ -9,15 +9,16 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ParameterValue } from './parameterValue';
 
 
-export interface ParameterCreate { 
-    name: string;
-    displayName?: string;
-    applicationId: string;
-    productName: string;
-    value?: ParameterValue;
-    description?: string;
+export interface NamesPageResult { 
+    /**
+     * The total elements in the resource.
+     */
+    totalElements?: number;
+    number?: number;
+    size?: number;
+    totalPages?: number;
+    stream?: Array<string>;
 }
 

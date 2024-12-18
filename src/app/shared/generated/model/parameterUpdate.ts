@@ -9,11 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ParameterCreateValue } from './parameterCreateValue';
+import { ParameterValue } from './parameterValue';
 
 
 export interface ParameterUpdate { 
-    value?: ParameterCreateValue;
+    value?: ParameterValue;
     description?: string;
     displayName?: string;
 }

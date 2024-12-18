@@ -120,31 +120,30 @@ export class ParameterDetailComponent implements OnChanges {
    * SAVING => create or update
    */
   public onSave(): void {
+    console.log(this.formGroup.value)
     if (this.formGroup.valid) {
       if (this.changeMode === 'EDIT' && this.parameter?.id) {
-        this.parameterApi
-          .updateParameterValue({ id: this.parameter.id, parameterUpdate: this.formGroup.value })
-          .subscribe({
-            next: () => {
-              this.msgService.success({ summaryKey: 'ACTIONS.EDIT.MESSAGE.OK' })
-              this.displayDialog = false
-              this.hideDialogAndChanged.emit(true)
-            },
-            error: (err) => {
-              this.msgService.error({ summaryKey: 'ACTIONS.EDIT.MESSAGE.NOK' })
-              console.error('updateParameterValue', err)
-            }
-          })
+        this.parameterApi.updateParameter({ id: this.parameter.id, parameterUpdate: this.formGroup.value }).subscribe({
+          next: () => {
+            this.msgService.success({ summaryKey: 'ACTIONS.EDIT.MESSAGE.OK' })
+            this.displayDialog = false
+            this.hideDialogAndChanged.emit(true)
+          },
+          error: (err) => {
+            this.msgService.error({ summaryKey: 'ACTIONS.EDIT.MESSAGE.NOK' })
+            console.error('updateParameter', err)
+          }
+        })
       }
       if (['COPY', 'CREATE'].includes(this.changeMode)) {
-        this.parameterApi.createParameterValue({ parameterCreate: this.formGroup.value }).subscribe({
+        this.parameterApi.createParameter({ parameterCreate: this.formGroup.value }).subscribe({
           next: () => {
             this.msgService.success({ summaryKey: 'ACTIONS.CREATE.MESSAGE.OK' })
             this.hideDialogAndChanged.emit(true)
           },
           error: (err) => {
             this.msgService.error({ summaryKey: 'ACTIONS.CREATE.MESSAGE.NOK' })
-            console.error('createParameterValue', err)
+            console.error('createParameter', err)
           }
         })
       }

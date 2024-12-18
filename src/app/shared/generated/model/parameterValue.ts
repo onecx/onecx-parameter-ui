@@ -12,8 +12,8 @@
 
 
 /**
- * @type ParameterCreateValue
+ * @type ParameterValue
  * @export
  */
-export type ParameterCreateValue = boolean | number | object | string;
+export type ParameterValue = boolean | number | object | string;
 
