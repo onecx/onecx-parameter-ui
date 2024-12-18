@@ -63,6 +63,7 @@ export class ParameterCriteriaComponent implements OnChanges {
 
   public onChangeProductName(name: string) {
     this.appIdOptions = []
+    if (!name) return
     this.usedProducts
       .filter((p) => p.productName === name)
       .forEach((p) => {

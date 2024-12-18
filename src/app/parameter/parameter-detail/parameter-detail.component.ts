@@ -103,9 +103,9 @@ export class ParameterDetailComponent implements OnChanges {
 
   // load appId dropdown with app ids from product
   public onChangeProductName(name: string | undefined) {
-    if (!name) return
-    this.formGroup.controls['productName'].setValue(name)
     this.appIdOptions = []
+    this.formGroup.controls['productName'].setValue(name)
+    if (!name) return
     this.allProducts
       .filter((p) => p.productName === name)
       .forEach((p) => {
