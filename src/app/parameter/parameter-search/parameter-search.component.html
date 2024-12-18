@@ -198,8 +198,23 @@
           <div class="pi pi-question-circle text-3xl danger-action-text"></div>
           <div class="flex flex-column row-gap-2">
             <div id="pm_delete_message_text" class="font-bold">{{ 'ACTIONS.DELETE.MESSAGE.TEXT' | translate }}</div>
-            <div id="pm_delete_parameter_name" class="px-5 text-center font-bold danger-action-text">
-              {{ limitText(parameter?.name, 50) }}
+            <div id="pm_delete_parameter_name" class="px-5 flex flex-column row-gap-1">
+              <div class="flex flex-row column-gap-2">
+                <div class="w-4 text-right">{{ 'PARAMETER.PRODUCT_NAME' | translate }}:</div>
+                <div class="w-8 text-left font-bold danger-action-text">
+                  {{ getProductDisplayName(parameter?.productName, metaData.allProducts) }}
+                </div>
+              </div>
+              <div class="flex flex-row column-gap-2">
+                <div class="w-4 text-right">{{ 'PARAMETER.APP_ID' | translate }}:</div>
+                <div class="w-8 text-left font-bold danger-action-text">{{ parameter?.applicationId }}</div>
+              </div>
+              <div class="flex flex-row column-gap-2">
+                <div class="w-4 text-right">{{ 'PARAMETER.NAME' | translate }}:</div>
+                <div class="w-8 text-left font-bold danger-action-text">
+                  {{ limitText(parameter?.displayName, 50) }}
+                </div>
+              </div>
             </div>
             <div>{{ 'ACTIONS.DELETE.MESSAGE.INFO' | translate }}</div>
           </div>
