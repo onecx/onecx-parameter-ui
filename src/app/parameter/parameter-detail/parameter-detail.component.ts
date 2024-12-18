@@ -120,7 +120,6 @@ export class ParameterDetailComponent implements OnChanges {
    * SAVING => create or update
    */
   public onSave(): void {
-    console.log(this.formGroup.value)
     if (this.formGroup.valid) {
       if (this.changeMode === 'EDIT' && this.parameter?.id) {
         this.parameterApi.updateParameter({ id: this.parameter.id, parameterUpdate: this.formGroup.value }).subscribe({
