@@ -109,7 +109,7 @@
                   class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
                   [id]="'pm_search_table_row_' + i + '_view_action'"
                   (click)="onDetail('VIEW', rowData, $event)"
-                  [aria-label]="'ACTIONS.VIEW.TOOLTIP' | translate"
+                  [aria-label]="'ACTIONS.VIEW.LABEL' | translate"
                   [pTooltip]="'ACTIONS.VIEW.TOOLTIP' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
@@ -185,7 +185,7 @@
 
       <!-- DELETE -->
       <p-dialog
-        [header]="'ACTIONS.DELETE.PARAMETER' | translate"
+        [header]="'DIALOG.DELETE.HEADER' | translate"
         [(visible)]="displayDeleteDialog"
         [modal]="true"
         [closable]="true"

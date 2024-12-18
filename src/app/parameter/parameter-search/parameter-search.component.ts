@@ -114,12 +114,12 @@ export class ParameterSearchComponent implements OnInit {
   }
 
   private prepareActionButtons(): void {
-    this.actions$ = this.translateService.get(['ACTIONS.CREATE.LABEL', 'ACTIONS.CREATE.PARAMETER.TOOLTIP']).pipe(
+    this.actions$ = this.translateService.get(['ACTIONS.CREATE.LABEL', 'ACTIONS.CREATE.TOOLTIP']).pipe(
       map((data) => {
         return [
           {
             label: data['ACTIONS.CREATE.LABEL'],
-            title: data['ACTIONS.CREATE.PARAMETER.TOOLTIP'],
+            title: data['ACTIONS.CREATE.TOOLTIP'],
             actionCallback: () => this.onDetail('CREATE', undefined),
             icon: 'pi pi-plus',
             show: 'always',
@@ -203,8 +203,8 @@ export class ParameterSearchComponent implements OnInit {
     return allProducts.find((item) => item.productName === name)?.displayName ?? name
   }
   private sortProductsByDisplayName(a: Product, b: Product): number {
-    return (a.displayName ? (a.displayName as string).toUpperCase() : '').localeCompare(
-      b.displayName ? (b.displayName as string).toUpperCase() : ''
+    return (a.displayName ? a.displayName.toUpperCase() : '').localeCompare(
+      b.displayName ? b.displayName.toUpperCase() : ''
     )
   }
 
@@ -261,7 +261,7 @@ export class ParameterSearchComponent implements OnInit {
     this.data$ = this.parameterApi.searchParametersByCriteria({ parameterSearchCriteria: { ...this.criteria } }).pipe(
       tap((data: any) => {
         if (data.totalElements === 0) {
-          this.messageService.info({ summaryKey: 'ACTIONS.SEARCH.MSG_NO_RESULTS' })
+          this.messageService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
           return data.size
         }
       }),

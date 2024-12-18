@@ -86,7 +86,7 @@ export class ParameterDetailComponent implements OnChanges {
           this.formGroup.reset()
           this.formGroup.disable()
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
-          this.msgService.error({ summaryKey: 'ACTIONS.SEARCH.SEARCH_FAILED' })
+          this.msgService.error({ summaryKey: this.exceptionKey })
           console.error('getParameterById', err)
         }
       })
@@ -108,7 +108,7 @@ export class ParameterDetailComponent implements OnChanges {
     this.appIdOptions = []
     this.allProducts
       .filter((p) => p.productName === name)
-      .map((p) => {
+      .forEach((p) => {
         p.applications?.forEach((a) => {
           this.appIdOptions.push({ label: a, value: a })
         })

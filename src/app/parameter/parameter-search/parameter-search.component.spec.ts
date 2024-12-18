@@ -156,7 +156,7 @@ describe('ParameterSearchComponent', () => {
       component.data$?.subscribe({
         next: (data) => {
           expect(data.length).toEqual(0)
-          expect(msgServiceSpy.info).toHaveBeenCalledOnceWith({ summaryKey: 'ACTIONS.SEARCH.MSG_NO_RESULTS' })
+          expect(msgServiceSpy.info).toHaveBeenCalledOnceWith({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
           done()
         },
         error: done.fail
@@ -176,7 +176,7 @@ describe('ParameterSearchComponent', () => {
           done()
         },
         error: () => {
-          expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.SEARCH.MSG_SEARCH_FAILED' })
+          expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.SEARCH_FAILED' })
           expect(console.error).toHaveBeenCalledWith('searchParametersByCriteria', errorResponse)
           done.fail
         }

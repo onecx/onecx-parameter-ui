@@ -131,7 +131,7 @@ describe('HistoryComponent', () => {
 
       expect(apiServiceSpy.getParameterById).toHaveBeenCalled()
       expect(component.exceptionKey).toBe('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PARAMETER')
-      expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.SEARCH.SEARCH_FAILED' })
+      expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.SEARCH_FAILED' })
       expect(console.error).toHaveBeenCalledWith('getParameterById', errorResponse)
     })
   })

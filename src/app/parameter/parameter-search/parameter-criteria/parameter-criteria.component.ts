@@ -65,7 +65,7 @@ export class ParameterCriteriaComponent implements OnChanges {
     this.appIdOptions = []
     this.usedProducts
       .filter((p) => p.productName === name)
-      .map((p) => {
+      .forEach((p) => {
         p.applications?.forEach((a) => {
           this.appIdOptions.push({ label: a, value: a })
         })

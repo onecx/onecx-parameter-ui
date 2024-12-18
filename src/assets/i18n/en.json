@@ -10,21 +10,12 @@
     },
     "COPY": {
       "LABEL": "Copy",
-      "TOOLTIP": "Create a copy of the Parameter",
-      "OF": "Copy of ",
-      "DATA": "Create a new Parameter with the data",
+      "TOOLTIP": "Create a copy",
       "CLIPBOARD": "Copy to clipboard"
     },
     "CREATE": {
       "LABEL": "Create",
-      "PARAMETER.TOOLTIP": "Create a new Parameter",
-      "CREATE_PARAMETER": "Create Parameter",
-      "CREATE_PARAMETER_SUB_HEADER": "Fill in the inputs to create a new Parameter",
-      "BREADCRUMB": "Parameter Creation",
-      "CREATE_SUCCESS": "Parameter was sucessfully created",
-      "CREATE_ERROR": "Error, Parameter wasn't successfully created",
-      "CLOSE": "Close",
-      "SAVE": "Create new Parameter",
+      "TOOLTIP": "Create a new Parameter",
       "MESSAGE": {
         "OK": "The Parameter was created successfully",
         "NOK": "An error has occurred. The Parameter was not created."
@@ -33,23 +24,16 @@
     "DELETE": {
       "LABEL": "Delete",
       "TOOLTIP": "Delete Parameter",
-      "PARAMETER": "Delete Parameter",
       "MESSAGE": {
         "TEXT": "Do you want to delete this Parameter?",
         "INFO": "This action cannot be undone!",
-        "NOK": "Parameter could not be deleted",
-        "OK": "Parameter deleted successfully"
+        "OK": "Parameter deleted successfully",
+        "NOK": "Parameter could not be deleted"
       }
     },
     "EDIT": {
       "LABEL": "Edit",
-      "EDIT_PARAMETER": "Edit Parameter",
       "TOOLTIP": "Edit Parameter",
-      "BREADCRUMB": "Parameter Edit",
-      "UPDATE_SUCCESS": "Parameter updated successfully",
-      "UPDATE_ERROR": "Failed to update the parameter",
-      "FETCH_ERROR": "Couldn't fetch parameter with given Id.",
-      "EDIT_PARAMETER_SUB_HEADER": "Change the inputs to adjust the Parameter",
       "MESSAGE": {
         "OK": "The Parameter was changed successfully",
         "NOK": "An error has occurred. The Parameter was not changed."
@@ -58,15 +42,17 @@
     "EXPORT": {
       "LABEL": "Export",
       "TOOLTIP": "Export definition in JSON format",
-      "PARAMETER": "Download the current Parameters JSON format.",
       "MESSAGE": {
-        "NOK": "Parameter could not be exported"
+        "NOK": "An error has occurred. The Parameters could not be exported."
       }
     },
     "IMPORT": {
       "LABEL": "Import",
       "TOOLTIP": "Upload definition in JSON format",
-      "PARAMETER": "Import Parameter in JSON format."
+      "MESSAGE": {
+        "OK": "Die Parameter wurden erfolgreich importiert.",
+        "NOK": "An error has occurred. The Parameters could not be exported."
+      }
     },
     "NAVIGATION": {
       "CLOSE": "Close",
@@ -79,18 +65,21 @@
     },
     "SEARCH": {
       "CRITERIA": {
-        "NO_PRODUCT": "No Application",
+        "NO_PRODUCT": "No Applications",
         "NO_APP": "Select Application first"
       },
       "FILTER_BY": "Filter by",
       "OF": "of",
-      "MSG_NO_RESULTS": "Search returned no results",
-      "MSG_SEARCH_FAILED": "Search failed",
       "IN_PROGRESS": "Searching...",
-      "NO_DATA": "No data"
+      "NO_DATA": "No data",
+      "MESSAGE": {
+        "NO_RESULTS": "Search returned no results",
+        "SEARCH_FAILED": "Search failed"
+      }
     },
     "VIEW": {
-      "TOOLTIP": "View Parameter details"
+      "LABEL": "Details",
+      "TOOLTIP": "Parameter details"
     },
     "HISTORY": {
       "TOOLTIP": "View history"
@@ -115,7 +104,7 @@
     },
     "DETAIL": {
       "TAB": {
-        "PROPS": "Base Properties",
+        "PROPS": "Properties",
         "VALUE": "Value",
         "IMPORT_VALUE": "Imported Value"
       }
@@ -128,46 +117,22 @@
     "VIEW.HEADER": "Parameter Details"
   },
   "PARAMETER": {
-    "APP_ID": "App-ID",
-    "APPLICATION": "App",
     "PRODUCT_NAME": "Application",
+    "APP_ID": "App-ID",
     "NAME": "Name",
     "DISPLAY_NAME": "Display Name",
     "VALUE": "Value",
     "IMPORT_VALUE": "Import Value",
     "DESCRIPTION": "Description",
-    "PARAMETER_TYPE": {
-      "UNAVAILABLE": "Unavailable",
-      "STRING": "String",
-      "NUMBER": "Number",
-      "BOOLEAN": "Boolean",
-      "JSON": "Json"
-    },
     "TOOLTIPS": {
-      "APP_ID": "App identifier for which the Parameter is created",
-      "APPLICATION": "Business name of the App",
       "PRODUCT_NAME": "Application for which the Parameter is created",
+      "APP_ID": "App identifier for which the Parameter is created",
       "NAME": "Name of the Parameter",
       "DISPLAY_NAME": "Business Name of the Parameter",
       "VALUE": "Value of the Parameter",
       "IMPORT_VALUE": "Imported value",
-      "DESCRIPTION": "Detailed description of the Parameter",
-      "FORM_TYPE": "Choose between standard and advanced form"
+      "DESCRIPTION": "Detailed description of the Parameter"
     }
-  },
-  "DETAILS": {
-    "STANDARD_FORM": "Standard form",
-    "ADVANCED_FORM": "Advanced form",
-    "FORM_MANDATORY": "Mandatory fields are missing",
-    "VALUE_HAS_WRONG_TYPE": "Value has wrong type",
-    "FORM_KEY_MIN_LEN": "Key should have at least 3 letters"
-  },
-  "PARAMETER_DELETE": {
-    "PARAMETER_DELETE": "Delete Parameter",
-    "TOOLTIP": "Delete Parameter",
-    "DELETE_SUCCESS": "Parameter was sucessfully deleted.",
-    "DELETE_ERROR": "Error, parameter was not deleted.",
-    "MESSAGE": "Are you sure that you want to delete this parameter?"
   },
   "HISTORY": {
     "HISTORY": "History",
@@ -178,14 +143,17 @@
     "HISTORY_RELOAD": "Reload history",
     "APPLICATION": "App ID",
     "PRODUCT": "Application",
-    "KEY": "Key"
+    "NAME": "Name"
   },
   "CHART": {
     "NUMBER_OF_REQUESTS": "Number of requests"
   },
   "VALIDATION": {
     "ERRORS": {
-      "EMPTY_REQUIRED_FIELD": "required field"
+      "EMPTY_REQUIRED_FIELD": "required field",
+      "FORM_MANDATORY": "Mandatory fields are missing",
+      "VALUE_HAS_WRONG_TYPE": "Value has wrong type",
+      "FORM_KEY_MIN_LEN": "Key should have at least 3 letters"
     }
   },
   "EXCEPTIONS": {

@@ -153,7 +153,7 @@ describe('ParameterDetailComponent', () => {
       expect(component.formGroup.reset).toHaveBeenCalled()
       expect(component.formGroup.disabled).toBeTrue()
       expect(component.exceptionKey).toBe('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PARAMETER')
-      expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.SEARCH.SEARCH_FAILED' })
+      expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: component.exceptionKey })
       expect(console.error).toHaveBeenCalledWith('getParameterById', errorResponse)
     })
 
@@ -234,15 +234,17 @@ describe('ParameterDetailComponent', () => {
     })
 
     it('should display error if update fails', () => {
-      const errorResponse = { status: 400, statusText: 'Error on creating a parameter' }
+      const errorResponse = { status: 400, statusText: 'Error on updating a parameter' }
       apiServiceSpy.updateParameterValue.and.returnValue(throwError(() => errorResponse))
       component.parameter = parameter
       component.changeMode = 'EDIT'
       component.formGroup = formGroup
+      spyOn(console, 'error')
 
       component.onSave()
 
       expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.EDIT.MESSAGE.NOK' })
+      expect(console.error).toHaveBeenCalledWith('updateParameterValue', errorResponse)
     })
   })
 

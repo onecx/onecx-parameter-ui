@@ -86,7 +86,7 @@ export class ParameterHistoryComponent implements OnChanges {
         },
         error: (err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
-          this.msgService.error({ summaryKey: 'ACTIONS.SEARCH.SEARCH_FAILED' })
+          this.msgService.error({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.SEARCH_FAILED' })
           console.error('getParameterById', err)
         }
       })
@@ -103,7 +103,7 @@ export class ParameterHistoryComponent implements OnChanges {
         this.historyArray = results.stream as History[]
       },
       error: () => {
-        this.msgService.error({ summaryKey: 'ACTIONS.SEARCH.MSG_SEARCH_FAILED' })
+        this.msgService.error({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.SEARCH_FAILED' })
       }
     })
   }
@@ -123,12 +123,12 @@ export class ParameterHistoryComponent implements OnChanges {
           this.setChartData()
           if (data.length == 0) {
             // this.msgService.success({
-            //   summaryKey: 'ACTIONS.SEARCH.MSG_NO_RESULTS'
+            //   summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS'
             // })
           }
         },
         error: () => {
-          this.msgService.error({ summaryKey: 'ACTIONS.SEARCH.MSG_SEARCH_FAILED' })
+          this.msgService.error({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.SEARCH_FAILED' })
         }
       })
   }
@@ -186,16 +186,15 @@ export class ParameterHistoryComponent implements OnChanges {
   private loadTranslations(): void {
     this.translate
       .get([
-        'ACTIONS.EDIT.FETCH_ERROR',
-        'DETAILS.FORM_MANDATORY',
-        'DETAILS.FORM_KEY_MIN_LEN',
         'PARAMETER.APP_ID',
         'PARAMETER.NAME',
         'PARAMETER.VALUE',
         'PARAMETER.DESCRIPTION',
         'CHART.NUMBER_OF_REQUESTS',
-        'ACTIONS.SEARCH.MSG_SEARCH_FAILED',
-        'ACTIONS.SEARCH.MSG_NO_RESULTS',
+        'ACTIONS.SEARCH.MESSAGE.SEARCH_FAILED',
+        'ACTIONS.SEARCH.MESSAGE.NO_RESULTS',
+        'VALIDATION.ERRORS.FORM_MANDATORY',
+        'VALIDATION.ERRORS.FORM_KEY_MIN_LEN',
         'VALIDATION.ERRORS.EMPTY_REQUIRED_FIELD'
       ])
       .subscribe((data) => {
