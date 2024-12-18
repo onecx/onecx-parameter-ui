@@ -161,6 +161,10 @@
       "PARAMETER": "Unbekanntes Problem beim Abrufen von Parametern - bitte versuchen Sie es noch einmal.",
       "PRODUCTS": "Unbekanntes Problem beim Abrufen von Applikationen - bitte versuchen Sie es noch einmal."
     },
+    "HTTP_STATUS_400": {
+      "PARAMETER": "Ihre Anfrage konnte nicht bearbeitet werden.",
+      "PRODUCTS": "Ihre Anfrage konnte nicht bearbeitet werden."
+    },
     "HTTP_STATUS_401": {
       "PARAMETER": "Sie sind nicht autorisiert, um Parameter zu sehen.",
       "PRODUCTS": "Sie sind nicht autorisiert, um Applikationen zu sehen."

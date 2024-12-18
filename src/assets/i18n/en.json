@@ -161,6 +161,10 @@
       "PARAMETER": "Unknown problem retrieving Parameter data - please try again.",
       "PRODUCTS": "Unknown problem retrieving Application data - please try again."
     },
+    "HTTP_STATUS_400": {
+      "PARAMETER": "Your request could not be processed.",
+      "PRODUCTS": "Your request could not be processed."
+    },
     "HTTP_STATUS_401": {
       "PARAMETER": "You are not authorized to see Parameters.",
       "PRODUCTS": "You are not authorized to see Applications."

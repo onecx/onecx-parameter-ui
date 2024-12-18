@@ -267,7 +267,7 @@ export class ParameterSearchComponent implements OnInit {
       }),
       map((data) => data.stream),
       catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETERS'
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
         console.error('searchParametersByCriteria', err)
         return of([] as Parameter[])
       }),
