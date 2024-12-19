@@ -25,7 +25,7 @@
                 styleClass="w-full text-responsive"
                 formControlName="productName"
                 [options]="allProductOptions"
-                (onChange)="onChangeProductName($event.value)"
+                (onChange)="onChangeProductName($event.value, appIdOptionsElement)"
                 [autoDisplayFirst]="true"
                 [appendTo]="'body'"
                 [readonly]="['EDIT', 'VIEW'].includes(this.changeMode)"
@@ -45,6 +45,7 @@
           <div class="mt-1 px-2 w-12 sm:w-6">
             <span class="p-float-label" controlErrorAnchor>
               <p-dropdown
+                #appIdOptionsElement
                 id="pm_detail_form_app_id"
                 class="input-field"
                 styleClass="w-full text-responsive"
