@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 import { finalize } from 'rxjs'
+import { Dropdown } from 'primeng/dropdown'
 import { SelectItem } from 'primeng/api'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
@@ -68,7 +69,7 @@ export class ParameterDetailComponent implements OnChanges {
         this.formGroup.enable()
         break
     }
-    this.onChangeProductName(data?.productName)
+    if (data?.productName) this.onChangeProductName(data?.productName)
   }
 
   private getData(id?: string): void {
@@ -102,8 +103,9 @@ export class ParameterDetailComponent implements OnChanges {
   }
 
   // load appId dropdown with app ids from product
-  public onChangeProductName(name: string | undefined) {
+  public onChangeProductName(name: string, subElement?: Dropdown) {
     this.appIdOptions = []
+    subElement?.clear()
     this.formGroup.controls['productName'].setValue(name)
     if (!name) return
     this.allProducts

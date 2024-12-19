@@ -10,10 +10,10 @@
     <span class="p-float-label">
       <p-dropdown
         id="pm_search_criteria_product_name"
-        styleClass="w-13rem sm:w-18rem text-responsive"
+        styleClass="w-18rem text-responsive"
         formControlName="productName"
         [options]="productOptions"
-        (onChange)="onChangeProductName($event.value)"
+        (onChange)="onChangeProductName($event.value, appIdOptionsElement)"
         [showClear]="true"
         [appendTo]="'body'"
         [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_PRODUCT' | translate"
@@ -24,10 +24,11 @@
       </p-dropdown>
       <label for="pm_search_criteria_product_name">{{ 'PARAMETER.PRODUCT_NAME' | translate }}</label>
     </span>
-    <span class="p-float-label">
+    <span class="hidden sm:block p-float-label">
       <p-dropdown
+        #appIdOptionsElement
         id="pm_search_criteria_application_id"
-        styleClass="w-13rem sm:w-18rem text-responsive"
+        styleClass="w-18rem text-responsive"
         formControlName="applicationId"
         [options]="appIdOptions"
         [showClear]="true"
@@ -46,7 +47,7 @@
         pInputText
         type="text"
         formControlName="name"
-        class="w-13rem sm:w-18rem text-responsive"
+        class="w-18rem text-responsive"
         [pTooltip]="'PARAMETER.TOOLTIPS.NAME' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"

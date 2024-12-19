@@ -25,7 +25,7 @@
                 styleClass="w-full text-responsive"
                 formControlName="productName"
                 [options]="allProductOptions"
-                (onChange)="onChangeProductName($event.value)"
+                (onChange)="onChangeProductName($event.value, appIdOptionsElement)"
                 [autoDisplayFirst]="true"
                 [appendTo]="'body'"
                 [readonly]="['EDIT', 'VIEW'].includes(this.changeMode)"
@@ -45,6 +45,7 @@
           <div class="mt-1 px-2 w-12 sm:w-6">
             <span class="p-float-label" controlErrorAnchor>
               <p-dropdown
+                #appIdOptionsElement
                 id="pm_detail_form_app_id"
                 class="input-field"
                 styleClass="w-full text-responsive"
@@ -133,7 +134,6 @@
     <p-tabPanel [header]="'DIALOG.DETAIL.TAB.VALUE' | translate">
       <div class="mt-1 relative p-fluid mx-2">
         <p-badge
-          *ngIf="changeMode !== 'VIEW'"
           severity="primary"
           [value]="5000 - parameterValue.value.length"
           class="z-1 text-badge-right"
@@ -169,7 +169,6 @@
     >
       <div class="mt-1 relative p-fluid mx-2">
         <p-badge
-          *ngIf="changeMode !== 'VIEW'"
           severity="primary"
           [value]="5000 - parameterInputValue.value.length"
           class="z-1 text-badge-right"
@@ -187,7 +186,7 @@
             [value]="parameter?.importValue"
             [rows]="13"
             jsonColorize
-            [readonly]="true"
+            [disabled]="true"
             [ariaLabel]="'PARAMETER.IMPORT_VALUE' | translate"
             [pTooltip]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
             tooltipPosition="top"

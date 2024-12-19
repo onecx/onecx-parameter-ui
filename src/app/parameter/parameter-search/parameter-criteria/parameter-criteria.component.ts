@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
+import { Dropdown } from 'primeng/dropdown'
 import { SelectItem } from 'primeng/api'
 
 import { Action } from '@onecx/portal-integration-angular'
@@ -25,7 +26,6 @@ export class ParameterCriteriaComponent implements OnChanges {
   @Output() public searchEmitter = new EventEmitter<ParameterSearchCriteria>()
   @Output() public resetSearchEmitter = new EventEmitter<boolean>()
 
-  //public products$: Observable<Product[]> | undefined
   public criteriaForm: FormGroup<ParameterCriteriaForm>
   public productOptions: SelectItem[] = []
   public appIdOptions: SelectItem[] = []
@@ -61,8 +61,9 @@ export class ParameterCriteriaComponent implements OnChanges {
     this.resetSearchEmitter.emit(true)
   }
 
-  public onChangeProductName(name: string) {
+  public onChangeProductName(name: string, subElement: Dropdown) {
     this.appIdOptions = []
+    subElement.clear()
     if (!name) return
     this.usedProducts
       .filter((p) => p.productName === name)

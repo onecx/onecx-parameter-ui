@@ -491,6 +491,18 @@
  * **********************************************/
 @mixin table-inline-buttons {
   :host ::ng-deep {
+    td a {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 50%;
+      border-color: transparent;
+      &:hover,
+      &:focus {
+        background-color: rgba(var(--primary-color-rgb), 0.04);
+        cursor: pointer;
+      }
+    }
+
     // reduce the size of buttons used inside a table row
     th button.p-button,
     td button.p-button {
