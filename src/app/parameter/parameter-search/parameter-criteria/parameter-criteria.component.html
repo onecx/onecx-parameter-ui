@@ -13,7 +13,7 @@
         styleClass="w-18rem text-responsive"
         formControlName="productName"
         [options]="productOptions"
-        (onChange)="onChangeProductName($event.value, appIdOptionsElement)"
+        (onChange)="onChangeProductName($event.value)"
         [showClear]="true"
         [appendTo]="'body'"
         [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_PRODUCT' | translate"
@@ -26,7 +26,6 @@
     </span>
     <span class="hidden sm:block p-float-label">
       <p-dropdown
-        #appIdOptionsElement
         id="pm_search_criteria_application_id"
         styleClass="w-18rem text-responsive"
         formControlName="applicationId"

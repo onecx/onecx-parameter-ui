@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient, HttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
-import { By } from '@angular/platform-browser'
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { SelectItem } from 'primeng/api'
 
@@ -11,14 +10,14 @@ import { AppStateService, UserService } from '@onecx/angular-integration-interfa
 import { createTranslateLoader } from '@onecx/portal-integration-angular'
 
 import { Product } from 'src/app/shared/generated'
-import { ParameterCriteriaComponent, ParameterCriteriaForm } from './parameter-criteria.component'
+import { ParameterCriteriaComponent, CriteriaForm } from './parameter-criteria.component'
 
-const filledCriteria = new FormGroup<ParameterCriteriaForm>({
+const filledCriteria = new FormGroup<CriteriaForm>({
   name: new FormControl<string | null>('name'),
   productName: new FormControl<string | null>('productName'),
   applicationId: new FormControl<string | null>('applicationId')
 })
-const emptyCriteria = new FormGroup<ParameterCriteriaForm>({
+const emptyCriteria = new FormGroup<CriteriaForm>({
   name: new FormControl<string | null>(null),
   productName: new FormControl<string | null>(null),
   applicationId: new FormControl<string | null>(null)
@@ -35,7 +34,6 @@ const usedProductsSI: SelectItem[] = [
 describe('ParameterCriteriaComponent', () => {
   let component: ParameterCriteriaComponent
   let fixture: ComponentFixture<ParameterCriteriaComponent>
-  let appDropdownElement: any
 
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
 
@@ -117,11 +115,8 @@ describe('ParameterCriteriaComponent', () => {
   })
 
   describe('onChangeProductName', () => {
-    beforeEach(() => {
-      appDropdownElement = fixture.debugElement.query(By.css('#pm_search_criteria_application_id')).nativeElement
-    })
-    it('should reject update appIdOptions if no product name is provided', () => {
-      component.onChangeProductName(null, appDropdownElement)
+    it('should reject update appIdOptions and clear target dropdown if no product name is provided', () => {
+      component.onChangeProductName(null) // clear product name
 
       expect(component.appIdOptions).toEqual([])
     })
@@ -131,7 +126,7 @@ describe('ParameterCriteriaComponent', () => {
         { productName: 'productA', applications: ['app1', 'app2'] },
         { productName: 'productB', displayName: 'Prouct B', applications: ['app3'] }
       ]
-      component.onChangeProductName(component.usedProducts[0].productName!, appDropdownElement)
+      component.onChangeProductName(component.usedProducts[0].productName!)
 
       expect(component.appIdOptions).toEqual([
         { label: 'app1', value: 'app1' },
@@ -142,8 +137,7 @@ describe('ParameterCriteriaComponent', () => {
     it('should clear appIdOptions if productName does not match', () => {
       component.usedProducts = [{ productName: 'Product A', applications: ['App1', 'App2'] }]
 
-      if (appDropdownElement) appDropdownElement.click()
-      component.onChangeProductName('Product C', appDropdownElement)
+      component.onChangeProductName('Product C')
 
       expect(component.appIdOptions).toEqual([])
     })

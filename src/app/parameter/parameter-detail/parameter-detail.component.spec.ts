@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient, HttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
-import { By } from '@angular/platform-browser'
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { of, throwError } from 'rxjs'
 import { SelectItem } from 'primeng/api'
@@ -36,7 +35,6 @@ const parameter: Parameter = {
 describe('ParameterDetailComponent', () => {
   let component: ParameterDetailComponent
   let fixture: ComponentFixture<ParameterDetailComponent>
-  let appDropdownElement: any
 
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error'])
   const apiServiceSpy = {
@@ -251,11 +249,8 @@ describe('ParameterDetailComponent', () => {
   })
 
   describe('onChangeProductName', () => {
-    beforeEach(() => {
-      appDropdownElement = fixture.debugElement.query(By.css('#pm_detail_form_app_id')).nativeElement
-    })
     it('should reject update appIdOptions if no product name is provided', () => {
-      component.onChangeProductName(null, appDropdownElement)
+      component.onChangeProductName(null)
 
       expect(component.appIdOptions).toEqual([])
     })
