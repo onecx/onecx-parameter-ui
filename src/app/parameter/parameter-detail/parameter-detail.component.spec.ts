@@ -249,6 +249,12 @@ describe('ParameterDetailComponent', () => {
   })
 
   describe('onChangeProductName', () => {
+    it('should reject update appIdOptions if no product name is provided', () => {
+      component.onChangeProductName(null)
+
+      expect(component.appIdOptions).toEqual([])
+    })
+
     it('should update appIdOptions based on the product name', () => {
       component.allProducts = [
         { productName: 'productA', applications: ['app1', 'app2'] },

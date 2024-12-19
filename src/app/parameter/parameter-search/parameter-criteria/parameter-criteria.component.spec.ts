@@ -10,14 +10,14 @@ import { AppStateService, UserService } from '@onecx/angular-integration-interfa
 import { createTranslateLoader } from '@onecx/portal-integration-angular'
 
 import { Product } from 'src/app/shared/generated'
-import { ParameterCriteriaComponent, ParameterCriteriaForm } from './parameter-criteria.component'
+import { ParameterCriteriaComponent, CriteriaForm } from './parameter-criteria.component'
 
-const filledCriteria = new FormGroup<ParameterCriteriaForm>({
+const filledCriteria = new FormGroup<CriteriaForm>({
   name: new FormControl<string | null>('name'),
   productName: new FormControl<string | null>('productName'),
   applicationId: new FormControl<string | null>('applicationId')
 })
-const emptyCriteria = new FormGroup<ParameterCriteriaForm>({
+const emptyCriteria = new FormGroup<CriteriaForm>({
   name: new FormControl<string | null>(null),
   productName: new FormControl<string | null>(null),
   applicationId: new FormControl<string | null>(null)
@@ -115,12 +115,18 @@ describe('ParameterCriteriaComponent', () => {
   })
 
   describe('onChangeProductName', () => {
+    it('should reject update appIdOptions and clear target dropdown if no product name is provided', () => {
+      component.onChangeProductName(null) // clear product name
+
+      expect(component.appIdOptions).toEqual([])
+    })
+
     it('should update appIdOptions based on the product name', () => {
       component.usedProducts = [
         { productName: 'productA', applications: ['app1', 'app2'] },
         { productName: 'productB', displayName: 'Prouct B', applications: ['app3'] }
       ]
-      component.onChangeProductName('productA')
+      component.onChangeProductName(component.usedProducts[0].productName!)
 
       expect(component.appIdOptions).toEqual([
         { label: 'app1', value: 'app1' },
@@ -130,6 +136,7 @@ describe('ParameterCriteriaComponent', () => {
 
     it('should clear appIdOptions if productName does not match', () => {
       component.usedProducts = [{ productName: 'Product A', applications: ['App1', 'App2'] }]
+
       component.onChangeProductName('Product C')
 
       expect(component.appIdOptions).toEqual([])

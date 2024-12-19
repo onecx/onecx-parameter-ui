@@ -8,7 +8,7 @@ import { Action } from '@onecx/portal-integration-angular'
 import { ParameterSearchCriteria, Product } from 'src/app/shared/generated'
 import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
 
-export interface ParameterCriteriaForm {
+export interface CriteriaForm {
   applicationId: FormControl<string | null>
   productName: FormControl<string | null>
   name: FormControl<string | null>
@@ -25,13 +25,12 @@ export class ParameterCriteriaComponent implements OnChanges {
   @Output() public searchEmitter = new EventEmitter<ParameterSearchCriteria>()
   @Output() public resetSearchEmitter = new EventEmitter<boolean>()
 
-  //public products$: Observable<Product[]> | undefined
-  public criteriaForm: FormGroup<ParameterCriteriaForm>
+  public criteriaForm: FormGroup<CriteriaForm>
   public productOptions: SelectItem[] = []
   public appIdOptions: SelectItem[] = []
 
   constructor(public readonly translate: TranslateService) {
-    this.criteriaForm = new FormGroup<ParameterCriteriaForm>({
+    this.criteriaForm = new FormGroup<CriteriaForm>({
       productName: new FormControl<string | null>(null),
       applicationId: new FormControl<string | null>(null),
       name: new FormControl<string | null>(null)
@@ -61,8 +60,13 @@ export class ParameterCriteriaComponent implements OnChanges {
     this.resetSearchEmitter.emit(true)
   }
 
-  public onChangeProductName(name: string) {
+  /* product name was changed to 
+     1. null        => clear appid dropdown content and item list
+     2. diff. value => clear appid dropdown content and prepare new list
+  */
+  public onChangeProductName(name: string | null) {
     this.appIdOptions = []
+    this.criteriaForm.controls['applicationId'].setValue(null)
     if (!name) return
     this.usedProducts
       .filter((p) => p.productName === name)

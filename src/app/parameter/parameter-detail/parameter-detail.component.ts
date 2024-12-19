@@ -53,7 +53,10 @@ export class ParameterDetailComponent implements OnChanges {
   }
 
   private prepareForm(data?: Parameter): void {
-    if (data) this.formGroup.patchValue(data)
+    if (data) {
+      this.onChangeProductName(data?.productName ?? null)
+      this.formGroup.patchValue(data)
+    }
     this.formGroup.disable()
     this.formGroup.controls['name'].disable()
     switch (this.changeMode) {
@@ -68,7 +71,6 @@ export class ParameterDetailComponent implements OnChanges {
         this.formGroup.enable()
         break
     }
-    this.onChangeProductName(data?.productName)
   }
 
   private getData(id?: string): void {
@@ -102,9 +104,9 @@ export class ParameterDetailComponent implements OnChanges {
   }
 
   // load appId dropdown with app ids from product
-  public onChangeProductName(name: string | undefined) {
+  public onChangeProductName(name: string | null) {
     this.appIdOptions = []
-    this.formGroup.controls['productName'].setValue(name)
+    this.formGroup.controls['applicationId'].setValue(null)
     if (!name) return
     this.allProducts
       .filter((p) => p.productName === name)

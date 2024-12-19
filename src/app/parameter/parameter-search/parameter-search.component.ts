@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
-import { combineLatest, catchError, finalize, map, tap, Observable, of } from 'rxjs'
+import { catchError, combineLatest, finalize, map, tap, Observable, of } from 'rxjs'
 import { Table } from 'primeng/table'
 
 import { UserService } from '@onecx/angular-integration-interface'
@@ -22,7 +22,6 @@ type ExtendedColumn = Column & {
   isDropdown?: true
   css?: string
   limit?: boolean
-  isObject?: boolean
 }
 type AllMetaData = {
   allProducts: Product[]
@@ -64,7 +63,7 @@ export class ParameterSearchComponent implements OnInit {
       header: 'PRODUCT_NAME',
       active: true,
       translationPrefix: 'PARAMETER',
-      limit: true
+      limit: false
     },
     {
       field: 'applicationId',
@@ -138,7 +137,7 @@ export class ParameterSearchComponent implements OnInit {
   }
 
   // CREATE, COPY, EDIT, VIEW
-  public onDetail(mode: ChangeMode, item: Parameter | undefined, ev?: MouseEvent): void {
+  public onDetail(mode: ChangeMode, item: Parameter | undefined, ev?: Event): void {
     ev?.stopPropagation()
     this.changeMode = mode
     this.parameter = item // do not manipulate the items here
@@ -155,7 +154,7 @@ export class ParameterSearchComponent implements OnInit {
       this.usedProductsChanged = true
     }
   }
-  public onHistory(ev: MouseEvent, item: Parameter) {
+  public onHistory(ev: Event, item: Parameter) {
     ev.stopPropagation()
     this.parameter = item
     this.displayHistoryDialog = true
@@ -164,7 +163,7 @@ export class ParameterSearchComponent implements OnInit {
     this.displayHistoryDialog = false
   }
 
-  public onDelete(ev: MouseEvent, item: Parameter): void {
+  public onDelete(ev: Event, item: Parameter): void {
     ev.stopPropagation()
     this.parameter = item
     this.displayDeleteDialog = true
