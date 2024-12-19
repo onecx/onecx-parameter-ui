@@ -133,7 +133,6 @@
     <p-tabPanel [header]="'DIALOG.DETAIL.TAB.VALUE' | translate">
       <div class="mt-1 relative p-fluid mx-2">
         <p-badge
-          *ngIf="changeMode !== 'VIEW'"
           severity="primary"
           [value]="5000 - parameterValue.value.length"
           class="z-1 text-badge-right"
@@ -169,7 +168,6 @@
     >
       <div class="mt-1 relative p-fluid mx-2">
         <p-badge
-          *ngIf="changeMode !== 'VIEW'"
           severity="primary"
           [value]="5000 - parameterInputValue.value.length"
           class="z-1 text-badge-right"
@@ -187,7 +185,7 @@
             [value]="parameter?.importValue"
             [rows]="13"
             jsonColorize
-            [readonly]="true"
+            [disabled]="true"
             [ariaLabel]="'PARAMETER.IMPORT_VALUE' | translate"
             [pTooltip]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
             tooltipPosition="top"
