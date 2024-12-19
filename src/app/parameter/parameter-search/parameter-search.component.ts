@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
-import { combineLatest, catchError, finalize, map, tap, Observable, of } from 'rxjs'
+import { catchError, combineLatest, finalize, map, tap, Observable, of } from 'rxjs'
 import { Table } from 'primeng/table'
 
 import { UserService } from '@onecx/angular-integration-interface'
@@ -22,7 +22,6 @@ type ExtendedColumn = Column & {
   isDropdown?: true
   css?: string
   limit?: boolean
-  isObject?: boolean
 }
 type AllMetaData = {
   allProducts: Product[]
