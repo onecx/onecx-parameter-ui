@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient, HttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
+import { By } from '@angular/platform-browser'
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { SelectItem } from 'primeng/api'
 
@@ -34,6 +35,7 @@ const usedProductsSI: SelectItem[] = [
 describe('ParameterCriteriaComponent', () => {
   let component: ParameterCriteriaComponent
   let fixture: ComponentFixture<ParameterCriteriaComponent>
+  let appDropdownElement: any
 
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
 
@@ -115,12 +117,21 @@ describe('ParameterCriteriaComponent', () => {
   })
 
   describe('onChangeProductName', () => {
+    beforeEach(() => {
+      appDropdownElement = fixture.debugElement.query(By.css('#pm_search_criteria_application_id')).nativeElement
+    })
+    it('should reject update appIdOptions if no product name is provided', () => {
+      component.onChangeProductName(null, appDropdownElement)
+
+      expect(component.appIdOptions).toEqual([])
+    })
+
     it('should update appIdOptions based on the product name', () => {
       component.usedProducts = [
         { productName: 'productA', applications: ['app1', 'app2'] },
         { productName: 'productB', displayName: 'Prouct B', applications: ['app3'] }
       ]
-      component.onChangeProductName('productA')
+      component.onChangeProductName(component.usedProducts[0].productName!, appDropdownElement)
 
       expect(component.appIdOptions).toEqual([
         { label: 'app1', value: 'app1' },
@@ -130,7 +141,9 @@ describe('ParameterCriteriaComponent', () => {
 
     it('should clear appIdOptions if productName does not match', () => {
       component.usedProducts = [{ productName: 'Product A', applications: ['App1', 'App2'] }]
-      component.onChangeProductName('Product C')
+
+      if (appDropdownElement) appDropdownElement.click()
+      component.onChangeProductName('Product C', appDropdownElement)
 
       expect(component.appIdOptions).toEqual([])
     })

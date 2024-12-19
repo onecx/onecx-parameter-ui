@@ -61,9 +61,9 @@ export class ParameterCriteriaComponent implements OnChanges {
     this.resetSearchEmitter.emit(true)
   }
 
-  public onChangeProductName(name: string, subElement: Dropdown) {
+  public onChangeProductName(name: string | null, subElement?: Dropdown) {
     this.appIdOptions = []
-    subElement.clear()
+    if (subElement?.clear) subElement.clear()
     if (!name) return
     this.usedProducts
       .filter((p) => p.productName === name)
