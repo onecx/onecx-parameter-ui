@@ -19,9 +19,9 @@ export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 type ExtendedColumn = Column & {
   hasFilter?: boolean
   isDate?: boolean
-  isDropdown?: true
-  css?: string
+  isDropdown?: boolean
   limit?: boolean
+  css?: string
 }
 type AllMetaData = {
   allProducts: Product[]
@@ -74,10 +74,10 @@ export class ParameterSearchComponent implements OnInit {
     },
     {
       field: 'name',
-      header: 'NAME',
+      header: 'COMBINED_NAME',
       active: true,
       translationPrefix: 'PARAMETER',
-      limit: true
+      limit: false
     },
     {
       field: 'value',

@@ -33,7 +33,6 @@
                 (onChange)="onChangeProductName($event.value)"
                 [autoDisplayFirst]="true"
                 [appendTo]="'body'"
-                [readonly]="['EDIT', 'VIEW'].includes(this.changeMode)"
                 [showClear]="['COPY', 'CREATE'].includes(this.changeMode)"
                 [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_PRODUCT' | translate"
                 [ariaLabel]="'PARAMETER.PRODUCT_NAME' | translate"
@@ -57,7 +56,6 @@
                 [options]="appIdOptions"
                 [autoDisplayFirst]="true"
                 [appendTo]="'body'"
-                [readonly]="['EDIT', 'VIEW'].includes(this.changeMode)"
                 [showClear]="['COPY', 'CREATE'].includes(this.changeMode)"
                 [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_APP' | translate"
                 [ariaLabel]="'PARAMETER.APP_ID' | translate"
@@ -106,9 +104,7 @@
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label class="ocx-required-label" for="pm_detail_form_display_name">
-                {{ 'PARAMETER.DISPLAY_NAME' | translate }}</label
-              >
+              <label for="pm_detail_form_display_name">{{ 'PARAMETER.DISPLAY_NAME' | translate }}</label>
             </span>
           </div>
         </div>

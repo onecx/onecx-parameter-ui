@@ -181,11 +181,15 @@
               </a>
             </td>
             <td *ngFor="let col of columns" [id]="'pm_search_table_row_' + i + '_' + col.field" [class]="col.css">
+              <!-- needs a div due to manage ellipsis -->
               <div *ngIf="col.limit" class="text-ellipsis-2-lines">{{ rowData[col.field] }}</div>
+              <div *ngIf="col.field === 'name'" class="text-ellipsis-2-lines">
+                {{ rowData['displayName'] ? rowData['displayName'] : rowData[col.field] }}
+              </div>
+              <ng-container *ngIf="!(col.limit || col.field === 'name')">{{ rowData[col.field] }}</ng-container>
               <ng-container *ngIf="col.field === 'productDisplayName'">
                 {{ getProductDisplayName(rowData['productName'], metaData.allProducts) }}
               </ng-container>
-              <ng-container *ngIf="!col.limit">{{ rowData[col.field] }}</ng-container>
             </td>
           </tr>
         </ng-template>
