@@ -97,16 +97,36 @@
       "SAVE_AS": "Save as new Parameter"
     }
   },
+  "INTERNAL": {
+    "CREATION_DATE": "Created on",
+    "CREATION_USER": "Created by",
+    "MODIFICATION_DATE": "Changed on",
+    "MODIFICATION_USER": "Changed by",
+    "OPERATOR": "Created by automation",
+    "TOOLTIPS": {
+      "CREATION_DATE": "Timestamp of the creation",
+      "CREATION_USER": "Name of the user of the creation",
+      "MODIFICATION_DATE": "Timestamp of the last change",
+      "MODIFICATION_USER": "Name of the user of the last change"
+    }
+  },
   "DIALOG": {
     "SEARCH": {
       "HEADER": "Parameter Management",
-      "SUBHEADER": "Searching and managing of Application Parameters"
+      "SUBHEADER": "Search and manage Parameters for configuring of Applications"
     },
     "DETAIL": {
       "TAB": {
         "PROPS": "Properties",
         "VALUE": "Value",
-        "IMPORT_VALUE": "Imported Value"
+        "IMPORT_VALUE": "Imported Value",
+        "INTERN": "Internal",
+        "TOOLTIPS": {
+          "PROPS": "Base properties of the Parameter",
+          "VALUE": "Value of the Parameter",
+          "IMPORT_VALUE": "Imported Value of the Parameter",
+          "INTERN": "Internal Properties"
+        }
       }
     },
     "CHARACTERS": "Still remaining characters",

@@ -20,6 +20,7 @@ export class ParameterDetailComponent implements OnChanges {
   @Input() public displayDialog = false
   @Input() public parameter: Parameter | undefined
   @Input() public allProducts: Product[] = []
+  @Input() public dateFormat = 'medium'
   @Output() public hideDialogAndChanged = new EventEmitter<boolean>()
 
   public loading = false
