@@ -24,7 +24,7 @@
       </p-dropdown>
       <label for="pm_search_criteria_product_name">{{ 'PARAMETER.PRODUCT_NAME' | translate }}</label>
     </span>
-    <span class="hidden sm:block p-float-label">
+    <span *ocxAdvanced class="hidden sm:block p-float-label">
       <p-dropdown
         id="pm_search_criteria_application_id"
         styleClass="w-18rem text-responsive"
@@ -41,6 +41,19 @@
       <label for="pm_search_criteria_application_id">{{ 'PARAMETER.APP_ID' | translate }}</label>
     </span>
     <span class="p-float-label">
+      <input
+        id="pm_search_criteria_display_name"
+        pInputText
+        type="text"
+        formControlName="displayName"
+        class="w-18rem text-responsive"
+        [pTooltip]="'PARAMETER.TOOLTIPS.DISPLAY_NAME' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      />
+      <label for="pm_search_criteria_display_name">{{ 'PARAMETER.DISPLAY_NAME' | translate }}</label>
+    </span>
+    <span *ocxAdvanced class="p-float-label">
       <input
         id="pm_search_criteria_name"
         pInputText

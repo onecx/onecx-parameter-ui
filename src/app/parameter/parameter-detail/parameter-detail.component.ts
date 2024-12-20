@@ -20,6 +20,7 @@ export class ParameterDetailComponent implements OnChanges {
   @Input() public displayDialog = false
   @Input() public parameter: Parameter | undefined
   @Input() public allProducts: Product[] = []
+  @Input() public dateFormat = 'medium'
   @Output() public hideDialogAndChanged = new EventEmitter<boolean>()
 
   public loading = false
@@ -39,7 +40,7 @@ export class ParameterDetailComponent implements OnChanges {
       productName: new FormControl(null, [Validators.required]),
       applicationId: new FormControl(null, [Validators.required]),
       name: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
-      displayName: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
+      displayName: new FormControl(null, [Validators.maxLength(255)]),
       description: new FormControl(null, [Validators.maxLength(255)]),
       value: new FormControl(null, [Validators.maxLength(5000)])
     })
@@ -54,11 +55,9 @@ export class ParameterDetailComponent implements OnChanges {
 
   private prepareForm(data?: Parameter): void {
     if (data) {
-      this.onChangeProductName(data?.productName ?? null)
+      this.onChangeProductName(data?.productName)
       this.formGroup.patchValue(data)
     }
-    this.formGroup.disable()
-    this.formGroup.controls['name'].disable()
     switch (this.changeMode) {
       case 'COPY':
         this.formGroup.enable()
@@ -69,6 +68,12 @@ export class ParameterDetailComponent implements OnChanges {
         break
       case 'EDIT':
         this.formGroup.enable()
+        this.formGroup.controls['productName'].disable()
+        this.formGroup.controls['applicationId'].disable()
+        this.formGroup.controls['name'].disable()
+        break
+      case 'VIEW':
+        this.formGroup.disable()
         break
     }
   }
@@ -104,7 +109,7 @@ export class ParameterDetailComponent implements OnChanges {
   }
 
   // load appId dropdown with app ids from product
-  public onChangeProductName(name: string | null) {
+  public onChangeProductName(name: string | undefined) {
     this.appIdOptions = []
     this.formGroup.controls['applicationId'].setValue(null)
     if (!name) return

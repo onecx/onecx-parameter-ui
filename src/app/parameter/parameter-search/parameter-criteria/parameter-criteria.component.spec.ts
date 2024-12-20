@@ -13,14 +13,16 @@ import { Product } from 'src/app/shared/generated'
 import { ParameterCriteriaComponent, CriteriaForm } from './parameter-criteria.component'
 
 const filledCriteria = new FormGroup<CriteriaForm>({
-  name: new FormControl<string | null>('name'),
   productName: new FormControl<string | null>('productName'),
-  applicationId: new FormControl<string | null>('applicationId')
+  applicationId: new FormControl<string | null>('applicationId'),
+  displayName: new FormControl<string | null>('name'),
+  name: new FormControl<string | null>('name')
 })
 const emptyCriteria = new FormGroup<CriteriaForm>({
-  name: new FormControl<string | null>(null),
   productName: new FormControl<string | null>(null),
-  applicationId: new FormControl<string | null>(null)
+  applicationId: new FormControl<string | null>(null),
+  displayName: new FormControl<string | null>(null),
+  name: new FormControl<string | null>(null)
 })
 const usedProducts: Product[] = [
   { productName: 'prod1', displayName: 'prod1_display' },

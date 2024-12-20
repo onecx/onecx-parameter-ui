@@ -4,7 +4,7 @@ import { catchError, combineLatest, finalize, map, tap, Observable, of } from 'r
 import { Table } from 'primeng/table'
 
 import { UserService } from '@onecx/angular-integration-interface'
-import { Action, Column, PortalMessageService } from '@onecx/portal-integration-angular'
+import { Action, Column, DataViewControlTranslations, PortalMessageService } from '@onecx/portal-integration-angular'
 
 import {
   Parameter,
@@ -19,9 +19,9 @@ export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 type ExtendedColumn = Column & {
   hasFilter?: boolean
   isDate?: boolean
-  isDropdown?: true
-  css?: string
+  isDropdown?: boolean
   limit?: boolean
+  css?: string
 }
 type AllMetaData = {
   allProducts: Product[]
@@ -34,8 +34,6 @@ type AllMetaData = {
   styleUrls: ['./parameter-search.component.scss']
 })
 export class ParameterSearchComponent implements OnInit {
-  @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
-
   // dialog
   public loading = false
   public searching = false
@@ -46,7 +44,11 @@ export class ParameterSearchComponent implements OnInit {
   public displayDetailDialog = false
   public displayDeleteDialog = false
   public displayHistoryDialog = false
-  public usedProductsChanged = false
+  public limitText = limitText
+  public filteredColumns: Column[] = []
+
+  @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
+  public dataViewControlsTranslations: DataViewControlTranslations = {}
 
   // data
   public data$: Observable<Parameter[]> | undefined
@@ -54,9 +56,9 @@ export class ParameterSearchComponent implements OnInit {
   public allProducts$!: Observable<Product[]> // getting data from bff endpoint
   public allUsedProducts$!: Observable<Product[]> // getting data from bff endpoint
   public criteria: ParameterSearchCriteria = {}
-  public parameter: Parameter | undefined
-  public limitText = limitText
-  public filteredColumns: Column[] = []
+  public parameter: Parameter | undefined // used on detail
+  public parameter2Delete: Parameter | undefined // used on deletion
+
   public columns: ExtendedColumn[] = [
     {
       field: 'productDisplayName',
@@ -74,10 +76,10 @@ export class ParameterSearchComponent implements OnInit {
     },
     {
       field: 'name',
-      header: 'NAME',
+      header: 'COMBINED_NAME',
       active: true,
       translationPrefix: 'PARAMETER',
-      limit: true
+      limit: false
     },
     {
       field: 'value',
@@ -98,7 +100,7 @@ export class ParameterSearchComponent implements OnInit {
   constructor(
     private readonly user: UserService,
     private readonly messageService: PortalMessageService,
-    private readonly translateService: TranslateService,
+    private readonly translate: TranslateService,
     private readonly parameterApi: ParametersAPIService,
     private readonly productsApi: ProductsAPIService
   ) {
@@ -109,11 +111,43 @@ export class ParameterSearchComponent implements OnInit {
   public ngOnInit(): void {
     this.prepareDataLoad()
     this.loadData()
+    this.prepareDialogTranslations()
     this.prepareActionButtons()
   }
 
+  /**
+   * Dialog preparation
+   */
+  private prepareDialogTranslations(): void {
+    this.translate
+      .get([
+        'DIALOG.DATAVIEW.FILTER',
+        'DIALOG.DATAVIEW.FILTER_BY',
+        'PARAMETER.PRODUCT_NAME',
+        'PARAMETER.APP_ID',
+        'PARAMETER.NAME',
+        'PARAMETER.DISPLAY_NAME'
+      ])
+      .pipe(
+        map((data) => {
+          this.dataViewControlsTranslations = {
+            filterInputPlaceholder: data['DIALOG.DATAVIEW.FILTER'],
+            filterInputTooltip:
+              data['DIALOG.DATAVIEW.FILTER_BY'] +
+              data['PARAMETER.PRODUCT_NAME'] +
+              ', ' +
+              data['PARAMETER.APP_ID'] +
+              ', ' +
+              data['PARAMETER.DISPLAY_NAME'] +
+              ', ' +
+              data['PARAMETER.NAME']
+          }
+        })
+      )
+      .subscribe()
+  }
   private prepareActionButtons(): void {
-    this.actions$ = this.translateService.get(['ACTIONS.CREATE.LABEL', 'ACTIONS.CREATE.TOOLTIP']).pipe(
+    this.actions$ = this.translate.get(['ACTIONS.CREATE.LABEL', 'ACTIONS.CREATE.TOOLTIP']).pipe(
       map((data) => {
         return [
           {
@@ -136,24 +170,21 @@ export class ParameterSearchComponent implements OnInit {
     this.criteria = {}
   }
 
-  // CREATE, COPY, EDIT, VIEW
+  // Detail => CREATE, COPY, EDIT, VIEW
   public onDetail(mode: ChangeMode, item: Parameter | undefined, ev?: Event): void {
     ev?.stopPropagation()
     this.changeMode = mode
     this.parameter = item // do not manipulate the items here
     this.displayDetailDialog = true
-    this.usedProductsChanged = false
   }
   public onCloseDetail(refresh: boolean): void {
-    this.changeMode = 'VIEW'
     this.parameter = undefined
     this.displayDetailDialog = false
-    this.displayDeleteDialog = false
     if (refresh) {
-      this.onSearch({}, true)
-      this.usedProductsChanged = true
+      this.loadData()
     }
   }
+  // History => routing
   public onHistory(ev: Event, item: Parameter) {
     ev.stopPropagation()
     this.parameter = item
@@ -162,25 +193,26 @@ export class ParameterSearchComponent implements OnInit {
   public onCloseHistory() {
     this.displayHistoryDialog = false
   }
-
+  // DELETE => Ask for confirmation
   public onDelete(ev: Event, item: Parameter): void {
     ev.stopPropagation()
-    this.parameter = item
+    this.parameter2Delete = item
     this.displayDeleteDialog = true
-    this.usedProductsChanged = false
   }
   // user confirmed deletion
   public onDeleteConfirmation(data: Parameter[]): void {
-    if (this.parameter?.id) {
-      this.parameterApi.deleteParameter({ id: this.parameter?.id }).subscribe({
+    if (this.parameter2Delete?.id) {
+      this.parameterApi.deleteParameter({ id: this.parameter2Delete?.id }).subscribe({
         next: () => {
           this.messageService.success({ summaryKey: 'ACTIONS.DELETE.MESSAGE.OK' })
-          // remove item form data
-          data = data?.filter((a) => a.name !== this.parameter?.name)
-          // check remaing data if product still exists
-          const d = data?.filter((d) => d.productName !== this.parameter?.productName)
+          // remove item from data
+          data = data?.filter((d) => d.id !== this.parameter2Delete?.id)
+          // check remaing data if product still exists - if not then reload
+          const d = data?.filter((d) => d.productName === this.parameter2Delete?.productName)
+          this.parameter2Delete = undefined
+          this.displayDeleteDialog = false
           if (d?.length === 0) this.loadData()
-          this.onCloseDetail(false)
+          else this.onSearch({}, true)
         },
         error: (err) => {
           this.messageService.error({ summaryKey: 'ACTIONS.DELETE.MESSAGE.NOK' })

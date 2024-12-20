@@ -250,7 +250,7 @@ describe('ParameterDetailComponent', () => {
 
   describe('onChangeProductName', () => {
     it('should reject update appIdOptions if no product name is provided', () => {
-      component.onChangeProductName(null)
+      component.onChangeProductName(undefined)
 
       expect(component.appIdOptions).toEqual([])
     })

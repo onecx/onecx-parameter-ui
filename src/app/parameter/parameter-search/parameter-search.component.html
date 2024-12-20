@@ -42,7 +42,7 @@
         [value]="data"
         [columns]="filteredColumns"
         dataKey="id"
-        [globalFilterFields]="['productName', 'applicationId', 'name']"
+        [globalFilterFields]="['productName', 'applicationId', 'name', 'displayName']"
         [reorderableColumns]="false"
         [scrollable]="true"
         scrollHeight="590px"
@@ -62,11 +62,7 @@
             [columnDefinitions]="columns"
             (columnsChange)="onColumnsChange($event)"
             (filterChange)="onFilterChange($event)"
-            [filterColumns]="[
-              'PARAMETER.PRODUCT_NAME' | translate,
-              'PARAMETER.APP_ID' | translate,
-              'PARAMETER.NAME' | translate
-            ]"
+            [translations]="dataViewControlsTranslations"
           ></ocx-data-view-controls>
         </ng-template>
 
@@ -112,7 +108,7 @@
                   (keydown.enter)="onDetail('VIEW', rowData, $event)"
                   (keydown.space)="onDetail('VIEW', rowData, $event)"
                   [attr.aria-label]="'ACTIONS.VIEW.LABEL' | translate"
-                  [pTooltip]="'ACTIONS.VIEW.TOOLTIP' | translate"
+                  [pTooltip]="'ACTIONS.VIEW.LABEL' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
@@ -128,7 +124,7 @@
                 (keydown.enter)="onDetail('EDIT', rowData, $event)"
                 (keydown.space)="onDetail('EDIT', rowData, $event)"
                 [attr.aria-label]="'ACTIONS.EDIT.LABEL' | translate"
-                [pTooltip]="'ACTIONS.EDIT.TOOLTIP' | translate"
+                [pTooltip]="'ACTIONS.EDIT.LABEL' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
@@ -143,7 +139,7 @@
                 (keydown.enter)="onDetail('VIEW', rowData, $event)"
                 (keydown.space)="onDetail('VIEW', rowData, $event)"
                 [attr.aria-label]="'ACTIONS.COPY.LABEL' | translate"
-                [pTooltip]="'ACTIONS.COPY.TOOLTIP' | translate"
+                [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
@@ -157,8 +153,8 @@
                 (click)="onHistory($event, rowData)"
                 (keydown.enter)="onHistory($event, rowData)"
                 (keydown.space)="onHistory($event, rowData)"
-                [attr.aria-label]="'ACTIONS.HISTORY.TOOLTIP' | translate"
-                [pTooltip]="'ACTIONS.HISTORY.TOOLTIP' | translate"
+                [attr.aria-label]="'ACTIONS.HISTORY.LABEL' | translate"
+                [pTooltip]="'ACTIONS.HISTORY.LABEL' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
@@ -173,7 +169,7 @@
                 (keydown.enter)="onDelete($event, rowData)"
                 (keydown.space)="onDelete($event, rowData)"
                 [attr.aria-label]="'ACTIONS.DELETE.LABEL' | translate"
-                [pTooltip]="'ACTIONS.DELETE.TOOLTIP' | translate"
+                [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
@@ -181,11 +177,15 @@
               </a>
             </td>
             <td *ngFor="let col of columns" [id]="'pm_search_table_row_' + i + '_' + col.field" [class]="col.css">
+              <!-- needs a div due to manage ellipsis -->
               <div *ngIf="col.limit" class="text-ellipsis-2-lines">{{ rowData[col.field] }}</div>
+              <div *ngIf="col.field === 'name'" class="text-ellipsis-2-lines">
+                {{ rowData['displayName'] ? rowData['displayName'] : rowData[col.field] }}
+              </div>
+              <ng-container *ngIf="!(col.limit || col.field === 'name')">{{ rowData[col.field] }}</ng-container>
               <ng-container *ngIf="col.field === 'productDisplayName'">
                 {{ getProductDisplayName(rowData['productName'], metaData.allProducts) }}
               </ng-container>
-              <ng-container *ngIf="!col.limit">{{ rowData[col.field] }}</ng-container>
             </td>
           </tr>
         </ng-template>
@@ -193,7 +193,7 @@
 
       <!-- DELETE -->
       <p-dialog
-        [header]="'DIALOG.DELETE.HEADER' | translate"
+        [header]="'DIALOG.DETAIL.DELETE.HEADER' | translate"
         [(visible)]="displayDeleteDialog"
         [modal]="true"
         [closable]="true"
@@ -208,18 +208,20 @@
             <div id="pm_delete_parameter_name" class="px-5 flex flex-column row-gap-1">
               <div class="flex flex-row column-gap-2">
                 <div class="w-4 text-right">{{ 'PARAMETER.PRODUCT_NAME' | translate }}:</div>
-                <div class="w-8 text-left font-bold danger-action-text">
-                  {{ getProductDisplayName(parameter?.productName, metaData.allProducts) }}
+                <div class="w-8 text-left font-bold danger-action-text white-space-nowrap">
+                  {{ getProductDisplayName(parameter2Delete?.productName, metaData.allProducts) }}
                 </div>
               </div>
               <div class="flex flex-row column-gap-2">
                 <div class="w-4 text-right">{{ 'PARAMETER.APP_ID' | translate }}:</div>
-                <div class="w-8 text-left font-bold danger-action-text">{{ parameter?.applicationId }}</div>
+                <div class="w-8 text-left font-bold danger-action-text white-space-nowrap">
+                  {{ parameter2Delete?.applicationId }}
+                </div>
               </div>
               <div class="flex flex-row column-gap-2">
                 <div class="w-4 text-right">{{ 'PARAMETER.NAME' | translate }}:</div>
                 <div class="w-8 text-left font-bold danger-action-text">
-                  {{ limitText(parameter?.displayName, 50) }}
+                  {{ limitText(parameter2Delete?.displayName, 50) }}
                 </div>
               </div>
             </div>
@@ -262,6 +264,7 @@
     [parameter]="parameter"
     [allProducts]="metaData.allProducts"
     [changeMode]="changeMode"
+    [dateFormat]="dateFormat"
   ></app-parameter-detail>
 </ocx-portal-page>
 

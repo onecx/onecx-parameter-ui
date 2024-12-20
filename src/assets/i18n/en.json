@@ -64,14 +64,13 @@
       "BACK.TOOLTIP": "Previous page"
     },
     "SEARCH": {
+      "NO_DATA": "No data",
+      "IN_PROGRESS": "Searching...",
+      "OF": "of",
       "CRITERIA": {
         "NO_PRODUCT": "No Applications",
         "NO_APP": "Select Application first"
       },
-      "FILTER_BY": "Filter by",
-      "OF": "of",
-      "IN_PROGRESS": "Searching...",
-      "NO_DATA": "No data",
       "MESSAGE": {
         "NO_RESULTS": "Search returned no results",
         "SEARCH_FAILED": "Search failed"
@@ -82,7 +81,8 @@
       "TOOLTIP": "Parameter details"
     },
     "HISTORY": {
-      "TOOLTIP": "View history"
+      "LABEL": "History",
+      "TOOLTIP": "Historical Data"
     },
     "CANCEL": "Cancel",
     "CHOOSE": "Choose",
@@ -97,29 +97,57 @@
       "SAVE_AS": "Save as new Parameter"
     }
   },
+  "INTERNAL": {
+    "CREATION_DATE": "Created on",
+    "CREATION_USER": "Created by",
+    "MODIFICATION_DATE": "Changed on",
+    "MODIFICATION_USER": "Changed by",
+    "OPERATOR": "Created by automation",
+    "TOOLTIPS": {
+      "CREATION_DATE": "Timestamp of the creation",
+      "CREATION_USER": "Name of the user of the creation",
+      "MODIFICATION_DATE": "Timestamp of the last change",
+      "MODIFICATION_USER": "Name of the user of the last change"
+    }
+  },
   "DIALOG": {
     "SEARCH": {
       "HEADER": "Parameter Management",
-      "SUBHEADER": "Searching and managing of Application Parameters"
+      "SUBHEADER": "Search and manage Parameters for configuring of Applications"
     },
     "DETAIL": {
+      "COPY.HEADER": "Create Parameter",
+      "CREATE.HEADER": "Create Parameter",
+      "DELETE.HEADER": "Delete Parameter",
+      "EDIT.HEADER": "Edit Parameter",
+      "VIEW.HEADER": "Parameter Details",
       "TAB": {
         "PROPS": "Properties",
         "VALUE": "Value",
-        "IMPORT_VALUE": "Imported Value"
-      }
+        "IMPORT_VALUE": "Imported Value",
+        "INTERN": "Internal",
+        "TOOLTIPS": {
+          "PROPS": "Base properties of the Parameter",
+          "VALUE": "Value of the Parameter",
+          "IMPORT_VALUE": "Imported Value of the Parameter",
+          "INTERN": "Internal Properties"
+        }
+      },
+      "CHARACTERS": "Still remaining characters"
     },
-    "CHARACTERS": "Still remaining characters",
-    "COPY.HEADER": "Create Parameter",
-    "CREATE.HEADER": "Create Parameter",
-    "DELETE.HEADER": "Delete Parameter",
-    "EDIT.HEADER": "Edit Parameter",
-    "VIEW.HEADER": "Parameter Details"
+    "DATAVIEW": {
+      "FILTER": "Filter",
+      "FILTER_TOOLTIP": "Filter Applications",
+      "FILTER_BY": "Filter by ",
+      "FILTER_CLEAR": "Clear Filter",
+      "FILTER_PLACEHOLDER": "Filter"
+    }
   },
   "PARAMETER": {
     "PRODUCT_NAME": "Application",
     "APP_ID": "App-ID",
     "NAME": "Name",
+    "COMBINED_NAME": "Name",
     "DISPLAY_NAME": "Display Name",
     "VALUE": "Value",
     "IMPORT_VALUE": "Import Value",
@@ -128,6 +156,7 @@
       "PRODUCT_NAME": "Application for which the Parameter is created",
       "APP_ID": "App identifier for which the Parameter is created",
       "NAME": "Name of the Parameter",
+      "COMBINED_NAME": "Business Name or Name of the Parameter",
       "DISPLAY_NAME": "Business Name of the Parameter",
       "VALUE": "Value of the Parameter",
       "IMPORT_VALUE": "Imported value",
@@ -152,8 +181,9 @@
     "ERRORS": {
       "EMPTY_REQUIRED_FIELD": "required field",
       "FORM_MANDATORY": "Mandatory fields are missing",
-      "VALUE_HAS_WRONG_TYPE": "Value has wrong type",
-      "FORM_KEY_MIN_LEN": "Key should have at least 3 letters"
+      "MAXIMUM_LENGTH": "Only {{chars}} characters are allowed.",
+      "MINIMUM_LENGTH": "At least {{chars}} characters are required.",
+      "PATTERN_ERROR": "Your input does not match the required pattern"
     }
   },
   "EXCEPTIONS": {

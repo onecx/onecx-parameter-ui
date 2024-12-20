@@ -1,5 +1,5 @@
 <p-dialog
-  [header]="'DIALOG.' + changeMode + '.HEADER' | translate"
+  [header]="'DIALOG.DETAIL.' + changeMode + '.HEADER' | translate"
   [(visible)]="displayDialog"
   (onHide)="onDialogHide()"
   [modal]="true"
@@ -14,7 +14,12 @@
   }"
 >
   <p-tabView #panelDetail [formGroup]="formGroup" [(activeIndex)]="selectedTabIndex">
-    <p-tabPanel [header]="'DIALOG.DETAIL.TAB.PROPS' | translate">
+    <p-tabPanel
+      [header]="'DIALOG.DETAIL.TAB.PROPS' | translate"
+      [tooltip]="'DIALOG.DETAIL.TAB.TOOLTIPS.PROPS' | translate"
+      tooltipPosition="top"
+      tooltipEvent="hover"
+    >
       <div class="flex flex-column row-gap-4">
         <div class="flex flex-row row-gap-4">
           <div class="mt-1 px-2 w-12 sm:w-6">
@@ -28,7 +33,6 @@
                 (onChange)="onChangeProductName($event.value)"
                 [autoDisplayFirst]="true"
                 [appendTo]="'body'"
-                [readonly]="['EDIT', 'VIEW'].includes(this.changeMode)"
                 [showClear]="['COPY', 'CREATE'].includes(this.changeMode)"
                 [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_PRODUCT' | translate"
                 [ariaLabel]="'PARAMETER.PRODUCT_NAME' | translate"
@@ -52,7 +56,6 @@
                 [options]="appIdOptions"
                 [autoDisplayFirst]="true"
                 [appendTo]="'body'"
-                [readonly]="['EDIT', 'VIEW'].includes(this.changeMode)"
                 [showClear]="['COPY', 'CREATE'].includes(this.changeMode)"
                 [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_APP' | translate"
                 [ariaLabel]="'PARAMETER.APP_ID' | translate"
@@ -101,9 +104,7 @@
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label class="ocx-required-label" for="pm_detail_form_display_name">
-                {{ 'PARAMETER.DISPLAY_NAME' | translate }}</label
-              >
+              <label for="pm_detail_form_display_name">{{ 'PARAMETER.DISPLAY_NAME' | translate }}</label>
             </span>
           </div>
         </div>
@@ -130,14 +131,19 @@
       </div>
     </p-tabPanel>
 
-    <p-tabPanel [header]="'DIALOG.DETAIL.TAB.VALUE' | translate">
+    <p-tabPanel
+      [header]="'DIALOG.DETAIL.TAB.VALUE' | translate"
+      [tooltip]="'DIALOG.DETAIL.TAB.TOOLTIPS.VALUE' | translate"
+      tooltipPosition="top"
+      tooltipEvent="hover"
+    >
       <div class="mt-1 relative p-fluid mx-2">
         <p-badge
           severity="primary"
           [value]="5000 - parameterValue.value.length"
           class="z-1 text-badge-right"
-          [attr.aria-label]="'DIALOG.CHARACTERS' | translate"
-          [pTooltip]="'DIALOG.CHARACTERS' | translate"
+          [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
+          [pTooltip]="'DIALOG.DETAIL.CHARACTERS' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
@@ -165,14 +171,17 @@
     <p-tabPanel
       *ngIf="!['COPY', 'CREATE'].includes(changeMode)"
       [header]="'DIALOG.DETAIL.TAB.IMPORT_VALUE' | translate"
+      [tooltip]="'DIALOG.DETAIL.TAB.TOOLTIPS.IMPORT_VALUE' | translate"
+      tooltipPosition="top"
+      tooltipEvent="hover"
     >
       <div class="mt-1 relative p-fluid mx-2">
         <p-badge
           severity="primary"
           [value]="5000 - parameterInputValue.value.length"
           class="z-1 text-badge-right"
-          [attr.aria-label]="'DIALOG.CHARACTERS' | translate"
-          [pTooltip]="'DIALOG.CHARACTERS' | translate"
+          [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
+          [pTooltip]="'DIALOG.DETAIL.CHARACTERS' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
@@ -194,6 +203,85 @@
           </textarea>
           <label for="pm_detail_import_value">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
         </span>
+      </div>
+    </p-tabPanel>
+
+    <!-- The imported value - in case of viewing only -->
+    <p-tabPanel
+      *ngIf="!['COPY', 'CREATE'].includes(changeMode)"
+      [header]="'DIALOG.DETAIL.TAB.INTERN' | translate"
+      [tooltip]="'DIALOG.DETAIL.TAB.TOOLTIPS.INTERN' | translate"
+      tooltipPosition="top"
+      tooltipEvent="hover"
+    >
+      <div class="mx-2 flex flex-column row-gap-4">
+        <!-- row 1 -->
+        <div class="flex flex-row flex-wrap gap-4">
+          <span class="flex-grow-1 sm:flex-grow-0 p-float-label">
+            <input
+              pInputText
+              type="text"
+              readonly
+              id="ps_app_detail_form_field_creation_date"
+              class="w-full sm:w-15rem pt-3 pb-2 text-responsive"
+              [value]="parameter?.creationDate ? (parameter?.creationDate | date: dateFormat) : ''"
+              [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <label for="ps_app_detail_form_field_creation_date">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
+          </span>
+          <span class="flex-grow-1 p-float-label">
+            <input
+              pInputText
+              type="text"
+              readonly
+              id="ps_app_detail_form_field_creation_user"
+              class="w-full pt-3 pb-2 text-responsive"
+              [value]="parameter?.creationUser"
+              [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_USER' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <label for="ps_app_detail_form_field_creation_user"> {{ 'INTERNAL.CREATION_USER' | translate }} </label>
+          </span>
+        </div>
+
+        <!-- row 2 -->
+        <div class="flex flex-row flex-wrap gap-4">
+          <span class="flex-grow-1 sm:flex-grow-0 p-float-label">
+            <input
+              pInputText
+              type="text"
+              readonly
+              id="ps_app_detail_form_field_modification_date"
+              class="w-full sm:w-15rem pt-3 pb-2"
+              [value]="parameter?.modificationDate ? (parameter?.modificationDate | date: dateFormat) : ''"
+              [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <label for="ps_app_detail_form_field_modification_date">
+              {{ 'INTERNAL.MODIFICATION_DATE' | translate }}
+            </label>
+          </span>
+          <span class="flex-grow-1 p-float-label">
+            <input
+              pInputText
+              type="text"
+              readonly
+              id="ps_app_detail_form_field_modification_user"
+              class="w-full pt-3 pb-2 text-responsive"
+              [value]="parameter?.modificationUser"
+              [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_USER' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <label for="ps_app_detail_form_field_modification_user">
+              {{ 'INTERNAL.MODIFICATION_USER' | translate }}
+            </label>
+          </span>
+        </div>
       </div>
     </p-tabPanel>
   </p-tabView>

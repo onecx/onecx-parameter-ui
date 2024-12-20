@@ -290,7 +290,6 @@ describe('ParameterSearchComponent', () => {
 
       expect(ev.stopPropagation).toHaveBeenCalled()
       expect(component.changeMode).toEqual(mode)
-      expect(component.usedProductsChanged).toBeFalse()
       expect(component.parameter).toBe(undefined)
       expect(component.displayDetailDialog).toBeTrue()
 
@@ -305,7 +304,6 @@ describe('ParameterSearchComponent', () => {
       component.onDetail(mode, parameterData[0])
 
       expect(component.changeMode).toEqual(mode)
-      expect(component.usedProductsChanged).toBeFalse()
       expect(component.parameter).toBe(parameterData[0])
       expect(component.displayDetailDialog).toBeTrue()
     })
@@ -316,11 +314,10 @@ describe('ParameterSearchComponent', () => {
       component.onDetail(mode, parameterData[0])
 
       expect(component.changeMode).toEqual(mode)
-      expect(component.usedProductsChanged).toBeFalse()
       expect(component.parameter).toBe(parameterData[0])
       expect(component.displayDetailDialog).toBeTrue()
 
-      component.onCloseDetail(false)
+      component.onCloseDetail(true)
 
       expect(component.displayDetailDialog).toBeFalse()
     })
@@ -330,7 +327,8 @@ describe('ParameterSearchComponent', () => {
     beforeEach(() => {
       params = [
         { id: 'id1', productName: 'product1', applicationId: 'app1', name: 'name1' },
-        { id: 'id2', productName: 'product1', applicationId: 'app1', name: 'name2' }
+        { id: 'id2', productName: 'product1', applicationId: 'app1', name: 'name2' },
+        { id: 'id3', productName: 'product3', applicationId: 'app1', name: 'name2' }
       ]
     })
     it('should prepare the deletion of a parameter', () => {
@@ -340,20 +338,22 @@ describe('ParameterSearchComponent', () => {
       component.onDelete(ev, params[0])
 
       expect(ev.stopPropagation).toHaveBeenCalled()
-      expect(component.usedProductsChanged).toBeFalse()
-      expect(component.parameter).toBe(params[0])
+      expect(component.parameter2Delete).toBe(params[0])
       expect(component.displayDeleteDialog).toBeTrue()
     })
 
-    it('should delete a parameter', () => {
+    it('should delete a parameter with confirmation', () => {
       apiServiceSpy.deleteParameter.and.returnValue(of(null))
       const ev: MouseEvent = new MouseEvent('type')
 
-      component.onDelete(ev, params[0])
-      component.onDeleteConfirmation(params)
+      component.onDelete(ev, params[1])
+      component.onDeleteConfirmation(params) // remove but not the last of the product
 
       expect(component.displayDeleteDialog).toBeFalse()
       expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.MESSAGE.OK' })
+
+      component.onDelete(ev, params[2])
+      component.onDeleteConfirmation(params) // remove and this was the last of the product
     })
 
     it('should display error if deleting a parameter fails', () => {
@@ -368,15 +368,6 @@ describe('ParameterSearchComponent', () => {
       expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.MESSAGE.NOK' })
       expect(console.error).toHaveBeenCalledWith('deleteParameter', errorResponse)
     })
-  })
-
-  it('should set correct values when detail dialog is closed', () => {
-    spyOn(component, 'onSearch')
-
-    component.onCloseDetail(true)
-
-    expect(component.onSearch).toHaveBeenCalled()
-    expect(component.displayDeleteDialog).toBeFalse()
   })
 
   it('should update the columns that are seen in data', () => {

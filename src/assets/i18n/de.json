@@ -64,14 +64,13 @@
       "BACK.TOOLTIP": "Vorherige Seite"
     },
     "SEARCH": {
+      "NO_DATA": "Keine Ergebnisse",
+      "IN_PROGRESS": "Suche...",
+      "OF": "von",
       "CRITERIA": {
         "NO_PRODUCT": "Keine Applikationen",
         "NO_APP": "Zuerst Applikation wählen"
       },
-      "FILTER_BY": "Filtern nach",
-      "OF": "von",
-      "IN_PROGRESS": "Suche...",
-      "NO_DATA": "Keine Ergebnisse",
       "MESSAGE": {
         "NO_RESULTS": "Die Suche ergab keine Treffer",
         "SEARCH_FAILED": "Suche ist fehlgeschlagen"
@@ -82,6 +81,7 @@
       "TOOLTIP": "Parameterdetails"
     },
     "HISTORY": {
+      "LABEL": "Verlaufsdaten",
       "TOOLTIP": "Verlaufsdaten"
     },
     "CANCEL": "Cancel",
@@ -97,29 +97,57 @@
       "SAVE_AS": "Save as new Theme"
     }
   },
+  "INTERNAL": {
+    "CREATION_DATE": "Erstellt am",
+    "CREATION_USER": "Erstellt von",
+    "MODIFICATION_DATE": "Geändert am",
+    "MODIFICATION_USER": "Geändert von",
+    "OPERATOR": "Automatisiert erstellt",
+    "TOOLTIPS": {
+      "CREATION_DATE": "Zeitpunkt der Erstellung",
+      "CREATION_USER": "Name des Benutzers der Erstellung",
+      "MODIFICATION_DATE": "Zeitpunkt der letzten Änderung",
+      "MODIFICATION_USER": "Name des Benutzers der letzten Änderung"
+    }
+  },
   "DIALOG": {
     "SEARCH": {
       "HEADER": "Parameter Management",
-      "SUBHEADER": "Suchen und verwalten von Parametern für Applikationen"
+      "SUBHEADER": "Suchen und verwalten von Parametern zur Konfiguration von Applikationen"
     },
     "DETAIL": {
+      "COPY.HEADER": "Parameter erstellen",
+      "CREATE.HEADER": "Parameter erstellen",
+      "DELETE.HEADER": "Parameter löschen",
+      "EDIT.HEADER": "Parameter ändern",
+      "VIEW.HEADER": "Parameter Details",
       "TAB": {
         "PROPS": "Eigenschaften",
         "VALUE": "Wert",
-        "IMPORT_VALUE": "Importierter Wert"
-      }
+        "IMPORT_VALUE": "Importierter Wert",
+        "INTERN": "Intern",
+        "TOOLTIPS": {
+          "PROPS": "Basiseigenschaften des Parameters",
+          "VALUE": "Parameterwert",
+          "IMPORT_VALUE": "Importierter Parameterwert",
+          "INTERN": "Interne Eigenschaften"
+        }
+      },
+      "CHARACTERS": "Noch mögliche Zeichen"
     },
-    "CHARACTERS": "Noch mögliche Zeichen",
-    "COPY.HEADER": "Parameter erstellen",
-    "CREATE.HEADER": "Parameter erstellen",
-    "DELETE.HEADER": "Parameter löschen",
-    "EDIT.HEADER": "Parameter ändern",
-    "VIEW.HEADER": "Parameter Details"
+    "DATAVIEW": {
+      "FILTER": "Filter",
+      "FILTER_TOOLTIP": "...filtern",
+      "FILTER_BY": "Filter für ",
+      "FILTER_CLEAR": "Filter entfernen",
+      "FILTER_PLACEHOLDER": "Filter"
+    }
   },
   "PARAMETER": {
     "PRODUCT_NAME": "Applikation",
     "APP_ID": "App-ID",
     "NAME": "Name",
+    "COMBINED_NAME": "Name",
     "DISPLAY_NAME": "Anzeigename",
     "VALUE": "Wert",
     "IMPORT_VALUE": "Importwert",
@@ -128,6 +156,7 @@
       "PRODUCT_NAME": "Applikation, für die der Parameter angelegt ist",
       "APP_ID": "App ID (Service), für die der Parameter angelegt ist",
       "NAME": "Name des Parameters",
+      "COMBINED_NAME": "Anzeigename oder Name des Parameters",
       "DISPLAY_NAME": "Anzeigename des Parameters",
       "VALUE": "Wert des Parameters",
       "IMPORT_VALUE": "Importierter Wert",
@@ -152,8 +181,9 @@
     "ERRORS": {
       "EMPTY_REQUIRED_FIELD": "Pflichtfeld",
       "FORM_MANDATORY": "Pflichtfelder fehlen",
-      "VALUE_HAS_WRONG_TYPE": "Der Wert hat den falschen Typ",
-      "FORM_KEY_MIN_LEN": "Schlüssel sollte mindestens 3 Buchstaben haben"
+      "MAXIMUM_LENGTH": "Es sind nur {{chars}} Zeichen erlaubt.",
+      "MINIMUM_LENGTH": "Es sind mindestens {{chars}} Zeichen erforderlich.",
+      "PATTERN_ERROR": "Ihre Eingabe entspricht nicht dem benötigten Format."
     }
   },
   "EXCEPTIONS": {
