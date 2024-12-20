@@ -112,7 +112,7 @@
                   (keydown.enter)="onDetail('VIEW', rowData, $event)"
                   (keydown.space)="onDetail('VIEW', rowData, $event)"
                   [attr.aria-label]="'ACTIONS.VIEW.LABEL' | translate"
-                  [pTooltip]="'ACTIONS.VIEW.TOOLTIP' | translate"
+                  [pTooltip]="'ACTIONS.VIEW.LABEL' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
@@ -128,7 +128,7 @@
                 (keydown.enter)="onDetail('EDIT', rowData, $event)"
                 (keydown.space)="onDetail('EDIT', rowData, $event)"
                 [attr.aria-label]="'ACTIONS.EDIT.LABEL' | translate"
-                [pTooltip]="'ACTIONS.EDIT.TOOLTIP' | translate"
+                [pTooltip]="'ACTIONS.EDIT.LABEL' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
@@ -143,7 +143,7 @@
                 (keydown.enter)="onDetail('VIEW', rowData, $event)"
                 (keydown.space)="onDetail('VIEW', rowData, $event)"
                 [attr.aria-label]="'ACTIONS.COPY.LABEL' | translate"
-                [pTooltip]="'ACTIONS.COPY.TOOLTIP' | translate"
+                [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
@@ -157,8 +157,8 @@
                 (click)="onHistory($event, rowData)"
                 (keydown.enter)="onHistory($event, rowData)"
                 (keydown.space)="onHistory($event, rowData)"
-                [attr.aria-label]="'ACTIONS.HISTORY.TOOLTIP' | translate"
-                [pTooltip]="'ACTIONS.HISTORY.TOOLTIP' | translate"
+                [attr.aria-label]="'ACTIONS.HISTORY.LABEL' | translate"
+                [pTooltip]="'ACTIONS.HISTORY.LABEL' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
@@ -173,7 +173,7 @@
                 (keydown.enter)="onDelete($event, rowData)"
                 (keydown.space)="onDelete($event, rowData)"
                 [attr.aria-label]="'ACTIONS.DELETE.LABEL' | translate"
-                [pTooltip]="'ACTIONS.DELETE.TOOLTIP' | translate"
+                [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >

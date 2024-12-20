@@ -194,7 +194,6 @@ export class ParameterHistoryComponent implements OnChanges {
         'ACTIONS.SEARCH.MESSAGE.SEARCH_FAILED',
         'ACTIONS.SEARCH.MESSAGE.NO_RESULTS',
         'VALIDATION.ERRORS.FORM_MANDATORY',
-        'VALIDATION.ERRORS.FORM_KEY_MIN_LEN',
         'VALIDATION.ERRORS.EMPTY_REQUIRED_FIELD'
       ])
       .subscribe((data) => {

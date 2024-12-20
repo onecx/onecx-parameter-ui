@@ -82,7 +82,8 @@
       "TOOLTIP": "Parameter details"
     },
     "HISTORY": {
-      "TOOLTIP": "View history"
+      "LABEL": "History",
+      "TOOLTIP": "Historical Data"
     },
     "CANCEL": "Cancel",
     "CHOOSE": "Choose",
@@ -174,8 +175,9 @@
     "ERRORS": {
       "EMPTY_REQUIRED_FIELD": "required field",
       "FORM_MANDATORY": "Mandatory fields are missing",
-      "VALUE_HAS_WRONG_TYPE": "Value has wrong type",
-      "FORM_KEY_MIN_LEN": "Key should have at least 3 letters"
+      "MAXIMUM_LENGTH": "Only {{chars}} characters are allowed.",
+      "MINIMUM_LENGTH": "At least {{chars}} characters are required.",
+      "PATTERN_ERROR": "Your input does not match the required pattern"
     }
   },
   "EXCEPTIONS": {
