@@ -1,5 +1,5 @@
 <p-dialog
-  [header]="'DIALOG.' + changeMode + '.HEADER' | translate"
+  [header]="'DIALOG.DETAIL.' + changeMode + '.HEADER' | translate"
   [(visible)]="displayDialog"
   (onHide)="onDialogHide()"
   [modal]="true"
@@ -142,8 +142,8 @@
           severity="primary"
           [value]="5000 - parameterValue.value.length"
           class="z-1 text-badge-right"
-          [attr.aria-label]="'DIALOG.CHARACTERS' | translate"
-          [pTooltip]="'DIALOG.CHARACTERS' | translate"
+          [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
+          [pTooltip]="'DIALOG.DETAIL.CHARACTERS' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
@@ -180,8 +180,8 @@
           severity="primary"
           [value]="5000 - parameterInputValue.value.length"
           class="z-1 text-badge-right"
-          [attr.aria-label]="'DIALOG.CHARACTERS' | translate"
-          [pTooltip]="'DIALOG.CHARACTERS' | translate"
+          [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
+          [pTooltip]="'DIALOG.DETAIL.CHARACTERS' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
         />

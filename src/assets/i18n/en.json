@@ -64,14 +64,13 @@
       "BACK.TOOLTIP": "Previous page"
     },
     "SEARCH": {
+      "NO_DATA": "No data",
+      "IN_PROGRESS": "Searching...",
+      "OF": "of",
       "CRITERIA": {
         "NO_PRODUCT": "No Applications",
         "NO_APP": "Select Application first"
       },
-      "FILTER_BY": "Filter by",
-      "OF": "of",
-      "IN_PROGRESS": "Searching...",
-      "NO_DATA": "No data",
       "MESSAGE": {
         "NO_RESULTS": "Search returned no results",
         "SEARCH_FAILED": "Search failed"
@@ -117,6 +116,11 @@
       "SUBHEADER": "Search and manage Parameters for configuring of Applications"
     },
     "DETAIL": {
+      "COPY.HEADER": "Create Parameter",
+      "CREATE.HEADER": "Create Parameter",
+      "DELETE.HEADER": "Delete Parameter",
+      "EDIT.HEADER": "Edit Parameter",
+      "VIEW.HEADER": "Parameter Details",
       "TAB": {
         "PROPS": "Properties",
         "VALUE": "Value",
@@ -128,14 +132,16 @@
           "IMPORT_VALUE": "Imported Value of the Parameter",
           "INTERN": "Internal Properties"
         }
-      }
+      },
+      "CHARACTERS": "Still remaining characters"
     },
-    "CHARACTERS": "Still remaining characters",
-    "COPY.HEADER": "Create Parameter",
-    "CREATE.HEADER": "Create Parameter",
-    "DELETE.HEADER": "Delete Parameter",
-    "EDIT.HEADER": "Edit Parameter",
-    "VIEW.HEADER": "Parameter Details"
+    "DATAVIEW": {
+      "FILTER": "Filter",
+      "FILTER_TOOLTIP": "Filter Applications",
+      "FILTER_BY": "Filter by ",
+      "FILTER_CLEAR": "Clear Filter",
+      "FILTER_PLACEHOLDER": "Filter"
+    }
   },
   "PARAMETER": {
     "PRODUCT_NAME": "Application",
