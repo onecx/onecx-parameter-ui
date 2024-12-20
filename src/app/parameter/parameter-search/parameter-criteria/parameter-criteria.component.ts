@@ -11,6 +11,7 @@ import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
 export interface CriteriaForm {
   applicationId: FormControl<string | null>
   productName: FormControl<string | null>
+  displayName: FormControl<string | null>
   name: FormControl<string | null>
 }
 
@@ -33,6 +34,7 @@ export class ParameterCriteriaComponent implements OnChanges {
     this.criteriaForm = new FormGroup<CriteriaForm>({
       productName: new FormControl<string | null>(null),
       applicationId: new FormControl<string | null>(null),
+      displayName: new FormControl<string | null>(null),
       name: new FormControl<string | null>(null)
     })
   }
@@ -50,6 +52,7 @@ export class ParameterCriteriaComponent implements OnChanges {
     const criteriaRequest: ParameterSearchCriteria = {
       productName: this.criteriaForm.value.productName === null ? undefined : this.criteriaForm.value.productName,
       applicationId: this.criteriaForm.value.applicationId === null ? undefined : this.criteriaForm.value.applicationId,
+      displayName: this.criteriaForm.value.displayName === null ? undefined : this.criteriaForm.value.displayName,
       name: this.criteriaForm.value.name === null ? undefined : this.criteriaForm.value.name
     }
     this.searchEmitter.emit(criteriaRequest)
