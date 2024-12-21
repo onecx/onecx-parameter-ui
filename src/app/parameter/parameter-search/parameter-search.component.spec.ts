@@ -331,7 +331,8 @@ describe('ParameterSearchComponent', () => {
         { id: 'id3', productName: 'product3', applicationId: 'app1', name: 'name2' }
       ]
     })
-    it('should prepare the deletion of a parameter', () => {
+
+    it('should prepare the deletion of a parameter - ok', () => {
       const ev: MouseEvent = new MouseEvent('type')
       spyOn(ev, 'stopPropagation')
 
@@ -367,6 +368,12 @@ describe('ParameterSearchComponent', () => {
 
       expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.MESSAGE.NOK' })
       expect(console.error).toHaveBeenCalledWith('deleteParameter', errorResponse)
+    })
+
+    it('should reject confirmation if param was not set', () => {
+      component.onDeleteConfirmation(params)
+
+      expect(apiServiceSpy.deleteParameter).not.toHaveBeenCalled()
     })
   })
 

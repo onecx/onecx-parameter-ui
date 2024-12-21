@@ -178,8 +178,8 @@ export class ParameterSearchComponent implements OnInit {
     this.displayDetailDialog = true
   }
   public onCloseDetail(refresh: boolean): void {
-    this.item4Detail = undefined
     this.displayDetailDialog = false
+    this.item4Detail = undefined
     if (refresh) {
       this.loadData()
     }
@@ -193,25 +193,24 @@ export class ParameterSearchComponent implements OnInit {
   }
   // user confirmed deletion
   public onDeleteConfirmation(data: Parameter[]): void {
-    if (this.item4Delete?.id) {
-      this.parameterApi.deleteParameter({ id: this.item4Delete?.id }).subscribe({
-        next: () => {
-          this.msgService.success({ summaryKey: 'ACTIONS.DELETE.MESSAGE.OK' })
-          // remove item from data
-          data = data?.filter((d) => d.id !== this.item4Delete?.id)
-          // check remaing data if product still exists - if not then reload
-          const d = data?.filter((d) => d.productName === this.item4Delete?.productName)
-          this.item4Delete = undefined
-          this.displayDeleteDialog = false
-          if (d?.length === 0) this.loadData()
-          else this.onSearch({}, true)
-        },
-        error: (err) => {
-          this.msgService.error({ summaryKey: 'ACTIONS.DELETE.MESSAGE.NOK' })
-          console.error('deleteParameter', err)
-        }
-      })
-    }
+    if (!this.item4Delete?.id) return
+    this.parameterApi.deleteParameter({ id: this.item4Delete?.id }).subscribe({
+      next: () => {
+        this.msgService.success({ summaryKey: 'ACTIONS.DELETE.MESSAGE.OK' })
+        // remove item from data
+        data = data?.filter((d) => d.id !== this.item4Delete?.id)
+        // check remaing data if product still exists - if not then reload
+        const d = data?.filter((d) => d.productName === this.item4Delete?.productName)
+        this.item4Delete = undefined
+        this.displayDeleteDialog = false
+        if (d?.length === 0) this.loadData()
+        else this.onSearch({}, true)
+      },
+      error: (err) => {
+        this.msgService.error({ summaryKey: 'ACTIONS.DELETE.MESSAGE.NOK' })
+        console.error('deleteParameter', err)
+      }
+    })
   }
 
   // History => routing
@@ -247,7 +246,7 @@ export class ParameterSearchComponent implements OnInit {
    *   2. Trigger searching data
    */
   private prepareDataLoad(): void {
-    // declare search for ALL products privided by bff
+    // declare search for ALL products provided by bff
     this.allProducts$ = this.productsApi.searchAllAvailableProducts({ productStoreSearchCriteria: {} }).pipe(
       map((data) => {
         return data.stream ? data.stream.sort(this.sortProductsByDisplayName) : []
