@@ -12,8 +12,7 @@ import { Parameter, ParametersAPIService, Product, ProductsAPIService } from 'sr
 import { TranslateServiceMock } from 'src/app/shared/TranslateServiceMock'
 import { ParameterSearchComponent } from './parameter-search.component'
 
-let params: Parameter[] = []
-const parameterData: Parameter[] = [
+const itemData: Parameter[] = [
   {
     modificationCount: 0,
     id: 'id1',
@@ -134,13 +133,13 @@ describe('ParameterSearchComponent', () => {
 
   describe('search', () => {
     it('should search parameters without search criteria', (done) => {
-      apiServiceSpy.searchParametersByCriteria.and.returnValue(of({ stream: parameterData }))
+      apiServiceSpy.searchParametersByCriteria.and.returnValue(of({ stream: itemData }))
 
       component.onSearch({})
 
       component.data$?.subscribe({
         next: (data) => {
-          expect(data).toEqual(parameterData)
+          expect(data).toEqual(itemData)
           done()
         },
         error: done.fail
@@ -300,20 +299,20 @@ describe('ParameterSearchComponent', () => {
     it('should show details of a parameter', () => {
       const mode = 'EDIT'
 
-      component.onDetail(mode, parameterData[0])
+      component.onDetail(mode, itemData[0])
 
       expect(component.changeMode).toEqual(mode)
-      expect(component.item4Detail).toBe(parameterData[0])
+      expect(component.item4Detail).toBe(itemData[0])
       expect(component.displayDetailDialog).toBeTrue()
     })
 
     it('should prepare the copy of a parameter', () => {
       const mode = 'COPY'
 
-      component.onDetail(mode, parameterData[0])
+      component.onDetail(mode, itemData[0])
 
       expect(component.changeMode).toEqual(mode)
-      expect(component.item4Detail).toBe(parameterData[0])
+      expect(component.item4Detail).toBe(itemData[0])
       expect(component.displayDetailDialog).toBeTrue()
 
       component.onCloseDetail(true)
@@ -323,8 +322,10 @@ describe('ParameterSearchComponent', () => {
   })
 
   describe('deletion', () => {
+    let items4Deletion: Parameter[] = []
+
     beforeEach(() => {
-      params = [
+      items4Deletion = [
         { id: 'id1', productName: 'product1', applicationId: 'app1', name: 'name1' },
         { id: 'id2', productName: 'product1', applicationId: 'app1', name: 'name2' },
         { id: 'id3', productName: 'product3', applicationId: 'app1', name: 'name2' }
@@ -335,10 +336,10 @@ describe('ParameterSearchComponent', () => {
       const ev: MouseEvent = new MouseEvent('type')
       spyOn(ev, 'stopPropagation')
 
-      component.onDelete(ev, params[0])
+      component.onDelete(ev, items4Deletion[0])
 
       expect(ev.stopPropagation).toHaveBeenCalled()
-      expect(component.item4Delete).toBe(params[0])
+      expect(component.item4Delete).toBe(items4Deletion[0])
       expect(component.displayDeleteDialog).toBeTrue()
     })
 
@@ -346,14 +347,14 @@ describe('ParameterSearchComponent', () => {
       apiServiceSpy.deleteParameter.and.returnValue(of(null))
       const ev: MouseEvent = new MouseEvent('type')
 
-      component.onDelete(ev, params[1])
-      component.onDeleteConfirmation(params) // remove but not the last of the product
+      component.onDelete(ev, items4Deletion[1])
+      component.onDeleteConfirmation(items4Deletion) // remove but not the last of the product
 
       expect(component.displayDeleteDialog).toBeFalse()
       expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.MESSAGE.OK' })
 
-      component.onDelete(ev, params[2])
-      component.onDeleteConfirmation(params) // remove and this was the last of the product
+      component.onDelete(ev, items4Deletion[2])
+      component.onDeleteConfirmation(items4Deletion) // remove and this was the last of the product
     })
 
     it('should display error if deleting a parameter fails', () => {
@@ -362,15 +363,15 @@ describe('ParameterSearchComponent', () => {
       const ev: MouseEvent = new MouseEvent('type')
       spyOn(console, 'error')
 
-      component.onDelete(ev, params[0])
-      component.onDeleteConfirmation(params)
+      component.onDelete(ev, items4Deletion[0])
+      component.onDeleteConfirmation(items4Deletion)
 
       expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.MESSAGE.NOK' })
       expect(console.error).toHaveBeenCalledWith('deleteParameter', errorResponse)
     })
 
     it('should reject confirmation if param was not set', () => {
-      component.onDeleteConfirmation(params)
+      component.onDeleteConfirmation(items4Deletion)
 
       expect(apiServiceSpy.deleteParameter).not.toHaveBeenCalled()
     })
@@ -417,10 +418,10 @@ describe('ParameterSearchComponent', () => {
       const event = new MouseEvent('click')
       spyOn(event, 'stopPropagation')
 
-      component.onHistory(event, parameterData[0])
+      component.onHistory(event, itemData[0])
 
       expect(event.stopPropagation).toHaveBeenCalled()
-      expect(component.item4Detail).toEqual(parameterData[0])
+      expect(component.item4Detail).toEqual(itemData[0])
       expect(component.displayHistoryDialog).toBeTrue()
     })
 
