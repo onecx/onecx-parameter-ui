@@ -206,7 +206,7 @@
       </div>
     </p-tabPanel>
 
-    <!-- The imported value - in case of viewing only -->
+    <!-- The internals - in case of an existing item only -->
     <p-tabPanel
       *ngIf="!['COPY', 'CREATE'].includes(changeMode)"
       [header]="'DIALOG.DETAIL.TAB.INTERN' | translate"

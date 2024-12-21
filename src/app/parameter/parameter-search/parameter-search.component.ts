@@ -44,8 +44,8 @@ export class ParameterSearchComponent implements OnInit {
   public displayDetailDialog = false
   public displayDeleteDialog = false
   public displayHistoryDialog = false
-  public limitText = limitText
   public filteredColumns: Column[] = []
+  public limitText = limitText
 
   @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
   public dataViewControlsTranslations: DataViewControlTranslations = {}
@@ -54,10 +54,10 @@ export class ParameterSearchComponent implements OnInit {
   public data$: Observable<Parameter[]> | undefined
   public metaData$!: Observable<AllMetaData> // collection of data used in UI
   public allProducts$!: Observable<Product[]> // getting data from bff endpoint
-  public allUsedProducts$!: Observable<Product[]> // getting data from bff endpoint
+  public usedProducts$!: Observable<Product[]> // getting data from bff endpoint
   public criteria: ParameterSearchCriteria = {}
-  public parameter: Parameter | undefined // used on detail
-  public parameter2Delete: Parameter | undefined // used on deletion
+  public item4Detail: Parameter | undefined // used on detail
+  public item4Delete: Parameter | undefined // used on deletion
 
   public columns: ExtendedColumn[] = [
     {
@@ -99,7 +99,7 @@ export class ParameterSearchComponent implements OnInit {
 
   constructor(
     private readonly user: UserService,
-    private readonly messageService: PortalMessageService,
+    private readonly msgService: PortalMessageService,
     private readonly translate: TranslateService,
     private readonly parameterApi: ParametersAPIService,
     private readonly productsApi: ProductsAPIService
@@ -174,53 +174,56 @@ export class ParameterSearchComponent implements OnInit {
   public onDetail(mode: ChangeMode, item: Parameter | undefined, ev?: Event): void {
     ev?.stopPropagation()
     this.changeMode = mode
-    this.parameter = item // do not manipulate the items here
+    this.item4Detail = item // do not manipulate this item here
     this.displayDetailDialog = true
   }
   public onCloseDetail(refresh: boolean): void {
-    this.parameter = undefined
+    this.item4Detail = undefined
     this.displayDetailDialog = false
     if (refresh) {
       this.loadData()
     }
   }
-  // History => routing
-  public onHistory(ev: Event, item: Parameter) {
-    ev.stopPropagation()
-    this.parameter = item
-    this.displayHistoryDialog = true
-  }
-  public onCloseHistory() {
-    this.displayHistoryDialog = false
-  }
+
   // DELETE => Ask for confirmation
   public onDelete(ev: Event, item: Parameter): void {
     ev.stopPropagation()
-    this.parameter2Delete = item
+    this.item4Delete = item
     this.displayDeleteDialog = true
   }
   // user confirmed deletion
   public onDeleteConfirmation(data: Parameter[]): void {
-    if (this.parameter2Delete?.id) {
-      this.parameterApi.deleteParameter({ id: this.parameter2Delete?.id }).subscribe({
+    if (this.item4Delete?.id) {
+      this.parameterApi.deleteParameter({ id: this.item4Delete?.id }).subscribe({
         next: () => {
-          this.messageService.success({ summaryKey: 'ACTIONS.DELETE.MESSAGE.OK' })
+          this.msgService.success({ summaryKey: 'ACTIONS.DELETE.MESSAGE.OK' })
           // remove item from data
-          data = data?.filter((d) => d.id !== this.parameter2Delete?.id)
+          data = data?.filter((d) => d.id !== this.item4Delete?.id)
           // check remaing data if product still exists - if not then reload
-          const d = data?.filter((d) => d.productName === this.parameter2Delete?.productName)
-          this.parameter2Delete = undefined
+          const d = data?.filter((d) => d.productName === this.item4Delete?.productName)
+          this.item4Delete = undefined
           this.displayDeleteDialog = false
           if (d?.length === 0) this.loadData()
           else this.onSearch({}, true)
         },
         error: (err) => {
-          this.messageService.error({ summaryKey: 'ACTIONS.DELETE.MESSAGE.NOK' })
+          this.msgService.error({ summaryKey: 'ACTIONS.DELETE.MESSAGE.NOK' })
           console.error('deleteParameter', err)
         }
       })
     }
   }
+
+  // History => routing
+  public onHistory(ev: Event, item: Parameter) {
+    ev.stopPropagation()
+    this.item4Detail = item
+    this.displayHistoryDialog = true
+  }
+  public onCloseHistory() {
+    this.displayHistoryDialog = false
+  }
+
   public onColumnsChange(activeIds: string[]) {
     this.filteredColumns = activeIds.map((id) => this.columns.find((col) => col.field === id)) as Column[]
   }
@@ -256,7 +259,7 @@ export class ParameterSearchComponent implements OnInit {
       })
     )
     // declare search for used products (used === assigned to data)
-    this.allUsedProducts$ = this.parameterApi.getAllApplications().pipe(
+    this.usedProducts$ = this.parameterApi.getAllApplications().pipe(
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
         console.error('getAllApplications', err)
@@ -268,7 +271,7 @@ export class ParameterSearchComponent implements OnInit {
   private loadData(): void {
     this.loading = true
     this.exceptionKey = undefined
-    this.metaData$ = combineLatest([this.allProducts$, this.allUsedProducts$]).pipe(
+    this.metaData$ = combineLatest([this.allProducts$, this.usedProducts$]).pipe(
       map(([aP, uP]: [Product[], Product[]]) => {
         // enrich
         if (uP.length > 0) {
@@ -291,7 +294,7 @@ export class ParameterSearchComponent implements OnInit {
     this.data$ = this.parameterApi.searchParametersByCriteria({ parameterSearchCriteria: { ...this.criteria } }).pipe(
       tap((data: any) => {
         if (data.totalElements === 0) {
-          this.messageService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
+          this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
           return data.size
         }
       }),

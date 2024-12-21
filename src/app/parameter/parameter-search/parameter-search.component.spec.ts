@@ -193,7 +193,7 @@ describe('ParameterSearchComponent', () => {
 
       component.ngOnInit()
 
-      component.allUsedProducts$?.subscribe({
+      component.usedProducts$?.subscribe({
         next: (data) => {
           expect(data).toEqual(usedProductsOrg)
           done()
@@ -209,7 +209,7 @@ describe('ParameterSearchComponent', () => {
 
       component.ngOnInit()
 
-      component.allUsedProducts$?.subscribe({
+      component.usedProducts$?.subscribe({
         next: (data) => {
           expect(data).toEqual([])
           done()
@@ -290,7 +290,7 @@ describe('ParameterSearchComponent', () => {
 
       expect(ev.stopPropagation).toHaveBeenCalled()
       expect(component.changeMode).toEqual(mode)
-      expect(component.parameter).toBe(undefined)
+      expect(component.item4Detail).toBe(undefined)
       expect(component.displayDetailDialog).toBeTrue()
 
       component.onCloseDetail(false)
@@ -304,7 +304,7 @@ describe('ParameterSearchComponent', () => {
       component.onDetail(mode, parameterData[0])
 
       expect(component.changeMode).toEqual(mode)
-      expect(component.parameter).toBe(parameterData[0])
+      expect(component.item4Detail).toBe(parameterData[0])
       expect(component.displayDetailDialog).toBeTrue()
     })
 
@@ -314,7 +314,7 @@ describe('ParameterSearchComponent', () => {
       component.onDetail(mode, parameterData[0])
 
       expect(component.changeMode).toEqual(mode)
-      expect(component.parameter).toBe(parameterData[0])
+      expect(component.item4Detail).toBe(parameterData[0])
       expect(component.displayDetailDialog).toBeTrue()
 
       component.onCloseDetail(true)
@@ -338,7 +338,7 @@ describe('ParameterSearchComponent', () => {
       component.onDelete(ev, params[0])
 
       expect(ev.stopPropagation).toHaveBeenCalled()
-      expect(component.parameter2Delete).toBe(params[0])
+      expect(component.item4Delete).toBe(params[0])
       expect(component.displayDeleteDialog).toBeTrue()
     })
 
@@ -410,7 +410,7 @@ describe('ParameterSearchComponent', () => {
       component.onHistory(event, parameterData[0])
 
       expect(event.stopPropagation).toHaveBeenCalled()
-      expect(component.parameter).toEqual(parameterData[0])
+      expect(component.item4Detail).toEqual(parameterData[0])
       expect(component.displayHistoryDialog).toBeTrue()
     })
   })
