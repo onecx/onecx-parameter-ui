@@ -128,7 +128,6 @@ describe('ParameterSearchComponent', () => {
 
     it('should call OnInit and populate filteredColumns/actions correctly', () => {
       component.ngOnInit()
-
       expect(component.filteredColumns[0]).toEqual(component.columns[0])
     })
   })
@@ -280,7 +279,7 @@ describe('ParameterSearchComponent', () => {
   /*
    * UI ACTIONS
    */
-  describe('create + copy', () => {
+  describe('detail actions', () => {
     it('should prepare the creation of a new parameter', () => {
       const ev: MouseEvent = new MouseEvent('type')
       spyOn(ev, 'stopPropagation')
@@ -377,36 +376,40 @@ describe('ParameterSearchComponent', () => {
     })
   })
 
-  it('should update the columns that are seen in data', () => {
-    const columns: Column[] = [
-      { field: 'productName', header: 'PRODUCT_NAME' },
-      { field: 'description', header: 'DESCRIPTION' }
-    ]
-    const expectedColumn = { field: 'productName', header: 'PRODUCT_NAME' }
-    component.columns = columns
+  describe('filter columns', () => {
+    it('should update the columns that are seen in data', () => {
+      const columns: Column[] = [
+        { field: 'productName', header: 'PRODUCT_NAME' },
+        { field: 'description', header: 'DESCRIPTION' }
+      ]
+      const expectedColumn = { field: 'productName', header: 'PRODUCT_NAME' }
+      component.columns = columns
 
-    component.onColumnsChange(['productName'])
+      component.onColumnsChange(['productName'])
 
-    expect(component.filteredColumns).not.toContain(columns[1])
-    expect(component.filteredColumns).toEqual([jasmine.objectContaining(expectedColumn)])
-  })
-
-  it('should apply a filter to the result table', () => {
-    component.dataTable = jasmine.createSpyObj('dataTable', ['filterGlobal'])
-
-    component.onFilterChange('test')
-
-    expect(component.dataTable?.filterGlobal).toHaveBeenCalledWith('test', 'contains')
-  })
-
-  it('should open create dialog using UI action', () => {
-    spyOn(component, 'onDetail')
-    component.ngOnInit()
-    component.actions$?.subscribe((action) => {
-      action[0].actionCallback()
+      expect(component.filteredColumns).not.toContain(columns[1])
+      expect(component.filteredColumns).toEqual([jasmine.objectContaining(expectedColumn)])
     })
 
-    expect(component.onDetail).toHaveBeenCalled()
+    it('should apply a filter to the result table', () => {
+      component.dataTable = jasmine.createSpyObj('dataTable', ['filterGlobal'])
+
+      component.onFilterChange('test')
+
+      expect(component.dataTable?.filterGlobal).toHaveBeenCalledWith('test', 'contains')
+    })
+  })
+
+  describe('action buttons', () => {
+    it('should open create dialog using UI action', () => {
+      spyOn(component, 'onDetail')
+      component.ngOnInit()
+      component.actions$?.subscribe((action) => {
+        action[0].actionCallback()
+      })
+
+      expect(component.onDetail).toHaveBeenCalled()
+    })
   })
 
   describe('onHistory', () => {
@@ -420,14 +423,14 @@ describe('ParameterSearchComponent', () => {
       expect(component.item4Detail).toEqual(parameterData[0])
       expect(component.displayHistoryDialog).toBeTrue()
     })
-  })
 
-  it('should hide the history dialog', () => {
-    component.displayHistoryDialog = true
+    it('should hide the history dialog', () => {
+      component.displayHistoryDialog = true
 
-    component.onCloseHistory()
+      component.onCloseHistory()
 
-    expect(component.displayHistoryDialog).toBeFalse()
+      expect(component.displayHistoryDialog).toBeFalse()
+    })
   })
 
   describe('onCriteriaReset', () => {
