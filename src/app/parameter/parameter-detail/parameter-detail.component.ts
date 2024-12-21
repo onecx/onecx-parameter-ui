@@ -16,8 +16,8 @@ import { ChangeMode } from '../parameter-search/parameter-search.component'
   styleUrls: ['./parameter-detail.component.scss']
 })
 export class ParameterDetailComponent implements OnChanges {
-  @Input() public changeMode: ChangeMode = 'CREATE'
   @Input() public displayDialog = false
+  @Input() public changeMode: ChangeMode = 'CREATE'
   @Input() public parameter: Parameter | undefined
   @Input() public allProducts: Product[] = []
   @Input() public dateFormat = 'medium'
@@ -25,10 +25,10 @@ export class ParameterDetailComponent implements OnChanges {
 
   public loading = false
   public exceptionKey: string | undefined = undefined
-  public selectedTabIndex = 0
-  public allProductOptions: SelectItem[] = []
-  public appIdOptions: SelectItem[] = []
+  // form
   public formGroup: FormGroup
+  public productOptions: SelectItem[] = []
+  public appIdOptions: SelectItem[] = []
 
   constructor(
     private readonly parameterApi: ParametersAPIService,
@@ -48,7 +48,7 @@ export class ParameterDetailComponent implements OnChanges {
 
   public ngOnChanges() {
     if (!this.displayDialog) return
-    this.allProductOptions = this.allProducts.map((p) => ({ label: p.displayName, value: p.productName }))
+    this.productOptions = this.allProducts.map((p) => ({ label: p.displayName, value: p.productName }))
     if (['EDIT', 'VIEW'].includes(this.changeMode)) this.getData(this.parameter?.id)
     else this.prepareForm(this.parameter)
   }
@@ -78,6 +78,9 @@ export class ParameterDetailComponent implements OnChanges {
     }
   }
 
+  /**
+   * READING data
+   */
   private getData(id?: string): void {
     if (!id) return
     this.loading = true

@@ -1,10 +1,9 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from '@angular/core'
+import { NgModule } from '@angular/core'
 import { CommonModule, DatePipe } from '@angular/common'
-import { FormsModule } from '@angular/forms'
 import { RouterModule, Routes } from '@angular/router'
 
 import { InitializeModuleGuard, addInitializeModuleGuard } from '@onecx/angular-integration-interface'
-import { PortalCoreModule, providePortalDialogService } from '@onecx/portal-integration-angular'
+import { PortalCoreModule } from '@onecx/portal-integration-angular'
 
 import { SharedModule } from 'src/app/shared/shared.module'
 
@@ -29,13 +28,11 @@ const routes: Routes = [
   ],
   imports: [
     CommonModule,
-    FormsModule,
     PortalCoreModule.forMicroFrontend(),
     [RouterModule.forChild(addInitializeModuleGuard(routes))],
     SharedModule
   ],
-  providers: [InitializeModuleGuard, providePortalDialogService(), DatePipe],
-  schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA]
+  providers: [InitializeModuleGuard, DatePipe]
 })
 export class ParameterModule {
   constructor() {

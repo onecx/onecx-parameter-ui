@@ -6,6 +6,7 @@ import { provideErrorTailorConfig, errorTailorImports } from '@ngneat/error-tail
 
 import { AutoCompleteModule } from 'primeng/autocomplete'
 import { CalendarModule } from 'primeng/calendar'
+import { CardModule } from 'primeng/card'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { ConfirmPopupModule } from 'primeng/confirmpopup'
 import { ConfirmationService } from 'primeng/api'
@@ -35,6 +36,7 @@ import { LabelResolver } from './label.resolver'
     PortalCoreModule.forMicroFrontend(),
     AutoCompleteModule,
     CalendarModule,
+    CardModule,
     CommonModule,
     ConfirmDialogModule,
     ConfirmPopupModule,
@@ -61,6 +63,7 @@ import { LabelResolver } from './label.resolver'
   exports: [
     AutoCompleteModule,
     CalendarModule,
+    CardModule,
     CommonModule,
     ConfirmDialogModule,
     ConfirmPopupModule,

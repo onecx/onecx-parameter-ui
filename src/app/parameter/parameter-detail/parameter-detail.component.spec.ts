@@ -126,7 +126,7 @@ describe('ParameterDetailComponent', () => {
       expect(component.formGroup.disabled).toBeTrue()
       expect(component.formGroup.controls['name'].value).toBe(parameter.name)
       expect(component.loading).toBeFalse()
-      expect(component.allProductOptions).toEqual(allProductsSI)
+      expect(component.productOptions).toEqual(allProductsSI)
     })
 
     it('should prepare viewing a parameter - failed: missing id', () => {
