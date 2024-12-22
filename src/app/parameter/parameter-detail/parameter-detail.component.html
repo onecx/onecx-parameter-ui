@@ -28,8 +28,8 @@
       tooltipEvent="hover"
     >
       <div class="flex flex-column row-gap-4">
-        <div class="flex flex-row row-gap-4">
-          <div class="mt-1 px-2 w-12 sm:w-6">
+        <div class="flex flex-row flex-wrap row-gap-4">
+          <div class="mt-1 pr-3 w-12 sm:w-6">
             <span class="p-float-label" controlErrorAnchor>
               <p-dropdown
                 id="pm_detail_form_product_name"
@@ -53,7 +53,7 @@
               >
             </span>
           </div>
-          <div class="mt-1 px-2 w-12 sm:w-6">
+          <div class="mt-1 pl-3 w-12 sm:w-6">
             <span class="p-float-label" controlErrorAnchor>
               <p-dropdown
                 id="pm_detail_form_app_id"
@@ -79,7 +79,7 @@
         </div>
 
         <div class="flex flex-row row-gap-4">
-          <div class="p-fluid mx-2 w-12">
+          <div class="p-fluid w-12">
             <span class="p-float-label" controlErrorAnchor>
               <input
                 pInputText
@@ -98,7 +98,7 @@
         </div>
 
         <div class="flex flex-row row-gap-4">
-          <div class="p-fluid mx-2 w-12">
+          <div class="p-fluid w-12">
             <span class="p-float-label" controlErrorAnchor>
               <input
                 pInputText
@@ -117,7 +117,7 @@
         </div>
 
         <div class="flex flex-row row-gap-4">
-          <div class="p-fluid mx-2 w-12">
+          <div class="p-fluid w-12">
             <span class="p-float-label" controlErrorAnchor>
               <textarea
                 pInputTextarea
@@ -144,7 +144,7 @@
       tooltipPosition="top"
       tooltipEvent="hover"
     >
-      <div class="mt-1 relative p-fluid mx-2">
+      <div class="mt-1 relative p-fluid">
         <p-badge
           severity="primary"
           [value]="5000 - parameterValue.value.length"
@@ -182,7 +182,7 @@
       tooltipPosition="top"
       tooltipEvent="hover"
     >
-      <div class="mt-1 relative p-fluid mx-2">
+      <div class="mt-1 relative p-fluid">
         <p-badge
           severity="primary"
           [value]="5000 - parameterInputValue.value.length"
@@ -221,7 +221,7 @@
       tooltipPosition="top"
       tooltipEvent="hover"
     >
-      <div class="mx-2 flex flex-column row-gap-4">
+      <div class="mt-1 flex flex-column row-gap-4">
         <!-- row 1 -->
         <div class="flex flex-row flex-wrap gap-4">
           <span class="flex-grow-1 sm:flex-grow-0 p-float-label">
