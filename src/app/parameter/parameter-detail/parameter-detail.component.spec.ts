@@ -13,8 +13,15 @@ import { createTranslateLoader, PortalMessageService } from '@onecx/portal-integ
 import { Parameter, ParametersAPIService, Product } from 'src/app/shared/generated'
 import { ParameterDetailComponent } from './parameter-detail.component'
 
-const productName = 'prod1'
-const app = 'app1'
+const parameter: Parameter = {
+  modificationCount: 0,
+  id: 'id',
+  productName: 'prod1',
+  applicationId: 'app1',
+  name: 'name',
+  displayName: 'displayName',
+  value: 'value'
+}
 const allProducts: Product[] = [
   { productName: 'prod1', displayName: 'prod1_display' },
   { productName: 'prod2', displayName: 'prod2_display' }
@@ -23,14 +30,6 @@ const allProductsSI: SelectItem[] = [
   { label: 'prod1_display', value: 'prod1' },
   { label: 'prod2_display', value: 'prod2' }
 ]
-const parameter: Parameter = {
-  id: 'id',
-  productName: productName,
-  applicationId: app,
-  name: 'name',
-  displayName: 'displayName',
-  value: 'value'
-}
 
 describe('ParameterDetailComponent', () => {
   let component: ParameterDetailComponent
@@ -43,8 +42,6 @@ describe('ParameterDetailComponent', () => {
     updateParameter: jasmine.createSpy('updateParameter').and.returnValue(of({}))
   }
   const formGroup = new FormGroup({
-    modificationCount: new FormControl(0),
-    id: new FormControl('id'),
     name: new FormControl('name'),
     value: new FormControl('value'),
     productName: new FormControl('prod name'),
@@ -105,6 +102,12 @@ describe('ParameterDetailComponent', () => {
   })
 
   describe('ngOnChange - init form', () => {
+    it('should create but not initialize if dialog is not open', () => {
+      expect(component).toBeTruthy()
+      component.displayDialog = false
+      component.ngOnChanges()
+    })
+
     describe('VIEW', () => {
       it('should reject initializing if dialog is not open', () => {
         apiServiceSpy.getParameterById.and.returnValue(of(parameter))
@@ -135,9 +138,9 @@ describe('ParameterDetailComponent', () => {
         component.ngOnChanges()
 
         expect(apiServiceSpy.getParameterById).toHaveBeenCalled()
+        expect(component.loading).toBeFalse()
         expect(component.formGroup.disabled).toBeTrue()
         expect(component.formGroup.controls['name'].value).toBe(parameter.name)
-        expect(component.loading).toBeFalse()
         expect(component.productOptions).toEqual(allProductsSI)
       })
 
@@ -171,17 +174,17 @@ describe('ParameterDetailComponent', () => {
     })
 
     describe('EDIT', () => {
-      it('should prepare editing a parameter', () => {
+      it('should prepare editing a parameter - successful', () => {
         apiServiceSpy.getParameterById.and.returnValue(of(parameter))
-        component.parameter = parameter
         component.changeMode = 'EDIT'
+        component.parameter = parameter
 
         component.ngOnChanges()
 
         expect(apiServiceSpy.getParameterById).toHaveBeenCalled()
-        expect(component.formGroup.enabled).toBeTrue()
-        expect(component.formGroup.controls['name'].value).toBe(parameter.name)
         expect(component.loading).toBeFalse()
+        expect(component.formGroup.enabled).toBeTrue()
+        expect(component.formGroup.controls['name'].value).toEqual(parameter.name)
       })
 
       it('should prepare editing a parameter - failed: id missed', () => {
@@ -225,7 +228,7 @@ describe('ParameterDetailComponent', () => {
         expect(component.formGroup.controls['name'].value).toEqual(null)
       })
 
-      it('should prepare creating a parameter', () => {
+      it('should prepare creating a parameter - start with empty form', () => {
         component.changeMode = 'CREATE'
         spyOn(component.formGroup, 'reset')
 
@@ -238,15 +241,15 @@ describe('ParameterDetailComponent', () => {
     })
 
     describe('COPY', () => {
-      it('should prepare copying a parameter', () => {
+      it('should prepare copying a parameter - use data from other parameter', () => {
         component.changeMode = 'COPY'
-        component.parameter = { ...parameter, id: undefined }
+        component.parameter = parameter
 
         component.ngOnChanges()
 
+        expect(apiServiceSpy.getParameterById).not.toHaveBeenCalled()
         expect(component.formGroup.enabled).toBeTrue()
         expect(component.formGroup.controls['name'].value).toBe(parameter.name)
-        expect(component.parameter.id).toBeUndefined()
       })
     })
   })
@@ -266,16 +269,31 @@ describe('ParameterDetailComponent', () => {
       })
 
       it('should display error if creation fails', () => {
-        const errorResponse = { status: 400, statusText: 'Error on creating a parameter' }
+        const errorResponse = { status: 400, statusText: 'Could not create ...' }
         apiServiceSpy.createParameter.and.returnValue(throwError(() => errorResponse))
+        spyOn(console, 'error')
         component.changeMode = 'CREATE'
         component.formGroup = formGroup
-        spyOn(console, 'error')
 
         component.onSave()
 
+        expect(component.formGroup.valid).toBeTrue()
         expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.MESSAGE.NOK' })
         expect(console.error).toHaveBeenCalledWith('createParameter', errorResponse)
+      })
+    })
+
+    describe('COPY', () => {
+      it('should create a parameter based on another', () => {
+        apiServiceSpy.createParameter.and.returnValue(of({}))
+        component.changeMode = 'COPY'
+        spyOn(component.hideDialogAndChanged, 'emit')
+        component.formGroup = formGroup
+
+        component.onSave()
+
+        expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.MESSAGE.OK' })
+        expect(component.hideDialogAndChanged.emit).toHaveBeenCalledWith(true)
       })
     })
 
@@ -294,12 +312,12 @@ describe('ParameterDetailComponent', () => {
       })
 
       it('should display error if update fails', () => {
-        const errorResponse = { status: 400, statusText: 'Error on updating a parameter' }
+        const errorResponse = { status: 400, statusText: 'Could not update ...' }
         apiServiceSpy.updateParameter.and.returnValue(throwError(() => errorResponse))
-        component.parameter = parameter
-        component.changeMode = 'EDIT'
-        component.formGroup = formGroup
         spyOn(console, 'error')
+        component.changeMode = 'EDIT'
+        component.parameter = parameter
+        component.formGroup = formGroup
 
         component.onSave()
 
