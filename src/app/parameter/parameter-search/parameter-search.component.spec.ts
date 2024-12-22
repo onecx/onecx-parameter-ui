@@ -449,7 +449,7 @@ describe('ParameterSearchComponent', () => {
    */
   describe('Language tests', () => {
     it('should set a German date format', () => {
-      expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm')
+      expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm:ss')
     })
 
     it('should set default date format', () => {
@@ -457,7 +457,7 @@ describe('ParameterSearchComponent', () => {
       fixture = TestBed.createComponent(ParameterSearchComponent)
       component = fixture.componentInstance
       fixture.detectChanges()
-      expect(component.dateFormat).toEqual('M/d/yy, h:mm a')
+      expect(component.dateFormat).toEqual('M/d/yy, hh:mm:ss a')
     })
   })
 })
