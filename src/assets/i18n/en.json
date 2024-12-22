@@ -92,7 +92,9 @@
     "SAVE_AS": "Save as ...",
     "UPLOAD": "Upload",
     "TOOLTIPS": {
+      "CANCEL": "Cancel action",
       "CANCEL_AND_CLOSE": "Cancel and close dialog",
+      "CANCEL_WITHOUT_SAVE": "Cancel action without saving",
       "SAVE": "Save changes",
       "SAVE_AS": "Save as new Parameter"
     }
