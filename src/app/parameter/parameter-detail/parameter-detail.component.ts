@@ -37,6 +37,7 @@ export class ParameterDetailComponent implements OnChanges {
     private readonly msgService: PortalMessageService
   ) {
     this.formGroup = fb.nonNullable.group({
+      modificationCount: new FormControl(0),
       productName: new FormControl(null, [Validators.required]),
       applicationId: new FormControl(null, [Validators.required]),
       name: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
@@ -48,9 +49,14 @@ export class ParameterDetailComponent implements OnChanges {
 
   public ngOnChanges() {
     if (!this.displayDialog) return
-    this.productOptions = this.allProducts.map((p) => ({ label: p.displayName, value: p.productName }))
-    if (['EDIT', 'VIEW'].includes(this.changeMode)) this.getData(this.parameter?.id)
+    // matching mode and given data?
+    if ('CREATE' === this.changeMode && this.parameter) return
+    if (['EDIT', 'VIEW'].includes(this.changeMode))
+      if (!this.parameter) return
+      else this.getData(this.parameter?.id)
     else this.prepareForm(this.parameter)
+    // update dropdown lists
+    this.productOptions = this.allProducts.map((p) => ({ label: p.displayName, value: p.productName }))
   }
 
   private prepareForm(data?: Parameter): void {
@@ -89,9 +95,7 @@ export class ParameterDetailComponent implements OnChanges {
       .getParameterById({ id: id })
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
-        next: (data) => {
-          this.prepareForm(data)
-        },
+        next: (data) => this.prepareForm(data),
         error: (err) => {
           this.formGroup.reset()
           this.formGroup.disable()
@@ -105,10 +109,9 @@ export class ParameterDetailComponent implements OnChanges {
   /****************************************************************************
    *  UI Events
    */
-  public onDialogHide() {
+  public onDialogHide(changed?: boolean) {
+    this.hideDialogAndChanged.emit(changed ?? false)
     this.formGroup.reset()
-    this.displayDialog = false
-    this.hideDialogAndChanged.emit(false)
   }
 
   // load appId dropdown with app ids from product
@@ -135,8 +138,7 @@ export class ParameterDetailComponent implements OnChanges {
         this.parameterApi.updateParameter({ id: this.parameter.id, parameterUpdate: this.formGroup.value }).subscribe({
           next: () => {
             this.msgService.success({ summaryKey: 'ACTIONS.EDIT.MESSAGE.OK' })
-            this.displayDialog = false
-            this.hideDialogAndChanged.emit(true)
+            this.onDialogHide(true)
           },
           error: (err) => {
             this.msgService.error({ summaryKey: 'ACTIONS.EDIT.MESSAGE.NOK' })
@@ -148,7 +150,7 @@ export class ParameterDetailComponent implements OnChanges {
         this.parameterApi.createParameter({ parameterCreate: this.formGroup.value }).subscribe({
           next: () => {
             this.msgService.success({ summaryKey: 'ACTIONS.CREATE.MESSAGE.OK' })
-            this.hideDialogAndChanged.emit(true)
+            this.onDialogHide(true)
           },
           error: (err) => {
             this.msgService.error({ summaryKey: 'ACTIONS.CREATE.MESSAGE.NOK' })
