@@ -104,7 +104,7 @@ export class ParameterSearchComponent implements OnInit {
     private readonly parameterApi: ParametersAPIService,
     private readonly productsApi: ProductsAPIService
   ) {
-    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm' : 'M/d/yy, h:mm a'
+    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.filteredColumns = this.columns.filter((a) => a.active === true)
   }
 
