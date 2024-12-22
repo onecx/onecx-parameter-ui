@@ -12,8 +12,7 @@ import { Parameter, ParametersAPIService, Product, ProductsAPIService } from 'sr
 import { TranslateServiceMock } from 'src/app/shared/TranslateServiceMock'
 import { ParameterSearchComponent } from './parameter-search.component'
 
-let params: Parameter[] = []
-const parameterData: Parameter[] = [
+const itemData: Parameter[] = [
   {
     modificationCount: 0,
     id: 'id1',
@@ -128,20 +127,19 @@ describe('ParameterSearchComponent', () => {
 
     it('should call OnInit and populate filteredColumns/actions correctly', () => {
       component.ngOnInit()
-
       expect(component.filteredColumns[0]).toEqual(component.columns[0])
     })
   })
 
   describe('search', () => {
     it('should search parameters without search criteria', (done) => {
-      apiServiceSpy.searchParametersByCriteria.and.returnValue(of({ stream: parameterData }))
+      apiServiceSpy.searchParametersByCriteria.and.returnValue(of({ stream: itemData }))
 
       component.onSearch({})
 
       component.data$?.subscribe({
         next: (data) => {
-          expect(data).toEqual(parameterData)
+          expect(data).toEqual(itemData)
           done()
         },
         error: done.fail
@@ -193,7 +191,7 @@ describe('ParameterSearchComponent', () => {
 
       component.ngOnInit()
 
-      component.allUsedProducts$?.subscribe({
+      component.usedProducts$?.subscribe({
         next: (data) => {
           expect(data).toEqual(usedProductsOrg)
           done()
@@ -209,7 +207,7 @@ describe('ParameterSearchComponent', () => {
 
       component.ngOnInit()
 
-      component.allUsedProducts$?.subscribe({
+      component.usedProducts$?.subscribe({
         next: (data) => {
           expect(data).toEqual([])
           done()
@@ -280,7 +278,7 @@ describe('ParameterSearchComponent', () => {
   /*
    * UI ACTIONS
    */
-  describe('create + copy', () => {
+  describe('detail actions', () => {
     it('should prepare the creation of a new parameter', () => {
       const ev: MouseEvent = new MouseEvent('type')
       spyOn(ev, 'stopPropagation')
@@ -290,7 +288,7 @@ describe('ParameterSearchComponent', () => {
 
       expect(ev.stopPropagation).toHaveBeenCalled()
       expect(component.changeMode).toEqual(mode)
-      expect(component.parameter).toBe(undefined)
+      expect(component.item4Detail).toBe(undefined)
       expect(component.displayDetailDialog).toBeTrue()
 
       component.onCloseDetail(false)
@@ -301,20 +299,20 @@ describe('ParameterSearchComponent', () => {
     it('should show details of a parameter', () => {
       const mode = 'EDIT'
 
-      component.onDetail(mode, parameterData[0])
+      component.onDetail(mode, itemData[0])
 
       expect(component.changeMode).toEqual(mode)
-      expect(component.parameter).toBe(parameterData[0])
+      expect(component.item4Detail).toBe(itemData[0])
       expect(component.displayDetailDialog).toBeTrue()
     })
 
     it('should prepare the copy of a parameter', () => {
       const mode = 'COPY'
 
-      component.onDetail(mode, parameterData[0])
+      component.onDetail(mode, itemData[0])
 
       expect(component.changeMode).toEqual(mode)
-      expect(component.parameter).toBe(parameterData[0])
+      expect(component.item4Detail).toBe(itemData[0])
       expect(component.displayDetailDialog).toBeTrue()
 
       component.onCloseDetail(true)
@@ -324,21 +322,24 @@ describe('ParameterSearchComponent', () => {
   })
 
   describe('deletion', () => {
+    let items4Deletion: Parameter[] = []
+
     beforeEach(() => {
-      params = [
+      items4Deletion = [
         { id: 'id1', productName: 'product1', applicationId: 'app1', name: 'name1' },
         { id: 'id2', productName: 'product1', applicationId: 'app1', name: 'name2' },
         { id: 'id3', productName: 'product3', applicationId: 'app1', name: 'name2' }
       ]
     })
-    it('should prepare the deletion of a parameter', () => {
+
+    it('should prepare the deletion of a parameter - ok', () => {
       const ev: MouseEvent = new MouseEvent('type')
       spyOn(ev, 'stopPropagation')
 
-      component.onDelete(ev, params[0])
+      component.onDelete(ev, items4Deletion[0])
 
       expect(ev.stopPropagation).toHaveBeenCalled()
-      expect(component.parameter2Delete).toBe(params[0])
+      expect(component.item4Delete).toBe(items4Deletion[0])
       expect(component.displayDeleteDialog).toBeTrue()
     })
 
@@ -346,14 +347,14 @@ describe('ParameterSearchComponent', () => {
       apiServiceSpy.deleteParameter.and.returnValue(of(null))
       const ev: MouseEvent = new MouseEvent('type')
 
-      component.onDelete(ev, params[1])
-      component.onDeleteConfirmation(params) // remove but not the last of the product
+      component.onDelete(ev, items4Deletion[1])
+      component.onDeleteConfirmation(items4Deletion) // remove but not the last of the product
 
       expect(component.displayDeleteDialog).toBeFalse()
       expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.MESSAGE.OK' })
 
-      component.onDelete(ev, params[2])
-      component.onDeleteConfirmation(params) // remove and this was the last of the product
+      component.onDelete(ev, items4Deletion[2])
+      component.onDeleteConfirmation(items4Deletion) // remove and this was the last of the product
     })
 
     it('should display error if deleting a parameter fails', () => {
@@ -362,44 +363,54 @@ describe('ParameterSearchComponent', () => {
       const ev: MouseEvent = new MouseEvent('type')
       spyOn(console, 'error')
 
-      component.onDelete(ev, params[0])
-      component.onDeleteConfirmation(params)
+      component.onDelete(ev, items4Deletion[0])
+      component.onDeleteConfirmation(items4Deletion)
 
       expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.MESSAGE.NOK' })
       expect(console.error).toHaveBeenCalledWith('deleteParameter', errorResponse)
     })
+
+    it('should reject confirmation if param was not set', () => {
+      component.onDeleteConfirmation(items4Deletion)
+
+      expect(apiServiceSpy.deleteParameter).not.toHaveBeenCalled()
+    })
   })
 
-  it('should update the columns that are seen in data', () => {
-    const columns: Column[] = [
-      { field: 'productName', header: 'PRODUCT_NAME' },
-      { field: 'description', header: 'DESCRIPTION' }
-    ]
-    const expectedColumn = { field: 'productName', header: 'PRODUCT_NAME' }
-    component.columns = columns
+  describe('filter columns', () => {
+    it('should update the columns that are seen in data', () => {
+      const columns: Column[] = [
+        { field: 'productName', header: 'PRODUCT_NAME' },
+        { field: 'description', header: 'DESCRIPTION' }
+      ]
+      const expectedColumn = { field: 'productName', header: 'PRODUCT_NAME' }
+      component.columns = columns
 
-    component.onColumnsChange(['productName'])
+      component.onColumnsChange(['productName'])
 
-    expect(component.filteredColumns).not.toContain(columns[1])
-    expect(component.filteredColumns).toEqual([jasmine.objectContaining(expectedColumn)])
-  })
-
-  it('should apply a filter to the result table', () => {
-    component.dataTable = jasmine.createSpyObj('dataTable', ['filterGlobal'])
-
-    component.onFilterChange('test')
-
-    expect(component.dataTable?.filterGlobal).toHaveBeenCalledWith('test', 'contains')
-  })
-
-  it('should open create dialog using UI action', () => {
-    spyOn(component, 'onDetail')
-    component.ngOnInit()
-    component.actions$?.subscribe((action) => {
-      action[0].actionCallback()
+      expect(component.filteredColumns).not.toContain(columns[1])
+      expect(component.filteredColumns).toEqual([jasmine.objectContaining(expectedColumn)])
     })
 
-    expect(component.onDetail).toHaveBeenCalled()
+    it('should apply a filter to the result table', () => {
+      component.dataTable = jasmine.createSpyObj('dataTable', ['filterGlobal'])
+
+      component.onFilterChange('test')
+
+      expect(component.dataTable?.filterGlobal).toHaveBeenCalledWith('test', 'contains')
+    })
+  })
+
+  describe('action buttons', () => {
+    it('should open create dialog using UI action', () => {
+      spyOn(component, 'onDetail')
+      component.ngOnInit()
+      component.actions$?.subscribe((action) => {
+        action[0].actionCallback()
+      })
+
+      expect(component.onDetail).toHaveBeenCalled()
+    })
   })
 
   describe('onHistory', () => {
@@ -407,20 +418,20 @@ describe('ParameterSearchComponent', () => {
       const event = new MouseEvent('click')
       spyOn(event, 'stopPropagation')
 
-      component.onHistory(event, parameterData[0])
+      component.onHistory(event, itemData[0])
 
       expect(event.stopPropagation).toHaveBeenCalled()
-      expect(component.parameter).toEqual(parameterData[0])
+      expect(component.item4Detail).toEqual(itemData[0])
       expect(component.displayHistoryDialog).toBeTrue()
     })
-  })
 
-  it('should hide the history dialog', () => {
-    component.displayHistoryDialog = true
+    it('should hide the history dialog', () => {
+      component.displayHistoryDialog = true
 
-    component.onCloseHistory()
+      component.onCloseHistory()
 
-    expect(component.displayHistoryDialog).toBeFalse()
+      expect(component.displayHistoryDialog).toBeFalse()
+    })
   })
 
   describe('onCriteriaReset', () => {

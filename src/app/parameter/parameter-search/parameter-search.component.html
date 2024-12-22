@@ -82,7 +82,7 @@
               [id]="'pm_search_table_header_col_' + col.field"
               [class]="'white-space-nowrap'"
               [pSortableColumn]="col.field"
-              [aria-label]="'PARAMETER.TOOLTIPS.' + col.header | translate"
+              [attr.aria-label]="'PARAMETER.TOOLTIPS.' + col.header | translate"
               [pTooltip]="'PARAMETER.TOOLTIPS.' + col.header | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -100,10 +100,10 @@
             <td pFrozenColumn class="align-items-center border-right-1 text-center white-space-nowrap">
               <ng-container *ocxIfNotPermission="'PARAMETER#EDIT'">
                 <a
-                  *ocxIfPermission="'PARAMETER#EDIT'"
+                  *ocxIfPermission="'PARAMETER#VIEW'"
                   tabindex="0"
                   class="p-2 text-primary font-medium"
-                  [id]="'pm_search_table_row_' + i + '_view_action'"
+                  [id]="'pm_search_table_row_' + i + '_action_view'"
                   (click)="onDetail('VIEW', rowData, $event)"
                   (keydown.enter)="onDetail('VIEW', rowData, $event)"
                   (keydown.space)="onDetail('VIEW', rowData, $event)"
@@ -119,7 +119,7 @@
                 *ocxIfPermission="'PARAMETER#EDIT'"
                 tabindex="0"
                 class="p-2 text-primary font-medium"
-                [id]="'pm_search_table_row_' + i + '_edit_action'"
+                [id]="'pm_search_table_row_' + i + '_action_edit'"
                 (click)="onDetail('EDIT', rowData, $event)"
                 (keydown.enter)="onDetail('EDIT', rowData, $event)"
                 (keydown.space)="onDetail('EDIT', rowData, $event)"
@@ -134,10 +134,10 @@
                 *ocxIfPermission="'PARAMETER#EDIT'"
                 tabindex="0"
                 class="p-2 text-primary font-medium"
-                [id]="'pm_search_table_row_' + i + '_copy_action'"
+                [id]="'pm_search_table_row_' + i + '_action_copy'"
                 (click)="onDetail('COPY', rowData, $event)"
-                (keydown.enter)="onDetail('VIEW', rowData, $event)"
-                (keydown.space)="onDetail('VIEW', rowData, $event)"
+                (keydown.enter)="onDetail('COPY', rowData, $event)"
+                (keydown.space)="onDetail('COPY', rowData, $event)"
                 [attr.aria-label]="'ACTIONS.COPY.LABEL' | translate"
                 [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
                 tooltipPosition="top"
@@ -149,7 +149,7 @@
                 *ocxIfPermission="'PARAMETER#VIEW'"
                 tabindex="0"
                 class="p-2 text-primary font-medium"
-                [id]="'pm_search_table_row_' + i + '_history_action'"
+                [id]="'pm_search_table_row_' + i + '_action_history'"
                 (click)="onHistory($event, rowData)"
                 (keydown.enter)="onHistory($event, rowData)"
                 (keydown.space)="onHistory($event, rowData)"
@@ -164,7 +164,7 @@
                 *ocxIfPermission="'PARAMETER#DELETE'"
                 tabindex="0"
                 class="p-2 danger-action-text font-medium"
-                [id]="'pm_search_table_row_' + i + '_delete_action'"
+                [id]="'pm_search_table_row_' + i + '_action_delete'"
                 (click)="onDelete($event, rowData)"
                 (keydown.enter)="onDelete($event, rowData)"
                 (keydown.space)="onDelete($event, rowData)"
@@ -209,19 +209,19 @@
               <div class="flex flex-row column-gap-2">
                 <div class="w-4 text-right">{{ 'PARAMETER.PRODUCT_NAME' | translate }}:</div>
                 <div class="w-8 text-left font-bold danger-action-text white-space-nowrap">
-                  {{ getProductDisplayName(parameter2Delete?.productName, metaData.allProducts) }}
+                  {{ getProductDisplayName(item4Delete?.productName, metaData.allProducts) }}
                 </div>
               </div>
               <div class="flex flex-row column-gap-2">
                 <div class="w-4 text-right">{{ 'PARAMETER.APP_ID' | translate }}:</div>
                 <div class="w-8 text-left font-bold danger-action-text white-space-nowrap">
-                  {{ parameter2Delete?.applicationId }}
+                  {{ item4Delete?.applicationId }}
                 </div>
               </div>
               <div class="flex flex-row column-gap-2">
                 <div class="w-4 text-right">{{ 'PARAMETER.NAME' | translate }}:</div>
                 <div class="w-8 text-left font-bold danger-action-text">
-                  {{ limitText(parameter2Delete?.displayName, 50) }}
+                  {{ limitText(item4Delete?.displayName, 50) }}
                 </div>
               </div>
             </div>
@@ -237,7 +237,7 @@
               [autofocus]="true"
               (onClick)="displayDeleteDialog = false"
               [label]="'ACTIONS.CONFIRMATION.NO' | translate"
-              [aria-label]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
+              [ariaLabel]="'ACTIONS.CONFIRMATION.NO' | translate"
               [pTooltip]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -247,7 +247,7 @@
               icon="pi pi-check"
               (onClick)="onDeleteConfirmation(data)"
               [label]="'ACTIONS.CONFIRMATION.YES' | translate"
-              [ariaLabel]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
+              [ariaLabel]="'ACTIONS.CONFIRMATION.YES' | translate"
               [pTooltip]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -258,10 +258,11 @@
     </ng-container>
   </ocx-page-content>
 
+  <!-- DETAIL -->
   <app-parameter-detail
     [displayDialog]="displayDetailDialog"
     (hideDialogAndChanged)="onCloseDetail($event)"
-    [parameter]="parameter"
+    [parameter]="item4Detail"
     [allProducts]="metaData.allProducts"
     [changeMode]="changeMode"
     [dateFormat]="dateFormat"
@@ -271,5 +272,5 @@
 <app-parameter-history
   [displayDialog]="displayHistoryDialog"
   (hideDialog)="onCloseHistory()"
-  [parameter]="parameter"
+  [parameter]="item4Detail"
 ></app-parameter-history>
