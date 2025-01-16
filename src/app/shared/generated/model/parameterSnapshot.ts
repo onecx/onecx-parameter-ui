@@ -9,13 +9,15 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ParameterValue } from './parameterValue';
+import { EximParameter } from './eximParameter';
 
 
-export interface ParameterUpdate { 
-    value?: ParameterValue;
-    description?: string;
-    displayName?: string;
-    modificationCount?: number;
+export interface ParameterSnapshot { 
+    /**
+     * ID of the request
+     */
+    id?: string;
+    created?: string;
+    products?: { [key: string]: Array<EximParameter>; };
 }
 

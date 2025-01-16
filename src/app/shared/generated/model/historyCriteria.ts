@@ -17,6 +17,5 @@ export interface HistoryCriteria {
     name?: string;
     pageNumber?: number;
     pageSize?: number;
-    type?: Array<string>;
 }
 

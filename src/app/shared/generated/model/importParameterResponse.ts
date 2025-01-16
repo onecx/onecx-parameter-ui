@@ -9,13 +9,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ParameterValue } from './parameterValue';
+import { ImportParameterResponseStatus } from './importParameterResponseStatus';
 
 
-export interface ParameterUpdate { 
-    value?: ParameterValue;
-    description?: string;
-    displayName?: string;
-    modificationCount?: number;
+export interface ImportParameterResponse { 
+    /**
+     * ID of the request
+     */
+    id?: string;
+    parameters?: { [key: string]: ImportParameterResponseStatus; };
 }
 
