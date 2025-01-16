@@ -9,24 +9,16 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ParameterValue } from './parameterValue';
 
 
-export interface Parameter { 
-    id?: string;
-    modificationCount?: number;
-    creationDate?: string;
-    creationUser?: string;
-    modificationDate?: string;
-    modificationUser?: string;
+export interface EximParameter { 
+    displayName?: string;
     description?: string;
     applicationId?: string;
     productName?: string;
     name?: string;
-    displayName?: string;
-    value?: ParameterValue;
-    importValue?: ParameterValue;
+    value?: object;
+    importValue?: object;
     operator?: boolean;
-    isInHistory?: boolean;
 }
 

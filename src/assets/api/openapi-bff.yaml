@@ -383,6 +383,60 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+  /parameters/export:
+    post:
+      x-onecx:
+        permissions:
+          parameter:
+            - read
+      tags:
+        - parameters
+      description: Export list of parameters
+      operationId: exportParameters
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportParameterRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParameterSnapshot'
+        "404":
+          description: No parameters founds
+  /parameters/import:
+    post:
+      x-onecx:
+        permissions:
+          parameter:
+            - write
+      tags:
+        - parameters
+      description: Import parameters
+      operationId: importParameters
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParameterSnapshot'
+      responses:
+        "200":
+          description: Import result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportParameterResponse'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
 components:
   schemas:
     ProductStoreSearchCriteria:
@@ -472,6 +526,10 @@ components:
           $ref: '#/components/schemas/ParameterValue'
         importValue:
           $ref: '#/components/schemas/ParameterValue'
+        operator:
+          type: boolean
+        isInHistory:
+          type: boolean
     ParameterValue:
       oneOf:
         - type: string
@@ -514,7 +572,7 @@ components:
           $ref: '#/components/schemas/ParameterValue'
         defaultValue:
           $ref: '#/components/schemas/ParameterValue'
-        type:
+        description:
           type: string
         instanceId:
           type: string
@@ -535,10 +593,6 @@ components:
           type: integer
           format: int32
           default: 100
-        type:
-          type: array
-          items:
-            type: string
     HistoryPageResult:
       type: object
       properties:
@@ -588,6 +642,9 @@ components:
           type: string
         displayName:
           type: string
+        modificationCount:
+          format: int32
+          type: integer
     ProductWrapper:
       type: object
       properties:
@@ -682,6 +739,69 @@ components:
           description: The size of page
           default: 100
           type: integer
+    ExportParameterRequest:
+      type: object
+      properties:
+        productNames:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+    ParameterSnapshot:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 10
+          description: ID of the request
+        created:
+          $ref: '#/components/schemas/OffsetDateTime'
+        products:
+          type: object
+          nullable: false
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/EximParameter'
+    ImportParameterResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 10
+          description: ID of the request
+        parameters:
+          additionalProperties:
+            $ref: '#/components/schemas/ImportParameterResponseStatus'
+    ImportParameterResponseStatus:
+      type: string
+      enum:
+        - UPDATE
+        - CREATED
+        - SKIP
+    EximParameter:
+      type: object
+      properties:
+        displayName:
+          type: string
+        description:
+          type: string
+        applicationId:
+          type: string
+        productName:
+          type: string
+        name:
+          type: string
+        value:
+          type: object
+        importValue:
+          type: object
+        operator:
+          type: boolean
+    OffsetDateTime:
+      format: date-time
+      type: string
+      example: 2022-03-10T12:15:50-04:00
     ProblemDetailResponse:
       type: object
       properties:
