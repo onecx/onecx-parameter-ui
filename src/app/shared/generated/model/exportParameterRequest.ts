@@ -9,13 +9,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ParameterValue } from './parameterValue';
 
 
-export interface ParameterUpdate { 
-    value?: ParameterValue;
-    description?: string;
-    displayName?: string;
-    modificationCount?: number;
+export interface ExportParameterRequest { 
+    productNames?: Array<string>;
 }
 

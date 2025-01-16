@@ -102,7 +102,7 @@
                 <a
                   *ocxIfPermission="'PARAMETER#VIEW'"
                   tabindex="0"
-                  class="p-2 text-primary font-medium"
+                  class="p-2 text-primary font-medium cursor-pointer border-circle"
                   [id]="'pm_search_table_row_' + i + '_action_view'"
                   (click)="onDetail('VIEW', rowData, $event)"
                   (keydown.enter)="onDetail('VIEW', rowData, $event)"
@@ -118,7 +118,7 @@
               <a
                 *ocxIfPermission="'PARAMETER#EDIT'"
                 tabindex="0"
-                class="p-2 text-primary font-medium"
+                class="p-2 text-primary font-medium cursor-pointer border-circle"
                 [id]="'pm_search_table_row_' + i + '_action_edit'"
                 (click)="onDetail('EDIT', rowData, $event)"
                 (keydown.enter)="onDetail('EDIT', rowData, $event)"
@@ -133,7 +133,7 @@
               <a
                 *ocxIfPermission="'PARAMETER#EDIT'"
                 tabindex="0"
-                class="p-2 text-primary font-medium"
+                class="p-2 text-primary font-medium cursor-pointer border-circle"
                 [id]="'pm_search_table_row_' + i + '_action_copy'"
                 (click)="onDetail('COPY', rowData, $event)"
                 (keydown.enter)="onDetail('COPY', rowData, $event)"
@@ -148,7 +148,7 @@
               <a
                 *ocxIfPermission="'PARAMETER#VIEW'"
                 tabindex="0"
-                class="p-2 text-primary font-medium"
+                class="p-2 text-primary font-medium cursor-pointer border-circle"
                 [id]="'pm_search_table_row_' + i + '_action_history'"
                 (click)="onHistory($event, rowData)"
                 (keydown.enter)="onHistory($event, rowData)"
@@ -163,7 +163,7 @@
               <a
                 *ocxIfPermission="'PARAMETER#DELETE'"
                 tabindex="0"
-                class="p-2 danger-action-text font-medium"
+                class="p-2 danger-action-text font-medium cursor-pointer border-circle"
                 [id]="'pm_search_table_row_' + i + '_action_delete'"
                 (click)="onDelete($event, rowData)"
                 (keydown.enter)="onDelete($event, rowData)"
@@ -201,29 +201,29 @@
         [resizable]="false"
         [dismissableMask]="true"
       >
-        <div class="flex column-gap-3 row-gap-1 justify-content-start align-items-center">
+        <div *ngIf="item4Delete" class="flex column-gap-3 row-gap-1 justify-content-start align-items-center">
           <div class="pi pi-question-circle text-3xl danger-action-text"></div>
           <div class="flex flex-column row-gap-2">
             <div id="pm_delete_message_text" class="mr-3 font-bold">
               {{ 'ACTIONS.DELETE.MESSAGE.TEXT' | translate }}
             </div>
-            <div id="pm_delete_parameter_name" class="px-2 flex flex-column row-gap-1">
+            <div class="px-2 flex flex-column row-gap-1">
               <div class="flex flex-row column-gap-2">
                 <div class="w-4 text-right">{{ 'PARAMETER.PRODUCT_NAME' | translate }}:</div>
-                <div class="w-8 text-left font-bold danger-action-text white-space-nowrap">
-                  {{ getProductDisplayName(item4Delete?.productName, metaData.allProducts) }}
+                <div class="w-8 text-left font-bold danger-action-text white-space-nowrap" id="pm_delete_product_name">
+                  {{ getProductDisplayName(item4Delete.productName, metaData.allProducts) }}
                 </div>
               </div>
               <div class="flex flex-row column-gap-2">
                 <div class="w-4 text-right">{{ 'PARAMETER.APP_ID' | translate }}:</div>
-                <div class="w-8 text-left font-bold danger-action-text white-space-nowrap">
-                  {{ item4Delete?.applicationId }}
+                <div class="w-8 text-left font-bold danger-action-text white-space-nowrap" id="pm_delete_app_id">
+                  {{ item4Delete.applicationId }}
                 </div>
               </div>
               <div class="flex flex-row column-gap-2">
                 <div class="w-4 text-right">{{ 'PARAMETER.NAME' | translate }}:</div>
-                <div class="w-8 text-left font-bold danger-action-text">
-                  {{ limitText(item4Delete?.displayName ? item4Delete?.displayName : item4Delete?.name, 50) }}
+                <div class="w-8 text-left font-bold danger-action-text" id="pm_delete_parameter_name">
+                  {{ limitText(item4Delete.displayName ? item4Delete.displayName : item4Delete.name, 50) }}
                 </div>
               </div>
             </div>
