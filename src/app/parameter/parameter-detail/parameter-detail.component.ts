@@ -142,7 +142,7 @@ export class ParameterDetailComponent implements OnChanges {
             this.onDialogHide(true)
           },
           error: (err) => {
-            this.msgService.error({ summaryKey: 'ACTIONS.EDIT.MESSAGE.NOK' })
+            this.createErrorMessage(err)
             console.error('updateParameter', err)
           }
         })
@@ -154,11 +154,21 @@ export class ParameterDetailComponent implements OnChanges {
             this.onDialogHide(true)
           },
           error: (err) => {
-            this.msgService.error({ summaryKey: 'ACTIONS.CREATE.MESSAGE.NOK' })
+            this.createErrorMessage(err)
             console.error('createParameter', err)
           }
         })
       }
     }
+  }
+
+  private createErrorMessage(err: any) {
+    this.msgService.error({
+      summaryKey: 'ACTIONS.' + this.changeMode + '.MESSAGE.NOK',
+      detailKey:
+        err?.error?.errorCode && err?.error?.errorCode === 'PERSIST_ENTITY_FAILED'
+          ? 'VALIDATION.ERRORS.PERSIST_ENTITY_FAILED'
+          : err.error
+    })
   }
 }

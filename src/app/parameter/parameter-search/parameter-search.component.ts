@@ -112,7 +112,7 @@ export class ParameterSearchComponent implements OnInit {
     this.prepareDataLoad()
     this.loadData()
     this.prepareDialogTranslations()
-    this.prepareActionButtons()
+    this.preparePageActions()
   }
 
   /**
@@ -146,7 +146,7 @@ export class ParameterSearchComponent implements OnInit {
       )
       .subscribe()
   }
-  private prepareActionButtons(): void {
+  private preparePageActions(): void {
     this.actions$ = this.translate.get(['ACTIONS.CREATE.LABEL', 'ACTIONS.CREATE.TOOLTIP']).pipe(
       map((data) => {
         return [
@@ -289,6 +289,7 @@ export class ParameterSearchComponent implements OnInit {
    */
   public onSearch(criteria: ParameterSearchCriteria, reuseCriteria = false): void {
     this.searching = true
+    this.exceptionKey = undefined
     if (!reuseCriteria) this.criteria = { ...criteria }
     this.data$ = this.parameterApi.searchParametersByCriteria({ parameterSearchCriteria: { ...this.criteria } }).pipe(
       tap((data: any) => {

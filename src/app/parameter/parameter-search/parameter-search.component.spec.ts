@@ -9,7 +9,7 @@ import { AppStateService, UserService } from '@onecx/angular-integration-interfa
 import { Column, createTranslateLoader, PortalMessageService } from '@onecx/portal-integration-angular'
 
 import { Parameter, ParametersAPIService, Product, ProductsAPIService } from 'src/app/shared/generated'
-import { TranslateServiceMock } from 'src/app/shared/TranslateServiceMock'
+import { TranslateServiceMock } from 'src/app/shared/mocks/TranslateServiceMock'
 import { ParameterSearchComponent } from './parameter-search.component'
 
 const itemData: Parameter[] = [
