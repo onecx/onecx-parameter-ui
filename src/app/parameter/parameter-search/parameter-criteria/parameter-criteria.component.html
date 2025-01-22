@@ -10,13 +10,14 @@
     <span class="p-float-label">
       <p-dropdown
         id="pm_search_criteria_product_name"
-        styleClass="w-18rem text-responsive"
+        styleClass="w-13rem sm:w-18rem text-responsive"
         formControlName="productName"
         [options]="productOptions"
         (onChange)="onChangeProductName($event.value)"
         [showClear]="true"
         [appendTo]="'body'"
         [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_PRODUCT' | translate"
+        [ariaLabel]="'PARAMETER.PRODUCT_NAME' | translate"
         [pTooltip]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
@@ -27,12 +28,13 @@
     <span *ocxAdvanced class="hidden sm:block p-float-label">
       <p-dropdown
         id="pm_search_criteria_application_id"
-        styleClass="w-18rem text-responsive"
+        styleClass="w-13rem sm:w-18rem text-responsive"
         formControlName="applicationId"
         [options]="appIdOptions"
         [showClear]="true"
         [appendTo]="'body'"
         [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_APP' | translate"
+        [ariaLabel]="'PARAMETER.APP_ID' | translate"
         [pTooltip]="'PARAMETER.TOOLTIPS.APP_ID' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
@@ -42,25 +44,13 @@
     </span>
     <span class="p-float-label">
       <input
-        id="pm_search_criteria_display_name"
-        pInputText
-        type="text"
-        formControlName="displayName"
-        class="w-18rem text-responsive"
-        [pTooltip]="'PARAMETER.TOOLTIPS.DISPLAY_NAME' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-      />
-      <label for="pm_search_criteria_display_name">{{ 'PARAMETER.DISPLAY_NAME' | translate }}</label>
-    </span>
-    <span *ocxAdvanced class="p-float-label">
-      <input
         id="pm_search_criteria_name"
         pInputText
         type="text"
         formControlName="name"
-        class="w-18rem text-responsive"
-        [pTooltip]="'PARAMETER.TOOLTIPS.NAME' | translate"
+        class="w-13rem sm:w-18rem text-responsive"
+        [attr.aria-label]="'PARAMETER.NAME' | translate"
+        [pTooltip]="'PARAMETER.TOOLTIPS.COMBINED_NAME' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
       />
