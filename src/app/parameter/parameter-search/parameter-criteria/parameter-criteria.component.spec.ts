@@ -15,13 +15,11 @@ import { ParameterCriteriaComponent, CriteriaForm } from './parameter-criteria.c
 const filledCriteria = new FormGroup<CriteriaForm>({
   productName: new FormControl<string | null>('productName'),
   applicationId: new FormControl<string | null>('applicationId'),
-  displayName: new FormControl<string | null>('name'),
   name: new FormControl<string | null>('name')
 })
 const emptyCriteria = new FormGroup<CriteriaForm>({
   productName: new FormControl<string | null>(null),
   applicationId: new FormControl<string | null>(null),
-  displayName: new FormControl<string | null>(null),
   name: new FormControl<string | null>(null)
 })
 const usedProducts: Product[] = [

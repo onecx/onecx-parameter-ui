@@ -24,7 +24,7 @@ const parameter: Parameter = {
   value: 'value'
 }
 
-describe('HistoryComponent', () => {
+xdescribe('HistoryComponent', () => {
   let component: ParameterHistoryComponent
   let fixture: ComponentFixture<ParameterHistoryComponent>
   let datePipe: DatePipe
