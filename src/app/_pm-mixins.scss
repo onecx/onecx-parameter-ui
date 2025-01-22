@@ -61,15 +61,9 @@
   }
 }
 
-// disable preset of opacity in form: not readable
-@mixin readable-disabled-form-controls {
-  :host {
-    .p-inputtext.p-component:disabled,
-    .p-dropdown.p-component.p-disabled,
-    .p-checkbox-box.p-disabled,
-    .p-checkbox-label.p-disabled {
-      opacity: unset;
-    }
+@mixin readable-disabled-components {
+  :host ::ng-deep {
+    --disabled-opacity: 0.7;
   }
 }
 
@@ -512,9 +506,6 @@
       }
       &.p-button-rounded {
         height: unset !important;
-      }
-      &:disabled {
-        opacity: 0.38 !important;
       }
     }
   }

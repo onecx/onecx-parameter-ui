@@ -11,7 +11,11 @@
     "COPY": {
       "LABEL": "Kopieren",
       "TOOLTIP": "Kopie erstellen",
-      "CLIPBOARD": "In die Zwischenablage kopieren"
+      "CLIPBOARD": "In die Zwischenablage kopieren",
+      "MESSAGE": {
+        "OK": "Der Parameter wurde erfolgreich erstellt",
+        "NOK": "Ein Fehler ist aufgetreten. Der Parameter wurde nicht erstellt."
+      }
     },
     "CREATE": {
       "LABEL": "Erstellen",
@@ -181,6 +185,7 @@
   },
   "VALIDATION": {
     "ERRORS": {
+      "PERSIST_ENTITY_FAILED": "Ein Parameter mit diesem Namen existert schon für die Applikation.",
       "EMPTY_REQUIRED_FIELD": "Pflichtfeld",
       "FORM_MANDATORY": "Pflichtfelder fehlen",
       "MAXIMUM_LENGTH": "Es sind nur {{chars}} Zeichen erlaubt.",

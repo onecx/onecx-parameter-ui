@@ -87,7 +87,7 @@
                 id="pm_detail_form_name"
                 formControlName="name"
                 class="w-full pt-3 pb-2 text-responsive"
-                [ariaLabel]="'PARAMETER.NAME' | translate"
+                [attr.aria-label]="'PARAMETER.NAME' | translate"
                 [pTooltip]="'PARAMETER.TOOLTIPS.NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -106,7 +106,7 @@
                 id="pm_detail_form_display_name"
                 formControlName="displayName"
                 class="w-full pt-3 pb-2 text-responsive"
-                [ariaLabel]="'PARAMETER.DISPLAY_NAME' | translate"
+                [attr.aria-label]="'PARAMETER.DISPLAY_NAME' | translate"
                 [pTooltip]="'PARAMETER.TOOLTIPS.DISPLAY_NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -228,10 +228,11 @@
             <input
               pInputText
               type="text"
-              readonly
               id="ps_app_detail_form_field_creation_date"
               class="w-full sm:w-15rem pt-3 pb-2 text-responsive"
+              [disabled]="true"
               [value]="parameter?.creationDate ? (parameter?.creationDate | date: dateFormat) : ''"
+              [attr.aria-label]="'INTERNAL.CREATION_DATE' | translate"
               [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -242,10 +243,11 @@
             <input
               pInputText
               type="text"
-              readonly
               id="ps_app_detail_form_field_creation_user"
               class="w-full pt-3 pb-2 text-responsive"
+              [disabled]="true"
               [value]="parameter?.creationUser"
+              [attr.aria-label]="'INTERNAL.CREATION_USER' | translate"
               [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_USER' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -260,10 +262,11 @@
             <input
               pInputText
               type="text"
-              readonly
               id="ps_app_detail_form_field_modification_date"
               class="w-full sm:w-15rem pt-3 pb-2"
+              [disabled]="true"
               [value]="parameter?.modificationDate ? (parameter?.modificationDate | date: dateFormat) : ''"
+              [attr.aria-label]="'INTERNAL.MODIFICATION_DATE' | translate"
               [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -276,10 +279,11 @@
             <input
               pInputText
               type="text"
-              readonly
               id="ps_app_detail_form_field_modification_user"
               class="w-full pt-3 pb-2 text-responsive"
+              [disabled]="true"
               [value]="parameter?.modificationUser"
+              [attr.aria-label]="'INTERNAL.MODIFICATION_USER' | translate"
               [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_USER' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"

@@ -324,6 +324,48 @@ describe('ParameterDetailComponent', () => {
         expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.EDIT.MESSAGE.NOK' })
         expect(console.error).toHaveBeenCalledWith('updateParameter', errorResponse)
       })
+
+      it('should display error if update fails due to unique constraint violation', () => {
+        const errorResponse = {
+          status: 400,
+          statusText: 'Could not update ...',
+          error: { errorCode: 'PERSIST_ENTITY_FAILED' }
+        }
+        apiServiceSpy.updateParameter.and.returnValue(throwError(() => errorResponse))
+        spyOn(console, 'error')
+        component.changeMode = 'EDIT'
+        component.parameter = parameter
+        component.formGroup = formGroup
+
+        component.onSave()
+
+        expect(msgServiceSpy.error).toHaveBeenCalledWith({
+          summaryKey: 'ACTIONS.EDIT.MESSAGE.NOK',
+          detailKey: 'VALIDATION.ERRORS.PERSIST_ENTITY_FAILED'
+        })
+        expect(console.error).toHaveBeenCalledWith('updateParameter', errorResponse)
+      })
+
+      it('should display error if update fails due to unique constraint violation', () => {
+        const errorResponse = {
+          status: 400,
+          statusText: 'Could not update ...',
+          error: { errorCode: 'ANY_OTHER_ERROR_KEY' }
+        }
+        apiServiceSpy.updateParameter.and.returnValue(throwError(() => errorResponse))
+        spyOn(console, 'error')
+        component.changeMode = 'EDIT'
+        component.parameter = parameter
+        component.formGroup = formGroup
+
+        component.onSave()
+
+        expect(msgServiceSpy.error).toHaveBeenCalledWith({
+          summaryKey: 'ACTIONS.EDIT.MESSAGE.NOK',
+          detailKey: errorResponse.error.errorCode
+        })
+        expect(console.error).toHaveBeenCalledWith('updateParameter', errorResponse)
+      })
     })
   })
 

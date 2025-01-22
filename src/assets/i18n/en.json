@@ -11,7 +11,11 @@
     "COPY": {
       "LABEL": "Copy",
       "TOOLTIP": "Create a copy",
-      "CLIPBOARD": "Copy to clipboard"
+      "CLIPBOARD": "Copy to clipboard",
+      "MESSAGE": {
+        "OK": "The Parameter was created successfully",
+        "NOK": "An error has occurred. The Parameter was not created."
+      }
     },
     "CREATE": {
       "LABEL": "Create",
@@ -139,7 +143,7 @@
     },
     "DATAVIEW": {
       "FILTER": "Filter",
-      "FILTER_TOOLTIP": "Filter Applications",
+      "FILTER_TOOLTIP": "Filtering ...",
       "FILTER_BY": "Filter by ",
       "FILTER_CLEAR": "Clear Filter",
       "FILTER_PLACEHOLDER": "Filter"
@@ -181,6 +185,7 @@
   },
   "VALIDATION": {
     "ERRORS": {
+      "PERSIST_ENTITY_FAILED": "A Parameter with this name already exists for the Application.",
       "EMPTY_REQUIRED_FIELD": "required field",
       "FORM_MANDATORY": "Mandatory fields are missing",
       "MAXIMUM_LENGTH": "Only {{chars}} characters are allowed.",

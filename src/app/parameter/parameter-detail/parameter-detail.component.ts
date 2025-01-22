@@ -10,6 +10,8 @@ import { Parameter, ParametersAPIService, Product } from 'src/app/shared/generat
 import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
 import { ChangeMode } from '../parameter-search/parameter-search.component'
 
+type ErrorMessageType = { summaryKey: string; detailKey?: string }
+
 @Component({
   selector: 'app-parameter-detail',
   templateUrl: './parameter-detail.component.html',
@@ -142,7 +144,7 @@ export class ParameterDetailComponent implements OnChanges {
             this.onDialogHide(true)
           },
           error: (err) => {
-            this.msgService.error({ summaryKey: 'ACTIONS.EDIT.MESSAGE.NOK' })
+            this.createErrorMessage(err)
             console.error('updateParameter', err)
           }
         })
@@ -154,11 +156,24 @@ export class ParameterDetailComponent implements OnChanges {
             this.onDialogHide(true)
           },
           error: (err) => {
-            this.msgService.error({ summaryKey: 'ACTIONS.CREATE.MESSAGE.NOK' })
+            this.createErrorMessage(err)
             console.error('createParameter', err)
           }
         })
       }
     }
+  }
+
+  private createErrorMessage(err: any) {
+    let errMsg: ErrorMessageType = { summaryKey: 'ACTIONS.' + this.changeMode + '.MESSAGE.NOK' }
+    if (err?.error?.errorCode)
+      errMsg = {
+        ...errMsg,
+        detailKey:
+          err?.error?.errorCode === 'PERSIST_ENTITY_FAILED'
+            ? 'VALIDATION.ERRORS.PERSIST_ENTITY_FAILED'
+            : err.error.errorCode
+      }
+    this.msgService.error(errMsg)
   }
 }
