@@ -5,12 +5,13 @@ import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
 import { of, throwError } from 'rxjs'
 
-import { AppStateService, UserService } from '@onecx/angular-integration-interface'
-import { Column, createTranslateLoader, PortalMessageService } from '@onecx/portal-integration-angular'
+import { UserService } from '@onecx/angular-integration-interface'
+import { Column, PortalMessageService } from '@onecx/portal-integration-angular'
 
 import { Parameter, ParametersAPIService, Product, ProductsAPIService } from 'src/app/shared/generated'
 import { TranslateServiceMock } from 'src/app/shared/mocks/TranslateServiceMock'
 import { ParameterSearchComponent } from './parameter-search.component'
+import { createTranslateLoader } from '@onecx/angular-utils'
 
 const itemData: Parameter[] = [
   {
@@ -80,11 +81,7 @@ describe('ParameterSearchComponent', () => {
       imports: [
         TranslateModule.forRoot({
           isolate: true,
-          loader: {
-            provide: TranslateLoader,
-            useFactory: createTranslateLoader,
-            deps: [HttpClient, AppStateService]
-          }
+          loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] }
         })
       ],
       schemas: [NO_ERRORS_SCHEMA],

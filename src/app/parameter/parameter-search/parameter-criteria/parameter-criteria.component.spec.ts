@@ -6,11 +6,11 @@ import { FormControl, FormGroup } from '@angular/forms'
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { SelectItem } from 'primeng/api'
 
-import { AppStateService, UserService } from '@onecx/angular-integration-interface'
-import { createTranslateLoader } from '@onecx/portal-integration-angular'
+import { UserService } from '@onecx/angular-integration-interface'
 
 import { Product } from 'src/app/shared/generated'
 import { ParameterCriteriaComponent, CriteriaForm } from './parameter-criteria.component'
+import { createTranslateLoader } from '@onecx/angular-utils'
 
 const filledCriteria = new FormGroup<CriteriaForm>({
   productName: new FormControl<string | null>('productName'),
@@ -42,11 +42,7 @@ describe('ParameterCriteriaComponent', () => {
       declarations: [ParameterCriteriaComponent],
       imports: [
         TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useFactory: createTranslateLoader,
-            deps: [HttpClient, AppStateService]
-          }
+          loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] }
         })
       ],
       schemas: [NO_ERRORS_SCHEMA],

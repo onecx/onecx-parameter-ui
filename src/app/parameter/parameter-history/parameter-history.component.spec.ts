@@ -7,11 +7,12 @@ import { FormBuilder } from '@angular/forms'
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { of, throwError } from 'rxjs'
 
-import { AppStateService, UserService } from '@onecx/angular-integration-interface'
-import { createTranslateLoader, PortalMessageService } from '@onecx/portal-integration-angular'
+import { UserService } from '@onecx/angular-integration-interface'
+import { PortalMessageService } from '@onecx/portal-integration-angular'
 
 import { ParametersAPIService, HistoriesAPIService, Parameter } from 'src/app/shared/generated'
 import { ParameterHistoryComponent } from './parameter-history.component'
+import { createTranslateLoader } from '@onecx/angular-utils'
 
 const productName = 'prod1'
 const app = 'app1'
@@ -46,11 +47,7 @@ xdescribe('HistoryComponent', () => {
       declarations: [ParameterHistoryComponent],
       imports: [
         TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useFactory: createTranslateLoader,
-            deps: [HttpClient, AppStateService]
-          }
+          loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] }
         })
       ],
       schemas: [NO_ERRORS_SCHEMA],
