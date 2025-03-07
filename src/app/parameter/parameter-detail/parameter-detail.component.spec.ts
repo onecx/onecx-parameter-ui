@@ -7,8 +7,9 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { of, throwError } from 'rxjs'
 import { SelectItem } from 'primeng/api'
 
-import { AppStateService, UserService } from '@onecx/angular-integration-interface'
-import { createTranslateLoader, PortalMessageService } from '@onecx/portal-integration-angular'
+import { UserService } from '@onecx/angular-integration-interface'
+import { PortalMessageService } from '@onecx/portal-integration-angular'
+import { createTranslateLoader } from '@onecx/angular-utils'
 
 import { Parameter, ParametersAPIService, Product } from 'src/app/shared/generated'
 import { ParameterDetailComponent } from './parameter-detail.component'
@@ -55,11 +56,7 @@ describe('ParameterDetailComponent', () => {
       declarations: [ParameterDetailComponent],
       imports: [
         TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useFactory: createTranslateLoader,
-            deps: [HttpClient, AppStateService]
-          }
+          loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] }
         })
       ],
       schemas: [NO_ERRORS_SCHEMA],
