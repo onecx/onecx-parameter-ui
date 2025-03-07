@@ -9,10 +9,10 @@ import { SelectItem } from 'primeng/api'
 
 import { UserService } from '@onecx/angular-integration-interface'
 import { PortalMessageService } from '@onecx/portal-integration-angular'
+import { createTranslateLoader } from '@onecx/angular-utils'
 
 import { Parameter, ParametersAPIService, Product } from 'src/app/shared/generated'
 import { ParameterDetailComponent } from './parameter-detail.component'
-import { createTranslateLoader } from '@onecx/angular-utils'
 
 const parameter: Parameter = {
   modificationCount: 0,

@@ -7,10 +7,10 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { SelectItem } from 'primeng/api'
 
 import { UserService } from '@onecx/angular-integration-interface'
+import { createTranslateLoader } from '@onecx/angular-utils'
 
 import { Product } from 'src/app/shared/generated'
 import { ParameterCriteriaComponent, CriteriaForm } from './parameter-criteria.component'
-import { createTranslateLoader } from '@onecx/angular-utils'
 
 const filledCriteria = new FormGroup<CriteriaForm>({
   productName: new FormControl<string | null>('productName'),

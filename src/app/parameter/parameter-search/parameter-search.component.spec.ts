@@ -7,11 +7,11 @@ import { of, throwError } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
 import { Column, PortalMessageService } from '@onecx/portal-integration-angular'
+import { createTranslateLoader } from '@onecx/angular-utils'
 
 import { Parameter, ParametersAPIService, Product, ProductsAPIService } from 'src/app/shared/generated'
 import { TranslateServiceMock } from 'src/app/shared/mocks/TranslateServiceMock'
 import { ParameterSearchComponent } from './parameter-search.component'
-import { createTranslateLoader } from '@onecx/angular-utils'
 
 const itemData: Parameter[] = [
   {
