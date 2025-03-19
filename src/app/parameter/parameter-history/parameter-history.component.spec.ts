@@ -12,6 +12,7 @@ import { PortalMessageService } from '@onecx/portal-integration-angular'
 
 import { ParametersAPIService, HistoriesAPIService, Parameter } from 'src/app/shared/generated'
 import { ParameterHistoryComponent } from './parameter-history.component'
+import { createTranslateLoader } from '@onecx/angular-utils'
 
 const productName = 'prod1'
 const app = 'app1'
