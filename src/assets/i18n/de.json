@@ -47,6 +47,7 @@
       "LABEL": "Export",
       "TOOLTIP": "Definition als JSON herunterladen",
       "MESSAGE": {
+        "OK": "Die Parameter wurden erfolgreich exportiert.",
         "NOK": "Ein Fehler ist aufgetreten. Die Parameter konnten nicht exportiert werden."
       }
     },
@@ -104,6 +105,8 @@
     }
   },
   "INTERNAL": {
+    "HEADER": "Intern",
+    "TOOLTIP": "Interne Eigenschaften",
     "CREATION_DATE": "Erstellt am",
     "CREATION_USER": "Erstellt von",
     "MODIFICATION_DATE": "Geändert am",

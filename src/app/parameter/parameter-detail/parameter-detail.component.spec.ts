@@ -1,15 +1,14 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { provideHttpClient, HttpClient } from '@angular/common/http'
+import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
+import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 import { SelectItem } from 'primeng/api'
 
 import { UserService } from '@onecx/angular-integration-interface'
 import { PortalMessageService } from '@onecx/portal-integration-angular'
-import { createTranslateLoader } from '@onecx/angular-utils'
 
 import { Parameter, ParametersAPIService, Product } from 'src/app/shared/generated'
 import { ParameterDetailComponent } from './parameter-detail.component'
@@ -55,9 +54,10 @@ describe('ParameterDetailComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ParameterDetailComponent],
       imports: [
-        TranslateModule.forRoot({
-          loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] }
-        })
+        TranslateTestingModule.withTranslations({
+          de: require('src/assets/i18n/de.json'),
+          en: require('src/assets/i18n/en.json')
+        }).withDefaultLanguage('en')
       ],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [

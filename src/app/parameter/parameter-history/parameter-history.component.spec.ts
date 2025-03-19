@@ -1,10 +1,10 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { DatePipe } from '@angular/common'
-import { provideHttpClient, HttpClient } from '@angular/common/http'
+import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormBuilder } from '@angular/forms'
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
+import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
@@ -12,7 +12,6 @@ import { PortalMessageService } from '@onecx/portal-integration-angular'
 
 import { ParametersAPIService, HistoriesAPIService, Parameter } from 'src/app/shared/generated'
 import { ParameterHistoryComponent } from './parameter-history.component'
-import { createTranslateLoader } from '@onecx/angular-utils'
 
 const productName = 'prod1'
 const app = 'app1'
@@ -46,9 +45,10 @@ xdescribe('HistoryComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ParameterHistoryComponent],
       imports: [
-        TranslateModule.forRoot({
-          loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] }
-        })
+        TranslateTestingModule.withTranslations({
+          de: require('src/assets/i18n/de.json'),
+          en: require('src/assets/i18n/en.json')
+        }).withDefaultLanguage('en')
       ],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [

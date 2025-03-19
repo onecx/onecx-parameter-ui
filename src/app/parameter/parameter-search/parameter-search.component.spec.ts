@@ -1,16 +1,14 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { provideHttpClient, HttpClient } from '@angular/common/http'
+import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
-import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
+import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
 import { Column, PortalMessageService } from '@onecx/portal-integration-angular'
-import { createTranslateLoader } from '@onecx/angular-utils'
 
 import { Parameter, ParametersAPIService, Product, ProductsAPIService } from 'src/app/shared/generated'
-import { TranslateServiceMock } from 'src/app/shared/mocks/TranslateServiceMock'
 import { ParameterSearchComponent } from './parameter-search.component'
 
 const itemData: Parameter[] = [
@@ -79,17 +77,16 @@ describe('ParameterSearchComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ParameterSearchComponent],
       imports: [
-        TranslateModule.forRoot({
-          isolate: true,
-          loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] }
-        })
+        TranslateTestingModule.withTranslations({
+          de: require('src/assets/i18n/de.json'),
+          en: require('src/assets/i18n/en.json')
+        }).withDefaultLanguage('en')
       ],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: UserService, useValue: mockUserService },
-        { provide: TranslateService, useClass: TranslateServiceMock },
         { provide: PortalMessageService, useValue: msgServiceSpy },
         { provide: ParametersAPIService, useValue: apiServiceSpy },
         { provide: ProductsAPIService, useValue: productApiSpy }
