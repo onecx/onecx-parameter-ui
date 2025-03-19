@@ -45,8 +45,9 @@
     },
     "EXPORT": {
       "LABEL": "Export",
-      "TOOLTIP": "Export definition in JSON format",
+      "TOOLTIP": "Export of selected Parameters in JSON format.",
       "MESSAGE": {
+        "OK": "The Parameters were successfully exported.",
         "NOK": "An error has occurred. The Parameters could not be exported."
       }
     },
@@ -54,8 +55,8 @@
       "LABEL": "Import",
       "TOOLTIP": "Upload definition in JSON format",
       "MESSAGE": {
-        "OK": "Die Parameter wurden erfolgreich importiert.",
-        "NOK": "An error has occurred. The Parameters could not be exported."
+        "OK": "The Parameters were successfully imported.",
+        "NOK": "An error has occurred. The Parameters could not be imported."
       }
     },
     "NAVIGATION": {
@@ -104,6 +105,8 @@
     }
   },
   "INTERNAL": {
+    "HEADER": "Internal",
+    "TOOLTIP": "Internal properties",
     "CREATION_DATE": "Created on",
     "CREATION_USER": "Created by",
     "MODIFICATION_DATE": "Changed on",

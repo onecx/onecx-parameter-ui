@@ -11,6 +11,7 @@ import {
   ParameterSearchCriteria,
   ParametersAPIService,
   Product,
+  ProductWrapper,
   ProductsAPIService
 } from 'src/app/shared/generated'
 import { limitText } from 'src/app/shared/utils'
@@ -53,6 +54,7 @@ export class ParameterSearchComponent implements OnInit {
   // data
   public data$: Observable<Parameter[]> | undefined
   public metaData$!: Observable<AllMetaData> // collection of data used in UI
+  public products$!: Observable<ProductWrapper> // getting data from bff endpoint
   public allProducts$!: Observable<Product[]> // getting data from bff endpoint
   public usedProducts$!: Observable<Product[]> // getting data from bff endpoint
   public criteria: ParameterSearchCriteria = {}
@@ -246,7 +248,22 @@ export class ParameterSearchComponent implements OnInit {
    *   2. Trigger searching data
    */
   private prepareDataLoad(): void {
-    // declare search for ALL products provided by bff
+    /* ProductWrapper:
+             products?: Array<Product>;
+         usedProducts?: Array<Product>;
+    */
+    /*
+    this.products$ = this.parameterApi.getProducts().pipe(
+      map((data) => {
+        return data ?? {}
+      }),
+      catchError((err) => {
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+        console.error('getProducts', err)
+        return of({} as ProductWrapper)
+      })
+    )*/
+    // declare search for ALL products privided by bff
     this.allProducts$ = this.productsApi.searchAllAvailableProducts({ productStoreSearchCriteria: {} }).pipe(
       map((data) => {
         return data.stream ? data.stream.sort(this.sortProductsByDisplayName) : []
