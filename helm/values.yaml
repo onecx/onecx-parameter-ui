@@ -5,7 +5,6 @@ app:
   routing:
     enabled: true
     path: /mfe/parameter/
-  
   operator:
     # Microfrontend
     microfrontend:
@@ -19,6 +18,13 @@ app:
           technology: WEBCOMPONENTMODULE
           remoteName: onecx-parameter
           tagName: ocx-parameter-component
+    # Slot
+    slot:
+      enabled: true
+      specs:
+        onecx-product-infos:
+          name: 'onecx-product-infos'
+          description: 'Product details received from product store'
     # Permission
     permission:
       enabled: true
@@ -29,4 +35,3 @@ app:
             EDIT: Edit parameter
             VIEW: View parameter
             SEARCH: Search parameter
-# PIPE Config

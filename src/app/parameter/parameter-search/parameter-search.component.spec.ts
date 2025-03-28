@@ -2,6 +2,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
+import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
@@ -122,6 +123,28 @@ describe('ParameterSearchComponent', () => {
     it('should call OnInit and populate filteredColumns/actions correctly', () => {
       component.ngOnInit()
       expect(component.filteredColumns[0]).toEqual(component.columns[0])
+    })
+
+    it('dataview translations', (done) => {
+      const translationData = {
+        'DIALOG.DATAVIEW.FILTER': 'filter',
+        'DIALOG.DATAVIEW.FILTER_OF': 'filterOf',
+        'DIALOG.DATAVIEW.SORT_BY': 'sortBy'
+      }
+      const translateService = TestBed.inject(TranslateService)
+      spyOn(translateService, 'get').and.returnValue(of(translationData))
+
+      component.ngOnInit()
+
+      component.dataViewControlsTranslations$?.subscribe({
+        next: (data) => {
+          if (data) {
+            expect(data.sortDropdownTooltip).toEqual('sortBy')
+          }
+          done()
+        },
+        error: done.fail
+      })
     })
   })
 
@@ -398,10 +421,9 @@ describe('ParameterSearchComponent', () => {
   describe('action buttons', () => {
     it('should open create dialog using UI action', () => {
       spyOn(component, 'onDetail')
+
       component.ngOnInit()
-      component.actions$?.subscribe((action) => {
-        action[0].actionCallback()
-      })
+      component.actions[0].actionCallback()
 
       expect(component.onDetail).toHaveBeenCalled()
     })
