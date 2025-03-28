@@ -10,7 +10,8 @@ import { SelectItem } from 'primeng/api'
 import { UserService } from '@onecx/angular-integration-interface'
 import { PortalMessageService } from '@onecx/portal-integration-angular'
 
-import { Parameter, ParametersAPIService, Product } from 'src/app/shared/generated'
+import { Parameter, ParametersAPIService } from 'src/app/shared/generated'
+import { ExtendedProduct, ApplicationAbstract } from '../parameter-search/parameter-search.component'
 import { ParameterDetailComponent } from './parameter-detail.component'
 
 const parameter: Parameter = {
@@ -22,13 +23,19 @@ const parameter: Parameter = {
   displayName: 'displayName',
   value: 'value'
 }
-const allProducts: Product[] = [
-  { productName: 'prod1', displayName: 'prod1_display' },
-  { productName: 'prod2', displayName: 'prod2_display' }
+const app1: ApplicationAbstract = { appId: 'app1-svc', appName: 'OneCX app svc 1' }
+const app2: ApplicationAbstract = { appId: 'app2-svc', appName: 'OneCX app svc 2' }
+const allProducts: ExtendedProduct[] = [
+  { name: 'product1', displayName: 'Product 1', applications: [app1, app2] },
+  { name: 'product2', displayName: 'Product 2', applications: [app2] }
 ]
 const allProductsSI: SelectItem[] = [
-  { label: 'prod1_display', value: 'prod1' },
-  { label: 'prod2_display', value: 'prod2' }
+  { label: 'Product 1', value: 'product1' },
+  { label: 'Product 2', value: 'product2' }
+]
+const appOptionsP1: SelectItem[] = [
+  { label: app1.appName, value: app1.appId },
+  { label: app2.appName, value: app2.appId }
 ]
 
 describe('ParameterDetailComponent', () => {
@@ -380,31 +387,25 @@ describe('ParameterDetailComponent', () => {
     })
 
     describe('onChangeProductName', () => {
-      it('should reject update appIdOptions if no product name is provided', () => {
+      it('should reject update appOptions if no product name is provided', () => {
         component.onChangeProductName(undefined)
 
-        expect(component.appIdOptions).toEqual([])
+        expect(component.appOptions).toEqual([])
       })
 
-      it('should update appIdOptions based on the product name', () => {
-        component.allProducts = [
-          { productName: 'productA', applications: ['app1', 'app2'] },
-          { productName: 'productB', displayName: 'Prouct B', applications: ['app3'] }
-        ]
-        component.onChangeProductName('productA')
+      it('should update appOptions based on the product name', () => {
+        component.allProducts = allProducts
+        component.onChangeProductName(allProducts[0].name)
 
-        expect(component.appIdOptions).toEqual([
-          { label: 'app1', value: 'app1' },
-          { label: 'app2', value: 'app2' }
-        ])
+        expect(component.appOptions).toEqual(appOptionsP1)
         expect(component.formGroup.controls['applicationId'].value).toBeNull()
       })
 
-      it('should clear appIdOptions if productName does not match', () => {
-        component.allProducts = [{ productName: 'Product A', applications: ['App1', 'App2'] }]
-        component.onChangeProductName('Product C')
+      it('should clear appOptions if productName does not match', () => {
+        component.allProducts = allProducts
+        component.onChangeProductName('unknown')
 
-        expect(component.appIdOptions).toEqual([])
+        expect(component.appOptions).toEqual([])
         expect(component.formGroup.controls['applicationId'].value).toBeNull()
       })
     })

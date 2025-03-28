@@ -25,7 +25,7 @@ const app1: ApplicationAbstract = { appId: 'app1-svc', appName: 'OneCX app svc 1
 const app2: ApplicationAbstract = { appId: 'app2-svc', appName: 'OneCX app svc 2' }
 const usedProducts: ExtendedProduct[] = [
   { name: 'product1', displayName: 'Product 1', applications: [app1, app2] },
-  { name: 'product2', displayName: 'product 2', applications: [app2] }
+  { name: 'product2', displayName: 'Product 2', applications: [app2] }
 ]
 const usedProductsSI: SelectItem[] = [
   { label: 'Product 1', value: 'product1' },

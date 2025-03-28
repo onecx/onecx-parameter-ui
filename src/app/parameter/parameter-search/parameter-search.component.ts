@@ -163,10 +163,11 @@ export class ParameterSearchComponent implements OnInit {
           uP.forEach((p) => {
             const apps: ApplicationAbstract[] = []
             p.applications?.forEach((s) => {
-              apps.push({ appName: s, appId: s, undeployed: false, deprecated: false } as ApplicationAbstract)
+              apps.push({ appName: s, appId: s } as ApplicationAbstract)
             })
             ups.push({ name: p.productName, displayName: p.productName, applications: apps } as ExtendedProduct)
           })
+          ups.sort(this.sortByDisplayName)
           return ups
         }),
         catchError((err) => {
@@ -251,8 +252,7 @@ export class ParameterSearchComponent implements OnInit {
         'PARAMETER.APP_ID',
         'PARAMETER.NAME',
         'PARAMETER.DISPLAY_NAME',
-        'DIALOG.DATAVIEW.FILTER',
-        'DIALOG.DATAVIEW.FILTER_BY'
+        'DIALOG.DATAVIEW.FILTER'
       ])
       .pipe(
         map((data) => {

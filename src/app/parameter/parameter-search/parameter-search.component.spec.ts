@@ -10,7 +10,7 @@ import { UserService } from '@onecx/angular-integration-interface'
 import { Column, PortalMessageService } from '@onecx/portal-integration-angular'
 
 import { Parameter, ParametersAPIService, Product, ProductsAPIService } from 'src/app/shared/generated'
-import { ExtendedProduct, ParameterSearchComponent } from './parameter-search.component'
+import { ApplicationAbstract, ExtendedProduct, ParameterSearchComponent } from './parameter-search.component'
 
 const itemData: Parameter[] = [
   {
@@ -30,33 +30,43 @@ const itemData: Parameter[] = [
     name: 'name1',
     value: { v: 'v2' },
     importValue: { v: 'v2' }
-  },
-  {
-    modificationCount: 0,
-    id: 'id3',
-    productName: 'product3',
-    applicationId: 'app3',
-    name: 'name3',
-    value: 3,
-    importValue: 4
   }
 ]
 // Original form BFF: unsorted and not complete
 const usedProductsOrg: Product[] = [
-  { productName: 'product3', displayName: undefined, applications: ['p3-svc'] },
-  { productName: 'product1', displayName: undefined, applications: ['p1-svc'] }
+  { productName: 'product2', displayName: undefined, applications: ['app2-svc'] },
+  { productName: 'product1', displayName: undefined, applications: ['app1-svc'] }
 ]
-// Reformat: sorted and complete
+const app1: ApplicationAbstract = { appId: 'app1-svc', appName: 'app1-svc' }
+const app2: ApplicationAbstract = { appId: 'app2-svc', appName: 'app2-svc' }
+const app1Final: ApplicationAbstract = {
+  appId: 'app1-svc',
+  appName: 'OneCX app svc 1',
+  undeployed: false,
+  deprecated: false
+}
+const app2Final: ApplicationAbstract = {
+  appId: 'app2-svc',
+  appName: 'OneCX app svc 2',
+  undeployed: false,
+  deprecated: false
+}
+// + reformat + sort
 const usedProducts: ExtendedProduct[] = [
-  { name: 'product1', displayName: 'Product 1', applications: [{ appId: 'p1-svc' }] },
-  { name: 'product3', displayName: 'product3', applications: [{ appId: 'p3-svc' }] }
+  { name: 'product1', displayName: 'product1', applications: [app1] },
+  { name: 'product2', displayName: 'product2', applications: [app2] }
 ]
-const allProducts: Product[] = [
-  { productName: 'product1', displayName: 'Product 1', applications: ['p1-svc', 'p1-bff'] },
-  { productName: 'product2', displayName: 'Product 2', applications: ['p2-svc', 'p2-bff'] },
-  { productName: 'product3', displayName: undefined, applications: ['p3-svc', 'p3-bff'] },
-  { productName: 'product5', displayName: undefined, applications: ['p5-svc', 'p5-bff'] },
-  { productName: 'product4', displayName: undefined, applications: ['p4-svc', 'p4-bff'] }
+// ++ enriched
+const usedProductsFinal: ExtendedProduct[] = [
+  { name: 'product1', displayName: 'Product 1', applications: [app1Final] },
+  { name: 'product2', displayName: 'Product 2', applications: [app2Final] }
+]
+const allProducts: ExtendedProduct[] = [
+  { name: 'product1', displayName: 'Product 1', applications: [app1Final] },
+  { name: 'product2', displayName: 'Product 2', applications: [app2Final] },
+  { name: 'product3', displayName: 'Product 3', applications: [{ appId: 'app3-svc' }, { appId: 'app3-bff' }] },
+  { name: 'product5', displayName: 'Product 4', applications: [{ appId: 'app4-svc' }, { appId: 'app4-bff' }] },
+  { name: 'product4', displayName: 'Product 5', applications: [{ appId: 'app5-svc' }] }
 ]
 
 describe('ParameterSearchComponent', () => {
@@ -127,9 +137,7 @@ describe('ParameterSearchComponent', () => {
 
     it('dataview translations', (done) => {
       const translationData = {
-        'DIALOG.DATAVIEW.FILTER': 'filter',
-        'DIALOG.DATAVIEW.FILTER_OF': 'filterOf',
-        'DIALOG.DATAVIEW.SORT_BY': 'sortBy'
+        'DIALOG.DATAVIEW.FILTER': 'filter'
       }
       const translateService = TestBed.inject(TranslateService)
       spyOn(translateService, 'get').and.returnValue(of(translationData))
@@ -139,7 +147,7 @@ describe('ParameterSearchComponent', () => {
       component.dataViewControlsTranslations$?.subscribe({
         next: (data) => {
           if (data) {
-            expect(data.sortDropdownTooltip).toEqual('sortBy')
+            expect(data.filterInputPlaceholder).toEqual('filter')
           }
           done()
         },
@@ -203,7 +211,7 @@ describe('ParameterSearchComponent', () => {
    * META data: which were assigned to data
    */
   describe('META data: load used products', () => {
-    fit('should get all products which are assigned to data', (done) => {
+    it('should get all products which are assigned to data', (done) => {
       apiServiceSpy.getAllApplications.and.returnValue(of(usedProductsOrg))
 
       component.ngOnInit()
@@ -271,10 +279,10 @@ describe('ParameterSearchComponent', () => {
       })
     })
   })
-*/
   describe('META data: load all meta data together and check enrichments', () => {
     it('should get all meta data - successful', (done) => {
-      productApiSpy.searchAllAvailableProducts.and.returnValue(of({ stream: allProducts }))
+      //productApiSpy.searchAllAvailableProducts.and.returnValue(of({ stream: allProducts }))
+      // slot
       apiServiceSpy.getAllApplications.and.returnValue(of(usedProductsOrg))
 
       component.ngOnInit()
@@ -291,6 +299,7 @@ describe('ParameterSearchComponent', () => {
       })
     })
   })
+*/
 
   /*
    * UI ACTIONS

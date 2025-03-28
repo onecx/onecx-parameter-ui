@@ -30,7 +30,7 @@ export class ParameterDetailComponent implements OnChanges {
   // form
   public formGroup: FormGroup
   public productOptions: SelectItem[] = []
-  public appIdOptions: SelectItem[] = []
+  public appOptions: SelectItem[] = []
 
   constructor(
     private readonly parameterApi: ParametersAPIService,
@@ -119,17 +119,17 @@ export class ParameterDetailComponent implements OnChanges {
 
   // load appId dropdown with app ids from product
   public onChangeProductName(name: string | undefined) {
-    this.appIdOptions = []
+    this.appOptions = []
     this.formGroup.controls['applicationId'].setValue(null)
     if (!name) return
     this.allProducts
       .filter((p) => p.name === name)
       .forEach((p) => {
         p.applications?.forEach((app) => {
-          this.appIdOptions.push({ label: app.appName, value: app.appId })
+          this.appOptions.push({ label: app.appName, value: app.appId })
         })
       })
-    this.appIdOptions.sort(dropDownSortItemsByLabel)
+    this.appOptions.sort(dropDownSortItemsByLabel)
   }
 
   /**
