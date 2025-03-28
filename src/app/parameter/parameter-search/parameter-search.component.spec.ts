@@ -39,6 +39,7 @@ const usedProductsOrg: Product[] = [
 ]
 const app1: ApplicationAbstract = { appId: 'app1-svc', appName: 'app1-svc' }
 const app2: ApplicationAbstract = { appId: 'app2-svc', appName: 'app2-svc' }
+/*
 const app1Final: ApplicationAbstract = {
   appId: 'app1-svc',
   appName: 'OneCX app svc 1',
@@ -50,7 +51,7 @@ const app2Final: ApplicationAbstract = {
   appName: 'OneCX app svc 2',
   undeployed: false,
   deprecated: false
-}
+}*/
 // + reformat + sort
 const usedProducts: ExtendedProduct[] = [
   { name: 'product1', displayName: 'product1', applications: [app1] },
