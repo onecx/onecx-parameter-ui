@@ -60,19 +60,19 @@
                 class="input-field"
                 styleClass="w-full text-responsive"
                 formControlName="applicationId"
-                [options]="appIdOptions"
+                [options]="appOptions"
                 [autoDisplayFirst]="true"
                 [appendTo]="'body'"
                 [showClear]="['COPY', 'CREATE'].includes(this.changeMode)"
                 [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_APP' | translate"
-                [ariaLabel]="'PARAMETER.APP_ID' | translate"
-                [pTooltip]="'PARAMETER.TOOLTIPS.APP_ID' | translate"
+                [ariaLabel]="'PARAMETER.APP_NAME' | translate"
+                [pTooltip]="'PARAMETER.TOOLTIPS.APP_NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
               </p-dropdown>
               <label class="ocx-required-label" for="pm_detail_form_app_id">
-                {{ 'PARAMETER.APP_ID' | translate }}</label
+                {{ 'PARAMETER.APP_NAME' | translate }}</label
               >
             </span>
           </div>
@@ -223,6 +223,7 @@
       tooltipEvent="hover"
     >
       <div class="mt-1 flex flex-column row-gap-4">
+        <!-- row 1 -->
         <div
           class="ml-2 sm:ml-3 mb-1 flex flex-row flex-wrap justify-content-start align-items-center column-gap-7 row-gap-2"
           [formGroup]="formGroup"
@@ -240,7 +241,42 @@
             tooltipEvent="hover"
           ></p-checkbox>
         </div>
-        <!-- row 1 -->
+
+        <!-- row 2 -->
+        <div class="flex flex-row flex-wrap gap-4">
+          <span class="flex-grow-1 sm:flex-grow-0 p-float-label">
+            <input
+              pInputText
+              type="text"
+              id="pm_detail_field_product_name"
+              class="w-full sm:w-15rem pt-3 pb-2 text-responsive"
+              [disabled]="true"
+              [value]="parameter?.productName"
+              [attr.aria-label]="'PARAMETER.PRODUCT_NAME' | translate"
+              [pTooltip]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <label for="pm_detail_field_product_name">{{ 'PARAMETER.PRODUCT_NAME' | translate }}</label>
+          </span>
+          <span class="flex-grow-1 p-float-label">
+            <input
+              pInputText
+              type="text"
+              id="pm_detail_field_app_id"
+              class="w-full pt-3 pb-2 text-responsive"
+              [disabled]="true"
+              [value]="parameter?.applicationId"
+              [attr.aria-label]="'PARAMETER.APP_ID' | translate"
+              [pTooltip]="'PARAMETER.TOOLTIPS.APP_ID' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <label for="pm_detail_field_app_id">{{ 'PARAMETER.APP_ID' | translate }}</label>
+          </span>
+        </div>
+
+        <!-- row 3 -->
         <div class="flex flex-row flex-wrap gap-4">
           <span class="flex-grow-1 sm:flex-grow-0 p-float-label">
             <input
@@ -274,7 +310,7 @@
           </span>
         </div>
 
-        <!-- row 2 -->
+        <!-- row 4 -->
         <div class="flex flex-row flex-wrap gap-4">
           <span class="flex-grow-1 sm:flex-grow-0 p-float-label">
             <input

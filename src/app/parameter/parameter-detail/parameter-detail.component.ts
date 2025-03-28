@@ -6,9 +6,9 @@ import { SelectItem } from 'primeng/api'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
 
-import { Parameter, ParametersAPIService, Product } from 'src/app/shared/generated'
+import { Parameter, ParametersAPIService } from 'src/app/shared/generated'
 import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
-import { ChangeMode } from '../parameter-search/parameter-search.component'
+import { ChangeMode, ExtendedProduct } from '../parameter-search/parameter-search.component'
 
 type ErrorMessageType = { summaryKey: string; detailKey?: string }
 
@@ -21,7 +21,7 @@ export class ParameterDetailComponent implements OnChanges {
   @Input() public displayDialog = false
   @Input() public changeMode: ChangeMode = 'CREATE'
   @Input() public parameter: Parameter | undefined
-  @Input() public allProducts: Product[] = []
+  @Input() public allProducts: ExtendedProduct[] = []
   @Input() public dateFormat = 'medium'
   @Output() public hideDialogAndChanged = new EventEmitter<boolean>()
 
@@ -30,7 +30,7 @@ export class ParameterDetailComponent implements OnChanges {
   // form
   public formGroup: FormGroup
   public productOptions: SelectItem[] = []
-  public appIdOptions: SelectItem[] = []
+  public appOptions: SelectItem[] = []
 
   constructor(
     private readonly parameterApi: ParametersAPIService,
@@ -59,7 +59,7 @@ export class ParameterDetailComponent implements OnChanges {
       else this.getData(this.parameter?.id)
     else this.prepareForm(this.parameter)
     // update dropdown lists
-    this.productOptions = this.allProducts.map((p) => ({ label: p.displayName, value: p.productName }))
+    this.productOptions = this.allProducts.map((p) => ({ label: p.displayName, value: p.name }))
   }
 
   private prepareForm(data?: Parameter): void {
@@ -119,17 +119,17 @@ export class ParameterDetailComponent implements OnChanges {
 
   // load appId dropdown with app ids from product
   public onChangeProductName(name: string | undefined) {
-    this.appIdOptions = []
+    this.appOptions = []
     this.formGroup.controls['applicationId'].setValue(null)
     if (!name) return
     this.allProducts
-      .filter((p) => p.productName === name)
+      .filter((p) => p.name === name)
       .forEach((p) => {
-        p.applications?.forEach((a) => {
-          this.appIdOptions.push({ label: a, value: a })
+        p.applications?.forEach((app) => {
+          this.appOptions.push({ label: app.appName, value: app.appId })
         })
       })
-    this.appIdOptions.sort(dropDownSortItemsByLabel)
+    this.appOptions.sort(dropDownSortItemsByLabel)
   }
 
   /**

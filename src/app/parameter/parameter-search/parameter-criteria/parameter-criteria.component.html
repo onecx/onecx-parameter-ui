@@ -30,17 +30,17 @@
         id="pm_search_criteria_application_id"
         styleClass="w-13rem sm:w-18rem text-responsive"
         formControlName="applicationId"
-        [options]="appIdOptions"
+        [options]="appOptions"
         [showClear]="true"
         [appendTo]="'body'"
         [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_APP' | translate"
-        [ariaLabel]="'PARAMETER.APP_ID' | translate"
-        [pTooltip]="'PARAMETER.TOOLTIPS.APP_ID' | translate"
+        [ariaLabel]="'PARAMETER.APP_NAME' | translate"
+        [pTooltip]="'PARAMETER.TOOLTIPS.APP_NAME' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
       >
       </p-dropdown>
-      <label for="pm_search_criteria_application_id">{{ 'PARAMETER.APP_ID' | translate }}</label>
+      <label for="pm_search_criteria_application_id">{{ 'PARAMETER.APP_NAME' | translate }}</label>
     </span>
     <span class="p-float-label">
       <input

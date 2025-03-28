@@ -116,7 +116,8 @@
       "CREATION_DATE": "Timestamp of the creation",
       "CREATION_USER": "Name of the user of the creation",
       "MODIFICATION_DATE": "Timestamp of the last change",
-      "MODIFICATION_USER": "Name of the user of the last change"
+      "MODIFICATION_USER": "Name of the user of the last change",
+      "OPERATOR": "If set, the Workspace was created by automation. All changes will be lost during the next deployment."
     }
   },
   "DIALOG": {
@@ -155,6 +156,7 @@
   "PARAMETER": {
     "PRODUCT_NAME": "Application",
     "APP_ID": "App-ID",
+    "APP_NAME": "App",
     "NAME": "Name",
     "COMBINED_NAME": "Name",
     "DISPLAY_NAME": "Display Name",
@@ -164,6 +166,7 @@
     "TOOLTIPS": {
       "PRODUCT_NAME": "Application for which the Parameter is created",
       "APP_ID": "App identifier for which the Parameter is created",
+      "APP_NAME": "App identifier for which the Parameter is created",
       "NAME": "Name of the Parameter",
       "COMBINED_NAME": "Business Name or Name of the Parameter",
       "DISPLAY_NAME": "Business Name of the Parameter",

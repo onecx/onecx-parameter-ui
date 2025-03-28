@@ -1,19 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core'
+import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
-import { catchError, combineLatest, finalize, map, tap, Observable, of } from 'rxjs'
+import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
 import { Table } from 'primeng/table'
 
 import { UserService } from '@onecx/angular-integration-interface'
 import { Action, Column, DataViewControlTranslations, PortalMessageService } from '@onecx/portal-integration-angular'
+import { SlotService } from '@onecx/angular-remote-components'
 
-import {
-  Parameter,
-  ParameterSearchCriteria,
-  ParametersAPIService,
-  Product,
-  ProductWrapper,
-  ProductsAPIService
-} from 'src/app/shared/generated'
+import { Parameter, ParameterSearchCriteria, ParametersAPIService, Product } from 'src/app/shared/generated'
 import { limitText } from 'src/app/shared/utils'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
@@ -24,9 +18,34 @@ type ExtendedColumn = Column & {
   limit?: boolean
   css?: string
 }
+export type ExtendedProduct = {
+  name: string
+  displayName: string
+  applications: Array<ApplicationAbstract>
+  undeployed?: boolean
+}
 type AllMetaData = {
-  allProducts: Product[]
-  usedProducts?: Product[]
+  allProducts: ExtendedProduct[]
+  usedProducts: ExtendedProduct[]
+}
+// DATA structures of product store response
+export type ApplicationAbstract = {
+  appName?: string
+  appId?: string
+  undeployed?: boolean
+  deprecated?: boolean
+}
+export type ProductAbstract = {
+  id?: string
+  name: string
+  version?: string
+  description?: string
+  imageUrl?: string
+  displayName?: string
+  classifications?: Array<string>
+  undeployed?: boolean
+  provider?: string
+  applications?: Array<ApplicationAbstract>
 }
 
 @Component({
@@ -36,30 +55,33 @@ type AllMetaData = {
 })
 export class ParameterSearchComponent implements OnInit {
   // dialog
-  public loading = false
   public searching = false
   public exceptionKey: string | undefined = undefined
   public changeMode: ChangeMode = 'VIEW'
   public dateFormat: string
-  public actions$: Observable<Action[]> | undefined
+  public refreshUsedProducts = false
   public displayDetailDialog = false
   public displayDeleteDialog = false
   public displayHistoryDialog = false
-  public filteredColumns: Column[] = []
   public limitText = limitText
+  public actions: Action[] = []
+  public filteredColumns: Column[] = []
 
   @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
-  public dataViewControlsTranslations: DataViewControlTranslations = {}
+  public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
 
   // data
   public data$: Observable<Parameter[]> | undefined
-  public metaData$!: Observable<AllMetaData> // collection of data used in UI
-  public products$!: Observable<ProductWrapper> // getting data from bff endpoint
-  public allProducts$!: Observable<Product[]> // getting data from bff endpoint
-  public usedProducts$!: Observable<Product[]> // getting data from bff endpoint
   public criteria: ParameterSearchCriteria = {}
+  public metaData$!: Observable<AllMetaData>
+  public usedProducts$ = new ReplaySubject<Product[]>(1) // getting data from bff endpoint
   public item4Detail: Parameter | undefined // used on detail
   public item4Delete: Parameter | undefined // used on deletion
+  // slot configuration: get product infos via remote component
+  public slotName = 'onecx-product-infos'
+  public isComponentDefined$: Observable<boolean> | undefined // check
+  public productInfos$ = new BehaviorSubject<ProductAbstract[] | undefined>(undefined) // product infos
+  public slotEmitter = new EventEmitter<ProductAbstract[]>()
 
   public columns: ExtendedColumn[] = [
     {
@@ -70,11 +92,11 @@ export class ParameterSearchComponent implements OnInit {
       limit: false
     },
     {
-      field: 'applicationId',
-      header: 'APP_ID',
+      field: 'applicationName',
+      header: 'APP_NAME',
       active: true,
       translationPrefix: 'PARAMETER',
-      limit: true
+      limit: false
     },
     {
       field: 'name',
@@ -101,41 +123,156 @@ export class ParameterSearchComponent implements OnInit {
 
   constructor(
     private readonly user: UserService,
-    private readonly msgService: PortalMessageService,
+    private readonly slotService: SlotService,
     private readonly translate: TranslateService,
-    private readonly parameterApi: ParametersAPIService,
-    private readonly productsApi: ProductsAPIService
+    private readonly msgService: PortalMessageService,
+    private readonly parameterApi: ParametersAPIService
   ) {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.filteredColumns = this.columns.filter((a) => a.active === true)
+    this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.slotName)
   }
 
   public ngOnInit(): void {
-    this.prepareDataLoad()
-    this.loadData()
+    this.slotEmitter.subscribe(this.productInfos$)
+    this.onReload()
+    this.getMetaData() // and trigger search
     this.prepareDialogTranslations()
     this.preparePageActions()
+  }
+
+  private onReload(): void {
+    this.getUsedProducts()
+    this.onSearch({}, true)
+  }
+
+  /****************************************************************************
+   * GET DATA
+   */
+  // get used products (used === assigned to data)
+  private getUsedProducts() {
+    this.parameterApi
+      .getAllApplications()
+      .pipe(
+        catchError((err) => {
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+          console.error('getAllApplications', err)
+          return of([])
+        })
+      )
+      .subscribe((v) => this.usedProducts$.next(v))
+  }
+
+  // combine used products with product info from product store
+  private getMetaData() {
+    this.exceptionKey = undefined
+    // combine all product infos and used products to one meta data structure
+    this.metaData$ = combineLatest([this.productInfos$, this.usedProducts$]).pipe(
+      map(([aP, uP]: [ProductAbstract[] | undefined, Product[]]) => {
+        return this.combineProducts(
+          this.convertProductAbstract2ExtendedProduct(aP),
+          this.convertProduct2ExtendedProduct(uP)
+        )
+      })
+    )
+  }
+  /****************************************************************************
+   * HELPER
+   */
+  // map:  ProductAbstract[] => ExtendedProduct[]
+  private convertProductAbstract2ExtendedProduct(aP: ProductAbstract[] | undefined): ExtendedProduct[] {
+    const aps: ExtendedProduct[] = []
+    if (aP && aP.length > 0) {
+      aP.forEach((p) =>
+        aps.push({
+          name: p.name,
+          displayName: p.displayName ?? p.name,
+          undeployed: p.undeployed,
+          applications: p.applications ?? []
+        })
+      )
+      aps.sort(this.sortByDisplayName)
+    }
+    return aps
+  }
+  // map:  Product[] => ExtendedProduct[]
+  private convertProduct2ExtendedProduct(uP: Product[]): ExtendedProduct[] {
+    const ups: ExtendedProduct[] = []
+    uP.forEach((p) => {
+      const apps: ApplicationAbstract[] = []
+      p.applications?.forEach((s) => {
+        apps.push({ appName: s, appId: s } as ApplicationAbstract)
+      })
+      ups.push({ name: p.productName, displayName: p.productName, applications: apps } as ExtendedProduct)
+    })
+    ups.sort(this.sortByDisplayName)
+    return ups
+  }
+
+  private combineProducts(aP: ExtendedProduct[], uP: ExtendedProduct[]): AllMetaData {
+    // convert/enrich used products if product info are available
+    if (aP && uP && uP.length > 0) {
+      uP.forEach((p) => {
+        const pi = aP.find((ap) => ap.name === p.name) // get product info
+        if (pi) {
+          p.displayName = pi.displayName!
+          p.undeployed = pi.undeployed
+          // collect apps: only used
+          const uApps: ApplicationAbstract[] = []
+          p.applications?.forEach((papp) => {
+            // app still exists?
+            const app = pi.applications?.find((app) => app.appId === papp.appId)
+            if (app) uApps.push(app)
+          })
+          p.applications = uApps
+        }
+      })
+      uP.sort(this.sortByDisplayName)
+    }
+    return { allProducts: aP, usedProducts: [...uP] } // meta data
+  }
+
+  /****************************************************************************
+   *  SEARCH data
+   */
+  public onSearch(criteria: ParameterSearchCriteria, reuseCriteria = false): void {
+    this.searching = true
+    this.exceptionKey = undefined
+    if (!reuseCriteria) this.criteria = { ...criteria }
+    this.data$ = this.parameterApi.searchParametersByCriteria({ parameterSearchCriteria: { ...this.criteria } }).pipe(
+      tap((data: any) => {
+        if (data.totalElements === 0) {
+          this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
+          return data.size
+        }
+      }),
+      map((data) => data.stream),
+      catchError((err) => {
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
+        console.error('searchParametersByCriteria', err)
+        return of([] as Parameter[])
+      }),
+      finalize(() => (this.searching = false))
+    )
   }
 
   /**
    * Dialog preparation
    */
   private prepareDialogTranslations(): void {
-    this.translate
+    this.dataViewControlsTranslations$ = this.translate
       .get([
-        'DIALOG.DATAVIEW.FILTER',
-        'DIALOG.DATAVIEW.FILTER_BY',
         'PARAMETER.PRODUCT_NAME',
         'PARAMETER.APP_ID',
         'PARAMETER.NAME',
-        'PARAMETER.DISPLAY_NAME'
+        'PARAMETER.DISPLAY_NAME',
+        'DIALOG.DATAVIEW.FILTER'
       ])
       .pipe(
         map((data) => {
-          this.dataViewControlsTranslations = {
+          return {
             filterInputPlaceholder: data['DIALOG.DATAVIEW.FILTER'],
             filterInputTooltip:
-              data['DIALOG.DATAVIEW.FILTER_BY'] +
               data['PARAMETER.PRODUCT_NAME'] +
               ', ' +
               data['PARAMETER.APP_ID'] +
@@ -143,26 +280,22 @@ export class ParameterSearchComponent implements OnInit {
               data['PARAMETER.DISPLAY_NAME'] +
               ', ' +
               data['PARAMETER.NAME']
-          }
+          } as DataViewControlTranslations
         })
       )
-      .subscribe()
   }
-  private preparePageActions(): void {
-    this.actions$ = this.translate.get(['ACTIONS.CREATE.LABEL', 'ACTIONS.CREATE.TOOLTIP']).pipe(
-      map((data) => {
-        return [
-          {
-            label: data['ACTIONS.CREATE.LABEL'],
-            title: data['ACTIONS.CREATE.TOOLTIP'],
-            actionCallback: () => this.onDetail('CREATE', undefined),
-            icon: 'pi pi-plus',
-            show: 'always',
-            permission: 'PARAMETER#EDIT'
-          }
-        ]
-      })
-    )
+
+  public preparePageActions(): void {
+    this.actions = [
+      {
+        labelKey: 'ACTIONS.CREATE.LABEL',
+        titleKey: 'ACTIONS.CREATE.TOOLTIP',
+        actionCallback: () => this.onDetail('CREATE', undefined),
+        icon: 'pi pi-plus',
+        show: 'always',
+        permission: 'PARAMETER#EDIT'
+      }
+    ]
   }
 
   /****************************************************************************
@@ -183,7 +316,7 @@ export class ParameterSearchComponent implements OnInit {
     this.displayDetailDialog = false
     this.item4Detail = undefined
     if (refresh) {
-      this.loadData()
+      this.onReload()
     }
   }
 
@@ -205,7 +338,8 @@ export class ParameterSearchComponent implements OnInit {
         const d = data?.filter((d) => d.productName === this.item4Delete?.productName)
         this.item4Delete = undefined
         this.displayDeleteDialog = false
-        if (d?.length === 0) this.loadData()
+        if (d?.length === 0)
+          this.onReload() // deletion forces reload
         else this.onSearch({}, true)
       },
       error: (err) => {
@@ -233,95 +367,24 @@ export class ParameterSearchComponent implements OnInit {
     this.dataTable?.filterGlobal(event, 'contains')
   }
 
-  public getProductDisplayName(name: string | undefined, allProducts: Product[]): string | undefined {
-    return allProducts.find((item) => item.productName === name)?.displayName ?? name
-  }
-  private sortProductsByDisplayName(a: Product, b: Product): number {
+  private sortByDisplayName(a: any, b: any): number {
     return (a.displayName ? a.displayName.toUpperCase() : '').localeCompare(
       b.displayName ? b.displayName.toUpperCase() : ''
     )
   }
 
-  /****************************************************************************
-   *  SEARCHING
-   *   1. Loading META DATA used to display drop down lists => products
-   *   2. Trigger searching data
-   */
-  private prepareDataLoad(): void {
-    /* ProductWrapper:
-             products?: Array<Product>;
-         usedProducts?: Array<Product>;
-    */
-    /*
-    this.products$ = this.parameterApi.getProducts().pipe(
-      map((data) => {
-        return data ?? {}
-      }),
-      catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
-        console.error('getProducts', err)
-        return of({} as ProductWrapper)
-      })
-    )*/
-    // declare search for ALL products privided by bff
-    this.allProducts$ = this.productsApi.searchAllAvailableProducts({ productStoreSearchCriteria: {} }).pipe(
-      map((data) => {
-        return data.stream ? data.stream.sort(this.sortProductsByDisplayName) : []
-      }),
-      catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
-        console.error('searchAllAvailableProducts', err)
-        return of([] as Product[])
-      })
-    )
-    // declare search for used products (used === assigned to data)
-    this.usedProducts$ = this.parameterApi.getAllApplications().pipe(
-      catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
-        console.error('getAllApplications', err)
-        return of([] as Product[])
-      })
-    )
+  // getting display names within HTML
+  public getProductDisplayName(name: string | undefined, allProducts: ExtendedProduct[]): string | undefined {
+    return allProducts.find((item) => item.name === name)?.displayName ?? name
   }
-  // complete refresh: getting meta data and trigger search
-  private loadData(): void {
-    this.loading = true
-    this.exceptionKey = undefined
-    this.metaData$ = combineLatest([this.allProducts$, this.usedProducts$]).pipe(
-      map(([aP, uP]: [Product[], Product[]]) => {
-        // enrich
-        if (uP.length > 0) {
-          uP.forEach((p) => (p.displayName = this.getProductDisplayName(p.productName, aP)))
-          uP.sort(this.sortProductsByDisplayName)
-        }
-        if (!this.exceptionKey) this.onSearch({})
-        return { allProducts: aP, usedProducts: uP }
-      }),
-      finalize(() => (this.loading = false))
-    )
-  }
-
-  /****************************************************************************
-   *  SEARCH data
-   */
-  public onSearch(criteria: ParameterSearchCriteria, reuseCriteria = false): void {
-    this.searching = true
-    this.exceptionKey = undefined
-    if (!reuseCriteria) this.criteria = { ...criteria }
-    this.data$ = this.parameterApi.searchParametersByCriteria({ parameterSearchCriteria: { ...this.criteria } }).pipe(
-      tap((data: any) => {
-        if (data.totalElements === 0) {
-          this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
-          return data.size
-        }
-      }),
-      map((data) => data.stream),
-      catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
-        console.error('searchParametersByCriteria', err)
-        return of([] as Parameter[])
-      }),
-      finalize(() => (this.searching = false))
+  public getAppDisplayName(
+    productName: string | undefined,
+    appId: string | undefined,
+    allProducts: ExtendedProduct[]
+  ): string | undefined {
+    return (
+      allProducts.find((item) => item.name === productName)?.applications?.find((a) => a.appId === appId)?.appName ??
+      appId
     )
   }
 }

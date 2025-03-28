@@ -116,7 +116,8 @@
       "CREATION_DATE": "Zeitpunkt der Erstellung",
       "CREATION_USER": "Name des Benutzers der Erstellung",
       "MODIFICATION_DATE": "Zeitpunkt der letzten Änderung",
-      "MODIFICATION_USER": "Name des Benutzers der letzten Änderung"
+      "MODIFICATION_USER": "Name des Benutzers der letzten Änderung",
+      "OPERATOR": "Wenn gesetzt, dann wurde der Parameter automatisiert erstellt. Alle Änderungen gehen beim beim nächsten Deployment verloren."
     }
   },
   "DIALOG": {
@@ -155,6 +156,7 @@
   "PARAMETER": {
     "PRODUCT_NAME": "Applikation",
     "APP_ID": "App-ID",
+    "APP_NAME": "App",
     "NAME": "Name",
     "COMBINED_NAME": "Name",
     "DISPLAY_NAME": "Anzeigename",
@@ -164,6 +166,7 @@
     "TOOLTIPS": {
       "PRODUCT_NAME": "Applikation, für die der Parameter angelegt ist",
       "APP_ID": "App ID (Service), für die der Parameter angelegt ist",
+      "APP_NAME": "App (Service), für die der Parameter angelegt ist",
       "NAME": "Name des Parameters",
       "COMBINED_NAME": "Anzeigename oder Name des Parameters",
       "DISPLAY_NAME": "Anzeigename des Parameters",
