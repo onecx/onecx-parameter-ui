@@ -1,13 +1,13 @@
 import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
-import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, shareReplay } from 'rxjs'
+import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
 import { Table } from 'primeng/table'
 
 import { UserService } from '@onecx/angular-integration-interface'
 import { Action, Column, DataViewControlTranslations, PortalMessageService } from '@onecx/portal-integration-angular'
 import { SlotService } from '@onecx/angular-remote-components'
 
-import { Parameter, ParameterSearchCriteria, ParametersAPIService, Product } from 'src/app/shared/generated'
+import { Parameter, ParameterSearchCriteria, ParametersAPIService } from 'src/app/shared/generated'
 import { limitText } from 'src/app/shared/utils'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
@@ -29,13 +29,13 @@ type AllMetaData = {
   usedProducts: ExtendedProduct[]
 }
 // DATA structures of product store response
-type ApplicationAbstract = {
+export type ApplicationAbstract = {
   appName?: string
   appId?: string
   undeployed?: boolean
   deprecated?: boolean
 }
-type ProductAbstract = {
+export type ProductAbstract = {
   id?: string
   name: string
   version?: string
@@ -75,8 +75,7 @@ export class ParameterSearchComponent implements OnInit {
   public data$: Observable<Parameter[]> | undefined
   public criteria: ParameterSearchCriteria = {}
   public metaData$!: Observable<AllMetaData>
-  public usedProducts$!: Observable<ExtendedProduct[]> // getting data from bff endpoint
-  public usedProducts3$!: Observable<Product[]> // getting data from bff endpoint
+  public usedProducts$ = new ReplaySubject<ExtendedProduct[]>(1) // getting data from bff endpoint
   public item4Detail: Parameter | undefined // used on detail
   public item4Delete: Parameter | undefined // used on deletion
   // slot configuration: get product infos via remote component
@@ -144,7 +143,6 @@ export class ParameterSearchComponent implements OnInit {
   }
 
   private onReload(): void {
-    console.log('onReload')
     this.getUsedProducts()
     this.onSearch({}, true)
   }
@@ -155,47 +153,41 @@ export class ParameterSearchComponent implements OnInit {
    *   2. Trigger searching data
    */
   private getUsedProducts() {
-    console.log('getUsedProducts')
     // get used products (used === assigned to data)
-    this.usedProducts$ = this.parameterApi.getAllApplications().pipe(
-      tap((v) => {
-        console.log('getUsedProducts', v)
-      }),
-      map((uP) => {
-        // map:  Product[] => ExtendedProduct[]
-        const ups: ExtendedProduct[] = []
-        uP.forEach((p) => {
-          const apps: ApplicationAbstract[] = []
-          p.applications?.forEach((s) => {
-            apps.push({ appName: s, appId: s, undeployed: false, deprecated: false } as ApplicationAbstract)
+    this.parameterApi
+      .getAllApplications()
+      .pipe(
+        map((uP) => {
+          // map:  Product[] => ExtendedProduct[]
+          const ups: ExtendedProduct[] = []
+          uP.forEach((p) => {
+            const apps: ApplicationAbstract[] = []
+            p.applications?.forEach((s) => {
+              apps.push({ appName: s, appId: s, undeployed: false, deprecated: false } as ApplicationAbstract)
+            })
+            ups.push({ name: p.productName, displayName: p.productName, applications: apps } as ExtendedProduct)
           })
-          ups.push({ name: p.productName, displayName: p.productName, applications: apps } as ExtendedProduct)
+          return ups
+        }),
+        catchError((err) => {
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+          console.error('getAllApplications', err)
+          return of([])
         })
-        return ups
-      }),
-      catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
-        console.error('getAllApplications', err)
-        return of([])
-      }),
-      shareReplay()
-    )
+      )
+      .subscribe((v) => this.usedProducts$.next(v))
   }
 
   private getMetaData() {
-    console.log('getMetaData')
     this.loading = true
     this.exceptionKey = undefined
-    // combine all and used products to one meta data structure
+    // combine all product infos and used products to one meta data structure
     this.metaData$ = combineLatest([this.productInfos$, this.usedProducts$]).pipe(
       map(([aP, uP]: [ProductAbstract[] | undefined, ExtendedProduct[]]) => {
-        console.log('getMetaData => aP', aP)
-        console.log('getMetaData => uP', uP)
-        const metaData = this.combineProducts(aP, uP)
         this.loading = false
-        return metaData
+        return this.combineProducts(aP, uP)
       }),
-      shareReplay()
+      finalize(() => (this.loading = false))
     )
   }
 
@@ -203,8 +195,6 @@ export class ParameterSearchComponent implements OnInit {
     if (aP && aP.length > 0) {
       aP.sort(this.sortByDisplayName)
     }
-    console.log('combineProducts', aP)
-    console.log('combineProducts', uP)
     // convert/enrich used products if product info are available
     if (aP && uP && uP.length > 0) {
       uP.forEach((p) => {
@@ -290,13 +280,6 @@ export class ParameterSearchComponent implements OnInit {
         icon: 'pi pi-plus',
         show: 'always',
         permission: 'PARAMETER#EDIT'
-      },
-      {
-        labelKey: 'ACTIONS.NAVIGATION.NEXT',
-        titleKey: 'ACTIONS.NAVIGATION.NEXT',
-        actionCallback: () => this.getUsedProducts(),
-        icon: 'pi pi-cog',
-        show: 'always'
       }
     ]
   }

@@ -41,7 +41,7 @@
           [text]="'ACTIONS.SEARCH.IN_PROGRESS' | translate"
         ></p-message>
         <p-table
-          *ngIf="!(loading || searching || exceptionKey)"
+          *ngIf="!(searching || exceptionKey)"
           #dataTable
           id="pm_search_table"
           styleClass="mx-3 mb-2"

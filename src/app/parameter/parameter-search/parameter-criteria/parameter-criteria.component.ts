@@ -28,7 +28,7 @@ export class ParameterCriteriaComponent implements OnChanges {
 
   public criteriaForm: FormGroup<CriteriaForm>
   public productOptions: SelectItem[] = []
-  public appIdOptions: SelectItem[] = []
+  public appOptions: SelectItem[] = []
 
   constructor(public readonly translate: TranslateService) {
     this.criteriaForm = new FormGroup<CriteriaForm>({
@@ -67,16 +67,16 @@ export class ParameterCriteriaComponent implements OnChanges {
      2. diff. value => clear appid dropdown content and prepare new list
   */
   public onChangeProductName(name: string | null) {
-    this.appIdOptions = []
+    this.appOptions = []
     this.criteriaForm.controls['applicationId'].setValue(null)
     if (!name || !this.usedProducts) return
     this.usedProducts
       .filter((p) => p.name === name)
       .forEach((p) => {
         p.applications?.forEach((app) => {
-          this.appIdOptions.push({ label: app.appName, value: app.appId })
+          this.appOptions.push({ label: app.appName, value: app.appId })
         })
       })
-    this.appIdOptions.sort(dropDownSortItemsByLabel)
+    this.appOptions.sort(dropDownSortItemsByLabel)
   }
 }
