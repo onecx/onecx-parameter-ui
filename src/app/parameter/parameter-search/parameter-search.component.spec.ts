@@ -57,6 +57,7 @@ const usedProducts: ExtendedProduct[] = [
   { name: 'product2', displayName: 'product2', applications: [app2] }
 ]
 // ++ enriched
+/*
 const usedProductsFinal: ExtendedProduct[] = [
   { name: 'product1', displayName: 'Product 1', applications: [app1Final] },
   { name: 'product2', displayName: 'Product 2', applications: [app2Final] }
@@ -68,7 +69,7 @@ const allProducts: ExtendedProduct[] = [
   { name: 'product5', displayName: 'Product 4', applications: [{ appId: 'app4-svc' }, { appId: 'app4-bff' }] },
   { name: 'product4', displayName: 'Product 5', applications: [{ appId: 'app5-svc' }] }
 ]
-
+*/
 describe('ParameterSearchComponent', () => {
   let component: ParameterSearchComponent
   let fixture: ComponentFixture<ParameterSearchComponent>
