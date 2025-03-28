@@ -35,7 +35,6 @@ const appOptionsP1: SelectItem[] = [
   { label: app1.appName, value: app1.appId },
   { label: app2.appName, value: app2.appId }
 ]
-const appOptionsP2: SelectItem[] = [{ label: app2.appName, value: app2.appId }]
 
 describe('ParameterCriteriaComponent', () => {
   let component: ParameterCriteriaComponent
