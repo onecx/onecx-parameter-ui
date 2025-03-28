@@ -7,7 +7,7 @@ import { UserService } from '@onecx/angular-integration-interface'
 import { Action, Column, DataViewControlTranslations, PortalMessageService } from '@onecx/portal-integration-angular'
 import { SlotService } from '@onecx/angular-remote-components'
 
-import { Parameter, ParameterSearchCriteria, ParametersAPIService } from 'src/app/shared/generated'
+import { Parameter, ParameterSearchCriteria, ParametersAPIService, Product } from 'src/app/shared/generated'
 import { limitText } from 'src/app/shared/utils'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
@@ -19,9 +19,9 @@ type ExtendedColumn = Column & {
   css?: string
 }
 export type ExtendedProduct = {
-  name?: string
-  displayName?: string
-  applications?: Array<ApplicationAbstract>
+  name: string
+  displayName: string
+  applications: Array<ApplicationAbstract>
   undeployed?: boolean
 }
 type AllMetaData = {
@@ -55,7 +55,6 @@ export type ProductAbstract = {
 })
 export class ParameterSearchComponent implements OnInit {
   // dialog
-  public loading = false
   public searching = false
   public exceptionKey: string | undefined = undefined
   public changeMode: ChangeMode = 'VIEW'
@@ -75,14 +74,14 @@ export class ParameterSearchComponent implements OnInit {
   public data$: Observable<Parameter[]> | undefined
   public criteria: ParameterSearchCriteria = {}
   public metaData$!: Observable<AllMetaData>
-  public usedProducts$ = new ReplaySubject<ExtendedProduct[]>(1) // getting data from bff endpoint
+  public usedProducts$ = new ReplaySubject<Product[]>(1) // getting data from bff endpoint
   public item4Detail: Parameter | undefined // used on detail
   public item4Delete: Parameter | undefined // used on deletion
   // slot configuration: get product infos via remote component
   public slotName = 'onecx-product-infos'
-  public slotEmitter = new EventEmitter<ProductAbstract[]>()
   public isComponentDefined$: Observable<boolean> | undefined // check
   public productInfos$ = new BehaviorSubject<ProductAbstract[] | undefined>(undefined) // product infos
+  public slotEmitter = new EventEmitter<ProductAbstract[]>()
 
   public columns: ExtendedColumn[] = [
     {
@@ -132,10 +131,10 @@ export class ParameterSearchComponent implements OnInit {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.filteredColumns = this.columns.filter((a) => a.active === true)
     this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.slotName)
-    this.slotEmitter.subscribe(this.productInfos$)
   }
 
   public ngOnInit(): void {
+    this.slotEmitter.subscribe(this.productInfos$)
     this.onReload()
     this.getMetaData() // and trigger search
     this.prepareDialogTranslations()
@@ -148,28 +147,13 @@ export class ParameterSearchComponent implements OnInit {
   }
 
   /****************************************************************************
-   *  SEARCHING
-   *   1. Loading META DATA used to display drop down lists => products
-   *   2. Trigger searching data
+   * GET DATA
    */
+  // get used products (used === assigned to data)
   private getUsedProducts() {
-    // get used products (used === assigned to data)
     this.parameterApi
       .getAllApplications()
       .pipe(
-        map((uP) => {
-          // map:  Product[] => ExtendedProduct[]
-          const ups: ExtendedProduct[] = []
-          uP.forEach((p) => {
-            const apps: ApplicationAbstract[] = []
-            p.applications?.forEach((s) => {
-              apps.push({ appName: s, appId: s } as ApplicationAbstract)
-            })
-            ups.push({ name: p.productName, displayName: p.productName, applications: apps } as ExtendedProduct)
-          })
-          ups.sort(this.sortByDisplayName)
-          return ups
-        }),
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
           console.error('getAllApplications', err)
@@ -179,29 +163,59 @@ export class ParameterSearchComponent implements OnInit {
       .subscribe((v) => this.usedProducts$.next(v))
   }
 
+  // combine used products with product info from product store
   private getMetaData() {
-    this.loading = true
     this.exceptionKey = undefined
     // combine all product infos and used products to one meta data structure
     this.metaData$ = combineLatest([this.productInfos$, this.usedProducts$]).pipe(
-      map(([aP, uP]: [ProductAbstract[] | undefined, ExtendedProduct[]]) => {
-        this.loading = false
-        return this.combineProducts(aP, uP)
-      }),
-      finalize(() => (this.loading = false))
+      map(([aP, uP]: [ProductAbstract[] | undefined, Product[]]) => {
+        return this.combineProducts(
+          this.convertProductAbstract2ExtendedProduct(aP),
+          this.convertProduct2ExtendedProduct(uP)
+        )
+      })
     )
   }
-
-  private combineProducts(aP: ProductAbstract[] | undefined, uP: ExtendedProduct[]): AllMetaData {
+  /****************************************************************************
+   * HELPER
+   */
+  // map:  ProductAbstract[] => ExtendedProduct[]
+  private convertProductAbstract2ExtendedProduct(aP: ProductAbstract[] | undefined): ExtendedProduct[] {
+    const aps: ExtendedProduct[] = []
     if (aP && aP.length > 0) {
-      aP.sort(this.sortByDisplayName)
+      aP.forEach((p) =>
+        aps.push({
+          name: p.name,
+          displayName: p.displayName ?? p.name,
+          undeployed: p.undeployed,
+          applications: p.applications ?? []
+        })
+      )
+      aps.sort(this.sortByDisplayName)
     }
+    return aps
+  }
+  // map:  Product[] => ExtendedProduct[]
+  private convertProduct2ExtendedProduct(uP: Product[]): ExtendedProduct[] {
+    const ups: ExtendedProduct[] = []
+    uP.forEach((p) => {
+      const apps: ApplicationAbstract[] = []
+      p.applications?.forEach((s) => {
+        apps.push({ appName: s, appId: s } as ApplicationAbstract)
+      })
+      ups.push({ name: p.productName, displayName: p.productName, applications: apps } as ExtendedProduct)
+    })
+    ups.sort(this.sortByDisplayName)
+    return ups
+  }
+
+  private combineProducts(aP: ExtendedProduct[], uP: ExtendedProduct[]): AllMetaData {
     // convert/enrich used products if product info are available
     if (aP && uP && uP.length > 0) {
       uP.forEach((p) => {
         const pi = aP.find((ap) => ap.name === p.name) // get product info
         if (pi) {
-          p.displayName = pi.displayName
+          p.displayName = pi.displayName ?? pi.name
           p.undeployed = pi.undeployed
           // collect apps: only used
           const uApps: ApplicationAbstract[] = []
@@ -215,7 +229,7 @@ export class ParameterSearchComponent implements OnInit {
       })
       uP.sort(this.sortByDisplayName)
     }
-    return { allProducts: aP ?? [], usedProducts: [...uP] } // meta data
+    return { allProducts: aP, usedProducts: [...uP] } // meta data
   }
 
   /****************************************************************************

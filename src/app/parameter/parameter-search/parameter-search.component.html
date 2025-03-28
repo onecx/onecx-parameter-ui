@@ -18,7 +18,7 @@
 
     <ocx-page-content>
       <p-message
-        *ngIf="loading"
+        *ngIf="!metaData.usedProducts"
         id="pm_search_message_loading"
         severity="info"
         styleClass="m-3 p-2"
