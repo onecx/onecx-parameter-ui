@@ -215,7 +215,7 @@ export class ParameterSearchComponent implements OnInit {
       uP.forEach((p) => {
         const pi = aP.find((ap) => ap.name === p.name) // get product info
         if (pi) {
-          p.displayName = pi.displayName ?? pi.name
+          p.displayName = pi.displayName!
           p.undeployed = pi.undeployed
           // collect apps: only used
           const uApps: ApplicationAbstract[] = []

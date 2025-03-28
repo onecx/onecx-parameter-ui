@@ -10,7 +10,12 @@ import { UserService } from '@onecx/angular-integration-interface'
 import { Column, PortalMessageService } from '@onecx/portal-integration-angular'
 
 import { Parameter, ParametersAPIService, Product } from 'src/app/shared/generated'
-import { ApplicationAbstract, ExtendedProduct, ParameterSearchComponent } from './parameter-search.component'
+import {
+  ApplicationAbstract,
+  ExtendedProduct,
+  ParameterSearchComponent,
+  ProductAbstract
+} from './parameter-search.component'
 
 const itemData: Parameter[] = [
   {
@@ -56,15 +61,22 @@ const usedProducts: ExtendedProduct[] = [
   { name: 'product2', displayName: 'Product 2', undeployed: true, applications: [app2] }
 ]*/
 // product store products
+const allProductsOrg: ProductAbstract[] = [
+  { name: 'product1', displayName: 'Product 1', undeployed: false, applications: [app1] },
+  { name: 'product2', displayName: 'Product 2', undeployed: true, applications: [app2] },
+  { name: 'product3', displayName: 'Product 3', applications: [{ appId: 'app3-svc' }, { appId: 'app3-bff' }] },
+  { name: 'product4', displayName: 'Product 4', applications: [{ appId: 'app4-svc' }, { appId: 'app4-bff' }] },
+  { name: 'product5' }
+]
 const allProducts: ExtendedProduct[] = [
   { name: 'product1', displayName: 'Product 1', undeployed: false, applications: [app1] },
   { name: 'product2', displayName: 'Product 2', undeployed: true, applications: [app2] },
   { name: 'product3', displayName: 'Product 3', applications: [{ appId: 'app3-svc' }, { appId: 'app3-bff' }] },
-  { name: 'product5', displayName: 'Product 4', applications: [{ appId: 'app4-svc' }, { appId: 'app4-bff' }] },
-  { name: 'product4', displayName: 'Product 5', applications: [{ appId: 'app5-svc' }] }
+  { name: 'product4', displayName: 'Product 4', applications: [{ appId: 'app4-svc' }, { appId: 'app4-bff' }] },
+  { name: 'product5', displayName: 'product5', applications: [] }
 ]
 
-fdescribe('ParameterSearchComponent', () => {
+describe('ParameterSearchComponent', () => {
   let component: ParameterSearchComponent
   let fixture: ComponentFixture<ParameterSearchComponent>
 
@@ -223,7 +235,7 @@ fdescribe('ParameterSearchComponent', () => {
       })
     })
 
-    it('should get all announcements assigned to workspaces', (done) => {
+    it('should get all products assigned to', (done) => {
       const errorResponse = { status: '404', statusText: 'An error occur' }
       apiServiceSpy.getAllApplications.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
@@ -242,62 +254,67 @@ fdescribe('ParameterSearchComponent', () => {
       })
     })
   })
-  /*
-  describe('META data: load all products', () => {
-    it('should get all existing products - successful', (done) => {
-      productApiSpy.searchAllAvailableProducts.and.returnValue(of({ stream: allProducts }))
+
+  describe('META data', () => {
+    it('should get product store products - successful', (done) => {
+      component.slotEmitter.emit(allProductsOrg)
+      apiServiceSpy.getAllApplications.and.returnValue(of(usedProductsOrg))
 
       component.ngOnInit()
 
-      component.allProducts$.subscribe({
-        next: (products) => {
-          if (products) {
-            expect(products.length).toBe(allProducts.length)
-            expect(products[0].applications?.length).toBe(allProducts[0].applications?.length)
-            done()
-          }
-        },
-        error: done.fail
-      })
-    })
-
-    it('should get all existing products - failed', (done) => {
-      const errorResponse = { status: '404', statusText: 'Not found' }
-      productApiSpy.searchAllAvailableProducts.and.returnValue(throwError(() => errorResponse))
-      spyOn(console, 'error')
-
-      component.ngOnInit()
-
-      component.allProducts$.subscribe({
-        next: () => {
-          expect(console.error).toHaveBeenCalledWith('searchAllAvailableProducts', errorResponse)
+      component.usedProducts$?.subscribe({
+        next: (data) => {
+          expect(data).toEqual(usedProductsOrg)
           done()
         },
         error: done.fail
       })
     })
   })
-  describe('META data: load all meta data together and check enrichments', () => {
-    it('should get all meta data - successful', (done) => {
-      //productApiSpy.searchAllAvailableProducts.and.returnValue(of({ stream: allProducts }))
-      // slot
-      apiServiceSpy.getAllApplications.and.returnValue(of(usedProductsOrg))
 
-      component.ngOnInit()
+  describe('sorting', () => {
+    it('should return negative value when first product name comes before second alphabetically', () => {
+      const productA = { id: 'a', name: 'name', displayName: 'Admin' }
+      const productB = { id: 'b', name: 'name', displayName: 'User' }
+      expect(component['sortByDisplayName'](productA, productB)).toBeLessThan(0)
+    })
 
-      component.metaData$.subscribe({
-        next: (meta) => {
-          if (meta) {
-            expect(meta.allProducts.length).toBe(5)
-            expect(meta.usedProducts?.length).toBe(2)
-            expect(meta.usedProducts).toEqual(usedProducts)
-            done()
-          }
-        }
-      })
+    it('should return positive value when first product name comes after second alphabetically', () => {
+      const productA = { id: 'a', name: 'name', displayName: 'User' }
+      const productB = { id: 'b', name: 'name', displayName: 'Admin' }
+      expect(component['sortByDisplayName'](productA, productB)).toBeGreaterThan(0)
+    })
+
+    it('should return zero when product names are the same', () => {
+      const productA = { id: 'a', name: 'name', displayName: 'Admin' }
+      const productB = { id: 'b', name: 'name', displayName: 'Admin' }
+      expect(component['sortByDisplayName'](productA, productB)).toBe(0)
+    })
+
+    it('should be case-insensitive', () => {
+      const productA = { id: 'a', name: 'name', displayName: 'admin' }
+      const productB = { id: 'b', name: 'name', displayName: 'Admin' }
+      expect(component['sortByDisplayName'](productA, productB)).toBe(0)
+    })
+
+    it('should handle undefined names', () => {
+      const productA = { id: 'a', name: 'name', displayName: undefined }
+      const productB = { id: 'b', name: 'name', displayName: 'Admin' }
+      expect(component['sortByDisplayName'](productA, productB)).toBeLessThan(0)
+    })
+
+    it('should handle empty string names', () => {
+      const productA = { id: 'a', name: 'name', displayName: '' }
+      const productB = { id: 'b', name: 'name', displayName: 'Admin' }
+      expect(component['sortByDisplayName'](productA, productB)).toBeLessThan(0)
+    })
+
+    it('should handle both names being undefined', () => {
+      const productA = { id: 'a', name: 'name', displayName: undefined }
+      const productB = { id: 'b', name: 'name', displayName: undefined }
+      expect(component['sortByDisplayName'](productA, productB)).toBe(0)
     })
   })
-*/
 
   /*
    * UI ACTIONS
@@ -437,17 +454,18 @@ fdescribe('ParameterSearchComponent', () => {
 
       expect(name).toBe('unknown')
     })
-    /*
-    it('should get product display name - found', () => {
-      const app = allProducts[0].applications?[0]
-      const appId = app.appId
+
+    it('should get app display name - found', () => {
+      const ap = allProducts[0]
+      const apps = ap.applications
+      const app = apps[0]
       const name = component.getAppDisplayName(allProducts[0].name, app.appId, allProducts)
 
-      expect(name).toBe(allProducts[0].displayName)
+      expect(name).toBe(app.appName)
     })
-*/
+
     it('should get product display name - not found', () => {
-      const name = component.getProductDisplayName('unknown', allProducts)
+      const name = component.getAppDisplayName(allProducts[2].name, 'unknown', allProducts)
 
       expect(name).toBe('unknown')
     })
