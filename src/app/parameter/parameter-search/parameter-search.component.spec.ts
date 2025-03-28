@@ -37,29 +37,28 @@ const usedProductsOrg: Product[] = [
   { productName: 'product2', displayName: undefined, applications: ['app2-svc'] },
   { productName: 'product1', displayName: undefined, applications: ['app1-svc'] }
 ]
-const app1: ApplicationAbstract = { appId: 'app1-svc', appName: 'app1-svc' }
-const app2: ApplicationAbstract = { appId: 'app2-svc', appName: 'app2-svc' }
-const app1Final: ApplicationAbstract = {
+const app1: ApplicationAbstract = {
   appId: 'app1-svc',
   appName: 'OneCX app svc 1',
   undeployed: false,
   deprecated: false
 }
-const app2Final: ApplicationAbstract = {
+const app2: ApplicationAbstract = {
   appId: 'app2-svc',
   appName: 'OneCX app svc 2',
   undeployed: false,
   deprecated: false
 }
 // parameter BFF products (enriched)
+/*
 const usedProducts: ExtendedProduct[] = [
-  { name: 'product1', displayName: 'Product 1', undeployed: false, applications: [app1Final] },
-  { name: 'product2', displayName: 'Product 2', undeployed: true, applications: [app2Final] }
-]
+  { name: 'product1', displayName: 'Product 1', undeployed: false, applications: [app1] },
+  { name: 'product2', displayName: 'Product 2', undeployed: true, applications: [app2] }
+]*/
 // product store products
 const allProducts: ExtendedProduct[] = [
-  { name: 'product1', displayName: 'Product 1', undeployed: false, applications: [app1Final] },
-  { name: 'product2', displayName: 'Product 2', undeployed: true, applications: [app2Final] },
+  { name: 'product1', displayName: 'Product 1', undeployed: false, applications: [app1] },
+  { name: 'product2', displayName: 'Product 2', undeployed: true, applications: [app2] },
   { name: 'product3', displayName: 'Product 3', applications: [{ appId: 'app3-svc' }, { appId: 'app3-bff' }] },
   { name: 'product5', displayName: 'Product 4', applications: [{ appId: 'app4-svc' }, { appId: 'app4-bff' }] },
   { name: 'product4', displayName: 'Product 5', applications: [{ appId: 'app5-svc' }] }
