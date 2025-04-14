@@ -209,29 +209,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /parameters/products:
-    get:
-      x-onecx:
-        permissions:
-          parameter:
-            - read
-      tags:
-        - parameters
-      description: Find all products
-      operationId: getProducts
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductWrapper'
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailResponse'
   /parameters/names/{productName}:
     get:
       x-onecx:
@@ -354,35 +331,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /products/search:
-    post:
-      x-onecx:
-        permissions:
-          product:
-            - read
-      tags:
-        - products
-      description: search all products of product-store
-      operationId: searchAllAvailableProducts
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ProductStoreSearchCriteria'
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductStorePageResult'
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailResponse'
   /parameters/export:
     post:
       x-onecx:
@@ -439,40 +387,6 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
 components:
   schemas:
-    ProductStoreSearchCriteria:
-      type: object
-      properties:
-        pageNumber:
-          format: int32
-          description: The number of page.
-          default: 0
-          type: integer
-        pageSize:
-          format: int32
-          description: The size of page
-          default: 100
-          maximum: 1000
-          type: integer
-    ProductStorePageResult:
-      type: object
-      properties:
-        totalElements:
-          format: int64
-          description: The total elements in the resource.
-          type: integer
-        number:
-          format: int32
-          type: integer
-        size:
-          format: int32
-          type: integer
-        totalPages:
-          format: int64
-          type: integer
-        stream:
-          type: array
-          items:
-            $ref: '#/components/schemas/Product'
     ParameterCreate:
       type: object
       required:
@@ -572,8 +486,6 @@ components:
           $ref: '#/components/schemas/ParameterValue'
         defaultValue:
           $ref: '#/components/schemas/ParameterValue'
-        description:
-          type: string
         instanceId:
           type: string
     HistoryCriteria:
@@ -645,17 +557,6 @@ components:
         modificationCount:
           format: int32
           type: integer
-    ProductWrapper:
-      type: object
-      properties:
-        products:
-          type: array
-          items:
-            $ref: '#/components/schemas/Product'
-        usedProducts:
-          type: array
-          items:
-            $ref: '#/components/schemas/Product'
     Product:
       type: object
       properties:
