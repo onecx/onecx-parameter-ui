@@ -145,6 +145,28 @@
       },
       "CHARACTERS": "Noch mögliche Zeichen"
     },
+    "HISTORY": {
+      "HEADER": "Verlaufsdaten",
+      "NAME": "Parameter",
+      "INSTANCE_ID": "Instanz-ID",
+      "DEFAULT_VALUE": "Standardwert",
+      "USED_VALUE": "Verwendeter Wert",
+      "LAST_USED": "Zuletzt verwendet",
+      "HISTORY_RELOAD": "Verlaufsdaten aktualisieren",
+      "TAB": {
+        "OVERVIEW": "Zusammenfassung",
+        "LIST": "Werteliste",
+        "CHART": "Zeitleiste",
+        "TOOLTIPS": {
+          "OVERVIEW": "Überblick über die erfassten Daten des Parameters",
+          "LIST": "Liste der Einzelwerte",
+          "CHART": "Grafische Darstellung der Werte"
+        }
+      }
+    },
+    "CHART": {
+      "NUMBER_OF_REQUESTS": "Anzahl der Anfragen"
+    },
     "DATAVIEW": {
       "FILTER": "Filter",
       "FILTER_TOOLTIP": "...filtern",
@@ -176,20 +198,6 @@
       "IMPORT_VALUE": "Importierter Wert",
       "OPERATOR": "Wenn gesetzt, dann wurde der Parameter automatisiert erstellt."
     }
-  },
-  "HISTORY": {
-    "HISTORY": "Verlaufsdaten",
-    "INSTANCE_ID": "Instanz-ID",
-    "DEFAULT_VALUE": "Standardwert",
-    "USED_VALUE": "Verwendeter Wert",
-    "LAST_USED": "Zuletzt verwendet",
-    "HISTORY_RELOAD": "Verlaufsdaten aktualisieren",
-    "APP_ID": "App-ID",
-    "PRODUCT": "Applikation",
-    "NAME": "Name"
-  },
-  "CHART": {
-    "NUMBER_OF_REQUESTS": "Anzahl der Anfragen"
   },
   "VALIDATION": {
     "ERRORS": {

@@ -24,16 +24,17 @@ export class ParameterHistoryComponent implements OnChanges {
   @Input() public parameter: Parameter | undefined
   @Output() public hideDialog = new EventEmitter()
 
-  public loading = false
+  public searching = false
   public exceptionKey: string | undefined = undefined
-  public selectedHistoryParam: History | undefined
   public formGroup: FormGroup
   public parameterForm: UntypedFormGroup = this.initializeForm()
+
+  public selectedHistoryParam: History | undefined
   public translatedData: Record<string, string> | undefined
   public parameterDTO: Parameter | undefined
   public historyArray: any[] = []
   public chartData: any = []
-  public data: any
+  public data: History[] | undefined = []
   public chartOptions: any
 
   constructor(
@@ -48,16 +49,15 @@ export class ParameterHistoryComponent implements OnChanges {
       productName: new FormControl(null, [Validators.required]),
       applicationId: new FormControl(null, [Validators.required]),
       name: new FormControl(null, [Validators.required]),
-      displayName: new FormControl(null, [Validators.required]),
-      value: new FormControl(null, [Validators.required]),
-      description: new FormControl(null)
+      timeFrame: new FormControl(null, [Validators.required])
     })
     this.loadTranslations()
   }
 
   public ngOnChanges() {
     if (!this.displayDialog) return
-    this.getData(this.parameter?.id)
+    console.log('param history onchanges => ', this.parameter)
+    // this.getData(this.parameter?.id)
   }
 
   private initializeForm(): UntypedFormGroup {
@@ -70,7 +70,7 @@ export class ParameterHistoryComponent implements OnChanges {
       unit: new UntypedFormControl(null)
     })
   }
-
+  /*
   private getData(id?: string): void {
     if (!id) return
     this.loading = true
@@ -182,6 +182,7 @@ export class ParameterHistoryComponent implements OnChanges {
     this.parameterForm.controls['name'].setValue(this.selectedHistoryParam?.name)
     this.parameterForm.controls['value'].setValue(this.selectedHistoryParam?.usedValue)
   }
+*/
 
   private loadTranslations(): void {
     this.translate
@@ -204,5 +205,30 @@ export class ParameterHistoryComponent implements OnChanges {
   public onDialogHide() {
     this.displayDialog = false
     this.hideDialog.emit()
+  }
+
+  /****************************************************************************
+   *  SEARCH data
+   */
+  public onSearch(criteria: HistoryCriteria): void {
+    console.log('parameter history onSearch()')
+    this.searching = true
+    this.exceptionKey = undefined
+    /*
+    this.data$ = this.parameterApi.searchParametersByCriteria({ parameterSearchCriteria: { ...this.criteria } }).pipe(
+      tap((data: any) => {
+        if (data.totalElements === 0) {
+          this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
+          return data.size
+        }
+      }),
+      map((data) => data.stream),
+      catchError((err) => {
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
+        console.error('searchParametersByCriteria', err)
+        return of([] as Parameter[])
+      }),
+      finalize(() => (this.searching = false))
+    )*/
   }
 }

@@ -1,18 +1,53 @@
 <p-dialog
-  header=""
-  class="p-dialog-titlebar-close"
+  [header]="'DIALOG.HISTORY.HEADER' | translate"
   [(visible)]="displayDialog"
-  [baseZIndex]="10000"
   [modal]="true"
   [closable]="true"
   [draggable]="true"
   [resizable]="true"
-  [style]="{ width: '600px' }"
 >
-  <ocx-page-content>
-    <div class="mt-3 flex flex-column gap-3">
-      <span class="flex justify-center align-items-center">
-        <h4 style="margin-bottom: 5px !important">{{ 'HISTORY.HISTORY' | translate }}</h4>
+  <!--
+  [style]="{ width: '600px' }"
+-->
+  <app-history-criteria [parameter]="parameter" (searchEmitter)="onSearch($event)"></app-history-criteria>
+
+  <p-tabView>
+    <p-tabPanel
+      [header]="'DIALOG.HISTORY.TAB.LIST' | translate"
+      [tooltip]="'DIALOG.HISTORY.TAB.TOOLTIPS.LIST' | translate"
+      tooltipPosition="top"
+      tooltipEvent="hover"
+    >
+      <app-history-list [parameter]="parameter" [data]="data"></app-history-list>
+    </p-tabPanel>
+    <p-tabPanel
+      [header]="'DIALOG.HISTORY.TAB.OVERVIEW' | translate"
+      [tooltip]="'DIALOG.HISTORY.TAB.TOOLTIPS.OVERVIEW' | translate"
+      tooltipPosition="top"
+      tooltipEvent="hover"
+    >
+    </p-tabPanel>
+  </p-tabView>
+
+  <div class="mt-3 flex flex-column gap-3"></div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex flex-wrap justify-content-end gap-2 mb-1">
+      <p-button
+        id="pm_history_action_close"
+        icon="pi pi-times"
+        (onClick)="onDialogHide()"
+        [label]="'ACTIONS.NAVIGATION.CLOSE' | translate"
+        [ariaLabel]="'ACTIONS.NAVIGATION.CLOSE' | translate"
+        [pTooltip]="'ACTIONS.NAVIGATION.CLOSE.TOOLTIP' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      ></p-button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<!--
         <p-button
           icon="pi pi-refresh"
           styleClass="p-button-text"
@@ -22,7 +57,12 @@
           tooltipPosition="top"
           tooltipEvent="hover"
         ></p-button>
-      </span>
+-->
+
+<!--
+        <span class="flex justify-center align-items-center">
+          <h4 style="margin-bottom: 5px !important">{{ 'HISTORY.HISTORY' | translate }}</h4>
+        </span>
       <p-card>
         <p-table
           [value]="historyArray"
@@ -65,21 +105,4 @@
       <p-card *ngIf="data">
         <p-chart type="line" [data]="data" [options]="chartOptions" height="400"></p-chart>
       </p-card>
-    </div>
-  </ocx-page-content>
-
-  <ng-template pTemplate="footer">
-    <div class="flex flex-wrap justify-content-end gap-2 mb-1">
-      <p-button
-        id="pm_history_action_close"
-        icon="pi pi-times"
-        (onClick)="onDialogHide()"
-        [label]="'ACTIONS.NAVIGATION.CLOSE' | translate"
-        [ariaLabel]="'ACTIONS.NAVIGATION.CLOSE' | translate"
-        [pTooltip]="'ACTIONS.NAVIGATION.CLOSE.TOOLTIP' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-      ></p-button>
-    </div>
-  </ng-template>
-</p-dialog>
+    -->

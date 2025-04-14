@@ -145,6 +145,28 @@
       },
       "CHARACTERS": "Still remaining characters"
     },
+    "HISTORY": {
+      "HEADER": "Parameter History",
+      "NAME": "Parameter",
+      "INSTANCE_ID": "Instance ID",
+      "DEFAULT_VALUE": "Default Value",
+      "USED_VALUE": "Used Value",
+      "LAST_USED": "Last used",
+      "HISTORY_RELOAD": "Reload history",
+      "TAB": {
+        "OVERVIEW": "Summary",
+        "LIST": "Value List",
+        "CHART": "Timeline",
+        "TOOLTIPS": {
+          "OVERVIEW": "Overview on received values of the Parameter",
+          "LIST": "List of values",
+          "CHART": "Graphical presentation of the time line"
+        }
+      }
+    },
+    "CHART": {
+      "NUMBER_OF_REQUESTS": "Number of requests"
+    },
     "DATAVIEW": {
       "FILTER": "Filter",
       "FILTER_TOOLTIP": "Filtering ...",
@@ -176,20 +198,6 @@
       "IMPORT_VALUE": "Imported value",
       "OPERATOR": "If set, the Workspace was created by automation."
     }
-  },
-  "HISTORY": {
-    "HISTORY": "History",
-    "INSTANCE_ID": "Instance ID",
-    "DEFAULT_VALUE": "Default Value",
-    "USED_VALUE": "Used Value",
-    "LAST_USED": "Last used",
-    "HISTORY_RELOAD": "Reload history",
-    "APP_ID": "App ID",
-    "PRODUCT": "Application",
-    "NAME": "Name"
-  },
-  "CHART": {
-    "NUMBER_OF_REQUESTS": "Number of requests"
   },
   "VALIDATION": {
     "ERRORS": {
