@@ -163,6 +163,7 @@
     "VALUE": "Value",
     "IMPORT_VALUE": "Import Value",
     "DESCRIPTION": "Description",
+    "OPERATOR": "Auto",
     "TOOLTIPS": {
       "PRODUCT_NAME": "Application for which the Parameter is created",
       "APP_ID": "App identifier for which the Parameter is created",
@@ -170,9 +171,10 @@
       "NAME": "Name of the Parameter",
       "COMBINED_NAME": "Business Name or Name of the Parameter",
       "DISPLAY_NAME": "Business Name of the Parameter",
+      "DESCRIPTION": "Detailed description of the Parameter",
       "VALUE": "Value of the Parameter",
       "IMPORT_VALUE": "Imported value",
-      "DESCRIPTION": "Detailed description of the Parameter"
+      "OPERATOR": "If set, the Workspace was created by automation."
     }
   },
   "HISTORY": {

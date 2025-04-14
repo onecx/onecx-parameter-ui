@@ -163,6 +163,7 @@
     "VALUE": "Wert",
     "IMPORT_VALUE": "Importwert",
     "DESCRIPTION": "Beschreibung",
+    "OPERATOR": "Auto",
     "TOOLTIPS": {
       "PRODUCT_NAME": "Applikation, für die der Parameter angelegt ist",
       "APP_ID": "App ID (Service), für die der Parameter angelegt ist",
@@ -170,9 +171,10 @@
       "NAME": "Name des Parameters",
       "COMBINED_NAME": "Anzeigename oder Name des Parameters",
       "DISPLAY_NAME": "Anzeigename des Parameters",
+      "DESCRIPTION": "Detaillierte Beschreibung des Parameters",
       "VALUE": "Wert des Parameters",
       "IMPORT_VALUE": "Importierter Wert",
-      "DESCRIPTION": "Detaillierte Beschreibung des Parameters"
+      "OPERATOR": "Wenn gesetzt, dann wurde der Parameter automatisiert erstellt."
     }
   },
   "HISTORY": {

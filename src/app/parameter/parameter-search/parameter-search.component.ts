@@ -13,6 +13,7 @@ import { limitText } from 'src/app/shared/utils'
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 type ExtendedColumn = Column & {
   hasFilter?: boolean
+  isBoolean?: boolean
   isDate?: boolean
   isDropdown?: boolean
   limit?: boolean
@@ -85,20 +86,6 @@ export class ParameterSearchComponent implements OnInit {
 
   public columns: ExtendedColumn[] = [
     {
-      field: 'productDisplayName',
-      header: 'PRODUCT_NAME',
-      active: true,
-      translationPrefix: 'PARAMETER',
-      limit: false
-    },
-    {
-      field: 'applicationName',
-      header: 'APP_NAME',
-      active: true,
-      translationPrefix: 'PARAMETER',
-      limit: false
-    },
-    {
       field: 'name',
       header: 'COMBINED_NAME',
       active: true,
@@ -113,11 +100,33 @@ export class ParameterSearchComponent implements OnInit {
       limit: true
     },
     {
-      field: 'importValue',
-      header: 'IMPORT_VALUE',
+      field: 'productDisplayName',
+      header: 'PRODUCT_NAME',
       active: true,
       translationPrefix: 'PARAMETER',
-      limit: true
+      limit: false
+    },
+    {
+      field: 'applicationName',
+      header: 'APP_NAME',
+      active: true,
+      translationPrefix: 'PARAMETER',
+      limit: false
+    },
+    {
+      field: 'operator',
+      header: 'OPERATOR',
+      active: true,
+      translationPrefix: 'PARAMETER',
+      isBoolean: true,
+      css: 'text-center'
+    },
+    {
+      field: 'modificationDate',
+      header: 'MODIFICATION_DATE',
+      active: true,
+      translationPrefix: 'INTERNAL',
+      isDate: true
     }
   ]
 

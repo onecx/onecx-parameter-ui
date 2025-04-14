@@ -90,10 +90,11 @@
               <th
                 *ngFor="let col of columns"
                 [id]="'pm_search_table_header_col_' + col.field"
-                [class]="'white-space-nowrap'"
+                class="white-space-nowrap"
+                [class]="col.css"
                 [pSortableColumn]="col.field"
-                [attr.aria-label]="'PARAMETER.TOOLTIPS.' + col.header | translate"
-                [pTooltip]="'PARAMETER.TOOLTIPS.' + col.header | translate"
+                [attr.aria-label]="col.translationPrefix + '.' + col.header | translate"
+                [pTooltip]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
@@ -184,7 +185,9 @@
               </td>
               <td *ngFor="let col of columns" [id]="'pm_search_table_row_' + i + '_' + col.field" [class]="col.css">
                 <!-- needs a div due to manage ellipsis -->
-                <div *ngIf="col.limit" class="text-ellipsis-2-lines">{{ rowData[col.field] }}</div>
+                <div *ngIf="col.field === 'value'" class="text-ellipsis-2-lines">
+                  {{ rowData['value'] ?? rowData['importValue'] }}
+                </div>
                 <div *ngIf="col.field === 'name'" class="text-ellipsis-2-lines">
                   {{ rowData['displayName'] ? rowData['displayName'] : rowData[col.field] }}
                 </div>
@@ -194,6 +197,10 @@
                 <ng-container *ngIf="col.field === 'applicationName'">
                   {{ getAppDisplayName(rowData['productName'], rowData['applicationId'], metaData.allProducts) }}
                 </ng-container>
+                <ng-container *ngIf="col.isBoolean">
+                  <span *ngIf="rowData[col.field]" class="pi pi-check"></span>
+                </ng-container>
+                <ng-container *ngIf="col.isDate"> {{ rowData[col.field] | date: dateFormat }} </ng-container>
               </td>
             </tr>
           </ng-template>
