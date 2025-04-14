@@ -229,6 +229,8 @@ export class ParameterSearchComponent implements OnInit {
       })
       uP.sort(this.sortByDisplayName)
     }
+    // if service is not running or product data are not yet available
+    if (aP.length === 0) aP = uP
     return { allProducts: aP, usedProducts: [...uP] } // meta data
   }
 

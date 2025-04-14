@@ -59,6 +59,7 @@ export class ParameterDetailComponent implements OnChanges {
       else this.getData(this.parameter?.id)
     else this.prepareForm(this.parameter)
     // update dropdown lists
+    console.log(this.allProducts)
     this.productOptions = this.allProducts.map((p) => ({ label: p.displayName, value: p.name }))
   }
 
