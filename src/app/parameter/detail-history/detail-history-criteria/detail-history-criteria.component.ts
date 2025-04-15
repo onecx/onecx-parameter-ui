@@ -11,10 +11,10 @@ export interface CriteriaForm {
 }
 
 @Component({
-  selector: 'app-history-criteria',
-  templateUrl: './history-criteria.component.html'
+  selector: 'app-detail-history-criteria',
+  templateUrl: './detail-history-criteria.component.html'
 })
-export class HistoryCriteriaComponent implements OnChanges {
+export class DetailHistoryCriteriaComponent implements OnChanges {
   @Input() public parameter: Parameter | undefined = undefined
   @Output() public criteriaEmitter = new EventEmitter<HistoryCriteria>()
 

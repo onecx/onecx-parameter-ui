@@ -17,10 +17,10 @@ type ExtendedColumn = Column & {
 }
 
 @Component({
-  selector: 'app-history-list',
-  templateUrl: './history-list.component.html'
+  selector: 'app-parameter-history-list',
+  templateUrl: './parameter-history-list.component.html'
 })
-export class HistoryListComponent {
+export class ParameterHistoryListComponent {
   @Input() public loading = false
   @Input() public exceptionKey: string | undefined = undefined
   @Input() public parameter: Parameter | undefined = undefined

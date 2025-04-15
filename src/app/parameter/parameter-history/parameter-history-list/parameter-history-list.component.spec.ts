@@ -8,17 +8,17 @@ import { of } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
 
-import { HistoryListComponent } from './history-list.component'
+import { ParameterHistoryListComponent } from './parameter-history-list.component'
 
 describe('HistoryListComponent', () => {
-  let component: HistoryListComponent
-  let fixture: ComponentFixture<HistoryListComponent>
+  let component: ParameterHistoryListComponent
+  let fixture: ComponentFixture<ParameterHistoryListComponent>
 
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [HistoryListComponent],
+      declarations: [ParameterHistoryListComponent],
       imports: [
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
@@ -31,7 +31,7 @@ describe('HistoryListComponent', () => {
   }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HistoryListComponent)
+    fixture = TestBed.createComponent(ParameterHistoryListComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
   })
@@ -48,7 +48,7 @@ describe('HistoryListComponent', () => {
       const translateService = TestBed.inject(TranslateService)
       spyOn(translateService, 'get').and.returnValue(of(translationData))
 
-      fixture = TestBed.createComponent(HistoryListComponent)
+      fixture = TestBed.createComponent(ParameterHistoryListComponent)
       component = fixture.componentInstance
       fixture.detectChanges()
 

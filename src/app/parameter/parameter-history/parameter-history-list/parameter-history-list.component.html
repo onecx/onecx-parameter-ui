@@ -1,0 +1,83 @@
+<p-message
+  *ngIf="loading"
+  id="pm_history_message_loading"
+  severity="info"
+  styleClass="my-3"
+  [text]="'ACTIONS.LOADING' | translate"
+></p-message>
+<p-message
+  *ngIf="exceptionKey"
+  id="pm_history_message_error"
+  severity="error"
+  styleClass="my-3"
+  [text]="exceptionKey | translate"
+></p-message>
+
+<p-table
+  *ngIf="!loading && !exceptionKey"
+  #dataTable
+  id="pm_history_list_table"
+  styleClass="mx-3 mb-2"
+  [value]="data"
+  [columns]="columns"
+  dataKey="id"
+  [globalFilterFields]="['instanceId']"
+  [reorderableColumns]="false"
+  [scrollable]="true"
+  scrollHeight="590px"
+  [rows]="10"
+  [rowsPerPageOptions]="[10, 30, 100]"
+  [paginator]="true"
+  [alwaysShowPaginator]="true"
+  paginatorPosition="bottom"
+  [showCurrentPageReport]="true"
+  currentPageReportTemplate="{first} - {last} {{ 'ACTIONS.SEARCH.OF' | translate }} {totalRecords}"
+>
+  <ng-template pTemplate="caption">
+    <ocx-data-view-controls
+      [supportedViews]="['table']"
+      [enableFiltering]="true"
+      [enableSorting]="false"
+      [columnDefinitions]="columns"
+      (filterChange)="onFilterChange($event)"
+      [translations]="(dataViewControlsTranslations$ | async) ?? {}"
+    ></ocx-data-view-controls>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td id="pm_history_list_table_emptymessage" colspan="16">{{ 'ACTIONS.SEARCH.NO_DATA' | translate }}</td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th
+        *ngFor="let col of columns"
+        [id]="'pm_history_list_table_header_col_' + col.field"
+        class="white-space-nowrap"
+        [class]="col.css"
+        [pSortableColumn]="col.field"
+        [attr.aria-label]="col.translationPrefix + '.' + col.header | translate"
+        [pTooltip]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      >
+        <span>{{ col.translationPrefix + '.' + col.header | translate }}</span>
+        <p-sortIcon [field]="col.field"></p-sortIcon>
+        <p-columnFilter *ngIf="col.hasFilter" type="text" [field]="col.field" display="menu"></p-columnFilter>
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-i="rowIndex" let-rowData let-columns="columns">
+    <tr [pSelectableRow]="data">
+      <td *ngFor="let col of columns" [id]="'pm_history_list_table_row_' + i + '_' + col.field" [class]="col.css">
+        <!-- needs a div due to manage ellipsis -->
+        <div *ngIf="col.isValue" class="text-ellipsis-2-lines">{{ rowData['value'] ?? rowData['importValue'] }}</div>
+        <ng-container *ngIf="!col.isDate">{{ rowData[col.field] }}</ng-container>
+        <ng-container *ngIf="col.isDate">{{ rowData[col.field] | date: dateFormat }}</ng-container>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

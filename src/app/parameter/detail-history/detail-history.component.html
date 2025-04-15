@@ -8,10 +8,10 @@
   [resizable]="true"
   [maximizable]="true"
 >
-  <app-parameter-history-criteria
+  <app-detail-history-criteria
     [parameter]="parameter"
     (criteriaEmitter)="onSearch($event)"
-  ></app-parameter-history-criteria>
+  ></app-detail-history-criteria>
 
   <p-tabView>
     <p-tabPanel
@@ -20,13 +20,13 @@
       tooltipPosition="top"
       tooltipEvent="hover"
     >
-      <app-parameter-history-list
+      <app-detail-history-list
         [loading]="loading"
         [exceptionKey]="exceptionKey"
         [parameter]="parameter"
         [dateFormat]="dateFormat"
         [data]="(data$ | async) ?? []"
-      ></app-parameter-history-list>
+      ></app-detail-history-list>
     </p-tabPanel>
 
     <p-tabPanel

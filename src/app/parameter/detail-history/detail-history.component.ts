@@ -5,11 +5,11 @@ import { catchError, finalize, map, Observable, of } from 'rxjs'
 import { Parameter, History, HistoriesAPIService, HistoryCriteria } from 'src/app/shared/generated'
 
 @Component({
-  selector: 'app-parameter-history',
-  templateUrl: './parameter-history.component.html',
-  styleUrls: ['./parameter-history.component.scss']
+  selector: 'app-detail-history',
+  templateUrl: './detail-history.component.html',
+  styleUrls: ['./detail-history.component.scss']
 })
-export class ParameterHistoryComponent {
+export class DetailHistoryComponent {
   @Input() public displayDialog = false
   @Input() public parameter: Parameter | undefined
   @Input() public dateFormat: string | undefined = undefined

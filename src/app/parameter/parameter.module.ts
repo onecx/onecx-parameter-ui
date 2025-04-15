@@ -11,8 +11,11 @@ import { ParameterSearchComponent } from './parameter-search/parameter-search.co
 import { ParameterCriteriaComponent } from './parameter-search/parameter-criteria/parameter-criteria.component'
 import { ParameterDetailComponent } from './parameter-detail/parameter-detail.component'
 import { ParameterHistoryComponent } from './parameter-history/parameter-history.component'
-import { HistoryCriteriaComponent } from './parameter-history/history-criteria/history-criteria.component'
-import { HistoryListComponent } from './parameter-history/history-list/history-list.component'
+import { ParameterHistoryCriteriaComponent } from './parameter-history/parameter-history-criteria/parameter-history-criteria.component'
+import { ParameterHistoryListComponent } from './parameter-history/parameter-history-list/parameter-history-list.component'
+import { DetailHistoryComponent } from './detail-history/detail-history.component'
+import { DetailHistoryCriteriaComponent } from './detail-history/detail-history-criteria/detail-history-criteria.component'
+import { DetailHistoryListComponent } from './detail-history/detail-history-list/detail-history-list.component'
 
 const routes: Routes = [
   {
@@ -27,8 +30,11 @@ const routes: Routes = [
     ParameterCriteriaComponent,
     ParameterDetailComponent,
     ParameterHistoryComponent,
-    HistoryCriteriaComponent,
-    HistoryListComponent
+    ParameterHistoryCriteriaComponent,
+    ParameterHistoryListComponent,
+    DetailHistoryComponent,
+    DetailHistoryCriteriaComponent,
+    DetailHistoryListComponent
   ],
   imports: [
     CommonModule,

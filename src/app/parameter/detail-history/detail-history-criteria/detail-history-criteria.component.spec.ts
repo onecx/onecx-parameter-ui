@@ -7,7 +7,7 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 import { UserService } from '@onecx/angular-integration-interface'
 
 import { HistoryCriteria, Parameter } from 'src/app/shared/generated'
-import { HistoryCriteriaComponent } from './history-criteria.component'
+import { DetailHistoryCriteriaComponent } from './detail-history-criteria.component'
 
 const parameter: Parameter = {
   id: 'pid',
@@ -19,14 +19,14 @@ const parameter: Parameter = {
 }
 
 describe('HistoryCriteriaComponent', () => {
-  let component: HistoryCriteriaComponent
-  let fixture: ComponentFixture<HistoryCriteriaComponent>
+  let component: DetailHistoryCriteriaComponent
+  let fixture: ComponentFixture<DetailHistoryCriteriaComponent>
 
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [HistoryCriteriaComponent],
+      declarations: [DetailHistoryCriteriaComponent],
       imports: [
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
@@ -39,7 +39,7 @@ describe('HistoryCriteriaComponent', () => {
   }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HistoryCriteriaComponent)
+    fixture = TestBed.createComponent(DetailHistoryCriteriaComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
     mockUserService.lang$.getValue.and.returnValue('de')

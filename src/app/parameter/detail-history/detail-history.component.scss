@@ -1,0 +1,13 @@
+@import '/src/app/_pm-mixins.scss';
+
+@include readable-disabled-components;
+@include dialog-footer-buttons;
+@include dialog-non-full-size-modal;
+@include displaying-text-responsive;
+@include tabview-fix-color-selected-tab;
+
+:host ::ng-deep {
+  .p-tabview .p-tabview-panels {
+    padding: 0;
+  }
+}
