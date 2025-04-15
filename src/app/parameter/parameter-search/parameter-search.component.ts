@@ -56,7 +56,7 @@ export type ProductAbstract = {
 })
 export class ParameterSearchComponent implements OnInit {
   // dialog
-  public searching = false
+  public loading = false
   public exceptionKey: string | undefined = undefined
   public changeMode: ChangeMode = 'VIEW'
   public dateFormat: string
@@ -247,7 +247,7 @@ export class ParameterSearchComponent implements OnInit {
    *  SEARCH data
    */
   public onSearch(criteria: ParameterSearchCriteria, reuseCriteria = false): void {
-    this.searching = true
+    this.loading = true
     this.exceptionKey = undefined
     if (!reuseCriteria) this.criteria = { ...criteria }
     this.data$ = this.parameterApi.searchParametersByCriteria({ parameterSearchCriteria: { ...this.criteria } }).pipe(
@@ -263,7 +263,7 @@ export class ParameterSearchComponent implements OnInit {
         console.error('searchParametersByCriteria', err)
         return of([] as Parameter[])
       }),
-      finalize(() => (this.searching = false))
+      finalize(() => (this.loading = false))
     )
   }
 
@@ -367,7 +367,9 @@ export class ParameterSearchComponent implements OnInit {
     this.displayHistoryDialog = true
   }
   public onCloseHistory() {
+    console.log('param search => onCloseHistory')
     this.displayHistoryDialog = false
+    this.item4Detail = undefined
   }
 
   public onColumnsChange(activeIds: string[]) {

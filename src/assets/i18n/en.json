@@ -148,11 +148,23 @@
     "HISTORY": {
       "HEADER": "Parameter History",
       "NAME": "Parameter",
+      "COUNT": "Count",
+      "INTERVAL_START": "Start",
+      "INTERVAL_END": "End",
       "INSTANCE_ID": "Instance ID",
       "DEFAULT_VALUE": "Default Value",
       "USED_VALUE": "Used Value",
       "LAST_USED": "Last used",
       "HISTORY_RELOAD": "Reload history",
+      "TOOLTIPS": {
+        "COUNT": "How many times used within interval?",
+        "INTERVAL_START": "Start of Interval",
+        "INTERVAL_END": "End of Interval",
+        "INSTANCE_ID": "ID of the instance that used the parameter",
+        "DEFAULT_VALUE": "Default value",
+        "USED_VALUE": "Used value",
+        "LAST_USED": "Last used value"
+      },
       "TAB": {
         "OVERVIEW": "Summary",
         "LIST": "Value List",
@@ -211,26 +223,32 @@
   },
   "EXCEPTIONS": {
     "HTTP_STATUS_0": {
+      "HISTORY": "Unknown problem retrieving History data - please try again.",
       "PARAMETER": "Unknown problem retrieving Parameter data - please try again.",
       "PRODUCTS": "Unknown problem retrieving Application data - please try again."
     },
     "HTTP_STATUS_400": {
+      "HISTORY": "Your request could not be processed.",
       "PARAMETER": "Your request could not be processed.",
       "PRODUCTS": "Your request could not be processed."
     },
     "HTTP_STATUS_401": {
+      "HISTORY": "You are not authorized to see History data.",
       "PARAMETER": "You are not authorized to see Parameters.",
       "PRODUCTS": "You are not authorized to see Applications."
     },
     "HTTP_STATUS_403": {
+      "HISTORY": "You have no permissions to see History data.",
       "PARAMETER": "You have no permissions to see Parameters.",
       "PRODUCTS": "You have no permissions to see Applications."
     },
     "HTTP_STATUS_404": {
+      "HISTORY": "History data could not be found.",
       "PARAMETER": "Parameters could not be found.",
       "PRODUCTS": "No Applications could be loaded."
     },
     "HTTP_STATUS_500": {
+      "HISTORY": "Unknown server problem retrieving History data - please try again.",
       "PARAMETER": "Unknown server problem retrieving Parameter data - please try again.",
       "PRODUCTS": "Unknown server problem retrieving Application data - please try again."
     }

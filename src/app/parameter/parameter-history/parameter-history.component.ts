@@ -1,18 +1,8 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
-import { FormBuilder, FormControl, FormGroup, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
-import { DatePipe } from '@angular/common'
 import { TranslateService } from '@ngx-translate/core'
-import { finalize } from 'rxjs'
+import { catchError, finalize, map, Observable, of } from 'rxjs'
 
-import { PortalMessageService } from '@onecx/portal-integration-angular'
-import {
-  Parameter,
-  History,
-  HistoryCriteria,
-  HistoriesAPIService,
-  HistoryCount,
-  ParametersAPIService
-} from 'src/app/shared/generated'
+import { Parameter, History, HistoriesAPIService, HistoryCriteria } from 'src/app/shared/generated'
 
 @Component({
   selector: 'app-parameter-history',
@@ -22,92 +12,42 @@ import {
 export class ParameterHistoryComponent implements OnChanges {
   @Input() public displayDialog = false
   @Input() public parameter: Parameter | undefined
+  @Input() public dateFormat: string | undefined = undefined
   @Output() public hideDialog = new EventEmitter()
 
-  public searching = false
+  public loading = false
   public exceptionKey: string | undefined = undefined
-  public formGroup: FormGroup
-  public parameterForm: UntypedFormGroup = this.initializeForm()
-
-  public selectedHistoryParam: History | undefined
-  public translatedData: Record<string, string> | undefined
-  public parameterDTO: Parameter | undefined
-  public historyArray: any[] = []
-  public chartData: any = []
-  public data: History[] | undefined = []
-  public chartOptions: any
+  public data$: Observable<History[] | undefined> = of(undefined)
 
   constructor(
-    private readonly fb: FormBuilder,
     private readonly translate: TranslateService,
-    private readonly msgService: PortalMessageService,
-    private readonly parameterApiService: ParametersAPIService,
-    private readonly historyApiService: HistoriesAPIService,
-    private readonly datePipe: DatePipe
-  ) {
-    this.formGroup = fb.nonNullable.group({
-      productName: new FormControl(null, [Validators.required]),
-      applicationId: new FormControl(null, [Validators.required]),
-      name: new FormControl(null, [Validators.required]),
-      timeFrame: new FormControl(null, [Validators.required])
-    })
-    this.loadTranslations()
-  }
+    private readonly historyApiService: HistoriesAPIService
+  ) {}
 
   public ngOnChanges() {
-    if (!this.displayDialog) return
-    console.log('param history onchanges => ', this.parameter)
-    // this.getData(this.parameter?.id)
+    if (!this.displayDialog || !this.parameter) return
   }
 
-  private initializeForm(): UntypedFormGroup {
-    return this.fb.group({
-      productName: new UntypedFormControl(null, [Validators.required]),
-      applicationId: new UntypedFormControl(null, [Validators.required]),
-      name: new UntypedFormControl(null, [Validators.required]),
-      value: new UntypedFormControl(null, [Validators.required]),
-      description: new UntypedFormControl(null, [Validators.required]),
-      unit: new UntypedFormControl(null)
-    })
+  public onDialogHide() {
+    this.hideDialog.emit()
   }
+
+  /****************************************************************************
+   *  SEARCH history data
+   */
+  public onSearch(criteria: HistoryCriteria): void {
+    this.data$ = this.historyApiService.getAllHistory({ historyCriteria: criteria }).pipe(
+      map((results) => results.stream),
+      catchError((err) => {
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.HISTORY'
+        console.error('getAllHistory', err)
+        return of([])
+      }),
+      finalize(() => (this.loading = false))
+    )
+  }
+
   /*
-  private getData(id?: string): void {
-    if (!id) return
-    this.loading = true
-    this.exceptionKey = undefined
-    this.parameterApiService
-      .getParameterById({ id: id })
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe({
-        next: (data: Parameter) => {
-          //this.parameterDTO = data
-          //this.getHistoryArray()
-          //this.loadChartData()
-        },
-        error: (err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
-          this.msgService.error({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.SEARCH_FAILED' })
-          console.error('getParameterById', err)
-        }
-      })
-  }
-
-  public getHistoryArray(): void {
-    const criteria: HistoryCriteria = {
-      applicationId: this.parameterForm.value.applicationId || this.parameterDTO?.applicationId,
-      productName: this.parameterForm.value.productName || this.parameterDTO?.productName,
-      name: this.parameterForm.value.name || this.parameterDTO?.name
-    }
-    this.historyApiService.getAllHistory({ historyCriteria: criteria }).subscribe({
-      next: (results) => {
-        this.historyArray = results.stream as History[]
-      },
-      error: () => {
-        this.msgService.error({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.SEARCH_FAILED' })
-      }
-    })
-  }
-
   private loadChartData(): void {
     this.historyApiService
       .getCountsByCriteria({
@@ -175,60 +115,5 @@ export class ParameterHistoryComponent implements OnChanges {
       }
     }
   }
-
-  public useHistoryParam() {
-    this.parameterForm.controls['productName'].setValue(this.selectedHistoryParam?.productName)
-    this.parameterForm.controls['applicationId'].setValue(this.selectedHistoryParam?.applicationId)
-    this.parameterForm.controls['name'].setValue(this.selectedHistoryParam?.name)
-    this.parameterForm.controls['value'].setValue(this.selectedHistoryParam?.usedValue)
-  }
 */
-
-  private loadTranslations(): void {
-    this.translate
-      .get([
-        'PARAMETER.APP_ID',
-        'PARAMETER.NAME',
-        'PARAMETER.VALUE',
-        'PARAMETER.DESCRIPTION',
-        'CHART.NUMBER_OF_REQUESTS',
-        'ACTIONS.SEARCH.MESSAGE.SEARCH_FAILED',
-        'ACTIONS.SEARCH.MESSAGE.NO_RESULTS',
-        'VALIDATION.ERRORS.FORM_MANDATORY',
-        'VALIDATION.ERRORS.EMPTY_REQUIRED_FIELD'
-      ])
-      .subscribe((data) => {
-        this.translatedData = data
-      })
-  }
-
-  public onDialogHide() {
-    this.displayDialog = false
-    this.hideDialog.emit()
-  }
-
-  /****************************************************************************
-   *  SEARCH data
-   */
-  public onSearch(criteria: HistoryCriteria): void {
-    console.log('parameter history onSearch()')
-    this.searching = true
-    this.exceptionKey = undefined
-    /*
-    this.data$ = this.parameterApi.searchParametersByCriteria({ parameterSearchCriteria: { ...this.criteria } }).pipe(
-      tap((data: any) => {
-        if (data.totalElements === 0) {
-          this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
-          return data.size
-        }
-      }),
-      map((data) => data.stream),
-      catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
-        console.error('searchParametersByCriteria', err)
-        return of([] as Parameter[])
-      }),
-      finalize(() => (this.searching = false))
-    )*/
-  }
 }

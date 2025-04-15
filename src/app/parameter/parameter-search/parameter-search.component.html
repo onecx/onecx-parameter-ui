@@ -21,27 +21,27 @@
         *ngIf="!metaData.usedProducts"
         id="pm_search_message_loading"
         severity="info"
-        styleClass="m-3 p-2"
+        styleClass="m-3"
         [text]="'ACTIONS.LOADING' | translate"
       ></p-message>
       <p-message
         *ngIf="exceptionKey"
         id="pm_search_message_error"
         severity="error"
-        styleClass="m-3 p-2"
+        styleClass="m-3"
         [text]="exceptionKey | translate"
       ></p-message>
 
       <ng-container *ngIf="data$ | async as data">
         <p-message
-          *ngIf="searching"
+          *ngIf="loading"
           id="pm_search_message_searching"
           severity="info"
           styleClass="m-3 p-2"
           [text]="'ACTIONS.SEARCH.IN_PROGRESS' | translate"
         ></p-message>
         <p-table
-          *ngIf="!(searching || exceptionKey)"
+          *ngIf="!(loading || exceptionKey)"
           #dataTable
           id="pm_search_table"
           styleClass="mx-3 mb-2"
@@ -293,4 +293,5 @@
   [displayDialog]="displayHistoryDialog"
   (hideDialog)="onCloseHistory()"
   [parameter]="item4Detail"
+  [dateFormat]="dateFormat"
 ></app-parameter-history>

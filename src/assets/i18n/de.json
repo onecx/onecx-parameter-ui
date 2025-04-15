@@ -148,11 +148,23 @@
     "HISTORY": {
       "HEADER": "Verlaufsdaten",
       "NAME": "Parameter",
+      "COUNT": "Anzahl",
+      "INTERVAL_START": "Start",
+      "INTERVAL_END": "Ende",
       "INSTANCE_ID": "Instanz-ID",
       "DEFAULT_VALUE": "Standardwert",
       "USED_VALUE": "Verwendeter Wert",
       "LAST_USED": "Zuletzt verwendet",
       "HISTORY_RELOAD": "Verlaufsdaten aktualisieren",
+      "TOOLTIPS": {
+        "COUNT": "Wie oft im Interval benutzt?",
+        "INTERVAL_START": "Interval Start",
+        "INTERVAL_END": "Interval Ende",
+        "INSTANCE_ID": "ID der Instanz, die den Parameter benutzt hat",
+        "DEFAULT_VALUE": "Standardwert",
+        "USED_VALUE": "Verwendeter Wert",
+        "LAST_USED": "Zuletzt verwendet"
+      },
       "TAB": {
         "OVERVIEW": "Zusammenfassung",
         "LIST": "Werteliste",
@@ -211,26 +223,32 @@
   },
   "EXCEPTIONS": {
     "HTTP_STATUS_0": {
+      "HISTORY": "Unbekanntes Problem beim Abrufen von Verlaufsdaten - bitte versuchen Sie es noch einmal.",
       "PARAMETER": "Unbekanntes Problem beim Abrufen von Parameter - bitte versuchen Sie es noch einmal.",
       "PRODUCTS": "Unbekanntes Problem beim Abrufen von Applikationen - bitte versuchen Sie es noch einmal."
     },
     "HTTP_STATUS_400": {
+      "HISTORY": "Ihre Anfrage konnte nicht bearbeitet werden.",
       "PARAMETER": "Ihre Anfrage konnte nicht bearbeitet werden.",
       "PRODUCTS": "Ihre Anfrage konnte nicht bearbeitet werden."
     },
     "HTTP_STATUS_401": {
+      "HISTORY": "Sie sind nicht autorisiert, um Verlaufsdaten zu sehen.",
       "PARAMETER": "Sie sind nicht autorisiert, um Parameter zu sehen.",
       "PRODUCTS": "Sie sind nicht autorisiert, um Applikationen zu sehen."
     },
     "HTTP_STATUS_403": {
+      "HISTORY": "Sie haben keine Rechte, um Verlaufsdaten zu sehen.",
       "PARAMETER": "Sie haben keine Rechte, um Parameter zu sehen.",
       "PRODUCTS": "Sie haben keine Rechte, um Applikationen zu sehen."
     },
     "HTTP_STATUS_404": {
+      "HISTORY": "Verlaufsdaten nicht gefunden.",
       "PARAMETER": "Parameter nicht gefunden.",
       "PRODUCTS": "Es konnten keine Applikationen geladen werden."
     },
     "HTTP_STATUS_500": {
+      "HISTORY": "Unbekanntes Server-Problem beim Abrufen der Verlaufsdaten - bitte versuchen Sie es noch einmal.",
       "PARAMETER": "Unbekanntes Server-Problem beim Abrufen der Parameter - bitte versuchen Sie es noch einmal.",
       "PRODUCTS": "Unbekanntes Server-Problem beim Abrufen von Applikationen - bitte versuchen Sie es noch einmal."
     }

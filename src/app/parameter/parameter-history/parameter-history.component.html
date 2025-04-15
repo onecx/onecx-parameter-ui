@@ -1,15 +1,14 @@
 <p-dialog
   [header]="'DIALOG.HISTORY.HEADER' | translate"
   [(visible)]="displayDialog"
+  (onHide)="onDialogHide()"
   [modal]="true"
   [closable]="true"
   [draggable]="true"
   [resizable]="true"
+  [maximizable]="true"
 >
-  <!--
-  [style]="{ width: '600px' }"
--->
-  <app-history-criteria [parameter]="parameter" (searchEmitter)="onSearch($event)"></app-history-criteria>
+  <app-history-criteria [parameter]="parameter" (criteriaEmitter)="onSearch($event)"></app-history-criteria>
 
   <p-tabView>
     <p-tabPanel
@@ -18,9 +17,31 @@
       tooltipPosition="top"
       tooltipEvent="hover"
     >
-      <app-history-list [parameter]="parameter" [data]="data"></app-history-list>
+      <p-message
+        *ngIf="loading"
+        id="pm_history_message_loading"
+        severity="info"
+        styleClass="my-3"
+        [text]="'ACTIONS.LOADING' | translate"
+      ></p-message>
+      <p-message
+        *ngIf="exceptionKey"
+        id="pm_history_message_error"
+        severity="error"
+        styleClass="my-3"
+        [text]="exceptionKey | translate"
+      ></p-message>
+
+      <app-history-list
+        *ngIf="!loading && !exceptionKey"
+        [parameter]="parameter"
+        [dateFormat]="dateFormat"
+        [data]="(data$ | async) ?? []"
+      ></app-history-list>
     </p-tabPanel>
+
     <p-tabPanel
+      *ngIf="!loading && !exceptionKey"
       [header]="'DIALOG.HISTORY.TAB.OVERVIEW' | translate"
       [tooltip]="'DIALOG.HISTORY.TAB.TOOLTIPS.OVERVIEW' | translate"
       tooltipPosition="top"
@@ -28,8 +49,6 @@
     >
     </p-tabPanel>
   </p-tabView>
-
-  <div class="mt-3 flex flex-column gap-3"></div>
 
   <ng-template pTemplate="footer">
     <div class="flex flex-wrap justify-content-end gap-2 mb-1">
@@ -46,63 +65,3 @@
     </div>
   </ng-template>
 </p-dialog>
-
-<!--
-        <p-button
-          icon="pi pi-refresh"
-          styleClass="p-button-text"
-          (onClick)="this.getHistoryArray()"
-          [ariaLabel]="'HISTORY.HISTORY_RELOAD' | translate"
-          [pTooltip]="'HISTORY.HISTORY_RELOAD' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        ></p-button>
--->
-
-<!--
-        <span class="flex justify-center align-items-center">
-          <h4 style="margin-bottom: 5px !important">{{ 'HISTORY.HISTORY' | translate }}</h4>
-        </span>
-      <p-card>
-        <p-table
-          [value]="historyArray"
-          styleClass="p-datatable-striped"
-          [resizableColumns]="true"
-          [autoLayout]="true"
-          selectionMode="single"
-          [(selection)]="this.selectedHistoryParam"
-          (onRowSelect)="this.useHistoryParam()"
-        >
-          <ng-template pTemplate="header">
-            <tr>
-              <th id="parameter_detail_header_productName">{{ 'HISTORY.PRODUCT' | translate }}</th>
-              <th id="parameter_detail_header_applicationId">{{ 'HISTORY.APP_ID' | translate }}</th>
-              <th id="parameter_detail_header_name">{{ 'HISTORY.NAME' | translate }}</th>
-              <th id="parameter_detail_header_instanceId">{{ 'HISTORY.INSTANCE_ID' | translate }}</th>
-              <th id="parameter_detail_header_defaultValue">{{ 'HISTORY.DEFAULT_VALUE' | translate }}</th>
-              <th id="parameter_detail_header_usedValue">{{ 'HISTORY.USED_VALUE' | translate }}</th>
-              <th id="parameter_detail_header_lastUsed">{{ 'HISTORY.LAST_USED' | translate }}</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-parameterHistory>
-            <tr [pSelectableRow]="parameterHistory">
-              <td>{{ parameterHistory.productName }}</td>
-              <td>{{ parameterHistory.applicationId }}</td>
-              <td>{{ parameterHistory.name }}</td>
-              <td>{{ parameterHistory.instanceId }}</td>
-              <td>{{ parameterHistory.defaultValue }}</td>
-              <td>{{ parameterHistory.usedValue }}</td>
-              <td>{{ parameterHistory.creationDate | date: 'medium' }}</td>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="emptymessage">
-            <tr>
-              <td colspan="16">{{ 'ACTIONS.SEARCH.NO_DATA' | translate }}</td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </p-card>
-      <p-card *ngIf="data">
-        <p-chart type="line" [data]="data" [options]="chartOptions" height="400"></p-chart>
-      </p-card>
-    -->
