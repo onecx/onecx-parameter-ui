@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, ViewChild } from '@angular/core'
+import { Component, Input, ViewChild } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
 import { Table } from 'primeng/table'
 import { map, Observable } from 'rxjs'
@@ -20,9 +20,11 @@ type ExtendedColumn = Column & {
   selector: 'app-history-list',
   templateUrl: './history-list.component.html'
 })
-export class HistoryListComponent implements OnChanges {
+export class HistoryListComponent {
+  @Input() public loading = false
+  @Input() public exceptionKey: string | undefined = undefined
   @Input() public parameter: Parameter | undefined = undefined
-  @Input() public data: History[] | undefined = undefined
+  @Input() public data: History[] = []
   @Input() public dateFormat: string | undefined = undefined
 
   @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
@@ -68,12 +70,6 @@ export class HistoryListComponent implements OnChanges {
 
   constructor(public readonly translate: TranslateService) {
     this.prepareDialogTranslations()
-  }
-
-  public ngOnChanges(): void {
-    if (this.parameter) {
-      console.log('param history list onchanges => ' + this.parameter, this.data)
-    }
   }
 
   /**

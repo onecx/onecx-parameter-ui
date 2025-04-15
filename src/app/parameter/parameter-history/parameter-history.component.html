@@ -17,23 +17,9 @@
       tooltipPosition="top"
       tooltipEvent="hover"
     >
-      <p-message
-        *ngIf="loading"
-        id="pm_history_message_loading"
-        severity="info"
-        styleClass="my-3"
-        [text]="'ACTIONS.LOADING' | translate"
-      ></p-message>
-      <p-message
-        *ngIf="exceptionKey"
-        id="pm_history_message_error"
-        severity="error"
-        styleClass="my-3"
-        [text]="exceptionKey | translate"
-      ></p-message>
-
       <app-history-list
-        *ngIf="!loading && !exceptionKey"
+        [loading]="loading"
+        [exceptionKey]="exceptionKey"
         [parameter]="parameter"
         [dateFormat]="dateFormat"
         [data]="(data$ | async) ?? []"

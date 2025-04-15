@@ -1,8 +1,24 @@
+<p-message
+  *ngIf="loading"
+  id="pm_history_message_loading"
+  severity="info"
+  styleClass="my-3"
+  [text]="'ACTIONS.LOADING' | translate"
+></p-message>
+<p-message
+  *ngIf="exceptionKey"
+  id="pm_history_message_error"
+  severity="error"
+  styleClass="my-3"
+  [text]="exceptionKey | translate"
+></p-message>
+
 <p-table
+  *ngIf="!loading && !exceptionKey"
   #dataTable
   id="pm_search_table"
   styleClass="mx-3 mb-2"
-  [value]="data ?? []"
+  [value]="data"
   [columns]="columns"
   dataKey="id"
   [globalFilterFields]="['instanceId']"

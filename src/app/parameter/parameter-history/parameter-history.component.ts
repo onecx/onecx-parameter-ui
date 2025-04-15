@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
 import { catchError, finalize, map, Observable, of } from 'rxjs'
 
@@ -9,7 +9,7 @@ import { Parameter, History, HistoriesAPIService, HistoryCriteria } from 'src/ap
   templateUrl: './parameter-history.component.html',
   styleUrls: ['./parameter-history.component.scss']
 })
-export class ParameterHistoryComponent implements OnChanges {
+export class ParameterHistoryComponent {
   @Input() public displayDialog = false
   @Input() public parameter: Parameter | undefined
   @Input() public dateFormat: string | undefined = undefined
@@ -17,16 +17,12 @@ export class ParameterHistoryComponent implements OnChanges {
 
   public loading = false
   public exceptionKey: string | undefined = undefined
-  public data$: Observable<History[] | undefined> = of(undefined)
+  public data$: Observable<History[]> = of([])
 
   constructor(
     private readonly translate: TranslateService,
     private readonly historyApiService: HistoriesAPIService
   ) {}
-
-  public ngOnChanges() {
-    if (!this.displayDialog || !this.parameter) return
-  }
 
   public onDialogHide() {
     this.hideDialog.emit()
@@ -36,8 +32,13 @@ export class ParameterHistoryComponent implements OnChanges {
    *  SEARCH history data
    */
   public onSearch(criteria: HistoryCriteria): void {
+    if (!criteria.name || !criteria.productName || !criteria.applicationId) {
+      console.error('Missing search criteria for getting parameter history', criteria)
+      return
+    }
+    this.loading = true
     this.data$ = this.historyApiService.getAllHistory({ historyCriteria: criteria }).pipe(
-      map((results) => results.stream),
+      map((results) => results.stream ?? []),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.HISTORY'
         console.error('getAllHistory', err)

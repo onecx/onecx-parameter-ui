@@ -8,9 +8,8 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
-import { PortalMessageService } from '@onecx/portal-integration-angular'
 
-import { ParametersAPIService, HistoriesAPIService, Parameter } from 'src/app/shared/generated'
+import { History, HistoriesAPIService, HistoryCriteria, HistoryPageResult, Parameter } from 'src/app/shared/generated'
 import { ParameterHistoryComponent } from './parameter-history.component'
 
 const productName = 'prod1'
@@ -23,19 +22,26 @@ const parameter: Parameter = {
   displayName: 'displayName',
   value: 'value'
 }
+const history: History[] = [
+  {
+    id: 'h1',
+    applicationId: parameter.applicationId!,
+    productName: parameter.productName!,
+    name: parameter.name!,
+    usedValue: 'val1',
+    defaultValue: 'val1',
+    instanceId: '123',
+    count: 3
+  }
+]
 
-xdescribe('HistoryComponent', () => {
+describe('HistoryComponent', () => {
   let component: ParameterHistoryComponent
   let fixture: ComponentFixture<ParameterHistoryComponent>
   let datePipe: DatePipe
 
-  const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error'])
-  const apiServiceSpy = {
-    getParameterById: jasmine.createSpy('getParameterById').and.returnValue(of({}))
-  }
-  const historyServiceSpy = {
-    getAllHistory: jasmine.createSpy('getAllHistory').and.returnValue(of({})),
-    getCountsByCriteria: jasmine.createSpy('getCountsByCriteria').and.returnValue(of({}))
+  const historyApiSpy = {
+    getAllHistory: jasmine.createSpy('getAllHistory').and.returnValue(of({}))
   }
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
 
@@ -56,20 +62,14 @@ xdescribe('HistoryComponent', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: UserService, useValue: mockUserService },
-        { provide: PortalMessageService, useValue: msgServiceSpy },
-        { provide: ParametersAPIService, useValue: apiServiceSpy },
-        { provide: HistoriesAPIService, useValue: historyServiceSpy },
+        { provide: HistoriesAPIService, useValue: historyApiSpy },
         { provide: DatePipe, useValue: datePipe }
       ]
     }).compileComponents()
-    msgServiceSpy.success.calls.reset()
-    msgServiceSpy.error.calls.reset()
     // to spy data: reset
-    apiServiceSpy.getParameterById.calls.reset()
-    historyServiceSpy.getAllHistory.calls.reset()
-    historyServiceSpy.getCountsByCriteria.calls.reset()
+    historyApiSpy.getAllHistory.calls.reset()
     // to spy data: refill with neutral data
-    apiServiceSpy.getParameterById.and.returnValue(of({}))
+    historyApiSpy.getAllHistory.and.returnValue(of({}))
   }))
 
   beforeEach(() => {
@@ -79,9 +79,7 @@ xdescribe('HistoryComponent', () => {
     component.displayDialog = true
   })
 
-  afterEach(() => {
-    component.formGroup.reset()
-  })
+  afterEach(() => {})
 
   describe('construction', () => {
     it('should create', () => {
@@ -89,58 +87,109 @@ xdescribe('HistoryComponent', () => {
     })
   })
 
-  describe('ngOnChanges', () => {
-    it('should reject initializing if dialog is not open', () => {
-      apiServiceSpy.getParameterById.and.returnValue(of(parameter))
-      component.parameter = parameter
-      component.displayDialog = false
-
-      component.ngOnChanges()
-
-      expect(apiServiceSpy.getParameterById).not.toHaveBeenCalled()
-    })
-
-    it('should getting parameter ', () => {
-      apiServiceSpy.getParameterById.and.returnValue(of(parameter))
-      component.parameter = { id: 'id' }
-
-      component.ngOnChanges()
-
-      expect(apiServiceSpy.getParameterById).toHaveBeenCalled()
-    })
-
-    it('should prepare viewing a parameter - failed: missing id', () => {
-      apiServiceSpy.getParameterById.and.returnValue(of(parameter))
-      component.parameter = { ...parameter, id: undefined }
-
-      component.ngOnChanges()
-
-      expect(apiServiceSpy.getParameterById).not.toHaveBeenCalled()
-    })
-
-    it('should getting parameter - failed: missing permissions', () => {
-      const errorResponse = { status: 403, statusText: 'No permissions' }
-      apiServiceSpy.getParameterById.and.returnValue(throwError(() => errorResponse))
-      component.parameter = parameter
-      spyOn(console, 'error')
-
-      component.ngOnChanges()
-
-      expect(apiServiceSpy.getParameterById).toHaveBeenCalled()
-      expect(component.exceptionKey).toBe('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PARAMETER')
-      expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.SEARCH_FAILED' })
-      expect(console.error).toHaveBeenCalledWith('getParameterById', errorResponse)
-    })
-  })
-
-  /*
-   * UI ACTIONS
-   */
   it('should close the dialog', () => {
     spyOn(component.hideDialog, 'emit')
     component.onDialogHide()
 
-    expect(component.displayDialog).toBeFalse()
     expect(component.hideDialog.emit).toHaveBeenCalled()
+  })
+
+  describe('search', () => {
+    it('should search history - get result', (done) => {
+      const criteria: HistoryCriteria = {
+        name: parameter.name,
+        productName: parameter.productName,
+        applicationId: parameter.applicationId
+      }
+      const result: HistoryPageResult = { stream: history }
+      historyApiSpy.getAllHistory.and.returnValue(of(result))
+
+      component.onSearch(criteria)
+
+      component.data$?.subscribe({
+        next: (data) => {
+          expect(data).toEqual(history)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should search history - get empty result', (done) => {
+      const criteria: HistoryCriteria = {
+        name: parameter.name,
+        productName: parameter.productName,
+        applicationId: parameter.applicationId
+      }
+      const result: HistoryPageResult = { stream: [] }
+      historyApiSpy.getAllHistory.and.returnValue(of(result))
+
+      component.onSearch(criteria)
+
+      component.data$?.subscribe({
+        next: (data) => {
+          expect(data.length).toEqual(0)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should search history - get no result', (done) => {
+      const criteria: HistoryCriteria = {
+        name: parameter.name,
+        productName: parameter.productName,
+        applicationId: parameter.applicationId
+      }
+      const result: HistoryPageResult = { stream: undefined }
+      historyApiSpy.getAllHistory.and.returnValue(of(result))
+
+      component.onSearch(criteria)
+
+      component.data$?.subscribe({
+        next: (data) => {
+          expect(data.length).toEqual(0)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should search history - missing criteria', () => {
+      const criteria: HistoryCriteria = {
+        name: parameter.name,
+        productName: parameter.productName
+      }
+      spyOn(console, 'error')
+
+      component.onSearch(criteria)
+
+      expect(console.error).toHaveBeenCalledWith('Missing search criteria for getting parameter history', criteria)
+    })
+
+    it('should search history - get error', (done) => {
+      const criteria: HistoryCriteria = {
+        name: parameter.name,
+        productName: parameter.productName,
+        applicationId: parameter.applicationId
+      }
+      const errorResponse = { status: '403', statusText: 'Not authorized' }
+      historyApiSpy.getAllHistory.and.returnValue(throwError(() => errorResponse))
+      spyOn(console, 'error')
+
+      component.onSearch(criteria)
+
+      component.data$?.subscribe({
+        next: (data) => {
+          expect(data).toEqual([])
+          done()
+        },
+        error: () => {
+          expect(component.exceptionKey).toBe('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.HISTORY')
+          expect(console.error).toHaveBeenCalledWith('getAllHistory', errorResponse)
+          done.fail
+        }
+      })
+    })
   })
 })
