@@ -12,12 +12,10 @@ import { UserService } from '@onecx/angular-integration-interface'
 import { History, HistoriesAPIService, HistoryCriteria, HistoryPageResult, Parameter } from 'src/app/shared/generated'
 import { ParameterHistoryComponent } from './parameter-history.component'
 
-const productName = 'prod1'
-const app = 'app1'
 const parameter: Parameter = {
   id: 'pid',
-  productName: productName,
-  applicationId: app,
+  productName: 'prod1',
+  applicationId: 'app1',
   name: 'name',
   displayName: 'displayName',
   value: 'value'

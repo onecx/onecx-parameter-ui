@@ -5,16 +5,16 @@ import { TranslateService } from '@ngx-translate/core'
 import { Parameter, HistoryCriteria } from 'src/app/shared/generated'
 
 export interface CriteriaForm {
-  name: FormControl<string | undefined | null>
-  productName: FormControl<string | undefined | null>
-  applicationId: FormControl<string | undefined | null>
+  name: FormControl<string | undefined>
+  productName: FormControl<string | undefined>
+  applicationId: FormControl<string | undefined>
 }
 
 @Component({
   selector: 'app-history-criteria',
   templateUrl: './history-criteria.component.html'
 })
-export class HistorySearchCriteriaComponent implements OnChanges {
+export class HistoryCriteriaComponent implements OnChanges {
   @Input() public parameter: Parameter | undefined = undefined
   @Output() public criteriaEmitter = new EventEmitter<HistoryCriteria>()
 
@@ -22,9 +22,9 @@ export class HistorySearchCriteriaComponent implements OnChanges {
 
   constructor(public readonly translate: TranslateService) {
     this.criteriaForm = new FormGroup<CriteriaForm>({
-      name: new FormControl<string | undefined | null>({ value: undefined, disabled: true }),
-      productName: new FormControl<string | undefined | null>({ value: undefined, disabled: true }),
-      applicationId: new FormControl<string | undefined | null>({ value: undefined, disabled: true })
+      name: new FormControl<string | undefined>({ value: undefined, disabled: true }, { nonNullable: true }),
+      productName: new FormControl<string | undefined>({ value: undefined, disabled: true }, { nonNullable: true }),
+      applicationId: new FormControl<string | undefined>({ value: undefined, disabled: true }, { nonNullable: true })
     })
   }
 
@@ -36,10 +36,9 @@ export class HistorySearchCriteriaComponent implements OnChanges {
         applicationId: this.parameter?.applicationId
       })
       const criteria: HistoryCriteria = {
-        productName: this.criteriaForm.value.productName === null ? undefined : this.criteriaForm.value.productName,
-        applicationId:
-          this.criteriaForm.value.applicationId === null ? undefined : this.criteriaForm.value.applicationId,
-        name: this.criteriaForm.value.name === null ? undefined : this.criteriaForm.value.name
+        productName: this.criteriaForm.value.productName,
+        applicationId: this.criteriaForm.value.applicationId,
+        name: this.criteriaForm.value.name
       }
       this.criteriaEmitter.emit(criteria)
     }

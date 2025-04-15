@@ -11,7 +11,7 @@ import { ParameterSearchComponent } from './parameter-search/parameter-search.co
 import { ParameterCriteriaComponent } from './parameter-search/parameter-criteria/parameter-criteria.component'
 import { ParameterDetailComponent } from './parameter-detail/parameter-detail.component'
 import { ParameterHistoryComponent } from './parameter-history/parameter-history.component'
-import { HistorySearchCriteriaComponent } from './parameter-history/history-criteria/history-criteria.component'
+import { HistoryCriteriaComponent } from './parameter-history/history-criteria/history-criteria.component'
 import { HistoryListComponent } from './parameter-history/history-list/history-list.component'
 
 const routes: Routes = [
@@ -27,7 +27,7 @@ const routes: Routes = [
     ParameterCriteriaComponent,
     ParameterDetailComponent,
     ParameterHistoryComponent,
-    HistorySearchCriteriaComponent,
+    HistoryCriteriaComponent,
     HistoryListComponent
   ],
   imports: [
