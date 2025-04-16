@@ -6,13 +6,12 @@ import { InitializeModuleGuard, addInitializeModuleGuard } from '@onecx/angular-
 import { PortalCoreModule } from '@onecx/portal-integration-angular'
 
 import { SharedModule } from 'src/app/shared/shared.module'
+import { LabelResolver } from 'src/app/shared/label.resolver'
 
 import { ParameterSearchComponent } from './parameter-search/parameter-search.component'
-import { ParameterCriteriaComponent } from './parameter-search/parameter-criteria/parameter-criteria.component'
+import { ParameterCriteriaComponent } from './parameter-criteria/parameter-criteria.component'
 import { ParameterDetailComponent } from './parameter-detail/parameter-detail.component'
 import { ParameterHistoryComponent } from './parameter-history/parameter-history.component'
-import { ParameterHistoryCriteriaComponent } from './parameter-history/parameter-history-criteria/parameter-history-criteria.component'
-import { ParameterHistoryListComponent } from './parameter-history/parameter-history-list/parameter-history-list.component'
 import { DetailHistoryComponent } from './detail-history/detail-history.component'
 import { DetailHistoryCriteriaComponent } from './detail-history/detail-history-criteria/detail-history-criteria.component'
 import { DetailHistoryListComponent } from './detail-history/detail-history-list/detail-history-list.component'
@@ -22,6 +21,18 @@ const routes: Routes = [
     path: '',
     component: ParameterSearchComponent,
     pathMatch: 'full'
+  },
+  {
+    path: 'usage',
+    component: ParameterHistoryComponent,
+    pathMatch: 'full',
+    data: {
+      breadcrumb: 'BREADCRUMBS.HISTORY',
+      breadcrumbFn: (data: any) => `${data.labeli18n}`
+    },
+    resolve: {
+      labeli18n: LabelResolver
+    }
   }
 ]
 @NgModule({
@@ -30,8 +41,6 @@ const routes: Routes = [
     ParameterCriteriaComponent,
     ParameterDetailComponent,
     ParameterHistoryComponent,
-    ParameterHistoryCriteriaComponent,
-    ParameterHistoryListComponent,
     DetailHistoryComponent,
     DetailHistoryCriteriaComponent,
     DetailHistoryListComponent

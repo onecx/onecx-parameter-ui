@@ -1,50 +1,354 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core'
+import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core'
+import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
-import { catchError, finalize, map, Observable, of } from 'rxjs'
+import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
+import { Table } from 'primeng/table'
 
-import { Parameter, History, HistoriesAPIService, HistoryCriteria } from 'src/app/shared/generated'
+import { UserService } from '@onecx/angular-integration-interface'
+import { Action, Column, DataViewControlTranslations, PortalMessageService } from '@onecx/portal-integration-angular'
+import { SlotService } from '@onecx/angular-remote-components'
+
+import { Parameter, ParameterSearchCriteria, ParametersAPIService, Product } from 'src/app/shared/generated'
+import { limitText } from 'src/app/shared/utils'
+
+export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
+type ExtendedColumn = Column & {
+  hasFilter?: boolean
+  isBoolean?: boolean
+  isDate?: boolean
+  isDropdown?: boolean
+  limit?: boolean
+  css?: string
+}
+export type ExtendedProduct = {
+  name: string
+  displayName: string
+  applications: Array<ApplicationAbstract>
+  undeployed?: boolean
+}
+type AllMetaData = {
+  allProducts: ExtendedProduct[]
+  usedProducts: ExtendedProduct[]
+}
+// DATA structures of product store response
+export type ApplicationAbstract = {
+  appName?: string
+  appId?: string
+  undeployed?: boolean
+  deprecated?: boolean
+}
+export type ProductAbstract = {
+  id?: string
+  name: string
+  version?: string
+  description?: string
+  imageUrl?: string
+  displayName?: string
+  classifications?: Array<string>
+  undeployed?: boolean
+  provider?: string
+  applications?: Array<ApplicationAbstract>
+}
 
 @Component({
   selector: 'app-parameter-history',
   templateUrl: './parameter-history.component.html',
   styleUrls: ['./parameter-history.component.scss']
 })
-export class ParameterHistoryComponent {
-  @Input() public displayDialog = false
-  @Input() public parameter: Parameter | undefined
-  @Input() public dateFormat: string | undefined = undefined
-  @Output() public hideDialog = new EventEmitter()
-
+export class ParameterHistoryComponent implements OnInit {
+  // dialog
   public loading = false
   public exceptionKey: string | undefined = undefined
-  public data$: Observable<History[]> = of([])
+  public changeMode: ChangeMode = 'VIEW'
+  public dateFormat: string
+  public refreshUsedProducts = false
+  public displayDetailDialog = false
+  public displayDeleteDialog = false
+  public displayHistoryDialog = false
+  public limitText = limitText
+  public actions: Action[] = []
+  public filteredColumns: Column[] = []
+
+  @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
+  public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
+
+  // data
+  public data$: Observable<Parameter[]> | undefined
+  public criteria: ParameterSearchCriteria = {}
+  public metaData$!: Observable<AllMetaData>
+  public usedProducts$ = new ReplaySubject<Product[]>(1) // getting data from bff endpoint
+  public item4Detail: Parameter | undefined // used on detail
+  public item4Delete: Parameter | undefined // used on deletion
+  // slot configuration: get product infos via remote component
+  public slotName = 'onecx-product-infos'
+  public isComponentDefined$: Observable<boolean> | undefined // check
+  public productInfos$ = new BehaviorSubject<ProductAbstract[] | undefined>(undefined) // product infos
+  public slotEmitter = new EventEmitter<ProductAbstract[]>()
+
+  public columns: ExtendedColumn[] = [
+    {
+      field: 'name',
+      header: 'COMBINED_NAME',
+      active: true,
+      translationPrefix: 'PARAMETER',
+      limit: false
+    },
+    {
+      field: 'value',
+      header: 'VALUE',
+      active: true,
+      translationPrefix: 'PARAMETER',
+      limit: true
+    },
+    {
+      field: 'productDisplayName',
+      header: 'PRODUCT_NAME',
+      active: true,
+      translationPrefix: 'PARAMETER',
+      limit: false
+    },
+    {
+      field: 'applicationName',
+      header: 'APP_NAME',
+      active: true,
+      translationPrefix: 'PARAMETER',
+      limit: false
+    },
+    {
+      field: 'operator',
+      header: 'OPERATOR',
+      active: true,
+      translationPrefix: 'PARAMETER',
+      isBoolean: true,
+      css: 'text-center'
+    },
+    {
+      field: 'modificationDate',
+      header: 'MODIFICATION_DATE',
+      active: true,
+      translationPrefix: 'INTERNAL',
+      isDate: true
+    }
+  ]
 
   constructor(
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly user: UserService,
+    private readonly slotService: SlotService,
     private readonly translate: TranslateService,
-    private readonly historyApiService: HistoriesAPIService
-  ) {}
+    private readonly msgService: PortalMessageService,
+    private readonly parameterApi: ParametersAPIService
+  ) {
+    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
+    this.filteredColumns = this.columns.filter((a) => a.active === true)
+    this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.slotName)
+  }
 
-  public onDialogHide() {
-    this.hideDialog.emit()
+  public ngOnInit(): void {
+    this.slotEmitter.subscribe(this.productInfos$)
+    this.onReload()
+    this.getMetaData() // and trigger search
+    this.prepareDialogTranslations()
+    this.preparePageActions()
+  }
+
+  private onReload(): void {
+    this.getUsedProducts()
+    this.onSearch({}, true)
   }
 
   /****************************************************************************
-   *  SEARCH history data
+   * GET DATA
    */
-  public onSearch(criteria: HistoryCriteria): void {
-    if (!criteria.name || !criteria.productName || !criteria.applicationId) {
-      console.error('Missing search criteria for getting parameter history', criteria)
-      return
+  // get used products (used === assigned to data)
+  private getUsedProducts() {
+    this.parameterApi
+      .getAllApplications()
+      .pipe(
+        catchError((err) => {
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+          console.error('getAllApplications', err)
+          return of([])
+        })
+      )
+      .subscribe((v) => this.usedProducts$.next(v))
+  }
+
+  // combine used products with product info from product store
+  private getMetaData() {
+    this.exceptionKey = undefined
+    // combine all product infos and used products to one meta data structure
+    this.metaData$ = combineLatest([this.productInfos$, this.usedProducts$]).pipe(
+      map(([aP, uP]: [ProductAbstract[] | undefined, Product[]]) => {
+        return this.combineProducts(
+          this.convertProductAbstract2ExtendedProduct(aP),
+          this.convertProduct2ExtendedProduct(uP)
+        )
+      })
+    )
+  }
+  /****************************************************************************
+   * HELPER
+   */
+  // map:  ProductAbstract[] => ExtendedProduct[]
+  private convertProductAbstract2ExtendedProduct(aP: ProductAbstract[] | undefined): ExtendedProduct[] {
+    const aps: ExtendedProduct[] = []
+    if (aP && aP.length > 0) {
+      aP.forEach((p) =>
+        aps.push({
+          name: p.name,
+          displayName: p.displayName ?? p.name,
+          undeployed: p.undeployed,
+          applications: p.applications ?? []
+        })
+      )
+      aps.sort(this.sortByDisplayName)
     }
+    return aps
+  }
+  // map:  Product[] => ExtendedProduct[]
+  private convertProduct2ExtendedProduct(uP: Product[]): ExtendedProduct[] {
+    const ups: ExtendedProduct[] = []
+    uP.forEach((p) => {
+      const apps: ApplicationAbstract[] = []
+      p.applications?.forEach((s) => {
+        apps.push({ appName: s, appId: s } as ApplicationAbstract)
+      })
+      ups.push({ name: p.productName, displayName: p.productName, applications: apps } as ExtendedProduct)
+    })
+    ups.sort(this.sortByDisplayName)
+    return ups
+  }
+
+  private combineProducts(aP: ExtendedProduct[], uP: ExtendedProduct[]): AllMetaData {
+    // convert/enrich used products if product info are available
+    if (aP && uP && uP.length > 0) {
+      uP.forEach((p) => {
+        const pi = aP.find((ap) => ap.name === p.name) // get product info
+        if (pi) {
+          p.displayName = pi.displayName!
+          p.undeployed = pi.undeployed
+          // collect apps: only used
+          const uApps: ApplicationAbstract[] = []
+          p.applications?.forEach((papp) => {
+            // app still exists?
+            const app = pi.applications?.find((app) => app.appId === papp.appId)
+            if (app) uApps.push(app)
+          })
+          p.applications = uApps
+        }
+      })
+      uP.sort(this.sortByDisplayName)
+    }
+    // if service is not running or product data are not yet available
+    if (aP.length === 0) aP = uP
+    return { allProducts: aP, usedProducts: [...uP] } // meta data
+  }
+
+  /****************************************************************************
+   *  SEARCH data
+   */
+  public onSearch(criteria: ParameterSearchCriteria, reuseCriteria = false): void {
     this.loading = true
-    this.data$ = this.historyApiService.getAllHistory({ historyCriteria: criteria }).pipe(
-      map((results) => results.stream ?? []),
+    this.exceptionKey = undefined
+    if (!reuseCriteria) this.criteria = { ...criteria }
+    this.data$ = this.parameterApi.searchParametersByCriteria({ parameterSearchCriteria: { ...this.criteria } }).pipe(
+      tap((data: any) => {
+        if (data.totalElements === 0) {
+          this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
+          return data.size
+        }
+      }),
+      map((data) => data.stream),
       catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.HISTORY'
-        console.error('getAllHistory', err)
-        return of([])
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
+        console.error('searchParametersByCriteria', err)
+        return of([] as Parameter[])
       }),
       finalize(() => (this.loading = false))
+    )
+  }
+
+  /**
+   * Dialog preparation
+   */
+  private prepareDialogTranslations(): void {
+    this.dataViewControlsTranslations$ = this.translate
+      .get([
+        'PARAMETER.PRODUCT_NAME',
+        'PARAMETER.APP_ID',
+        'PARAMETER.NAME',
+        'PARAMETER.DISPLAY_NAME',
+        'DIALOG.DATAVIEW.FILTER'
+      ])
+      .pipe(
+        map((data) => {
+          return {
+            filterInputPlaceholder: data['DIALOG.DATAVIEW.FILTER'],
+            filterInputTooltip:
+              data['PARAMETER.PRODUCT_NAME'] +
+              ', ' +
+              data['PARAMETER.APP_ID'] +
+              ', ' +
+              data['PARAMETER.DISPLAY_NAME'] +
+              ', ' +
+              data['PARAMETER.NAME']
+          } as DataViewControlTranslations
+        })
+      )
+  }
+
+  public preparePageActions(): void {
+    this.actions = [
+      {
+        labelKey: 'ACTIONS.NAVIGATION.BACK',
+        titleKey: 'ACTIONS.NAVIGATION.BACK.TOOLTIP',
+        actionCallback: () => this.onBack(),
+        icon: 'pi pi-arrow-left',
+        show: 'always',
+        permission: 'PARAMETER#SEARCH'
+      }
+    ]
+  }
+
+  /****************************************************************************
+   *  UI Events
+   */
+  public onCriteriaReset(): void {
+    this.criteria = {}
+  }
+
+  onBack() {
+    this.router.navigate(['../'], { relativeTo: this.route })
+  }
+
+  public onColumnsChange(activeIds: string[]) {
+    this.filteredColumns = activeIds.map((id) => this.columns.find((col) => col.field === id)) as Column[]
+  }
+
+  public onFilterChange(event: string): void {
+    this.dataTable?.filterGlobal(event, 'contains')
+  }
+
+  private sortByDisplayName(a: any, b: any): number {
+    return (a.displayName ? a.displayName.toUpperCase() : '').localeCompare(
+      b.displayName ? b.displayName.toUpperCase() : ''
+    )
+  }
+
+  // getting display names within HTML
+  public getProductDisplayName(name: string | undefined, allProducts: ExtendedProduct[]): string | undefined {
+    return allProducts.find((item) => item.name === name)?.displayName ?? name
+  }
+  public getAppDisplayName(
+    productName: string | undefined,
+    appId: string | undefined,
+    allProducts: ExtendedProduct[]
+  ): string | undefined {
+    return (
+      allProducts.find((item) => item.name === productName)?.applications?.find((a) => a.appId === appId)?.appName ??
+      appId
     )
   }
 }

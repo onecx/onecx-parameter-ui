@@ -35,3 +35,6 @@ app:
             EDIT: Edit parameter
             VIEW: View parameter
             SEARCH: Search parameter
+          USAGE:
+            VIEW: View parameter usage
+            SEARCH: Search parameter usage

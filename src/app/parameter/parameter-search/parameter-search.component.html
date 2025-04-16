@@ -10,6 +10,7 @@
 
   <ng-container *ngIf="metaData$ | async as metaData">
     <app-parameter-criteria
+      type="PARAMETER"
       [actions]="actions"
       [usedProducts]="metaData.usedProducts"
       (searchEmitter)="onSearch($event)"

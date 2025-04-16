@@ -86,8 +86,8 @@
       "TOOLTIP": "Parameterdetails"
     },
     "HISTORY": {
-      "LABEL": "Verlaufsdaten",
-      "TOOLTIP": "Verlaufsdaten"
+      "LABEL": "Nutzungsdaten",
+      "TOOLTIP": "Von den Applikationen gemeldete Nutzungsdaten"
     },
     "CANCEL": "Abbrechen",
     "CHOOSE": "Wählen",
@@ -103,6 +103,9 @@
       "SAVE": "Die Änderungen speichern",
       "SAVE_AS": "Speichern als neuen Parameter"
     }
+  },
+  "BREADCRUMBS": {
+    "HISTORY": "Nutzung"
   },
   "INTERNAL": {
     "HEADER": "Intern",
@@ -121,7 +124,7 @@
     }
   },
   "DIALOG": {
-    "SEARCH": {
+    "PARAMETER": {
       "HEADER": "Parameter Management",
       "SUBHEADER": "Suchen und verwalten von Parametern zur Konfiguration von Applikationen"
     },
@@ -146,11 +149,13 @@
       "CHARACTERS": "Noch mögliche Zeichen"
     },
     "HISTORY": {
-      "HEADER": "Verlaufsdaten",
+      "HEADER": "Parameternutzung",
+      "SUBHEADER": "Suchen und Anzeige von Parametern die von Applikationen verwendet worden sind",
       "NAME": "Parameter",
       "COUNT": "Anzahl",
-      "INTERVAL_START": "Start",
-      "INTERVAL_END": "Ende",
+      "START": "Start",
+      "END": "Ende",
+      "DURATION": "Dauer",
       "INSTANCE_ID": "Instanz-ID",
       "DEFAULT_VALUE": "Standardwert",
       "USED_VALUE": "Verwendeter Wert",
@@ -158,8 +163,9 @@
       "HISTORY_RELOAD": "Verlaufsdaten aktualisieren",
       "TOOLTIPS": {
         "COUNT": "Wie oft im Interval benutzt?",
-        "INTERVAL_START": "Interval Start",
-        "INTERVAL_END": "Interval Ende",
+        "START": "Beginn des Zeitraums",
+        "END": "Ende des Zeitraums",
+        "DURATION": "Zeitraum in dem der Parameter mit dem geliefertem Wert benutzt wurde",
         "INSTANCE_ID": "ID der Instanz, die den Parameter benutzt hat",
         "DEFAULT_VALUE": "Standardwert",
         "USED_VALUE": "Verwendeter Wert",

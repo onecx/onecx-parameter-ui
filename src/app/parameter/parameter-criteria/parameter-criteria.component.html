@@ -1,6 +1,6 @@
 <ocx-search-header
-  [header]="'DIALOG.SEARCH.HEADER' | translate"
-  [subheader]="'DIALOG.SEARCH.SUBHEADER' | translate"
+  [header]="'DIALOG.' + type + '.HEADER' | translate"
+  [subheader]="'DIALOG.' + type + '.SUBHEADER' | translate"
   (searched)="onSearch()"
   (resetted)="onResetCriteria()"
   [manualBreadcrumbs]="false"

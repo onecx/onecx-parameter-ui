@@ -8,7 +8,7 @@ import { SelectItem } from 'primeng/api'
 
 import { UserService } from '@onecx/angular-integration-interface'
 
-import { ExtendedProduct, ApplicationAbstract } from '../parameter-search.component'
+import { ExtendedProduct, ApplicationAbstract } from '../parameter-search/parameter-search.component'
 import { ParameterCriteriaComponent, CriteriaForm } from './parameter-criteria.component'
 
 const filledCriteria = new FormGroup<CriteriaForm>({

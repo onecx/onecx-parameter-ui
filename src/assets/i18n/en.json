@@ -86,8 +86,8 @@
       "TOOLTIP": "Parameter details"
     },
     "HISTORY": {
-      "LABEL": "History",
-      "TOOLTIP": "Historical Data"
+      "LABEL": "Usage Data",
+      "TOOLTIP": "Usage data obtained from Applications"
     },
     "CANCEL": "Cancel",
     "CHOOSE": "Choose",
@@ -103,6 +103,9 @@
       "SAVE": "Save changes",
       "SAVE_AS": "Save as new Parameter"
     }
+  },
+  "BREADCRUMBS": {
+    "HISTORY": "Usage"
   },
   "INTERNAL": {
     "HEADER": "Internal",
@@ -121,7 +124,7 @@
     }
   },
   "DIALOG": {
-    "SEARCH": {
+    "PARAMETER": {
       "HEADER": "Parameter Management",
       "SUBHEADER": "Search and manage Parameters for configuring of Applications"
     },
@@ -146,11 +149,13 @@
       "CHARACTERS": "Still remaining characters"
     },
     "HISTORY": {
-      "HEADER": "Parameter History",
+      "HEADER": "Parameter Usage",
+      "SUBHEADER": "Search and display Parameters used by Applications",
       "NAME": "Parameter",
       "COUNT": "Count",
-      "INTERVAL_START": "Start",
-      "INTERVAL_END": "End",
+      "START": "Start",
+      "END": "End",
+      "DURATION": "Duration",
       "INSTANCE_ID": "Instance ID",
       "DEFAULT_VALUE": "Default Value",
       "USED_VALUE": "Used Value",
@@ -158,8 +163,9 @@
       "HISTORY_RELOAD": "Reload history",
       "TOOLTIPS": {
         "COUNT": "How many times used within interval?",
-        "INTERVAL_START": "Start of Interval",
-        "INTERVAL_END": "End of Interval",
+        "START": "Start of timeframe",
+        "END": "End of timeframe",
+        "DURATION": "Period in which the Parameter was used with the supplied value",
         "INSTANCE_ID": "ID of the instance that used the parameter",
         "DEFAULT_VALUE": "Default value",
         "USED_VALUE": "Used value",

@@ -11,7 +11,9 @@ type ExtendedColumn = Column & {
   hasFilter?: boolean
   isBoolean?: boolean
   isDate?: boolean
+  isDuration?: boolean
   isValue?: boolean
+  isText?: boolean
   limit?: boolean
   css?: string
 }
@@ -32,24 +34,25 @@ export class DetailHistoryListComponent {
 
   public columns: ExtendedColumn[] = [
     {
-      field: 'intervalStart',
-      header: 'INTERVAL_START',
+      field: 'start',
+      header: 'START',
       active: true,
       translationPrefix: 'DIALOG.HISTORY',
       isDate: true
     },
     {
-      field: 'intervalEnd',
-      header: 'INTERVAL_END',
+      field: 'duration',
+      header: 'DURATION',
       active: true,
       translationPrefix: 'DIALOG.HISTORY',
-      isDate: true
+      isDuration: true
     },
     {
       field: 'count',
       header: 'COUNT',
       active: true,
       translationPrefix: 'DIALOG.HISTORY',
+      isText: true,
       css: 'text-center'
     },
     {
@@ -57,6 +60,7 @@ export class DetailHistoryListComponent {
       header: 'INSTANCE_ID',
       active: true,
       translationPrefix: 'DIALOG.HISTORY',
+      isText: true,
       css: 'text-center'
     },
     {
@@ -90,5 +94,10 @@ export class DetailHistoryListComponent {
 
   public onFilterChange(event: string): void {
     this.dataTable?.filterGlobal(event, 'contains')
+  }
+
+  public onCalcDuration(start: string, end: string): string {
+    if (!start || start === '' || !end || end === '') return ''
+    return new Date(Date.parse(end) - Date.parse(start)).toUTCString().split(' ')[4]
   }
 }

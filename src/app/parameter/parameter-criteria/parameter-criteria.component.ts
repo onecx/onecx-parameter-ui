@@ -7,7 +7,7 @@ import { Action } from '@onecx/portal-integration-angular'
 
 import { ParameterSearchCriteria } from 'src/app/shared/generated'
 import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
-import { ExtendedProduct } from '../parameter-search.component'
+import { ExtendedProduct } from '../parameter-search/parameter-search.component'
 
 export interface CriteriaForm {
   applicationId: FormControl<string | null>
@@ -21,6 +21,7 @@ export interface CriteriaForm {
   styleUrls: ['./parameter-criteria.component.scss']
 })
 export class ParameterCriteriaComponent implements OnChanges {
+  @Input() public type = 'PARAMETER'
   @Input() public actions: Action[] = []
   @Input() public usedProducts: ExtendedProduct[] = [] // products used with data
   @Output() public searchEmitter = new EventEmitter<ParameterSearchCriteria>()

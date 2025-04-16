@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core'
+import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
 import { Table } from 'primeng/table'
@@ -131,6 +132,8 @@ export class ParameterSearchComponent implements OnInit {
   ]
 
   constructor(
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
     private readonly user: UserService,
     private readonly slotService: SlotService,
     private readonly translate: TranslateService,
@@ -153,6 +156,9 @@ export class ParameterSearchComponent implements OnInit {
   private onReload(): void {
     this.getUsedProducts()
     this.onSearch({}, true)
+  }
+  public onGoToHistory(): void {
+    this.router.navigate(['./usage'], { relativeTo: this.route })
   }
 
   /****************************************************************************
@@ -305,6 +311,14 @@ export class ParameterSearchComponent implements OnInit {
         icon: 'pi pi-plus',
         show: 'always',
         permission: 'PARAMETER#EDIT'
+      },
+      {
+        labelKey: 'ACTIONS.HISTORY.LABEL',
+        titleKey: 'ACTIONS.HISTORY.TOOLTIP',
+        actionCallback: () => this.onGoToHistory(),
+        icon: 'pi pi-history',
+        show: 'always',
+        permission: 'USAGE#SEARCH'
       }
     ]
   }
