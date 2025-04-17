@@ -253,7 +253,7 @@ export class ParameterSearchComponent implements OnInit {
    *  SEARCH data
    */
   public onSearch(criteria: ParameterSearchCriteria, reuseCriteria = false): void {
-    this.loading = false
+    this.loading = true
     this.exceptionKey = undefined
     if (!reuseCriteria) this.criteria = { ...criteria }
     this.data$ = this.parameterApi.searchParametersByCriteria({ parameterSearchCriteria: { ...this.criteria } }).pipe(

@@ -19,7 +19,7 @@
 
     <ocx-page-content>
       <p-message
-        *ngIf="!metaData.usedProducts || loading"
+        *ngIf="!metaData.usedProducts"
         id="pm_search_message_loading"
         severity="info"
         styleClass="m-3"
@@ -34,6 +34,13 @@
       ></p-message>
 
       <ng-container *ngIf="data$ | async as data">
+        <p-message
+          *ngIf="loading"
+          id="pm_search_message_loading"
+          severity="info"
+          styleClass="m-3"
+          [text]="'ACTIONS.LOADING' | translate"
+        ></p-message>
         <p-table
           *ngIf="!(loading || exceptionKey)"
           #dataTable
