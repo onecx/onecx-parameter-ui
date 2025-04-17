@@ -206,7 +206,7 @@ describe('ParameterHistoryComponent', () => {
         },
         error: () => {
           expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.SEARCH_FAILED' })
-          expect(console.error).toHaveBeenCalledWith('searchParametersByCriteria', errorResponse)
+          expect(console.error).toHaveBeenCalledWith('getAllHistoryLatest', errorResponse)
           done.fail
         }
       })
