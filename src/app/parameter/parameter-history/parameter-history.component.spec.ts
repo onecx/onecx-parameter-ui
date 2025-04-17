@@ -160,6 +160,17 @@ describe('ParameterHistoryComponent', () => {
     })
   })
 
+  describe('page actions', () => {
+    it('should go to parameter search', () => {
+      spyOn(component, 'onGoToParameterSearchPage')
+
+      component.ngOnInit()
+      component.actions[0].actionCallback()
+
+      expect(component.onGoToParameterSearchPage).toHaveBeenCalled()
+    })
+  })
+
   describe('search', () => {
     it('should search parameters without search criteria', (done) => {
       historyApiSpy.getAllHistoryLatest.and.returnValue(of({ stream: itemData }))
@@ -460,6 +471,29 @@ describe('ParameterHistoryComponent', () => {
       component = fixture.componentInstance
       fixture.detectChanges()
       expect(component.dateFormat).toEqual('M/d/yy, hh:mm:ss a')
+    })
+  })
+
+  /**
+   * Utility tests
+   */
+  describe('utility functions', () => {
+    it('should calc duration - with both values', () => {
+      const duration = component.onCalcDuration('2024-01-01T01:00:00Z', '2024-01-01T01:10:00Z')
+
+      expect(duration).toBe('00:10:00')
+    })
+
+    it('should calc duration - with mission values', () => {
+      const duration = component.onCalcDuration('', '2024-01-01T01:10:00Z')
+
+      expect(duration).toBe('')
+    })
+
+    it('should calc duration - with mission values', () => {
+      const duration = component.onCalcDuration('2024-01-01T01:00:00Z', '')
+
+      expect(duration).toBe('')
     })
   })
 })

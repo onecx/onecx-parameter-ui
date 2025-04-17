@@ -1,9 +1,7 @@
-import { Component, Input, ViewChild } from '@angular/core'
+import { Component, Input } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
-import { Table } from 'primeng/table'
-import { map, Observable } from 'rxjs'
 
-import { Column, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+import { Column } from '@onecx/portal-integration-angular'
 
 import { Parameter, History } from 'src/app/shared/generated'
 
@@ -28,9 +26,6 @@ export class DetailHistoryListComponent {
   @Input() public parameter: Parameter | undefined = undefined
   @Input() public data: History[] = []
   @Input() public dateFormat: string | undefined = undefined
-
-  @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
-  public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
 
   public filteredColumns: Column[]
   public columns: ExtendedColumn[] = [
@@ -90,28 +85,7 @@ export class DetailHistoryListComponent {
   ]
 
   constructor(public readonly translate: TranslateService) {
-    this.prepareDialogTranslations()
     this.filteredColumns = this.columns.filter((a) => a.active === true)
-  }
-
-  /**
-   * Dialog preparation
-   */
-  private prepareDialogTranslations(): void {
-    this.dataViewControlsTranslations$ = this.translate
-      .get(['DIALOG.USAGE.INSTANCE_ID', 'DIALOG.DATAVIEW.FILTER'])
-      .pipe(
-        map((data) => {
-          return {
-            filterInputPlaceholder: data['DIALOG.DATAVIEW.FILTER'],
-            filterInputTooltip: data['DIALOG.USAGE.INSTANCE_ID']
-          } as DataViewControlTranslations
-        })
-      )
-  }
-
-  public onFilterChange(event: string): void {
-    this.dataTable?.filterGlobal(event, 'contains')
   }
 
   public onCalcDuration(start: string, end: string): string {

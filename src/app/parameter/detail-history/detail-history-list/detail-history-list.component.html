@@ -33,17 +33,6 @@
   [showCurrentPageReport]="true"
   currentPageReportTemplate="{first} - {last} {{ 'ACTIONS.SEARCH.OF' | translate }} {totalRecords}"
 >
-  <!-- ng-template pTemplate="caption">
-    <ocx-data-view-controls
-      [supportedViews]="['table']"
-      [enableFiltering]="true"
-      [enableSorting]="false"
-      [columnDefinitions]="columns"
-      (filterChange)="onFilterChange($event)"
-      [translations]="(dataViewControlsTranslations$ | async) ?? {}"
-    ></ocx-data-view-controls>
-  </ng-template -->
-
   <ng-template pTemplate="emptymessage">
     <tr>
       <td id="pm_usage_list_table_emptymessage" colspan="16">{{ 'ACTIONS.SEARCH.NO_DATA' | translate }}</td>

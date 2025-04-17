@@ -2,9 +2,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
-import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
-import { of } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
 
@@ -40,35 +38,25 @@ describe('HistoryListComponent', () => {
     it('should create', () => {
       expect(component).toBeTruthy()
     })
-
-    it('dataview translations', (done) => {
-      const translationData = {
-        'DIALOG.DATAVIEW.FILTER': 'filter'
-      }
-      const translateService = TestBed.inject(TranslateService)
-      spyOn(translateService, 'get').and.returnValue(of(translationData))
-
-      fixture = TestBed.createComponent(DetailHistoryListComponent)
-      component = fixture.componentInstance
-      fixture.detectChanges()
-
-      component.dataViewControlsTranslations$?.subscribe({
-        next: (data) => {
-          if (data) {
-            expect(data.filterInputPlaceholder).toEqual('filter')
-          }
-          done()
-        },
-        error: done.fail
-      })
-    })
   })
 
-  it('should apply a filter to the result table', () => {
-    component.dataTable = jasmine.createSpyObj('dataTable', ['filterGlobal'])
+  describe('utility functions', () => {
+    it('should calc duration - with both values', () => {
+      const duration = component.onCalcDuration('2024-01-01T01:00:00Z', '2024-01-01T01:10:00Z')
 
-    component.onFilterChange('test')
+      expect(duration).toBe('00:10:00')
+    })
 
-    expect(component.dataTable?.filterGlobal).toHaveBeenCalledWith('test', 'contains')
+    it('should calc duration - with mission values', () => {
+      const duration = component.onCalcDuration('', '2024-01-01T01:10:00Z')
+
+      expect(duration).toBe('')
+    })
+
+    it('should calc duration - with mission values', () => {
+      const duration = component.onCalcDuration('2024-01-01T01:00:00Z', '')
+
+      expect(duration).toBe('')
+    })
   })
 })

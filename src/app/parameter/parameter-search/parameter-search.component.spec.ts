@@ -156,14 +156,25 @@ describe('ParameterSearchComponent', () => {
         error: done.fail
       })
     })
+  })
 
-    it('should open create dialog using UI action', () => {
+  describe('page actions', () => {
+    it('should open create dialog', () => {
       spyOn(component, 'onDetail')
 
       component.ngOnInit()
       component.actions[0].actionCallback()
 
       expect(component.onDetail).toHaveBeenCalled()
+    })
+
+    it('should go to latest usage page', () => {
+      spyOn(component, 'onGoToLatestUsagePage')
+
+      component.ngOnInit()
+      component.actions[1].actionCallback()
+
+      expect(component.onGoToLatestUsagePage).toHaveBeenCalled()
     })
   })
 
