@@ -64,7 +64,7 @@ export class ParameterSearchComponent implements OnInit {
   public refreshUsedProducts = false
   public displayDetailDialog = false
   public displayDeleteDialog = false
-  public displayHistoryDialog = false
+  public displayUsageDialog = false
   public limitText = limitText
   public actions: Action[] = []
   public filteredColumns: Column[] = []
@@ -313,8 +313,8 @@ export class ParameterSearchComponent implements OnInit {
         permission: 'PARAMETER#EDIT'
       },
       {
-        labelKey: 'ACTIONS.HISTORY.LABEL',
-        titleKey: 'ACTIONS.HISTORY.TOOLTIP',
+        labelKey: 'ACTIONS.USAGE.LABEL',
+        titleKey: 'ACTIONS.USAGE.TOOLTIP',
         actionCallback: () => this.onGoToHistory(),
         icon: 'pi pi-history',
         show: 'always',
@@ -374,15 +374,14 @@ export class ParameterSearchComponent implements OnInit {
     })
   }
 
-  // History => routing
-  public onHistory(ev: Event, item: Parameter) {
+  // History
+  public onUsage(ev: Event, item: Parameter) {
     ev.stopPropagation()
     this.item4Detail = item
-    this.displayHistoryDialog = true
+    this.displayUsageDialog = true
   }
-  public onCloseHistory() {
-    console.log('param search => onCloseHistory')
-    this.displayHistoryDialog = false
+  public onCloseUsage() {
+    this.displayUsageDialog = false
     this.item4Detail = undefined
   }
 

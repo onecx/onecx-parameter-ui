@@ -38,21 +38,21 @@ export class DetailHistoryListComponent {
       field: 'start',
       header: 'START',
       active: true,
-      translationPrefix: 'DIALOG.HISTORY',
+      translationPrefix: 'DIALOG.USAGE',
       isDate: true
     },
     {
       field: 'duration',
       header: 'DURATION',
       active: true,
-      translationPrefix: 'DIALOG.HISTORY',
+      translationPrefix: 'DIALOG.USAGE',
       isDuration: true
     },
     {
       field: 'count',
       header: 'COUNT',
       active: true,
-      translationPrefix: 'DIALOG.HISTORY',
+      translationPrefix: 'DIALOG.USAGE',
       isText: true,
       css: 'text-center'
     },
@@ -60,7 +60,7 @@ export class DetailHistoryListComponent {
       field: 'instanceId',
       header: 'INSTANCE_ID',
       active: true,
-      translationPrefix: 'DIALOG.HISTORY',
+      translationPrefix: 'DIALOG.USAGE',
       isText: true,
       css: 'text-center'
     },
@@ -68,7 +68,7 @@ export class DetailHistoryListComponent {
       field: 'usedValue',
       header: 'USED_VALUE',
       active: true,
-      translationPrefix: 'DIALOG.HISTORY',
+      translationPrefix: 'DIALOG.USAGE',
       isValue: true,
       css: 'text-center'
     },
@@ -76,7 +76,7 @@ export class DetailHistoryListComponent {
       field: 'defaultValue',
       header: 'DEFAULT_VALUE',
       active: true,
-      translationPrefix: 'DIALOG.HISTORY',
+      translationPrefix: 'DIALOG.USAGE',
       isValue: true,
       css: 'text-center'
     },
@@ -99,12 +99,12 @@ export class DetailHistoryListComponent {
    */
   private prepareDialogTranslations(): void {
     this.dataViewControlsTranslations$ = this.translate
-      .get(['DIALOG.HISTORY.INSTANCE_ID', 'DIALOG.DATAVIEW.FILTER'])
+      .get(['DIALOG.USAGE.INSTANCE_ID', 'DIALOG.DATAVIEW.FILTER'])
       .pipe(
         map((data) => {
           return {
             filterInputPlaceholder: data['DIALOG.DATAVIEW.FILTER'],
-            filterInputTooltip: data['DIALOG.HISTORY.INSTANCE_ID']
+            filterInputTooltip: data['DIALOG.USAGE.INSTANCE_ID']
           } as DataViewControlTranslations
         })
       )

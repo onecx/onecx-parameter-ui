@@ -9,32 +9,34 @@ import { of, throwError } from 'rxjs'
 import { UserService } from '@onecx/angular-integration-interface'
 import { Column, PortalMessageService } from '@onecx/portal-integration-angular'
 
-import { Parameter, ParametersAPIService, Product } from 'src/app/shared/generated'
+import { History, HistoriesAPIService, ParametersAPIService, Product } from 'src/app/shared/generated'
 import {
   ApplicationAbstract,
   ExtendedProduct,
   ParameterHistoryComponent,
   ProductAbstract
-} from './parameter-search.component'
+} from './parameter-history.component'
 
-const itemData: Parameter[] = [
+const itemData: History[] = [
   {
-    modificationCount: 0,
     id: 'id1',
     productName: 'product1',
     applicationId: 'app1',
     name: 'name1',
-    value: 'val1',
-    importValue: 'val1'
+    usedValue: 'usedVal1',
+    defaultValue: 'defaultVal1',
+    start: '2024-01-01T00:00:00Z',
+    end: '2024-01-01T00:10:00Z'
   },
   {
-    modificationCount: 0,
     id: 'id2',
     productName: 'product1',
-    applicationId: 'app2',
-    name: 'name1',
-    value: { v: 'v2' },
-    importValue: { v: 'v2' }
+    applicationId: 'app1',
+    name: 'name2',
+    usedValue: 'usedVal2',
+    defaultValue: 'defaultVal2',
+    start: '2024-01-01T00:20:00Z',
+    end: '2024-01-01T00:25:00Z'
   }
 ]
 // Original form BFF: unsorted and not complete
@@ -54,12 +56,6 @@ const app2: ApplicationAbstract = {
   undeployed: false,
   deprecated: false
 }
-// parameter BFF products (enriched)
-/*
-const usedProducts: ExtendedProduct[] = [
-  { name: 'product1', displayName: 'Product 1', undeployed: false, applications: [app1] },
-  { name: 'product2', displayName: 'Product 2', undeployed: true, applications: [app2] }
-]*/
 // product store products
 const allProductsOrg: ProductAbstract[] = [
   { name: 'product1', displayName: 'Product 1', undeployed: false, applications: [app1] },
@@ -82,10 +78,11 @@ describe('ParameterHistoryComponent', () => {
 
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
-  const apiServiceSpy = {
-    deleteParameter: jasmine.createSpy('deleteParameter').and.returnValue(of(null)),
-    getAllApplications: jasmine.createSpy('getAllApplications').and.returnValue(of([])),
-    searchParametersByCriteria: jasmine.createSpy('searchParametersByCriteria').and.returnValue(of({}))
+  const parameterApiSpy = {
+    getAllApplications: jasmine.createSpy('getAllApplications').and.returnValue(of([]))
+  }
+  const historyApiSpy = {
+    getAllHistoryLatest: jasmine.createSpy('getAllHistoryLatest').and.returnValue(of([]))
   }
 
   beforeEach(waitForAsync(() => {
@@ -103,7 +100,8 @@ describe('ParameterHistoryComponent', () => {
         provideHttpClientTesting(),
         { provide: UserService, useValue: mockUserService },
         { provide: PortalMessageService, useValue: msgServiceSpy },
-        { provide: ParametersAPIService, useValue: apiServiceSpy }
+        { provide: ParametersAPIService, useValue: parameterApiSpy },
+        { provide: HistoriesAPIService, useValue: historyApiSpy }
       ]
     }).compileComponents()
     msgServiceSpy.success.calls.reset()
@@ -111,13 +109,11 @@ describe('ParameterHistoryComponent', () => {
     msgServiceSpy.info.calls.reset()
     mockUserService.lang$.getValue.and.returnValue('de')
     // reset data services
-    apiServiceSpy.searchParametersByCriteria.calls.reset()
-    apiServiceSpy.getAllApplications.calls.reset()
-    apiServiceSpy.deleteParameter.calls.reset()
+    historyApiSpy.getAllHistoryLatest.calls.reset()
+    parameterApiSpy.getAllApplications.calls.reset()
     // to spy data: refill with neutral data
-    apiServiceSpy.searchParametersByCriteria.and.returnValue(of({}))
-    apiServiceSpy.getAllApplications.and.returnValue(of([]))
-    apiServiceSpy.deleteParameter.and.returnValue(of(null))
+    historyApiSpy.getAllHistoryLatest.and.returnValue(of({}))
+    parameterApiSpy.getAllApplications.and.returnValue(of([]))
   }))
 
   beforeEach(() => {
@@ -168,7 +164,7 @@ describe('ParameterHistoryComponent', () => {
 
   describe('search', () => {
     it('should search parameters without search criteria', (done) => {
-      apiServiceSpy.searchParametersByCriteria.and.returnValue(of({ stream: itemData }))
+      historyApiSpy.getAllHistoryLatest.and.returnValue(of({ stream: itemData }))
 
       component.onSearch({})
 
@@ -182,7 +178,7 @@ describe('ParameterHistoryComponent', () => {
     })
 
     it('should display an info message if there is no result', (done) => {
-      apiServiceSpy.searchParametersByCriteria.and.returnValue(of({ totalElements: 0, stream: [] }))
+      historyApiSpy.getAllHistoryLatest.and.returnValue(of({ totalElements: 0, stream: [] }))
 
       component.onSearch({})
 
@@ -198,7 +194,7 @@ describe('ParameterHistoryComponent', () => {
 
     it('should display an error message if the search fails', (done) => {
       const errorResponse = { status: '403', statusText: 'Not authorized' }
-      apiServiceSpy.searchParametersByCriteria.and.returnValue(throwError(() => errorResponse))
+      historyApiSpy.getAllHistoryLatest.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
 
       component.onSearch({})
@@ -222,7 +218,7 @@ describe('ParameterHistoryComponent', () => {
    */
   describe('service data', () => {
     it('should get products which are assigned to data', (done) => {
-      apiServiceSpy.getAllApplications.and.returnValue(of(usedProductsOrg))
+      parameterApiSpy.getAllApplications.and.returnValue(of(usedProductsOrg))
 
       component.ngOnInit()
 
@@ -237,7 +233,7 @@ describe('ParameterHistoryComponent', () => {
 
     it('should get all products assigned to', (done) => {
       const errorResponse = { status: '404', statusText: 'An error occur' }
-      apiServiceSpy.getAllApplications.and.returnValue(throwError(() => errorResponse))
+      parameterApiSpy.getAllApplications.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
 
       component.ngOnInit()
@@ -258,7 +254,7 @@ describe('ParameterHistoryComponent', () => {
   describe('META data', () => {
     it('should get product store products - successful', (done) => {
       component.slotEmitter.emit(allProductsOrg)
-      apiServiceSpy.getAllApplications.and.returnValue(of(usedProductsOrg))
+      parameterApiSpy.getAllApplications.and.returnValue(of(usedProductsOrg))
 
       component.ngOnInit()
 
@@ -362,62 +358,6 @@ describe('ParameterHistoryComponent', () => {
     })
   })
 
-  describe('deletion', () => {
-    let items4Deletion: Parameter[] = []
-
-    beforeEach(() => {
-      items4Deletion = [
-        { id: 'id1', productName: 'product1', applicationId: 'app1', name: 'name1' },
-        { id: 'id2', productName: 'product1', applicationId: 'app1', name: 'name2' },
-        { id: 'id3', productName: 'product3', applicationId: 'app1', name: 'name2' }
-      ]
-    })
-
-    it('should prepare the deletion of a parameter - ok', () => {
-      const ev: MouseEvent = new MouseEvent('type')
-      spyOn(ev, 'stopPropagation')
-
-      component.onDelete(ev, items4Deletion[0])
-
-      expect(ev.stopPropagation).toHaveBeenCalled()
-      expect(component.item4Delete).toBe(items4Deletion[0])
-      expect(component.displayDeleteDialog).toBeTrue()
-    })
-
-    it('should delete a parameter with confirmation', () => {
-      apiServiceSpy.deleteParameter.and.returnValue(of(null))
-      const ev: MouseEvent = new MouseEvent('type')
-
-      component.onDelete(ev, items4Deletion[1])
-      component.onDeleteConfirmation(items4Deletion) // remove but not the last of the product
-
-      expect(component.displayDeleteDialog).toBeFalse()
-      expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.MESSAGE.OK' })
-
-      component.onDelete(ev, items4Deletion[2])
-      component.onDeleteConfirmation(items4Deletion) // remove and this was the last of the product
-    })
-
-    it('should display error if deleting a parameter fails', () => {
-      const errorResponse = { status: '400', statusText: 'Error on deletion' }
-      apiServiceSpy.deleteParameter.and.returnValue(throwError(() => errorResponse))
-      const ev: MouseEvent = new MouseEvent('type')
-      spyOn(console, 'error')
-
-      component.onDelete(ev, items4Deletion[0])
-      component.onDeleteConfirmation(items4Deletion)
-
-      expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.MESSAGE.NOK' })
-      expect(console.error).toHaveBeenCalledWith('deleteParameter', errorResponse)
-    })
-
-    it('should reject confirmation if param was not set', () => {
-      component.onDeleteConfirmation(items4Deletion)
-
-      expect(apiServiceSpy.deleteParameter).not.toHaveBeenCalled()
-    })
-  })
-
   describe('filter columns', () => {
     it('should update the columns that are seen in data', () => {
       const columns: Column[] = [
@@ -471,24 +411,24 @@ describe('ParameterHistoryComponent', () => {
     })
   })
 
-  describe('onHistory', () => {
+  describe('onUsage', () => {
     it('should stop event propagation, set parameter, and display history dialog', () => {
       const event = new MouseEvent('click')
       spyOn(event, 'stopPropagation')
 
-      component.onHistory(event, itemData[0])
+      component.onUsage(event, itemData[0])
 
       expect(event.stopPropagation).toHaveBeenCalled()
       expect(component.item4Detail).toEqual(itemData[0])
-      expect(component.displayHistoryDialog).toBeTrue()
+      expect(component.displayUsageDialog).toBeTrue()
     })
 
     it('should hide the history dialog', () => {
-      component.displayHistoryDialog = true
+      component.displayUsageDialog = true
 
-      component.onCloseHistory()
+      component.onCloseUsage()
 
-      expect(component.displayHistoryDialog).toBeFalse()
+      expect(component.displayUsageDialog).toBeFalse()
     })
   })
 

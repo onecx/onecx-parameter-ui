@@ -8,7 +8,14 @@ import { UserService } from '@onecx/angular-integration-interface'
 import { Action, Column, DataViewControlTranslations, PortalMessageService } from '@onecx/portal-integration-angular'
 import { SlotService } from '@onecx/angular-remote-components'
 
-import { Parameter, ParameterSearchCriteria, ParametersAPIService, Product } from 'src/app/shared/generated'
+import {
+  History,
+  HistoriesAPIService,
+  Parameter,
+  ParameterSearchCriteria,
+  ParametersAPIService,
+  Product
+} from 'src/app/shared/generated'
 import { limitText } from 'src/app/shared/utils'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
@@ -16,7 +23,9 @@ type ExtendedColumn = Column & {
   hasFilter?: boolean
   isBoolean?: boolean
   isDate?: boolean
-  isDropdown?: boolean
+  isDuration?: boolean
+  isValue?: boolean
+  isText?: boolean
   limit?: boolean
   css?: string
 }
@@ -64,16 +73,15 @@ export class ParameterHistoryComponent implements OnInit {
   public refreshUsedProducts = false
   public displayDetailDialog = false
   public displayDeleteDialog = false
-  public displayHistoryDialog = false
+  public displayUsageDialog = false
   public limitText = limitText
   public actions: Action[] = []
-  public filteredColumns: Column[] = []
 
   @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
   public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
 
   // data
-  public data$: Observable<Parameter[]> | undefined
+  public data$: Observable<History[]> | undefined
   public criteria: ParameterSearchCriteria = {}
   public metaData$!: Observable<AllMetaData>
   public usedProducts$ = new ReplaySubject<Product[]>(1) // getting data from bff endpoint
@@ -85,6 +93,7 @@ export class ParameterHistoryComponent implements OnInit {
   public productInfos$ = new BehaviorSubject<ProductAbstract[] | undefined>(undefined) // product infos
   public slotEmitter = new EventEmitter<ProductAbstract[]>()
 
+  public filteredColumns: Column[] = []
   public columns: ExtendedColumn[] = [
     {
       field: 'name',
@@ -92,13 +101,6 @@ export class ParameterHistoryComponent implements OnInit {
       active: true,
       translationPrefix: 'PARAMETER',
       limit: false
-    },
-    {
-      field: 'value',
-      header: 'VALUE',
-      active: true,
-      translationPrefix: 'PARAMETER',
-      limit: true
     },
     {
       field: 'productDisplayName',
@@ -115,19 +117,50 @@ export class ParameterHistoryComponent implements OnInit {
       limit: false
     },
     {
-      field: 'operator',
-      header: 'OPERATOR',
+      field: 'start',
+      header: 'START',
       active: true,
-      translationPrefix: 'PARAMETER',
-      isBoolean: true,
+      translationPrefix: 'DIALOG.USAGE',
+      isDate: true
+    },
+    {
+      field: 'duration',
+      header: 'DURATION',
+      active: true,
+      translationPrefix: 'DIALOG.USAGE',
+      isDuration: true
+    },
+    {
+      field: 'count',
+      header: 'COUNT',
+      active: true,
+      translationPrefix: 'DIALOG.USAGE',
+      isText: true,
       css: 'text-center'
     },
     {
-      field: 'modificationDate',
-      header: 'MODIFICATION_DATE',
+      field: 'instanceId',
+      header: 'INSTANCE_ID',
       active: true,
-      translationPrefix: 'INTERNAL',
-      isDate: true
+      translationPrefix: 'DIALOG.USAGE',
+      isText: true,
+      css: 'text-center'
+    },
+    {
+      field: 'usedValue',
+      header: 'USED_VALUE',
+      active: true,
+      translationPrefix: 'DIALOG.USAGE',
+      isValue: true,
+      css: 'text-center'
+    },
+    {
+      field: 'defaultValue',
+      header: 'DEFAULT_VALUE',
+      active: true,
+      translationPrefix: 'DIALOG.USAGE',
+      isValue: true,
+      css: 'text-center'
     }
   ]
 
@@ -138,7 +171,8 @@ export class ParameterHistoryComponent implements OnInit {
     private readonly slotService: SlotService,
     private readonly translate: TranslateService,
     private readonly msgService: PortalMessageService,
-    private readonly parameterApi: ParametersAPIService
+    private readonly parameterApi: ParametersAPIService,
+    private readonly historyApi: HistoriesAPIService
   ) {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.filteredColumns = this.columns.filter((a) => a.active === true)
@@ -253,7 +287,7 @@ export class ParameterHistoryComponent implements OnInit {
     this.loading = true
     this.exceptionKey = undefined
     if (!reuseCriteria) this.criteria = { ...criteria }
-    this.data$ = this.parameterApi.searchParametersByCriteria({ parameterSearchCriteria: { ...this.criteria } }).pipe(
+    this.data$ = this.historyApi.getAllHistoryLatest({ historyCriteria: { ...this.criteria } }).pipe(
       tap((data: any) => {
         if (data.totalElements === 0) {
           this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
@@ -263,7 +297,7 @@ export class ParameterHistoryComponent implements OnInit {
       map((data) => data.stream),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
-        console.error('searchParametersByCriteria', err)
+        console.error('getAllHistoryLatest', err)
         return of([] as Parameter[])
       }),
       finalize(() => (this.loading = false))
@@ -306,8 +340,7 @@ export class ParameterHistoryComponent implements OnInit {
         titleKey: 'ACTIONS.NAVIGATION.BACK.TOOLTIP',
         actionCallback: () => this.onBack(),
         icon: 'pi pi-arrow-left',
-        show: 'always',
-        permission: 'PARAMETER#SEARCH'
+        show: 'always'
       }
     ]
   }
@@ -319,8 +352,34 @@ export class ParameterHistoryComponent implements OnInit {
     this.criteria = {}
   }
 
-  onBack() {
+  public onBack() {
     this.router.navigate(['../'], { relativeTo: this.route })
+  }
+
+  // Detail => CREATE, COPY, EDIT, VIEW
+  public onDetail(mode: ChangeMode, item: Parameter | undefined, ev?: Event): void {
+    ev?.stopPropagation()
+    this.changeMode = mode
+    this.item4Detail = item // do not manipulate this item here
+    this.displayDetailDialog = true
+  }
+  public onCloseDetail(refresh: boolean): void {
+    this.displayDetailDialog = false
+    this.item4Detail = undefined
+    if (refresh) {
+      this.onReload()
+    }
+  }
+
+  // History
+  public onUsage(ev: Event, item: Parameter) {
+    ev.stopPropagation()
+    this.item4Detail = item
+    this.displayUsageDialog = true
+  }
+  public onCloseUsage() {
+    this.displayUsageDialog = false
+    this.item4Detail = undefined
   }
 
   public onColumnsChange(activeIds: string[]) {
@@ -350,5 +409,10 @@ export class ParameterHistoryComponent implements OnInit {
       allProducts.find((item) => item.name === productName)?.applications?.find((a) => a.appId === appId)?.appName ??
       appId
     )
+  }
+
+  public onCalcDuration(start: string, end: string): string {
+    if (!start || start === '' || !end || end === '') return ''
+    return new Date(Date.parse(end) - Date.parse(start)).toUTCString().split(' ')[4]
   }
 }

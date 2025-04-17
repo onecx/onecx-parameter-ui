@@ -27,7 +27,7 @@ const routes: Routes = [
     component: ParameterHistoryComponent,
     pathMatch: 'full',
     data: {
-      breadcrumb: 'BREADCRUMBS.HISTORY',
+      breadcrumb: 'BREADCRUMBS.USAGE',
       breadcrumbFn: (data: any) => `${data.labeli18n}`
     },
     resolve: {

@@ -1,5 +1,5 @@
 <p-dialog
-  [header]="'DIALOG.HISTORY.HEADER' | translate"
+  [header]="'DIALOG.USAGE.HEADER' | translate"
   [(visible)]="displayDialog"
   (onHide)="onDialogHide()"
   [modal]="true"
@@ -15,8 +15,8 @@
 
   <p-tabView>
     <p-tabPanel
-      [header]="'DIALOG.HISTORY.TAB.LIST' | translate"
-      [tooltip]="'DIALOG.HISTORY.TAB.TOOLTIPS.LIST' | translate"
+      [header]="'DIALOG.USAGE.TAB.LIST' | translate"
+      [tooltip]="'DIALOG.USAGE.TAB.TOOLTIPS.LIST' | translate"
       tooltipPosition="top"
       tooltipEvent="hover"
     >
@@ -31,8 +31,8 @@
 
     <p-tabPanel
       *ngIf="!loading && !exceptionKey"
-      [header]="'DIALOG.HISTORY.TAB.OVERVIEW' | translate"
-      [tooltip]="'DIALOG.HISTORY.TAB.TOOLTIPS.OVERVIEW' | translate"
+      [header]="'DIALOG.USAGE.TAB.OVERVIEW' | translate"
+      [tooltip]="'DIALOG.USAGE.TAB.TOOLTIPS.OVERVIEW' | translate"
       tooltipPosition="top"
       tooltipEvent="hover"
     >
@@ -42,7 +42,7 @@
   <ng-template pTemplate="footer">
     <div class="flex flex-wrap justify-content-end gap-2 mb-1">
       <p-button
-        id="pm_history_action_close"
+        id="pm_usage_action_close"
         icon="pi pi-times"
         (onClick)="onDialogHide()"
         [label]="'ACTIONS.NAVIGATION.CLOSE' | translate"

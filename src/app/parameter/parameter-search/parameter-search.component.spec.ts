@@ -471,24 +471,24 @@ describe('ParameterSearchComponent', () => {
     })
   })
 
-  describe('onHistory', () => {
+  describe('onUsage', () => {
     it('should stop event propagation, set parameter, and display history dialog', () => {
       const event = new MouseEvent('click')
       spyOn(event, 'stopPropagation')
 
-      component.onHistory(event, itemData[0])
+      component.onUsage(event, itemData[0])
 
       expect(event.stopPropagation).toHaveBeenCalled()
       expect(component.item4Detail).toEqual(itemData[0])
-      expect(component.displayHistoryDialog).toBeTrue()
+      expect(component.displayUsageDialog).toBeTrue()
     })
 
     it('should hide the history dialog', () => {
-      component.displayHistoryDialog = true
+      component.displayUsageDialog = true
 
-      component.onCloseHistory()
+      component.onCloseUsage()
 
-      expect(component.displayHistoryDialog).toBeFalse()
+      expect(component.displayUsageDialog).toBeFalse()
     })
   })
 

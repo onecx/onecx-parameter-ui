@@ -29,18 +29,18 @@ export class DetailHistoryComponent {
   }
 
   /****************************************************************************
-   *  SEARCH history data
+   *  SEARCH usage data
    */
   public onSearch(criteria: HistoryCriteria): void {
     if (!criteria.name || !criteria.productName || !criteria.applicationId) {
-      console.error('Missing search criteria for getting parameter history', criteria)
+      console.error('Missing search criteria for getting parameter usage', criteria)
       return
     }
     this.loading = true
     this.data$ = this.historyApiService.getAllHistory({ historyCriteria: criteria }).pipe(
       map((results) => results.stream ?? []),
       catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.HISTORY'
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.USAGE'
         console.error('getAllHistory', err)
         return of([])
       }),

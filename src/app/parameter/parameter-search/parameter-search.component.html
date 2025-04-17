@@ -157,13 +157,13 @@
                 <button
                   pbutton
                   type="button"
-                  *ocxIfPermission="'PARAMETER#VIEW'"
-                  [id]="'pm_search_table_row_' + i + '_action_history'"
+                  *ocxIfPermission="'USAGE#VIEW'"
+                  [id]="'pm_search_table_row_' + i + '_action_usage'"
                   class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-                  (click)="onHistory($event, rowData)"
+                  (click)="onUsage($event, rowData)"
                   [disabled]="!rowData['isInHistory']"
-                  [attr.aria-label]="'ACTIONS.HISTORY.LABEL' | translate"
-                  [pTooltip]="'ACTIONS.HISTORY.LABEL' | translate"
+                  [attr.aria-label]="'ACTIONS.USAGE.LABEL' | translate"
+                  [pTooltip]="'ACTIONS.USAGE.LABEL' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
@@ -291,8 +291,8 @@
 </ocx-portal-page>
 
 <app-detail-history
-  [displayDialog]="displayHistoryDialog"
-  (hideDialog)="onCloseHistory()"
+  [displayDialog]="displayUsageDialog"
+  (hideDialog)="onCloseUsage()"
   [parameter]="item4Detail"
   [dateFormat]="dateFormat"
 ></app-detail-history>

@@ -85,7 +85,7 @@
       "LABEL": "Details",
       "TOOLTIP": "Parameter details"
     },
-    "HISTORY": {
+    "USAGE": {
       "LABEL": "Usage Data",
       "TOOLTIP": "Usage data obtained from Applications"
     },
@@ -105,7 +105,7 @@
     }
   },
   "BREADCRUMBS": {
-    "HISTORY": "Usage"
+    "USAGE": "Usage"
   },
   "INTERNAL": {
     "HEADER": "Internal",
@@ -148,9 +148,9 @@
       },
       "CHARACTERS": "Still remaining characters"
     },
-    "HISTORY": {
+    "USAGE": {
       "HEADER": "Parameter Usage",
-      "SUBHEADER": "Search and display Parameters used by Applications",
+      "SUBHEADER": "Search and display the last use of parameters (reported by applications)",
       "NAME": "Parameter",
       "COUNT": "Count",
       "START": "Start",
@@ -160,7 +160,7 @@
       "DEFAULT_VALUE": "Default Value",
       "USED_VALUE": "Used Value",
       "LAST_USED": "Last used",
-      "HISTORY_RELOAD": "Reload history",
+      "USAGE_RELOAD": "Reload",
       "TOOLTIPS": {
         "COUNT": "How many times used within interval?",
         "START": "Start of timeframe",
@@ -229,32 +229,32 @@
   },
   "EXCEPTIONS": {
     "HTTP_STATUS_0": {
-      "HISTORY": "Unknown problem retrieving History data - please try again.",
+      "USAGE": "Unknown problem retrieving Parameter usage data - please try again.",
       "PARAMETER": "Unknown problem retrieving Parameter data - please try again.",
       "PRODUCTS": "Unknown problem retrieving Application data - please try again."
     },
     "HTTP_STATUS_400": {
-      "HISTORY": "Your request could not be processed.",
+      "USAGE": "Your request could not be processed.",
       "PARAMETER": "Your request could not be processed.",
       "PRODUCTS": "Your request could not be processed."
     },
     "HTTP_STATUS_401": {
-      "HISTORY": "You are not authorized to see History data.",
+      "USAGE": "You are not authorized to see Parameter usage data.",
       "PARAMETER": "You are not authorized to see Parameters.",
       "PRODUCTS": "You are not authorized to see Applications."
     },
     "HTTP_STATUS_403": {
-      "HISTORY": "You have no permissions to see History data.",
+      "USAGE": "You have no permissions to see Parameter usage data.",
       "PARAMETER": "You have no permissions to see Parameters.",
       "PRODUCTS": "You have no permissions to see Applications."
     },
     "HTTP_STATUS_404": {
-      "HISTORY": "History data could not be found.",
+      "USAGE": "Parameter usage data could not be found.",
       "PARAMETER": "Parameters could not be found.",
       "PRODUCTS": "No Applications could be loaded."
     },
     "HTTP_STATUS_500": {
-      "HISTORY": "Unknown server problem retrieving History data - please try again.",
+      "USAGE": "Unknown server problem retrieving Parameter usage data - please try again.",
       "PARAMETER": "Unknown server problem retrieving Parameter data - please try again.",
       "PRODUCTS": "Unknown server problem retrieving Application data - please try again."
     }
