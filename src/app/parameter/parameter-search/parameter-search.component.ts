@@ -9,7 +9,6 @@ import { Action, Column, DataViewControlTranslations, PortalMessageService } fro
 import { SlotService } from '@onecx/angular-remote-components'
 
 import { Parameter, ParameterSearchCriteria, ParametersAPIService, Product } from 'src/app/shared/generated'
-import { limitText } from 'src/app/shared/utils'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 type ExtendedColumn = Column & {
@@ -17,9 +16,8 @@ type ExtendedColumn = Column & {
   isBoolean?: boolean
   isDate?: boolean
   isDuration?: boolean
-  isValue?: boolean
   isText?: boolean
-  limit?: boolean
+  isValue?: boolean
   frozen?: boolean
   css?: string
 }
@@ -68,7 +66,6 @@ export class ParameterSearchComponent implements OnInit {
   public displayDetailDialog = false
   public displayDeleteDialog = false
   public displayUsageDetailDialog = false
-  public limitText = limitText
   public actions: Action[] = []
   public filteredColumns: Column[] = []
 
@@ -228,10 +225,10 @@ export class ParameterSearchComponent implements OnInit {
   }
 
   private combineProducts(aP: ExtendedProduct[], uP: ExtendedProduct[]): AllMetaData {
-    // convert/enrich used products if product info are available
+    // convert/enrich used products if product data are available
     if (aP && uP && uP.length > 0) {
       uP.forEach((p) => {
-        const pi = aP.find((ap) => ap.name === p.name) // get product info
+        const pi = aP.find((ap) => ap.name === p.name) // get product data
         if (pi) {
           p.displayName = pi.displayName!
           p.undeployed = pi.undeployed
@@ -256,7 +253,7 @@ export class ParameterSearchComponent implements OnInit {
    *  SEARCH data
    */
   public onSearch(criteria: ParameterSearchCriteria, reuseCriteria = false): void {
-    this.loading = true
+    this.loading = false
     this.exceptionKey = undefined
     if (!reuseCriteria) this.criteria = { ...criteria }
     this.data$ = this.parameterApi.searchParametersByCriteria({ parameterSearchCriteria: { ...this.criteria } }).pipe(

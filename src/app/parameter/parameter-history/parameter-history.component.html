@@ -170,7 +170,7 @@
                   class="text-ellipsis-2-lines"
                   class="text-ellipsis-2-lines max-w-20rem word-break-all"
                   [ngStyle]="{
-                    'min-width': rowData[col.field].length > 15 ? '10rem' : ''
+                    'min-width': (rowData[col.field] ?? '').length > 15 ? '10rem' : ''
                   }"
                 >
                   {{ rowData[col.field] }}

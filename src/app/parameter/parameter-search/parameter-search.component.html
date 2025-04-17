@@ -189,7 +189,7 @@
                   *ngIf="col.field === 'name'"
                   class="text-ellipsis-2-lines"
                   class="text-ellipsis-2-lines max-w-15rem word-break-all"
-                  [ngStyle]="{ 'min-width': (rowData['value'] ?? rowData['importValue']).length > 15 ? '8rem' : '' }"
+                  [ngStyle]="{ 'min-width': (rowData['displayName'] ?? rowData['name']).length > 15 ? '8rem' : '' }"
                 >
                   {{ rowData['displayName'] ?? rowData['name'] }}
                 </div>
@@ -234,23 +234,23 @@
               <div class="px-2 flex flex-column row-gap-1">
                 <div class="flex flex-row column-gap-2">
                   <div class="w-4 text-right">{{ 'PARAMETER.NAME' | translate }}:</div>
-                  <div class="w-8 text-left font-bold danger-action-text" id="pm_delete_parameter_name">
-                    {{ limitText(item4Delete.displayName ? item4Delete.displayName : item4Delete.name, 50) }}
+                  <div
+                    class="w-8 text-left danger-action-text text-responsive max-w-15rem"
+                    id="pm_delete_parameter_name"
+                  >
+                    {{ item4Delete.displayName ?? item4Delete.name }}
                   </div>
                 </div>
                 <div class="flex flex-row column-gap-2">
                   <div class="w-4 text-right">{{ 'PARAMETER.PRODUCT_NAME' | translate }}:</div>
-                  <div
-                    class="w-8 text-left font-bold danger-action-text white-space-nowrap"
-                    id="pm_delete_product_name"
-                  >
+                  <div class="w-8 text-left danger-action-text text-responsive max-w-15rem" id="pm_delete_product_name">
                     {{ getProductDisplayName(item4Delete.productName, metaData.allProducts) }}
                   </div>
                 </div>
                 <div class="flex flex-row column-gap-2">
                   <div class="w-4 text-right">{{ 'PARAMETER.APP_ID' | translate }}:</div>
-                  <div class="w-8 text-left font-bold danger-action-text white-space-nowrap" id="pm_delete_app_id">
-                    {{ item4Delete.applicationId }}
+                  <div class="w-8 text-left danger-action-text text-responsive max-w-15rem" id="pm_delete_app_id">
+                    {{ getAppDisplayName(item4Delete.productName, item4Delete.applicationId, metaData.allProducts) }}
                   </div>
                 </div>
               </div>

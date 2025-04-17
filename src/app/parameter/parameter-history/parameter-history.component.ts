@@ -210,7 +210,7 @@ export class ParameterHistoryComponent implements OnInit {
       .subscribe((v) => this.usedProducts$.next(v))
   }
 
-  // combine used products with product info from product store
+  // combine used products with product data from product store
   private getMetaData() {
     this.exceptionKey = undefined
     // combine all product infos and used products to one meta data structure
@@ -257,10 +257,10 @@ export class ParameterHistoryComponent implements OnInit {
   }
 
   private combineProducts(aP: ExtendedProduct[], uP: ExtendedProduct[]): AllMetaData {
-    // convert/enrich used products if product info are available
+    // convert/enrich used products if product data are available
     if (aP && uP && uP.length > 0) {
       uP.forEach((p) => {
-        const pi = aP.find((ap) => ap.name === p.name) // get product info
+        const pi = aP.find((ap) => ap.name === p.name) // get product data
         if (pi) {
           p.displayName = pi.displayName!
           p.undeployed = pi.undeployed
@@ -285,7 +285,7 @@ export class ParameterHistoryComponent implements OnInit {
    *  SEARCH data
    */
   public onSearch(criteria: ParameterSearchCriteria, reuseCriteria = false): void {
-    this.loading = true
+    this.loading = false
     this.exceptionKey = undefined
     if (!reuseCriteria) this.criteria = { ...criteria }
     this.data$ = this.historyApi.getAllHistoryLatest({ historyCriteria: { ...this.criteria } }).pipe(
