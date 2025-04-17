@@ -27,6 +27,7 @@ type ExtendedColumn = Column & {
   isValue?: boolean
   isText?: boolean
   limit?: boolean
+  frozen?: boolean
   css?: string
 }
 export type ExtendedProduct = {
@@ -100,7 +101,9 @@ export class ParameterHistoryComponent implements OnInit {
       header: 'COMBINED_NAME',
       active: true,
       translationPrefix: 'PARAMETER',
-      limit: false
+      limit: false,
+      frozen: true,
+      css: 'word-break-all'
     },
     {
       field: 'productDisplayName',
@@ -152,7 +155,7 @@ export class ParameterHistoryComponent implements OnInit {
       active: true,
       translationPrefix: 'DIALOG.USAGE',
       isValue: true,
-      css: 'text-center'
+      css: 'text-center word-break-all'
     },
     {
       field: 'defaultValue',
@@ -160,7 +163,7 @@ export class ParameterHistoryComponent implements OnInit {
       active: true,
       translationPrefix: 'DIALOG.USAGE',
       isValue: true,
-      css: 'text-center'
+      css: 'text-center word-break-all'
     }
   ]
 

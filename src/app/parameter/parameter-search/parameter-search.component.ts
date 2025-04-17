@@ -18,6 +18,7 @@ type ExtendedColumn = Column & {
   isDate?: boolean
   isDropdown?: boolean
   limit?: boolean
+  frozen?: boolean
   css?: string
 }
 export type ExtendedProduct = {
@@ -91,14 +92,17 @@ export class ParameterSearchComponent implements OnInit {
       header: 'COMBINED_NAME',
       active: true,
       translationPrefix: 'PARAMETER',
-      limit: false
+      limit: false,
+      frozen: true,
+      css: 'word-break-all'
     },
     {
       field: 'value',
       header: 'VALUE',
       active: true,
       translationPrefix: 'PARAMETER',
-      limit: true
+      limit: true,
+      css: 'text-center'
     },
     {
       field: 'productDisplayName',

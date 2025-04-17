@@ -81,11 +81,7 @@
 
           <ng-template pTemplate="header" let-columns>
             <tr>
-              <th
-                pFrozenColumn
-                id="pm_search_table_header_actions"
-                class="border-right-1 text-center white-space-nowrap"
-              >
+              <th pFrozenColumn id="pm_search_table_header_actions" class="text-center white-space-nowrap">
                 {{ 'ACTIONS.LABEL' | translate }}
               </th>
               <th
@@ -93,6 +89,9 @@
                 [id]="'pm_search_table_header_col_' + col.field"
                 class="white-space-nowrap"
                 [class]="col.css"
+                [ngClass]="{ 'border-right-1': col.frozen }"
+                pFrozenColumn
+                [frozen]="col.frozen"
                 [pSortableColumn]="col.field"
                 [attr.aria-label]="col.translationPrefix + '.' + col.header | translate"
                 [pTooltip]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
@@ -109,7 +108,7 @@
           <ng-template pTemplate="body" let-i="rowIndex" let-rowData let-columns="columns">
             <tr [pSelectableRow]="data">
               <!-- actions -->
-              <td pFrozenColumn class="align-items-center border-right-1 text-center white-space-nowrap">
+              <td pFrozenColumn class="align-items-center text-center white-space-nowrap">
                 <ng-container *ocxIfNotPermission="'PARAMETER#EDIT'">
                   <button
                     pbutton
@@ -184,9 +183,20 @@
                   <span class="danger-action-text font-medium p-button-icon pi pi-trash" aria-hidden="true"></span>
                 </button>
               </td>
-              <td *ngFor="let col of columns" [id]="'pm_search_table_row_' + i + '_' + col.field" [class]="col.css">
+              <td
+                *ngFor="let col of columns"
+                [id]="'pm_search_table_row_' + i + '_' + col.field"
+                [class]="col.css"
+                [ngClass]="{ 'border-right-1': col.frozen }"
+                pFrozenColumn
+                [frozen]="col.frozen"
+              >
                 <!-- needs a div due to manage ellipsis -->
-                <div *ngIf="col.field === 'value'" class="text-ellipsis-2-lines">
+                <div
+                  *ngIf="col.field === 'value'"
+                  class="text-ellipsis-2-lines max-w-20rem word-break-all"
+                  [ngStyle]="{ 'min-width': (rowData['value'] ?? rowData['importValue']).length > 15 ? '10rem' : '' }"
+                >
                   {{ rowData['value'] ?? rowData['importValue'] }}
                 </div>
                 <div *ngIf="col.field === 'name'" class="text-ellipsis-2-lines">
