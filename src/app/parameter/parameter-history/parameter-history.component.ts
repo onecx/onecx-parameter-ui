@@ -1,208 +1,419 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
-import { FormBuilder, FormControl, FormGroup, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
-import { DatePipe } from '@angular/common'
+import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core'
+import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
-import { finalize } from 'rxjs'
+import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
+import { Table } from 'primeng/table'
 
-import { PortalMessageService } from '@onecx/portal-integration-angular'
+import { UserService } from '@onecx/angular-integration-interface'
+import { Action, Column, DataViewControlTranslations, PortalMessageService } from '@onecx/portal-integration-angular'
+import { SlotService } from '@onecx/angular-remote-components'
+
 import {
-  Parameter,
   History,
-  HistoryCriteria,
   HistoriesAPIService,
-  HistoryCount,
-  ParametersAPIService
+  Parameter,
+  ParameterSearchCriteria,
+  ParametersAPIService,
+  Product
 } from 'src/app/shared/generated'
+import { limitText } from 'src/app/shared/utils'
+
+export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
+type ExtendedColumn = Column & {
+  hasFilter?: boolean
+  isBoolean?: boolean
+  isDate?: boolean
+  isDuration?: boolean
+  isValue?: boolean
+  isText?: boolean
+  limit?: boolean
+  frozen?: boolean
+  css?: string
+}
+export type ExtendedProduct = {
+  name: string
+  displayName: string
+  applications: Array<ApplicationAbstract>
+  undeployed?: boolean
+}
+type AllMetaData = {
+  allProducts: ExtendedProduct[]
+  usedProducts: ExtendedProduct[]
+}
+// DATA structures of product store response
+export type ApplicationAbstract = {
+  appName?: string
+  appId?: string
+  undeployed?: boolean
+  deprecated?: boolean
+}
+export type ProductAbstract = {
+  id?: string
+  name: string
+  version?: string
+  description?: string
+  imageUrl?: string
+  displayName?: string
+  classifications?: Array<string>
+  undeployed?: boolean
+  provider?: string
+  applications?: Array<ApplicationAbstract>
+}
 
 @Component({
   selector: 'app-parameter-history',
   templateUrl: './parameter-history.component.html',
   styleUrls: ['./parameter-history.component.scss']
 })
-export class ParameterHistoryComponent implements OnChanges {
-  @Input() public displayDialog = false
-  @Input() public parameter: Parameter | undefined
-  @Output() public hideDialog = new EventEmitter()
-
+export class ParameterHistoryComponent implements OnInit {
+  // dialog
   public loading = false
   public exceptionKey: string | undefined = undefined
-  public selectedHistoryParam: History | undefined
-  public formGroup: FormGroup
-  public parameterForm: UntypedFormGroup = this.initializeForm()
-  public translatedData: Record<string, string> | undefined
-  public parameterDTO: Parameter | undefined
-  public historyArray: any[] = []
-  public chartData: any = []
-  public data: any
-  public chartOptions: any
+  public changeMode: ChangeMode = 'VIEW'
+  public dateFormat: string
+  public refreshUsedProducts = false
+  public displayDetailDialog = false
+  public displayDeleteDialog = false
+  public displayUsageDialog = false
+  public limitText = limitText
+  public actions: Action[] = []
+
+  @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
+  public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
+
+  // data
+  public data$: Observable<History[]> | undefined
+  public criteria: ParameterSearchCriteria = {}
+  public metaData$!: Observable<AllMetaData>
+  public usedProducts$ = new ReplaySubject<Product[]>(1) // getting data from bff endpoint
+  public item4Detail: Parameter | undefined // used on detail
+  public item4Delete: Parameter | undefined // used on deletion
+  // slot configuration: get product infos via remote component
+  public slotName = 'onecx-product-infos'
+  public isComponentDefined$: Observable<boolean> | undefined // check
+  public productInfos$ = new BehaviorSubject<ProductAbstract[] | undefined>(undefined) // product infos
+  public slotEmitter = new EventEmitter<ProductAbstract[]>()
+
+  public filteredColumns: Column[] = []
+  public columns: ExtendedColumn[] = [
+    {
+      field: 'name',
+      header: 'COMBINED_NAME',
+      active: true,
+      translationPrefix: 'PARAMETER',
+      limit: false,
+      frozen: true,
+      css: 'word-break-all'
+    },
+    {
+      field: 'productDisplayName',
+      header: 'PRODUCT_NAME',
+      active: true,
+      translationPrefix: 'PARAMETER'
+    },
+    {
+      field: 'applicationName',
+      header: 'APP_NAME',
+      active: true,
+      translationPrefix: 'PARAMETER'
+    },
+    {
+      field: 'start',
+      header: 'START',
+      active: true,
+      translationPrefix: 'DIALOG.USAGE',
+      isDate: true
+    },
+    {
+      field: 'duration',
+      header: 'DURATION',
+      active: true,
+      translationPrefix: 'DIALOG.USAGE',
+      isDuration: true
+    },
+    {
+      field: 'count',
+      header: 'COUNT',
+      active: true,
+      translationPrefix: 'DIALOG.USAGE',
+      isText: true,
+      css: 'text-center'
+    },
+    {
+      field: 'instanceId',
+      header: 'INSTANCE_ID',
+      active: true,
+      translationPrefix: 'DIALOG.USAGE',
+      isText: true,
+      css: 'text-center'
+    },
+    {
+      field: 'usedValue',
+      header: 'USED_VALUE',
+      active: true,
+      translationPrefix: 'DIALOG.USAGE',
+      isValue: true,
+      css: 'text-center word-break-all'
+    },
+    {
+      field: 'defaultValue',
+      header: 'DEFAULT_VALUE',
+      active: true,
+      translationPrefix: 'DIALOG.USAGE',
+      isValue: true,
+      css: 'text-center word-break-all'
+    }
+  ]
 
   constructor(
-    private readonly fb: FormBuilder,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly user: UserService,
+    private readonly slotService: SlotService,
     private readonly translate: TranslateService,
     private readonly msgService: PortalMessageService,
-    private readonly parameterApiService: ParametersAPIService,
-    private readonly historyApiService: HistoriesAPIService,
-    private readonly datePipe: DatePipe
+    private readonly parameterApi: ParametersAPIService,
+    private readonly historyApi: HistoriesAPIService
   ) {
-    this.formGroup = fb.nonNullable.group({
-      productName: new FormControl(null, [Validators.required]),
-      applicationId: new FormControl(null, [Validators.required]),
-      name: new FormControl(null, [Validators.required]),
-      displayName: new FormControl(null, [Validators.required]),
-      value: new FormControl(null, [Validators.required]),
-      description: new FormControl(null)
+    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
+    this.filteredColumns = this.columns.filter((a) => a.active === true)
+    this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.slotName)
+  }
+
+  public ngOnInit(): void {
+    this.slotEmitter.subscribe(this.productInfos$)
+    this.onReload()
+    this.getMetaData() // and trigger search
+    this.prepareDialogTranslations()
+    this.preparePageActions()
+  }
+
+  private onReload(): void {
+    this.getUsedProducts()
+    this.onSearch({}, true)
+  }
+
+  /****************************************************************************
+   * GET DATA
+   */
+  // get used products (used === assigned to data)
+  private getUsedProducts() {
+    this.parameterApi
+      .getAllApplications()
+      .pipe(
+        catchError((err) => {
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+          console.error('getAllApplications', err)
+          return of([])
+        })
+      )
+      .subscribe((v) => this.usedProducts$.next(v))
+  }
+
+  // combine used products with product data from product store
+  private getMetaData() {
+    this.exceptionKey = undefined
+    // combine all product infos and used products to one meta data structure
+    this.metaData$ = combineLatest([this.productInfos$, this.usedProducts$]).pipe(
+      map(([aP, uP]: [ProductAbstract[] | undefined, Product[]]) => {
+        return this.combineProducts(
+          this.convertProductAbstract2ExtendedProduct(aP),
+          this.convertProduct2ExtendedProduct(uP)
+        )
+      })
+    )
+  }
+  /****************************************************************************
+   * HELPER
+   */
+  // map:  ProductAbstract[] => ExtendedProduct[]
+  private convertProductAbstract2ExtendedProduct(aP: ProductAbstract[] | undefined): ExtendedProduct[] {
+    const aps: ExtendedProduct[] = []
+    if (aP && aP.length > 0) {
+      aP.forEach((p) =>
+        aps.push({
+          name: p.name,
+          displayName: p.displayName ?? p.name,
+          undeployed: p.undeployed,
+          applications: p.applications ?? []
+        })
+      )
+      aps.sort(this.sortByDisplayName)
+    }
+    return aps
+  }
+  // map:  Product[] => ExtendedProduct[]
+  private convertProduct2ExtendedProduct(uP: Product[]): ExtendedProduct[] {
+    const ups: ExtendedProduct[] = []
+    uP.forEach((p) => {
+      const apps: ApplicationAbstract[] = []
+      p.applications?.forEach((s) => {
+        apps.push({ appName: s, appId: s } as ApplicationAbstract)
+      })
+      ups.push({ name: p.productName, displayName: p.productName, applications: apps } as ExtendedProduct)
     })
-    this.loadTranslations()
+    ups.sort(this.sortByDisplayName)
+    return ups
   }
 
-  public ngOnChanges() {
-    if (!this.displayDialog) return
-    this.getData(this.parameter?.id)
+  private combineProducts(aP: ExtendedProduct[], uP: ExtendedProduct[]): AllMetaData {
+    // convert/enrich used products if product data are available
+    if (aP && uP && uP.length > 0) {
+      uP.forEach((p) => {
+        const pi = aP.find((ap) => ap.name === p.name) // get product data
+        if (pi) {
+          p.displayName = pi.displayName!
+          p.undeployed = pi.undeployed
+          // collect apps: only used
+          const uApps: ApplicationAbstract[] = []
+          p.applications?.forEach((papp) => {
+            // app still exists?
+            const app = pi.applications?.find((app) => app.appId === papp.appId)
+            if (app) uApps.push(app)
+          })
+          p.applications = uApps
+        }
+      })
+      uP.sort(this.sortByDisplayName)
+    }
+    // if service is not running or product data are not yet available
+    if (aP.length === 0) aP = uP
+    return { allProducts: aP, usedProducts: [...uP] } // meta data
   }
 
-  private initializeForm(): UntypedFormGroup {
-    return this.fb.group({
-      productName: new UntypedFormControl(null, [Validators.required]),
-      applicationId: new UntypedFormControl(null, [Validators.required]),
-      name: new UntypedFormControl(null, [Validators.required]),
-      value: new UntypedFormControl(null, [Validators.required]),
-      description: new UntypedFormControl(null, [Validators.required]),
-      unit: new UntypedFormControl(null)
-    })
-  }
-
-  private getData(id?: string): void {
-    if (!id) return
+  /****************************************************************************
+   *  SEARCH data
+   */
+  public onSearch(criteria: ParameterSearchCriteria, reuseCriteria = false): void {
     this.loading = true
     this.exceptionKey = undefined
-    this.parameterApiService
-      .getParameterById({ id: id })
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe({
-        next: (data: Parameter) => {
-          //this.parameterDTO = data
-          //this.getHistoryArray()
-          //this.loadChartData()
-        },
-        error: (err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
-          this.msgService.error({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.SEARCH_FAILED' })
-          console.error('getParameterById', err)
+    if (!reuseCriteria) this.criteria = { ...criteria }
+    this.data$ = this.historyApi.getAllHistoryLatest({ historyCriteria: { ...this.criteria } }).pipe(
+      tap((data: any) => {
+        if (data.totalElements === 0) {
+          this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
+          return data.size
         }
-      })
+      }),
+      map((data) => data.stream),
+      catchError((err) => {
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
+        console.error('getAllHistoryLatest', err)
+        return of([] as Parameter[])
+      }),
+      finalize(() => (this.loading = false))
+    )
   }
 
-  public getHistoryArray(): void {
-    const criteria: HistoryCriteria = {
-      applicationId: this.parameterForm.value.applicationId || this.parameterDTO?.applicationId,
-      productName: this.parameterForm.value.productName || this.parameterDTO?.productName,
-      name: this.parameterForm.value.name || this.parameterDTO?.name
-    }
-    this.historyApiService.getAllHistory({ historyCriteria: criteria }).subscribe({
-      next: (results) => {
-        this.historyArray = results.stream as History[]
-      },
-      error: () => {
-        this.msgService.error({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.SEARCH_FAILED' })
-      }
-    })
-  }
-
-  private loadChartData(): void {
-    this.historyApiService
-      .getCountsByCriteria({
-        historyCountCriteria: {
-          applicationId: this.parameterDTO?.applicationId,
-          productName: this.parameterDTO?.productName,
-          name: this.parameterDTO?.name
-        }
-      })
-      .subscribe({
-        next: (data) => {
-          this.chartData = data
-          this.setChartData()
-          if (data.length == 0) {
-            // this.msgService.success({
-            //   summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS'
-            // })
-          }
-        },
-        error: () => {
-          this.msgService.error({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.SEARCH_FAILED' })
-        }
-      })
-  }
-
-  private setChartData(): void {
-    const documentStyle = getComputedStyle(document.documentElement)
-    const textColor = documentStyle.getPropertyValue('--text-color')
-    const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary')
-    const surfaceBorder = documentStyle.getPropertyValue('--surface-border')
-    const dates = this.chartData.map((item1: HistoryCount) => this.datePipe.transform(item1.creationDate, 'medium'))
-    const counts = this.chartData.map((item2: HistoryCount) => item2.count)
-    this.data = {
-      labels: dates,
-      datasets: [
-        {
-          label: this.translatedData!['CHART.NUMBER_OF_REQUESTS'],
-          data: counts,
-          fill: false,
-          borderColor: documentStyle.getPropertyValue('--blue-500'),
-          tension: 0.4
-        }
-      ]
-    }
-
-    this.chartOptions = {
-      maintainAspectRatio: false,
-      aspectRatio: 0.6,
-      plugins: {
-        legend: {
-          labels: {
-            color: textColor
-          }
-        }
-      },
-      scales: {
-        x: {
-          ticks: { color: textColorSecondary },
-          grid: { color: 'green', drawBorder: false }
-        },
-        y: {
-          ticks: { color: textColorSecondary },
-          grid: { color: surfaceBorder, drawBorder: false }
-        }
-      }
-    }
-  }
-
-  public useHistoryParam() {
-    this.parameterForm.controls['productName'].setValue(this.selectedHistoryParam?.productName)
-    this.parameterForm.controls['applicationId'].setValue(this.selectedHistoryParam?.applicationId)
-    this.parameterForm.controls['name'].setValue(this.selectedHistoryParam?.name)
-    this.parameterForm.controls['value'].setValue(this.selectedHistoryParam?.usedValue)
-  }
-
-  private loadTranslations(): void {
-    this.translate
+  /**
+   * Dialog preparation
+   */
+  private prepareDialogTranslations(): void {
+    this.dataViewControlsTranslations$ = this.translate
       .get([
+        'PARAMETER.PRODUCT_NAME',
         'PARAMETER.APP_ID',
         'PARAMETER.NAME',
-        'PARAMETER.VALUE',
-        'PARAMETER.DESCRIPTION',
-        'CHART.NUMBER_OF_REQUESTS',
-        'ACTIONS.SEARCH.MESSAGE.SEARCH_FAILED',
-        'ACTIONS.SEARCH.MESSAGE.NO_RESULTS',
-        'VALIDATION.ERRORS.FORM_MANDATORY',
-        'VALIDATION.ERRORS.EMPTY_REQUIRED_FIELD'
+        'PARAMETER.DISPLAY_NAME',
+        'DIALOG.DATAVIEW.FILTER'
       ])
-      .subscribe((data) => {
-        this.translatedData = data
-      })
+      .pipe(
+        map((data) => {
+          return {
+            filterInputPlaceholder: data['DIALOG.DATAVIEW.FILTER'],
+            filterInputTooltip:
+              data['PARAMETER.PRODUCT_NAME'] +
+              ', ' +
+              data['PARAMETER.APP_ID'] +
+              ', ' +
+              data['PARAMETER.DISPLAY_NAME'] +
+              ', ' +
+              data['PARAMETER.NAME']
+          } as DataViewControlTranslations
+        })
+      )
   }
 
-  public onDialogHide() {
-    this.displayDialog = false
-    this.hideDialog.emit()
+  public preparePageActions(): void {
+    this.actions = [
+      {
+        labelKey: 'DIALOG.NAVIGATION.SEARCH.LABEL',
+        titleKey: 'DIALOG.NAVIGATION.SEARCH.TOOLTIP',
+        actionCallback: () => this.onGoToParameterSearchPage(),
+        icon: 'pi pi-list',
+        show: 'always'
+      }
+    ]
+  }
+
+  /****************************************************************************
+   *  UI Events
+   */
+  public onCriteriaReset(): void {
+    this.criteria = {}
+  }
+
+  public onGoToParameterSearchPage() {
+    this.router.navigate(['../'], { relativeTo: this.route })
+  }
+
+  // Detail => CREATE, COPY, EDIT, VIEW
+  public onDetail(mode: ChangeMode, item: Parameter | undefined, ev?: Event): void {
+    ev?.stopPropagation()
+    this.changeMode = mode
+    this.item4Detail = item // do not manipulate this item here
+    this.displayDetailDialog = true
+  }
+  public onCloseDetail(refresh: boolean): void {
+    this.displayDetailDialog = false
+    this.item4Detail = undefined
+    if (refresh) {
+      this.onReload()
+    }
+  }
+
+  // History
+  public onUsage(ev: Event, item: Parameter) {
+    ev.stopPropagation()
+    this.item4Detail = item
+    this.displayUsageDialog = true
+  }
+  public onCloseUsage() {
+    this.displayUsageDialog = false
+    this.item4Detail = undefined
+  }
+
+  public onColumnsChange(activeIds: string[]) {
+    this.filteredColumns = activeIds.map((id) => this.columns.find((col) => col.field === id)) as Column[]
+  }
+
+  public onFilterChange(event: string): void {
+    this.dataTable?.filterGlobal(event, 'contains')
+  }
+
+  private sortByDisplayName(a: any, b: any): number {
+    return (a.displayName ? a.displayName.toUpperCase() : '').localeCompare(
+      b.displayName ? b.displayName.toUpperCase() : ''
+    )
+  }
+
+  // getting display names within HTML
+  public getProductDisplayName(name: string | undefined, allProducts: ExtendedProduct[]): string | undefined {
+    return allProducts.find((item) => item.name === name)?.displayName ?? name
+  }
+  public getAppDisplayName(
+    productName: string | undefined,
+    appId: string | undefined,
+    allProducts: ExtendedProduct[]
+  ): string | undefined {
+    return (
+      allProducts.find((item) => item.name === productName)?.applications?.find((a) => a.appId === appId)?.appName ??
+      appId
+    )
+  }
+
+  public onCalcDuration(start: string, end: string): string {
+    if (!start || start === '' || !end || end === '') return ''
+    return new Date(Date.parse(end) - Date.parse(start)).toUTCString().split(' ')[4]
   }
 }

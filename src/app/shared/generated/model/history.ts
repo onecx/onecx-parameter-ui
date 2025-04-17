@@ -24,7 +24,9 @@ export interface History {
     name: string;
     usedValue?: ParameterValue;
     defaultValue?: ParameterValue;
-    description?: string;
     instanceId?: string;
+    count?: number;
+    start?: string;
+    end?: string;
 }
 

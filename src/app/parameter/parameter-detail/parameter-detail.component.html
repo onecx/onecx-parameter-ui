@@ -161,8 +161,8 @@
             id="pm_detail_form_value"
             class="w-full"
             formControlName="value"
-            [rows]="13"
             jsonColorize
+            [rows]="13"
             [ariaLabel]="'PARAMETER.VALUE' | translate"
             [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
             tooltipPosition="top"
@@ -185,7 +185,7 @@
       <div class="mt-1 relative p-fluid">
         <p-badge
           severity="primary"
-          [value]="5000 - parameterInputValue.value.length"
+          [value]="5000 - parameterImportValue.value.length"
           class="z-1 text-badge-right"
           [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
           [pTooltip]="'DIALOG.DETAIL.CHARACTERS' | translate"
@@ -194,19 +194,19 @@
         />
         <span class="p-float-label">
           <textarea
-            #parameterInputValue
+            #parameterImportValue
             pInputTextarea
             id="pm_detail_import_value"
             class="w-full"
-            [value]="parameter?.importValue"
-            [rows]="13"
+            formControlName="importValue"
             jsonColorize
-            [disabled]="true"
+            [rows]="13"
             [ariaLabel]="'PARAMETER.IMPORT_VALUE' | translate"
             [pTooltip]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           >
+            {{ parameter?.importValue }}
           </textarea>
           <label for="pm_detail_import_value">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
         </span>
@@ -243,40 +243,6 @@
         </div>
 
         <!-- row 2 -->
-        <div class="flex flex-row flex-wrap gap-4">
-          <span class="flex-grow-1 sm:flex-grow-0 p-float-label">
-            <input
-              pInputText
-              type="text"
-              id="pm_detail_field_product_name"
-              class="w-full sm:w-15rem pt-3 pb-2 text-responsive"
-              [disabled]="true"
-              [value]="parameter?.productName"
-              [attr.aria-label]="'PARAMETER.PRODUCT_NAME' | translate"
-              [pTooltip]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label for="pm_detail_field_product_name">{{ 'PARAMETER.PRODUCT_NAME' | translate }}</label>
-          </span>
-          <span class="flex-grow-1 p-float-label">
-            <input
-              pInputText
-              type="text"
-              id="pm_detail_field_app_id"
-              class="w-full pt-3 pb-2 text-responsive"
-              [disabled]="true"
-              [value]="parameter?.applicationId"
-              [attr.aria-label]="'PARAMETER.APP_ID' | translate"
-              [pTooltip]="'PARAMETER.TOOLTIPS.APP_ID' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label for="pm_detail_field_app_id">{{ 'PARAMETER.APP_ID' | translate }}</label>
-          </span>
-        </div>
-
-        <!-- row 3 -->
         <div class="flex flex-row flex-wrap gap-4">
           <span class="flex-grow-1 sm:flex-grow-0 p-float-label">
             <input

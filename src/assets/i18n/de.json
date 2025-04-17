@@ -85,10 +85,6 @@
       "LABEL": "Details",
       "TOOLTIP": "Parameterdetails"
     },
-    "HISTORY": {
-      "LABEL": "Verlaufsdaten",
-      "TOOLTIP": "Verlaufsdaten"
-    },
     "CANCEL": "Abbrechen",
     "CHOOSE": "Wählen",
     "LOADING": "Laden...",
@@ -103,6 +99,9 @@
       "SAVE": "Die Änderungen speichern",
       "SAVE_AS": "Speichern als neuen Parameter"
     }
+  },
+  "BREADCRUMBS": {
+    "USAGE": "Nutzung"
   },
   "INTERNAL": {
     "HEADER": "Intern",
@@ -125,6 +124,20 @@
       "HEADER": "Parameter Management",
       "SUBHEADER": "Suchen und verwalten von Parametern zur Konfiguration von Applikationen"
     },
+    "NAVIGATION": {
+      "SEARCH": {
+        "LABEL": "Parameter",
+        "TOOLTIP": "Liste der erfassten Parameter"
+      },
+      "DETAIL_USAGE": {
+        "LABEL": "Nutzungsdaten",
+        "TOOLTIP": "Von den Applikationen gemeldete Nutzungsdaten"
+      },
+      "LATEST_USAGE": {
+        "LABEL": "Nutzungsdaten",
+        "TOOLTIP": "Von den Applikationen gemeldete letzte Nutzungsdaten"
+      }
+    },
     "DETAIL": {
       "COPY.HEADER": "Parameter erstellen",
       "CREATE.HEADER": "Parameter erstellen",
@@ -145,6 +158,43 @@
       },
       "CHARACTERS": "Noch mögliche Zeichen"
     },
+    "USAGE": {
+      "HEADER": "Parameternutzung",
+      "SUBHEADER": "Suchen und Anzeige der letzten Verwendung von Parametern (von Applikationen gemeldet)",
+      "NAME": "Parameter",
+      "COUNT": "Anzahl",
+      "START": "Start",
+      "END": "Ende",
+      "DURATION": "Dauer",
+      "INSTANCE_ID": "Instanz-ID",
+      "DEFAULT_VALUE": "Standard",
+      "USED_VALUE": "Verwendet",
+      "LAST_USED": "Zuletzt verwendet",
+      "USAGE_RELOAD": "Neuladen",
+      "TOOLTIPS": {
+        "COUNT": "Wie oft im Interval benutzt?",
+        "START": "Beginn des Zeitraums",
+        "END": "Ende des Zeitraums",
+        "DURATION": "Zeitraum in dem der Parameter mit dem geliefertem Wert benutzt wurde",
+        "INSTANCE_ID": "ID der Instanz, die den Parameter benutzt hat",
+        "DEFAULT_VALUE": "Standardwert",
+        "USED_VALUE": "Verwendeter Wert",
+        "LAST_USED": "Zuletzt verwendet"
+      },
+      "TAB": {
+        "OVERVIEW": "Zusammenfassung",
+        "LIST": "Werteliste",
+        "CHART": "Zeitleiste",
+        "TOOLTIPS": {
+          "OVERVIEW": "Überblick über die erfassten Daten des Parameters",
+          "LIST": "Liste der Einzelwerte",
+          "CHART": "Grafische Darstellung der Werte"
+        }
+      }
+    },
+    "CHART": {
+      "NUMBER_OF_REQUESTS": "Anzahl der Anfragen"
+    },
     "DATAVIEW": {
       "FILTER": "Filter",
       "FILTER_TOOLTIP": "...filtern",
@@ -155,7 +205,7 @@
   },
   "PARAMETER": {
     "PRODUCT_NAME": "Applikation",
-    "APP_ID": "App-ID",
+    "APP_ID": "App",
     "APP_NAME": "App",
     "NAME": "Name",
     "COMBINED_NAME": "Name",
@@ -163,6 +213,7 @@
     "VALUE": "Wert",
     "IMPORT_VALUE": "Importwert",
     "DESCRIPTION": "Beschreibung",
+    "OPERATOR": "Auto",
     "TOOLTIPS": {
       "PRODUCT_NAME": "Applikation, für die der Parameter angelegt ist",
       "APP_ID": "App ID (Service), für die der Parameter angelegt ist",
@@ -170,24 +221,11 @@
       "NAME": "Name des Parameters",
       "COMBINED_NAME": "Anzeigename oder Name des Parameters",
       "DISPLAY_NAME": "Anzeigename des Parameters",
+      "DESCRIPTION": "Detaillierte Beschreibung des Parameters",
       "VALUE": "Wert des Parameters",
       "IMPORT_VALUE": "Importierter Wert",
-      "DESCRIPTION": "Detaillierte Beschreibung des Parameters"
+      "OPERATOR": "Wenn gesetzt, dann wurde der Parameter automatisiert erstellt."
     }
-  },
-  "HISTORY": {
-    "HISTORY": "Verlaufsdaten",
-    "INSTANCE_ID": "Instanz-ID",
-    "DEFAULT_VALUE": "Standardwert",
-    "USED_VALUE": "Verwendeter Wert",
-    "LAST_USED": "Zuletzt verwendet",
-    "HISTORY_RELOAD": "Verlaufsdaten aktualisieren",
-    "APP_ID": "App-ID",
-    "PRODUCT": "Applikation",
-    "NAME": "Name"
-  },
-  "CHART": {
-    "NUMBER_OF_REQUESTS": "Anzahl der Anfragen"
   },
   "VALIDATION": {
     "ERRORS": {
@@ -201,26 +239,32 @@
   },
   "EXCEPTIONS": {
     "HTTP_STATUS_0": {
+      "USAGE": "Unbekanntes Problem beim Abrufen von Verlaufsdaten - bitte versuchen Sie es noch einmal.",
       "PARAMETER": "Unbekanntes Problem beim Abrufen von Parameter - bitte versuchen Sie es noch einmal.",
       "PRODUCTS": "Unbekanntes Problem beim Abrufen von Applikationen - bitte versuchen Sie es noch einmal."
     },
     "HTTP_STATUS_400": {
+      "USAGE": "Ihre Anfrage konnte nicht bearbeitet werden.",
       "PARAMETER": "Ihre Anfrage konnte nicht bearbeitet werden.",
       "PRODUCTS": "Ihre Anfrage konnte nicht bearbeitet werden."
     },
     "HTTP_STATUS_401": {
+      "USAGE": "Sie sind nicht autorisiert, um Verlaufsdaten zu sehen.",
       "PARAMETER": "Sie sind nicht autorisiert, um Parameter zu sehen.",
       "PRODUCTS": "Sie sind nicht autorisiert, um Applikationen zu sehen."
     },
     "HTTP_STATUS_403": {
+      "USAGE": "Sie haben keine Rechte, um Verlaufsdaten zu sehen.",
       "PARAMETER": "Sie haben keine Rechte, um Parameter zu sehen.",
       "PRODUCTS": "Sie haben keine Rechte, um Applikationen zu sehen."
     },
     "HTTP_STATUS_404": {
+      "USAGE": "Verlaufsdaten nicht gefunden.",
       "PARAMETER": "Parameter nicht gefunden.",
       "PRODUCTS": "Es konnten keine Applikationen geladen werden."
     },
     "HTTP_STATUS_500": {
+      "USAGE": "Unbekanntes Server-Problem beim Abrufen der Verlaufsdaten - bitte versuchen Sie es noch einmal.",
       "PARAMETER": "Unbekanntes Server-Problem beim Abrufen der Parameter - bitte versuchen Sie es noch einmal.",
       "PRODUCTS": "Unbekanntes Server-Problem beim Abrufen von Applikationen - bitte versuchen Sie es noch einmal."
     }

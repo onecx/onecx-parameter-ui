@@ -2,6 +2,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
+import { provideRouter, Router, ActivatedRoute } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
@@ -16,6 +17,7 @@ import {
   ParameterSearchComponent,
   ProductAbstract
 } from './parameter-search.component'
+import { ParameterHistoryComponent } from '../parameter-history/parameter-history.component'
 
 const itemData: Parameter[] = [
   {
@@ -54,12 +56,6 @@ const app2: ApplicationAbstract = {
   undeployed: false,
   deprecated: false
 }
-// parameter BFF products (enriched)
-/*
-const usedProducts: ExtendedProduct[] = [
-  { name: 'product1', displayName: 'Product 1', undeployed: false, applications: [app1] },
-  { name: 'product2', displayName: 'Product 2', undeployed: true, applications: [app2] }
-]*/
 // product store products
 const allProductsOrg: ProductAbstract[] = [
   { name: 'product1', displayName: 'Product 1', undeployed: false, applications: [app1] },
@@ -79,6 +75,8 @@ const allProducts: ExtendedProduct[] = [
 describe('ParameterSearchComponent', () => {
   let component: ParameterSearchComponent
   let fixture: ComponentFixture<ParameterSearchComponent>
+  const routerSpy = jasmine.createSpyObj('router', ['navigate'])
+  const routeMock = { snapshot: { paramMap: new Map() } }
 
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
@@ -101,6 +99,9 @@ describe('ParameterSearchComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideRouter([{ path: 'usage', component: ParameterHistoryComponent }]),
+        { provide: Router, useValue: routerSpy },
+        { provide: ActivatedRoute, useValue: routeMock },
         { provide: UserService, useValue: mockUserService },
         { provide: PortalMessageService, useValue: msgServiceSpy },
         { provide: ParametersAPIService, useValue: apiServiceSpy }
@@ -155,14 +156,25 @@ describe('ParameterSearchComponent', () => {
         error: done.fail
       })
     })
+  })
 
-    it('should open create dialog using UI action', () => {
+  describe('page actions', () => {
+    it('should open create dialog', () => {
       spyOn(component, 'onDetail')
 
       component.ngOnInit()
       component.actions[0].actionCallback()
 
       expect(component.onDetail).toHaveBeenCalled()
+    })
+
+    it('should go to latest usage page', () => {
+      spyOn(component, 'onGoToLatestUsagePage')
+
+      component.ngOnInit()
+      component.actions[1].actionCallback()
+
+      expect(component.onGoToLatestUsagePage).toHaveBeenCalled()
     })
   })
 
@@ -471,24 +483,24 @@ describe('ParameterSearchComponent', () => {
     })
   })
 
-  describe('onHistory', () => {
-    it('should stop event propagation, set parameter, and display history dialog', () => {
+  describe('row actions', () => {
+    it('should display usage detail dialog', () => {
       const event = new MouseEvent('click')
       spyOn(event, 'stopPropagation')
 
-      component.onHistory(event, itemData[0])
+      component.onDetailUsage(event, itemData[0])
 
       expect(event.stopPropagation).toHaveBeenCalled()
       expect(component.item4Detail).toEqual(itemData[0])
-      expect(component.displayHistoryDialog).toBeTrue()
+      expect(component.displayUsageDetailDialog).toBeTrue()
     })
 
-    it('should hide the history dialog', () => {
-      component.displayHistoryDialog = true
+    it('should hide the usage detail dialog', () => {
+      component.displayUsageDetailDialog = true
 
-      component.onCloseHistory()
+      component.onCloseUsageDetail()
 
-      expect(component.displayHistoryDialog).toBeFalse()
+      expect(component.displayUsageDetailDialog).toBeFalse()
     })
   })
 
@@ -500,6 +512,12 @@ describe('ParameterSearchComponent', () => {
 
       expect(component.criteria).toEqual({})
     })
+  })
+
+  it('should navigate to latest usage page', () => {
+    component.onGoToLatestUsagePage()
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['./usage'], { relativeTo: routeMock })
   })
 
   /**

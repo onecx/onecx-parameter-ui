@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core'
+import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
 import { Table } from 'primeng/table'
@@ -8,14 +9,16 @@ import { Action, Column, DataViewControlTranslations, PortalMessageService } fro
 import { SlotService } from '@onecx/angular-remote-components'
 
 import { Parameter, ParameterSearchCriteria, ParametersAPIService, Product } from 'src/app/shared/generated'
-import { limitText } from 'src/app/shared/utils'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 type ExtendedColumn = Column & {
   hasFilter?: boolean
+  isBoolean?: boolean
   isDate?: boolean
-  isDropdown?: boolean
-  limit?: boolean
+  isDuration?: boolean
+  isText?: boolean
+  isValue?: boolean
+  frozen?: boolean
   css?: string
 }
 export type ExtendedProduct = {
@@ -55,15 +58,14 @@ export type ProductAbstract = {
 })
 export class ParameterSearchComponent implements OnInit {
   // dialog
-  public searching = false
+  public loading = false
   public exceptionKey: string | undefined = undefined
   public changeMode: ChangeMode = 'VIEW'
   public dateFormat: string
   public refreshUsedProducts = false
   public displayDetailDialog = false
   public displayDeleteDialog = false
-  public displayHistoryDialog = false
-  public limitText = limitText
+  public displayUsageDetailDialog = false
   public actions: Action[] = []
   public filteredColumns: Column[] = []
 
@@ -85,43 +87,53 @@ export class ParameterSearchComponent implements OnInit {
 
   public columns: ExtendedColumn[] = [
     {
-      field: 'productDisplayName',
-      header: 'PRODUCT_NAME',
-      active: true,
-      translationPrefix: 'PARAMETER',
-      limit: false
-    },
-    {
-      field: 'applicationName',
-      header: 'APP_NAME',
-      active: true,
-      translationPrefix: 'PARAMETER',
-      limit: false
-    },
-    {
       field: 'name',
       header: 'COMBINED_NAME',
       active: true,
       translationPrefix: 'PARAMETER',
-      limit: false
+      frozen: true,
+      css: 'word-break-all'
     },
     {
       field: 'value',
       header: 'VALUE',
       active: true,
       translationPrefix: 'PARAMETER',
-      limit: true
+      isValue: true,
+      css: 'text-center'
     },
     {
-      field: 'importValue',
-      header: 'IMPORT_VALUE',
+      field: 'productDisplayName',
+      header: 'PRODUCT_NAME',
+      active: true,
+      translationPrefix: 'PARAMETER'
+    },
+    {
+      field: 'applicationName',
+      header: 'APP_NAME',
+      active: true,
+      translationPrefix: 'PARAMETER'
+    },
+    {
+      field: 'operator',
+      header: 'OPERATOR',
       active: true,
       translationPrefix: 'PARAMETER',
-      limit: true
+      isBoolean: true,
+      css: 'text-center'
+    },
+    {
+      field: 'modificationDate',
+      header: 'MODIFICATION_DATE',
+      active: true,
+      translationPrefix: 'INTERNAL',
+      isDate: true
     }
   ]
 
   constructor(
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
     private readonly user: UserService,
     private readonly slotService: SlotService,
     private readonly translate: TranslateService,
@@ -144,6 +156,9 @@ export class ParameterSearchComponent implements OnInit {
   private onReload(): void {
     this.getUsedProducts()
     this.onSearch({}, true)
+  }
+  public onGoToLatestUsagePage(): void {
+    this.router.navigate(['./usage'], { relativeTo: this.route })
   }
 
   /****************************************************************************
@@ -210,10 +225,10 @@ export class ParameterSearchComponent implements OnInit {
   }
 
   private combineProducts(aP: ExtendedProduct[], uP: ExtendedProduct[]): AllMetaData {
-    // convert/enrich used products if product info are available
+    // convert/enrich used products if product data are available
     if (aP && uP && uP.length > 0) {
       uP.forEach((p) => {
-        const pi = aP.find((ap) => ap.name === p.name) // get product info
+        const pi = aP.find((ap) => ap.name === p.name) // get product data
         if (pi) {
           p.displayName = pi.displayName!
           p.undeployed = pi.undeployed
@@ -229,6 +244,8 @@ export class ParameterSearchComponent implements OnInit {
       })
       uP.sort(this.sortByDisplayName)
     }
+    // if service is not running or product data are not yet available
+    if (aP.length === 0) aP = uP
     return { allProducts: aP, usedProducts: [...uP] } // meta data
   }
 
@@ -236,7 +253,7 @@ export class ParameterSearchComponent implements OnInit {
    *  SEARCH data
    */
   public onSearch(criteria: ParameterSearchCriteria, reuseCriteria = false): void {
-    this.searching = true
+    this.loading = true
     this.exceptionKey = undefined
     if (!reuseCriteria) this.criteria = { ...criteria }
     this.data$ = this.parameterApi.searchParametersByCriteria({ parameterSearchCriteria: { ...this.criteria } }).pipe(
@@ -252,7 +269,7 @@ export class ParameterSearchComponent implements OnInit {
         console.error('searchParametersByCriteria', err)
         return of([] as Parameter[])
       }),
-      finalize(() => (this.searching = false))
+      finalize(() => (this.loading = false))
     )
   }
 
@@ -294,6 +311,14 @@ export class ParameterSearchComponent implements OnInit {
         icon: 'pi pi-plus',
         show: 'always',
         permission: 'PARAMETER#EDIT'
+      },
+      {
+        labelKey: 'DIALOG.NAVIGATION.LATEST_USAGE.LABEL',
+        titleKey: 'DIALOG.NAVIGATION.LATEST_USAGE.TOOLTIP',
+        actionCallback: () => this.onGoToLatestUsagePage(),
+        icon: 'pi pi-history',
+        show: 'always',
+        permission: 'USAGE#SEARCH'
       }
     ]
   }
@@ -349,14 +374,15 @@ export class ParameterSearchComponent implements OnInit {
     })
   }
 
-  // History => routing
-  public onHistory(ev: Event, item: Parameter) {
+  // History
+  public onDetailUsage(ev: Event, item: Parameter) {
     ev.stopPropagation()
     this.item4Detail = item
-    this.displayHistoryDialog = true
+    this.displayUsageDetailDialog = true
   }
-  public onCloseHistory() {
-    this.displayHistoryDialog = false
+  public onCloseUsageDetail() {
+    this.displayUsageDetailDialog = false
+    this.item4Detail = undefined
   }
 
   public onColumnsChange(activeIds: string[]) {

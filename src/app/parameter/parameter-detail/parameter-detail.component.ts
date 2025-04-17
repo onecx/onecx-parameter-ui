@@ -45,7 +45,8 @@ export class ParameterDetailComponent implements OnChanges {
       name: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
       displayName: new FormControl(null, [Validators.maxLength(255)]),
       description: new FormControl(null, [Validators.maxLength(255)]),
-      value: new FormControl(null, [Validators.maxLength(5000)])
+      value: new FormControl(null, [Validators.maxLength(5000)]),
+      importValue: new FormControl({ disabled: true }, [Validators.maxLength(5000)])
     })
   }
 

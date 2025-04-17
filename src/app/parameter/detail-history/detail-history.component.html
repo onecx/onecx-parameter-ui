@@ -1,0 +1,38 @@
+<p-dialog
+  [header]="'DIALOG.USAGE.HEADER' | translate"
+  [(visible)]="displayDialog"
+  (onHide)="onDialogHide()"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="true"
+  [resizable]="true"
+  [maximizable]="true"
+>
+  <app-detail-history-criteria
+    [parameter]="parameter"
+    (criteriaEmitter)="onSearch($event)"
+  ></app-detail-history-criteria>
+
+  <app-detail-history-list
+    [loading]="loading"
+    [exceptionKey]="exceptionKey"
+    [parameter]="parameter"
+    [dateFormat]="dateFormat"
+    [data]="(data$ | async) ?? []"
+  ></app-detail-history-list>
+
+  <ng-template pTemplate="footer">
+    <div class="flex flex-wrap justify-content-end gap-2 mb-1">
+      <p-button
+        id="pm_usage_action_close"
+        icon="pi pi-times"
+        (onClick)="onDialogHide()"
+        [label]="'ACTIONS.NAVIGATION.CLOSE' | translate"
+        [ariaLabel]="'ACTIONS.NAVIGATION.CLOSE' | translate"
+        [pTooltip]="'ACTIONS.NAVIGATION.CLOSE.TOOLTIP' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      ></p-button>
+    </div>
+  </ng-template>
+</p-dialog>

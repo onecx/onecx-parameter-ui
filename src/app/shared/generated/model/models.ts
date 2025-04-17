@@ -19,6 +19,3 @@ export * from './problemDetailInvalidParam';
 export * from './problemDetailParam';
 export * from './problemDetailResponse';
 export * from './product';
-export * from './productStorePageResult';
-export * from './productStoreSearchCriteria';
-export * from './productWrapper';
