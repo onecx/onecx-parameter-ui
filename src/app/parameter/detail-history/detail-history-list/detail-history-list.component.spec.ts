@@ -48,7 +48,7 @@ describe('HistoryListComponent', () => {
       const translateService = TestBed.inject(TranslateService)
       spyOn(translateService, 'get').and.returnValue(of(translationData))
 
-      fixture = TestBed.createComponent(HistoryListComponent)
+      fixture = TestBed.createComponent(DetailHistoryListComponent)
       component = fixture.componentInstance
       fixture.detectChanges()
 

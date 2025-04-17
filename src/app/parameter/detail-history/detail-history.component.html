@@ -13,31 +13,13 @@
     (criteriaEmitter)="onSearch($event)"
   ></app-detail-history-criteria>
 
-  <p-tabView>
-    <p-tabPanel
-      [header]="'DIALOG.USAGE.TAB.LIST' | translate"
-      [tooltip]="'DIALOG.USAGE.TAB.TOOLTIPS.LIST' | translate"
-      tooltipPosition="top"
-      tooltipEvent="hover"
-    >
-      <app-detail-history-list
-        [loading]="loading"
-        [exceptionKey]="exceptionKey"
-        [parameter]="parameter"
-        [dateFormat]="dateFormat"
-        [data]="(data$ | async) ?? []"
-      ></app-detail-history-list>
-    </p-tabPanel>
-
-    <p-tabPanel
-      *ngIf="!loading && !exceptionKey"
-      [header]="'DIALOG.USAGE.TAB.OVERVIEW' | translate"
-      [tooltip]="'DIALOG.USAGE.TAB.TOOLTIPS.OVERVIEW' | translate"
-      tooltipPosition="top"
-      tooltipEvent="hover"
-    >
-    </p-tabPanel>
-  </p-tabView>
+  <app-detail-history-list
+    [loading]="loading"
+    [exceptionKey]="exceptionKey"
+    [parameter]="parameter"
+    [dateFormat]="dateFormat"
+    [data]="(data$ | async) ?? []"
+  ></app-detail-history-list>
 
   <ng-template pTemplate="footer">
     <div class="flex flex-wrap justify-content-end gap-2 mb-1">

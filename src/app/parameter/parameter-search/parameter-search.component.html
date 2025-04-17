@@ -10,7 +10,7 @@
 
   <ng-container *ngIf="metaData$ | async as metaData">
     <app-parameter-criteria
-      type="PARAMETER"
+      type="SEARCH"
       [actions]="actions"
       [usedProducts]="metaData.usedProducts"
       (searchEmitter)="onSearch($event)"
@@ -160,10 +160,10 @@
                   *ocxIfPermission="'USAGE#VIEW'"
                   [id]="'pm_search_table_row_' + i + '_action_usage'"
                   class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-                  (click)="onUsage($event, rowData)"
+                  (click)="onDetailUsage($event, rowData)"
                   [disabled]="!rowData['isInHistory']"
-                  [attr.aria-label]="'ACTIONS.USAGE.LABEL' | translate"
-                  [pTooltip]="'ACTIONS.USAGE.LABEL' | translate"
+                  [attr.aria-label]="'DIALOG.NAVIGATION.DETAIL_USAGE.LABEL' | translate"
+                  [pTooltip]="'DIALOG.NAVIGATION.DETAIL_USAGE.LABEL' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
@@ -291,8 +291,8 @@
 </ocx-portal-page>
 
 <app-detail-history
-  [displayDialog]="displayUsageDialog"
-  (hideDialog)="onCloseUsage()"
+  [displayDialog]="displayUsageDetailDialog"
+  (hideDialog)="onCloseUsageDetail()"
   [parameter]="item4Detail"
   [dateFormat]="dateFormat"
 ></app-detail-history>

@@ -336,10 +336,10 @@ export class ParameterHistoryComponent implements OnInit {
   public preparePageActions(): void {
     this.actions = [
       {
-        labelKey: 'ACTIONS.NAVIGATION.BACK',
-        titleKey: 'ACTIONS.NAVIGATION.BACK.TOOLTIP',
-        actionCallback: () => this.onBack(),
-        icon: 'pi pi-arrow-left',
+        labelKey: 'DIALOG.NAVIGATION.SEARCH.LABEL',
+        titleKey: 'DIALOG.NAVIGATION.SEARCH.TOOLTIP',
+        actionCallback: () => this.onGoToParameterSearchPage(),
+        icon: 'pi pi-list',
         show: 'always'
       }
     ]
@@ -352,7 +352,7 @@ export class ParameterHistoryComponent implements OnInit {
     this.criteria = {}
   }
 
-  public onBack() {
+  public onGoToParameterSearchPage() {
     this.router.navigate(['../'], { relativeTo: this.route })
   }
 

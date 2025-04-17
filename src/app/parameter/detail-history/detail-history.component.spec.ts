@@ -162,7 +162,7 @@ describe('HistoryComponent', () => {
 
       component.onSearch(criteria)
 
-      expect(console.error).toHaveBeenCalledWith('Missing search criteria for getting parameter history', criteria)
+      expect(console.error).toHaveBeenCalledWith('Missing search criteria for getting parameter usage', criteria)
     })
 
     it('should search history - get error', (done) => {

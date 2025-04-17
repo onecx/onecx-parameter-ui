@@ -64,7 +64,7 @@ export class ParameterSearchComponent implements OnInit {
   public refreshUsedProducts = false
   public displayDetailDialog = false
   public displayDeleteDialog = false
-  public displayUsageDialog = false
+  public displayUsageDetailDialog = false
   public limitText = limitText
   public actions: Action[] = []
   public filteredColumns: Column[] = []
@@ -157,7 +157,7 @@ export class ParameterSearchComponent implements OnInit {
     this.getUsedProducts()
     this.onSearch({}, true)
   }
-  public onGoToHistory(): void {
+  public onGoToLatestUsagePage(): void {
     this.router.navigate(['./usage'], { relativeTo: this.route })
   }
 
@@ -313,9 +313,9 @@ export class ParameterSearchComponent implements OnInit {
         permission: 'PARAMETER#EDIT'
       },
       {
-        labelKey: 'ACTIONS.USAGE.LABEL',
-        titleKey: 'ACTIONS.USAGE.TOOLTIP',
-        actionCallback: () => this.onGoToHistory(),
+        labelKey: 'DIALOG.NAVIGATION.LATEST_USAGE.LABEL',
+        titleKey: 'DIALOG.NAVIGATION.LATEST_USAGE.TOOLTIP',
+        actionCallback: () => this.onGoToLatestUsagePage(),
         icon: 'pi pi-history',
         show: 'always',
         permission: 'USAGE#SEARCH'
@@ -375,13 +375,13 @@ export class ParameterSearchComponent implements OnInit {
   }
 
   // History
-  public onUsage(ev: Event, item: Parameter) {
+  public onDetailUsage(ev: Event, item: Parameter) {
     ev.stopPropagation()
     this.item4Detail = item
-    this.displayUsageDialog = true
+    this.displayUsageDetailDialog = true
   }
-  public onCloseUsage() {
-    this.displayUsageDialog = false
+  public onCloseUsageDetail() {
+    this.displayUsageDetailDialog = false
     this.item4Detail = undefined
   }
 

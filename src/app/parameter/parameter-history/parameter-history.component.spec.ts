@@ -2,6 +2,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
+import { provideRouter, Router, ActivatedRoute } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
@@ -16,6 +17,7 @@ import {
   ParameterHistoryComponent,
   ProductAbstract
 } from './parameter-history.component'
+import { ParameterSearchComponent } from '../parameter-search/parameter-search.component'
 
 const itemData: History[] = [
   {
@@ -75,6 +77,8 @@ const allProducts: ExtendedProduct[] = [
 describe('ParameterHistoryComponent', () => {
   let component: ParameterHistoryComponent
   let fixture: ComponentFixture<ParameterHistoryComponent>
+  const routerSpy = jasmine.createSpyObj('router', ['navigate'])
+  const routeMock = { snapshot: { paramMap: new Map() } }
 
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
@@ -98,6 +102,9 @@ describe('ParameterHistoryComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideRouter([{ path: '', component: ParameterSearchComponent }]),
+        { provide: Router, useValue: routerSpy },
+        { provide: ActivatedRoute, useValue: routeMock },
         { provide: UserService, useValue: mockUserService },
         { provide: PortalMessageService, useValue: msgServiceSpy },
         { provide: ParametersAPIService, useValue: parameterApiSpy },
@@ -150,15 +157,6 @@ describe('ParameterHistoryComponent', () => {
         },
         error: done.fail
       })
-    })
-
-    it('should open create dialog using UI action', () => {
-      spyOn(component, 'onDetail')
-
-      component.ngOnInit()
-      component.actions[0].actionCallback()
-
-      expect(component.onDetail).toHaveBeenCalled()
     })
   })
 
@@ -440,6 +438,12 @@ describe('ParameterHistoryComponent', () => {
 
       expect(component.criteria).toEqual({})
     })
+  })
+
+  it('should navigate back onBack', () => {
+    component.onGoToParameterSearchPage()
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['../'], { relativeTo: routeMock })
   })
 
   /**

@@ -85,10 +85,6 @@
       "LABEL": "Details",
       "TOOLTIP": "Parameter details"
     },
-    "USAGE": {
-      "LABEL": "Usage Data",
-      "TOOLTIP": "Usage data obtained from Applications"
-    },
     "CANCEL": "Cancel",
     "CHOOSE": "Choose",
     "LOADING": "Loading...",
@@ -124,9 +120,23 @@
     }
   },
   "DIALOG": {
-    "PARAMETER": {
+    "SEARCH": {
       "HEADER": "Parameter Management",
       "SUBHEADER": "Search and manage Parameters for configuring of Applications"
+    },
+    "NAVIGATION": {
+      "SEARCH": {
+        "LABEL": "Parameter",
+        "TOOLTIP": "List of captured Parameters"
+      },
+      "DETAIL_USAGE": {
+        "LABEL": "Usage Data",
+        "TOOLTIP": "Usage data reported by Applications"
+      },
+      "LATEST_USAGE": {
+        "LABEL": "Usage Data",
+        "TOOLTIP": "Latest usage data reported by Applications"
+      }
     },
     "DETAIL": {
       "COPY.HEADER": "Create Parameter",
