@@ -16,7 +16,9 @@ type ExtendedColumn = Column & {
   hasFilter?: boolean
   isBoolean?: boolean
   isDate?: boolean
-  isDropdown?: boolean
+  isDuration?: boolean
+  isValue?: boolean
+  isText?: boolean
   limit?: boolean
   frozen?: boolean
   css?: string
@@ -92,7 +94,6 @@ export class ParameterSearchComponent implements OnInit {
       header: 'COMBINED_NAME',
       active: true,
       translationPrefix: 'PARAMETER',
-      limit: false,
       frozen: true,
       css: 'word-break-all'
     },
@@ -101,22 +102,20 @@ export class ParameterSearchComponent implements OnInit {
       header: 'VALUE',
       active: true,
       translationPrefix: 'PARAMETER',
-      limit: true,
+      isValue: true,
       css: 'text-center'
     },
     {
       field: 'productDisplayName',
       header: 'PRODUCT_NAME',
       active: true,
-      translationPrefix: 'PARAMETER',
-      limit: false
+      translationPrefix: 'PARAMETER'
     },
     {
       field: 'applicationName',
       header: 'APP_NAME',
       active: true,
-      translationPrefix: 'PARAMETER',
-      limit: false
+      translationPrefix: 'PARAMETER'
     },
     {
       field: 'operator',

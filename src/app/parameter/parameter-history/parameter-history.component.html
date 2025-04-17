@@ -20,7 +20,7 @@
 
     <ocx-page-content>
       <p-message
-        *ngIf="!metaData.usedProducts"
+        *ngIf="!metaData.usedProducts || loading"
         id="pm_usage_message_loading"
         severity="info"
         styleClass="m-3"
@@ -35,13 +35,6 @@
       ></p-message>
 
       <ng-container *ngIf="data$ | async as data">
-        <p-message
-          *ngIf="loading"
-          id="pm_usage_message_searching"
-          severity="info"
-          styleClass="m-3 p-2"
-          [text]="'ACTIONS.SEARCH.IN_PROGRESS' | translate"
-        ></p-message>
         <p-table
           *ngIf="!(loading || exceptionKey)"
           #dataTable
@@ -168,15 +161,17 @@
                   *ngIf="col.field === 'name'"
                   class="text-ellipsis-2-lines"
                   class="text-ellipsis-2-lines max-w-15rem word-break-all"
-                  [ngStyle]="{ 'min-width': (rowData['value'] ?? rowData['importValue']).length > 15 ? '8rem' : '' }"
+                  [ngStyle]="{ 'min-width': rowData['name'].length > 15 ? '8rem' : '' }"
                 >
-                  {{ rowData['displayName'] ? rowData['displayName'] : rowData[col.field] }}
+                  {{ rowData['name'] }}
                 </div>
                 <div
                   *ngIf="col.isValue"
                   class="text-ellipsis-2-lines"
                   class="text-ellipsis-2-lines max-w-20rem word-break-all"
-                  [ngStyle]="{ 'min-width': (rowData['value'] ?? rowData['importValue']).length > 15 ? '10rem' : '' }"
+                  [ngStyle]="{
+                    'min-width': rowData[col.field].length > 15 ? '10rem' : ''
+                  }"
                 >
                   {{ rowData[col.field] }}
                 </div>

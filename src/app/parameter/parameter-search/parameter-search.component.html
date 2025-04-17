@@ -19,7 +19,7 @@
 
     <ocx-page-content>
       <p-message
-        *ngIf="!metaData.usedProducts"
+        *ngIf="!metaData.usedProducts || loading"
         id="pm_search_message_loading"
         severity="info"
         styleClass="m-3"
@@ -34,13 +34,6 @@
       ></p-message>
 
       <ng-container *ngIf="data$ | async as data">
-        <p-message
-          *ngIf="loading"
-          id="pm_search_message_searching"
-          severity="info"
-          styleClass="m-3 p-2"
-          [text]="'ACTIONS.SEARCH.IN_PROGRESS' | translate"
-        ></p-message>
         <p-table
           *ngIf="!(loading || exceptionKey)"
           #dataTable
@@ -193,14 +186,19 @@
               >
                 <!-- needs a div due to manage ellipsis -->
                 <div
+                  *ngIf="col.field === 'name'"
+                  class="text-ellipsis-2-lines"
+                  class="text-ellipsis-2-lines max-w-15rem word-break-all"
+                  [ngStyle]="{ 'min-width': (rowData['value'] ?? rowData['importValue']).length > 15 ? '8rem' : '' }"
+                >
+                  {{ rowData['displayName'] ?? rowData['name'] }}
+                </div>
+                <div
                   *ngIf="col.field === 'value'"
                   class="text-ellipsis-2-lines max-w-20rem word-break-all"
                   [ngStyle]="{ 'min-width': (rowData['value'] ?? rowData['importValue']).length > 15 ? '10rem' : '' }"
                 >
                   {{ rowData['value'] ?? rowData['importValue'] }}
-                </div>
-                <div *ngIf="col.field === 'name'" class="text-ellipsis-2-lines">
-                  {{ rowData['displayName'] ? rowData['displayName'] : rowData[col.field] }}
                 </div>
                 <ng-container *ngIf="col.field === 'productDisplayName'">
                   {{ getProductDisplayName(rowData['productName'], metaData.allProducts) }}

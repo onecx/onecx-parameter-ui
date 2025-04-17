@@ -109,15 +109,13 @@ export class ParameterHistoryComponent implements OnInit {
       field: 'productDisplayName',
       header: 'PRODUCT_NAME',
       active: true,
-      translationPrefix: 'PARAMETER',
-      limit: false
+      translationPrefix: 'PARAMETER'
     },
     {
       field: 'applicationName',
       header: 'APP_NAME',
       active: true,
-      translationPrefix: 'PARAMETER',
-      limit: false
+      translationPrefix: 'PARAMETER'
     },
     {
       field: 'start',
