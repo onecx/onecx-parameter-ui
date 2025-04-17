@@ -19,7 +19,7 @@
   id="pm_history_list_table"
   styleClass="mx-3 mb-2"
   [value]="data"
-  [columns]="columns"
+  [columns]="filteredColumns"
   dataKey="id"
   [globalFilterFields]="['instanceId']"
   [reorderableColumns]="false"
@@ -33,7 +33,7 @@
   [showCurrentPageReport]="true"
   currentPageReportTemplate="{first} - {last} {{ 'ACTIONS.SEARCH.OF' | translate }} {totalRecords}"
 >
-  <ng-template pTemplate="caption">
+  <!-- ng-template pTemplate="caption">
     <ocx-data-view-controls
       [supportedViews]="['table']"
       [enableFiltering]="true"
@@ -42,7 +42,7 @@
       (filterChange)="onFilterChange($event)"
       [translations]="(dataViewControlsTranslations$ | async) ?? {}"
     ></ocx-data-view-controls>
-  </ng-template>
+  </ng-template -->
 
   <ng-template pTemplate="emptymessage">
     <tr>
@@ -74,7 +74,7 @@
     <tr [pSelectableRow]="data">
       <td *ngFor="let col of columns" [id]="'pm_history_list_table_row_' + i + '_' + col.field" [class]="col.css">
         <!-- needs a div due to manage ellipsis -->
-        <div *ngIf="col.isValue" class="text-ellipsis-2-lines">{{ rowData['value'] ?? rowData['importValue'] }}</div>
+        <div *ngIf="col.isValue" class="text-ellipsis-2-lines">{{ rowData[col.field] }}</div>
         <ng-container *ngIf="col.isText">{{ rowData[col.field] }}</ng-container>
         <ng-container *ngIf="col.isDate">{{ rowData[col.field] | date: dateFormat }}</ng-container>
         <ng-container *ngIf="col.isDuration">{{ onCalcDuration(rowData['start'], rowData['end']) }}</ng-container>

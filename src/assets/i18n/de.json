@@ -157,8 +157,8 @@
       "END": "Ende",
       "DURATION": "Dauer",
       "INSTANCE_ID": "Instanz-ID",
-      "DEFAULT_VALUE": "Standardwert",
-      "USED_VALUE": "Verwendeter Wert",
+      "DEFAULT_VALUE": "Standard",
+      "USED_VALUE": "Verwendet",
       "LAST_USED": "Zuletzt verwendet",
       "HISTORY_RELOAD": "Verlaufsdaten aktualisieren",
       "TOOLTIPS": {

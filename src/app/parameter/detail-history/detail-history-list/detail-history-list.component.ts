@@ -32,6 +32,7 @@ export class DetailHistoryListComponent {
   @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
   public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
 
+  public filteredColumns: Column[]
   public columns: ExtendedColumn[] = [
     {
       field: 'start',
@@ -64,9 +65,25 @@ export class DetailHistoryListComponent {
       css: 'text-center'
     },
     {
+      field: 'usedValue',
+      header: 'USED_VALUE',
+      active: true,
+      translationPrefix: 'DIALOG.HISTORY',
+      isValue: true,
+      css: 'text-center'
+    },
+    {
+      field: 'defaultValue',
+      header: 'DEFAULT_VALUE',
+      active: true,
+      translationPrefix: 'DIALOG.HISTORY',
+      isValue: true,
+      css: 'text-center'
+    },
+    {
       field: 'creationDate',
       header: 'CREATION_DATE',
-      active: true,
+      active: false,
       translationPrefix: 'INTERNAL',
       isDate: true
     }
@@ -74,6 +91,7 @@ export class DetailHistoryListComponent {
 
   constructor(public readonly translate: TranslateService) {
     this.prepareDialogTranslations()
+    this.filteredColumns = this.columns.filter((a) => a.active === true)
   }
 
   /**
