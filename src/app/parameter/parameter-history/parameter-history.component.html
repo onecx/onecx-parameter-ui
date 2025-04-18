@@ -20,18 +20,11 @@
 
     <ocx-page-content>
       <p-message
-        *ngIf="!metaData.usedProducts"
-        id="pm_usage_message_loading"
-        severity="info"
-        styleClass="m-3"
-        [text]="'ACTIONS.LOADING' | translate"
-      ></p-message>
-      <p-message
-        *ngIf="exceptionKey"
-        id="pm_usage_message_error"
+        *ngIf="exceptionKey || exceptionKeyMeta"
+        id="pm_search_message_error"
         severity="error"
         styleClass="m-3"
-        [text]="exceptionKey | translate"
+        [text]="exceptionKey ? (exceptionKey | translate) : (exceptionKeyMeta ?? '' | translate)"
       ></p-message>
 
       <ng-container *ngIf="data$ | async as data">
@@ -166,15 +159,13 @@
                 <!-- needs a div due to manage ellipsis -->
                 <div
                   *ngIf="col.field === 'name'"
-                  class="text-ellipsis-2-lines"
                   class="text-ellipsis-2-lines max-w-15rem word-break-all"
-                  [ngStyle]="{ 'min-width': rowData['name'].length > 15 ? '8rem' : '' }"
+                  [ngStyle]="{ 'min-width': (rowData['name'] ?? '').length > 15 ? '8rem' : '' }"
                 >
                   {{ rowData['name'] }}
                 </div>
                 <div
                   *ngIf="col.isValue"
-                  class="text-ellipsis-2-lines"
                   class="text-ellipsis-2-lines max-w-20rem word-break-all"
                   [ngStyle]="{
                     'min-width': (rowData[col.field] ?? '').length > 15 ? '10rem' : ''

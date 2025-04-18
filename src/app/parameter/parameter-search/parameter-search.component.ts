@@ -60,6 +60,7 @@ export class ParameterSearchComponent implements OnInit {
   // dialog
   public loading = false
   public exceptionKey: string | undefined = undefined
+  public exceptionKeyMeta: string | undefined = undefined
   public changeMode: ChangeMode = 'VIEW'
   public dateFormat: string
   public refreshUsedProducts = false
@@ -170,7 +171,7 @@ export class ParameterSearchComponent implements OnInit {
       .getAllApplications()
       .pipe(
         catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+          this.exceptionKeyMeta = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
           console.error('getAllApplications', err)
           return of([])
         })
@@ -180,7 +181,7 @@ export class ParameterSearchComponent implements OnInit {
 
   // combine used products with product info from product store
   private getMetaData() {
-    this.exceptionKey = undefined
+    this.exceptionKeyMeta = undefined
     // combine all product infos and used products to one meta data structure
     this.metaData$ = combineLatest([this.productInfos$, this.usedProducts$]).pipe(
       map(([aP, uP]: [ProductAbstract[] | undefined, Product[]]) => {
@@ -226,7 +227,7 @@ export class ParameterSearchComponent implements OnInit {
 
   private combineProducts(aP: ExtendedProduct[], uP: ExtendedProduct[]): AllMetaData {
     // convert/enrich used products if product data are available
-    if (aP && uP && uP.length > 0) {
+    if (aP?.length > 0 && uP.length > 0) {
       uP.forEach((p) => {
         const pi = aP.find((ap) => ap.name === p.name) // get product data
         if (pi) {
@@ -265,7 +266,7 @@ export class ParameterSearchComponent implements OnInit {
       }),
       map((data) => data.stream),
       catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETERS'
         console.error('searchParametersByCriteria', err)
         return of([] as Parameter[])
       }),
