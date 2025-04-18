@@ -241,31 +241,37 @@
     "HTTP_STATUS_0": {
       "USAGE": "Unknown problem retrieving Parameter usage data - please try again.",
       "PARAMETER": "Unknown problem retrieving Parameter data - please try again.",
+      "PARAMETERS": "Unknown problem retrieving Parameter data - please try again.",
       "PRODUCTS": "Unknown problem retrieving Application data - please try again."
     },
     "HTTP_STATUS_400": {
       "USAGE": "Your request could not be processed.",
       "PARAMETER": "Your request could not be processed.",
+      "PARAMETERS": "Your request could not be processed.",
       "PRODUCTS": "Your request could not be processed."
     },
     "HTTP_STATUS_401": {
       "USAGE": "You are not authorized to see Parameter usage data.",
-      "PARAMETER": "You are not authorized to see Parameters.",
+      "PARAMETER": "You are not authorized to see Parameter data.",
+      "PARAMETERS": "You are not authorized to see Parameters.",
       "PRODUCTS": "You are not authorized to see Applications."
     },
     "HTTP_STATUS_403": {
       "USAGE": "You have no permissions to see Parameter usage data.",
-      "PARAMETER": "You have no permissions to see Parameters.",
+      "PARAMETER": "You have no permissions to see Parameter data.",
+      "PARAMETERS": "You have no permissions to see Parameters.",
       "PRODUCTS": "You have no permissions to see Applications."
     },
     "HTTP_STATUS_404": {
       "USAGE": "Parameter usage data could not be found.",
-      "PARAMETER": "Parameters could not be found.",
+      "PARAMETER": "Parameter could not be found.",
+      "PARAMETERS": "Parameters could not be found.",
       "PRODUCTS": "No Applications could be loaded."
     },
     "HTTP_STATUS_500": {
       "USAGE": "Unknown server problem retrieving Parameter usage data - please try again.",
       "PARAMETER": "Unknown server problem retrieving Parameter data - please try again.",
+      "PARAMETERS": "Unknown server problem retrieving Parameter data - please try again.",
       "PRODUCTS": "Unknown server problem retrieving Application data - please try again."
     }
   }

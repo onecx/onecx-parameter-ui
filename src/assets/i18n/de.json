@@ -239,33 +239,39 @@
   },
   "EXCEPTIONS": {
     "HTTP_STATUS_0": {
-      "USAGE": "Unbekanntes Problem beim Abrufen von Verlaufsdaten - bitte versuchen Sie es noch einmal.",
-      "PARAMETER": "Unbekanntes Problem beim Abrufen von Parameter - bitte versuchen Sie es noch einmal.",
+      "USAGE": "Unbekanntes Problem beim Abrufen von Nutzungsdaten - bitte versuchen Sie es noch einmal.",
+      "PARAMETER": "Unbekanntes Problem beim Abrufen der Parameter-Daten - bitte versuchen Sie es noch einmal.",
+      "PARAMETERS": "Unbekanntes Problem beim Abrufen von Parametern - bitte versuchen Sie es noch einmal.",
       "PRODUCTS": "Unbekanntes Problem beim Abrufen von Applikationen - bitte versuchen Sie es noch einmal."
     },
     "HTTP_STATUS_400": {
       "USAGE": "Ihre Anfrage konnte nicht bearbeitet werden.",
       "PARAMETER": "Ihre Anfrage konnte nicht bearbeitet werden.",
+      "PARAMETERS": "Ihre Anfrage konnte nicht bearbeitet werden.",
       "PRODUCTS": "Ihre Anfrage konnte nicht bearbeitet werden."
     },
     "HTTP_STATUS_401": {
-      "USAGE": "Sie sind nicht autorisiert, um Verlaufsdaten zu sehen.",
+      "USAGE": "Sie sind nicht autorisiert, um Nutzungsdaten zu sehen.",
       "PARAMETER": "Sie sind nicht autorisiert, um Parameter zu sehen.",
+      "PARAMETERS": "Sie sind nicht autorisiert, um Parameter zu sehen.",
       "PRODUCTS": "Sie sind nicht autorisiert, um Applikationen zu sehen."
     },
     "HTTP_STATUS_403": {
-      "USAGE": "Sie haben keine Rechte, um Verlaufsdaten zu sehen.",
+      "USAGE": "Sie haben keine Rechte, um Nutzungsdaten zu sehen.",
       "PARAMETER": "Sie haben keine Rechte, um Parameter zu sehen.",
+      "PARAMETERS": "Sie haben keine Rechte, um Parameter zu sehen.",
       "PRODUCTS": "Sie haben keine Rechte, um Applikationen zu sehen."
     },
     "HTTP_STATUS_404": {
-      "USAGE": "Verlaufsdaten nicht gefunden.",
+      "USAGE": "Es konnten keine Nutzungsdaten geladen werden.",
       "PARAMETER": "Parameter nicht gefunden.",
+      "PARAMETERS": "Es konnten keine Parameter geladen werden.",
       "PRODUCTS": "Es konnten keine Applikationen geladen werden."
     },
     "HTTP_STATUS_500": {
-      "USAGE": "Unbekanntes Server-Problem beim Abrufen der Verlaufsdaten - bitte versuchen Sie es noch einmal.",
+      "USAGE": "Unbekanntes Server-Problem beim Abrufen von Nutzungsdaten - bitte versuchen Sie es noch einmal.",
       "PARAMETER": "Unbekanntes Server-Problem beim Abrufen der Parameter - bitte versuchen Sie es noch einmal.",
+      "PARAMETERS": "Unbekanntes Server-Problem beim Abrufen der Parameter - bitte versuchen Sie es noch einmal.",
       "PRODUCTS": "Unbekanntes Server-Problem beim Abrufen von Applikationen - bitte versuchen Sie es noch einmal."
     }
   }

@@ -16,7 +16,6 @@ import {
   ParametersAPIService,
   Product
 } from 'src/app/shared/generated'
-import { limitText } from 'src/app/shared/utils'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 type ExtendedColumn = Column & {
@@ -69,13 +68,13 @@ export class ParameterHistoryComponent implements OnInit {
   // dialog
   public loading = false
   public exceptionKey: string | undefined = undefined
+  public exceptionKeyMeta: string | undefined = undefined
   public changeMode: ChangeMode = 'VIEW'
   public dateFormat: string
   public refreshUsedProducts = false
   public displayDetailDialog = false
   public displayDeleteDialog = false
   public displayUsageDialog = false
-  public limitText = limitText
   public actions: Action[] = []
 
   @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
@@ -202,7 +201,7 @@ export class ParameterHistoryComponent implements OnInit {
       .getAllApplications()
       .pipe(
         catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+          this.exceptionKeyMeta = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
           console.error('getAllApplications', err)
           return of([])
         })
@@ -212,7 +211,7 @@ export class ParameterHistoryComponent implements OnInit {
 
   // combine used products with product data from product store
   private getMetaData() {
-    this.exceptionKey = undefined
+    this.exceptionKeyMeta = undefined
     // combine all product infos and used products to one meta data structure
     this.metaData$ = combineLatest([this.productInfos$, this.usedProducts$]).pipe(
       map(([aP, uP]: [ProductAbstract[] | undefined, Product[]]) => {
