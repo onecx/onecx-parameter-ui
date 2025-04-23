@@ -78,6 +78,7 @@ export class ParameterSearchComponent implements OnInit {
   public criteria: ParameterSearchCriteria = {}
   public metaData$!: Observable<AllMetaData>
   public usedProducts$ = new ReplaySubject<Product[]>(1) // getting data from bff endpoint
+  public itemId: string | undefined // used on detail
   public item4Detail: Parameter | undefined // used on detail
   public item4Delete: Parameter | undefined // used on deletion
   // slot configuration: get product infos via remote component
@@ -335,12 +336,13 @@ export class ParameterSearchComponent implements OnInit {
   public onDetail(mode: ChangeMode, item: Parameter | undefined, ev?: Event): void {
     ev?.stopPropagation()
     this.changeMode = mode
-    this.item4Detail = item // do not manipulate this item here
+    this.item4Detail = item
+    this.itemId = item?.id
     this.displayDetailDialog = true
   }
   public onCloseDetail(refresh: boolean): void {
     this.displayDetailDialog = false
-    this.item4Detail = undefined
+    this.itemId = undefined
     if (refresh) {
       this.onReload()
     }

@@ -78,8 +78,9 @@ export class ParameterHistoryComponent implements OnInit {
   public criteria: ParameterSearchCriteria = {}
   public metaData$!: Observable<AllMetaData>
   public usedProducts$ = new ReplaySubject<Product[]>(1) // getting data from bff endpoint
-  public item4Detail: Parameter | undefined // used on detail
-  public item4Delete: Parameter | undefined // used on deletion
+  public itemId: string | undefined // used on detail
+  public item4Detail: History | undefined
+  public item4Delete: History | undefined // used on deletion
   // slot configuration: get product infos via remote component
   public slotName = 'onecx-product-infos'
   public isComponentDefined$: Observable<boolean> | undefined // check
@@ -349,7 +350,7 @@ export class ParameterHistoryComponent implements OnInit {
   }
 
   // Detail => CREATE, COPY, EDIT, VIEW
-  public onDetail(mode: ChangeMode, item: Parameter | undefined, ev?: Event): void {
+  public onDetail(mode: ChangeMode, item: History | undefined, ev?: Event): void {
     ev?.stopPropagation()
     this.changeMode = mode
     this.item4Detail = item // do not manipulate this item here
@@ -357,14 +358,14 @@ export class ParameterHistoryComponent implements OnInit {
   }
   public onCloseDetail(refresh: boolean): void {
     this.displayDetailDialog = false
-    this.item4Detail = undefined
+    this.itemId = undefined
     if (refresh) {
       this.onReload()
     }
   }
 
   // History
-  public onUsage(ev: Event, item: Parameter) {
+  public onUsage(ev: Event, item: History) {
     ev.stopPropagation()
     this.item4Detail = item
     this.displayUsageDialog = true

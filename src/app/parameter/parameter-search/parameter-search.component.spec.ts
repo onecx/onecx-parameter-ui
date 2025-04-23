@@ -356,7 +356,7 @@ describe('ParameterSearchComponent', () => {
       component.onDetail(mode, itemData[0])
 
       expect(component.changeMode).toEqual(mode)
-      expect(component.item4Detail).toBe(itemData[0])
+      expect(component.itemId).toBe(itemData[0].id)
       expect(component.displayDetailDialog).toBeTrue()
     })
 

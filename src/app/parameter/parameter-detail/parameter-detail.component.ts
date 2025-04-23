@@ -54,11 +54,11 @@ export class ParameterDetailComponent implements OnChanges {
     if (!this.displayDialog) return
     this.exceptionKey = undefined
     // matching mode and given data?
-    if ('CREATE' === this.changeMode && this.parameter) return
-    if (['EDIT', 'VIEW'].includes(this.changeMode))
-      if (!this.parameter) return
+    if ('CREATE' === this.changeMode && this.parameter?.id) return
+    if (['EDIT', 'VIEW'].includes(this.changeMode)) {
+      if (!this.parameter?.id) return
       else this.getData(this.parameter?.id)
-    else this.prepareForm(this.parameter)
+    } else this.prepareForm(this.parameter)
     // update dropdown lists
     this.productOptions = this.allProducts.map((p) => ({ label: p.displayName, value: p.name }))
   }
@@ -91,15 +91,17 @@ export class ParameterDetailComponent implements OnChanges {
   /**
    * READING data
    */
-  private getData(id?: string): void {
-    if (!id) return
+  private getData(id: string): void {
     this.loading = true
     this.exceptionKey = undefined
     this.parameterApi
       .getParameterById({ id: id })
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
-        next: (data) => this.prepareForm(data),
+        next: (data) => {
+          this.parameter = data
+          this.prepareForm(data)
+        },
         error: (err) => {
           this.formGroup.reset()
           this.formGroup.disable()
@@ -139,7 +141,7 @@ export class ParameterDetailComponent implements OnChanges {
   public onSave(): void {
     if (this.formGroup.valid) {
       if (this.changeMode === 'EDIT' && this.parameter?.id) {
-        this.parameterApi.updateParameter({ id: this.parameter.id, parameterUpdate: this.formGroup.value }).subscribe({
+        this.parameterApi.updateParameter({ id: this.parameter?.id, parameterUpdate: this.formGroup.value }).subscribe({
           next: () => {
             this.msgService.success({ summaryKey: 'ACTIONS.EDIT.MESSAGE.OK' })
             this.onDialogHide(true)

@@ -28,5 +28,6 @@ export interface History {
     count?: number;
     start?: string;
     end?: string;
+    parameterId?: string;
 }
 
