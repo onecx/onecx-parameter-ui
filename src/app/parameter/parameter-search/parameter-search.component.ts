@@ -168,7 +168,7 @@ export class ParameterSearchComponent implements OnInit {
   // get used products (used === assigned to data)
   private getUsedProducts() {
     this.parameterApi
-      .getAllApplications()
+      .getAllProducts()
       .pipe(
         catchError((err) => {
           this.exceptionKeyMeta = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'

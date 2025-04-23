@@ -197,8 +197,8 @@ export class ParameterHistoryComponent implements OnInit {
    */
   // get used products (used === assigned to data)
   private getUsedProducts() {
-    this.parameterApi
-      .getAllApplications()
+    this.historyApi
+      .getAllHistoryProducts()
       .pipe(
         catchError((err) => {
           this.exceptionKeyMeta = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
