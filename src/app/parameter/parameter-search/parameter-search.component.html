@@ -35,7 +35,7 @@
           [text]="'ACTIONS.LOADING' | translate"
         ></p-message>
         <p-table
-          *ngIf="!(loading || exceptionKey || exceptionKeyMeta)"
+          *ngIf="!(loading || exceptionKey)"
           #dataTable
           id="pm_search_table"
           styleClass="mx-3 mb-2"

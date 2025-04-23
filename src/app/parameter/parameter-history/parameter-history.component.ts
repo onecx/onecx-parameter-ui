@@ -8,14 +8,7 @@ import { UserService } from '@onecx/angular-integration-interface'
 import { Action, Column, DataViewControlTranslations, PortalMessageService } from '@onecx/portal-integration-angular'
 import { SlotService } from '@onecx/angular-remote-components'
 
-import {
-  History,
-  HistoriesAPIService,
-  Parameter,
-  ParameterSearchCriteria,
-  ParametersAPIService,
-  Product
-} from 'src/app/shared/generated'
+import { History, HistoriesAPIService, Parameter, ParameterSearchCriteria, Product } from 'src/app/shared/generated'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 type ExtendedColumn = Column & {
@@ -85,8 +78,9 @@ export class ParameterHistoryComponent implements OnInit {
   public criteria: ParameterSearchCriteria = {}
   public metaData$!: Observable<AllMetaData>
   public usedProducts$ = new ReplaySubject<Product[]>(1) // getting data from bff endpoint
-  public item4Detail: Parameter | undefined // used on detail
-  public item4Delete: Parameter | undefined // used on deletion
+  public itemId: string | undefined // used on detail
+  public item4Detail: History | undefined
+  public item4Delete: History | undefined // used on deletion
   // slot configuration: get product infos via remote component
   public slotName = 'onecx-product-infos'
   public isComponentDefined$: Observable<boolean> | undefined // check
@@ -171,7 +165,6 @@ export class ParameterHistoryComponent implements OnInit {
     private readonly slotService: SlotService,
     private readonly translate: TranslateService,
     private readonly msgService: PortalMessageService,
-    private readonly parameterApi: ParametersAPIService,
     private readonly historyApi: HistoriesAPIService
   ) {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
@@ -197,12 +190,12 @@ export class ParameterHistoryComponent implements OnInit {
    */
   // get used products (used === assigned to data)
   private getUsedProducts() {
-    this.parameterApi
-      .getAllApplications()
+    this.historyApi
+      .getAllHistoryProducts()
       .pipe(
         catchError((err) => {
           this.exceptionKeyMeta = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
-          console.error('getAllApplications', err)
+          console.error('getAllHistoryProducts', err)
           return of([])
         })
       )
@@ -357,7 +350,7 @@ export class ParameterHistoryComponent implements OnInit {
   }
 
   // Detail => CREATE, COPY, EDIT, VIEW
-  public onDetail(mode: ChangeMode, item: Parameter | undefined, ev?: Event): void {
+  public onDetail(mode: ChangeMode, item: History | undefined, ev?: Event): void {
     ev?.stopPropagation()
     this.changeMode = mode
     this.item4Detail = item // do not manipulate this item here
@@ -365,14 +358,14 @@ export class ParameterHistoryComponent implements OnInit {
   }
   public onCloseDetail(refresh: boolean): void {
     this.displayDetailDialog = false
-    this.item4Detail = undefined
+    this.itemId = undefined
     if (refresh) {
       this.onReload()
     }
   }
 
   // History
-  public onUsage(ev: Event, item: Parameter) {
+  public onUsage(ev: Event, item: History) {
     ev.stopPropagation()
     this.item4Detail = item
     this.displayUsageDialog = true

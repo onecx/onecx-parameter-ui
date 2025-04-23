@@ -10,7 +10,7 @@ import { of, throwError } from 'rxjs'
 import { UserService } from '@onecx/angular-integration-interface'
 import { Column, PortalMessageService } from '@onecx/portal-integration-angular'
 
-import { History, HistoriesAPIService, ParametersAPIService, Product } from 'src/app/shared/generated'
+import { History, HistoriesAPIService, Product } from 'src/app/shared/generated'
 import {
   ApplicationAbstract,
   ExtendedProduct,
@@ -82,11 +82,9 @@ describe('ParameterHistoryComponent', () => {
 
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
-  const parameterApiSpy = {
-    getAllApplications: jasmine.createSpy('getAllApplications').and.returnValue(of([]))
-  }
   const historyApiSpy = {
-    getAllHistoryLatest: jasmine.createSpy('getAllHistoryLatest').and.returnValue(of([]))
+    getAllHistoryLatest: jasmine.createSpy('getAllHistoryLatest').and.returnValue(of([])),
+    getAllHistoryProducts: jasmine.createSpy('getAllHistoryProducts').and.returnValue(of([]))
   }
 
   beforeEach(waitForAsync(() => {
@@ -107,7 +105,6 @@ describe('ParameterHistoryComponent', () => {
         { provide: ActivatedRoute, useValue: routeMock },
         { provide: UserService, useValue: mockUserService },
         { provide: PortalMessageService, useValue: msgServiceSpy },
-        { provide: ParametersAPIService, useValue: parameterApiSpy },
         { provide: HistoriesAPIService, useValue: historyApiSpy }
       ]
     }).compileComponents()
@@ -117,10 +114,10 @@ describe('ParameterHistoryComponent', () => {
     mockUserService.lang$.getValue.and.returnValue('de')
     // reset data services
     historyApiSpy.getAllHistoryLatest.calls.reset()
-    parameterApiSpy.getAllApplications.calls.reset()
+    historyApiSpy.getAllHistoryProducts.calls.reset()
     // to spy data: refill with neutral data
     historyApiSpy.getAllHistoryLatest.and.returnValue(of({}))
-    parameterApiSpy.getAllApplications.and.returnValue(of([]))
+    historyApiSpy.getAllHistoryProducts.and.returnValue(of([]))
   }))
 
   beforeEach(() => {
@@ -227,7 +224,7 @@ describe('ParameterHistoryComponent', () => {
    */
   describe('service data', () => {
     it('should get products which are assigned to data', (done) => {
-      parameterApiSpy.getAllApplications.and.returnValue(of(usedProductsOrg))
+      historyApiSpy.getAllHistoryProducts.and.returnValue(of(usedProductsOrg))
 
       component.ngOnInit()
 
@@ -242,7 +239,7 @@ describe('ParameterHistoryComponent', () => {
 
     it('should get all products assigned to', (done) => {
       const errorResponse = { status: '404', statusText: 'An error occur' }
-      parameterApiSpy.getAllApplications.and.returnValue(throwError(() => errorResponse))
+      historyApiSpy.getAllHistoryProducts.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
 
       component.ngOnInit()
@@ -253,7 +250,7 @@ describe('ParameterHistoryComponent', () => {
           done()
         },
         error: () => {
-          expect(console.error).toHaveBeenCalledOnceWith('getAllApplications', errorResponse)
+          expect(console.error).toHaveBeenCalledOnceWith('getAllHistoryProducts', errorResponse)
           done.fail
         }
       })
@@ -263,7 +260,7 @@ describe('ParameterHistoryComponent', () => {
   describe('META data', () => {
     it('should get product store products - successful', (done) => {
       component.slotEmitter.emit(allProductsOrg)
-      parameterApiSpy.getAllApplications.and.returnValue(of(usedProductsOrg))
+      historyApiSpy.getAllHistoryProducts.and.returnValue(of(usedProductsOrg))
 
       component.ngOnInit()
 
