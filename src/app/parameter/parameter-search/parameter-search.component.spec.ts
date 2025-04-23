@@ -260,6 +260,7 @@ describe('ParameterSearchComponent', () => {
           done()
         },
         error: () => {
+          expect(component.exceptionKeyMeta).toBe('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PRODUCTS')
           expect(console.error).toHaveBeenCalledOnceWith('getAllProducts', errorResponse)
           done.fail
         }
