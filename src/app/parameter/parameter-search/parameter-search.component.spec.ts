@@ -82,7 +82,7 @@ describe('ParameterSearchComponent', () => {
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
   const apiServiceSpy = {
     deleteParameter: jasmine.createSpy('deleteParameter').and.returnValue(of(null)),
-    getAllApplications: jasmine.createSpy('getAllApplications').and.returnValue(of([])),
+    getAllProducts: jasmine.createSpy('getAllProducts').and.returnValue(of([])),
     searchParametersByCriteria: jasmine.createSpy('searchParametersByCriteria').and.returnValue(of({}))
   }
 
@@ -113,11 +113,11 @@ describe('ParameterSearchComponent', () => {
     mockUserService.lang$.getValue.and.returnValue('de')
     // reset data services
     apiServiceSpy.searchParametersByCriteria.calls.reset()
-    apiServiceSpy.getAllApplications.calls.reset()
+    apiServiceSpy.getAllProducts.calls.reset()
     apiServiceSpy.deleteParameter.calls.reset()
     // to spy data: refill with neutral data
     apiServiceSpy.searchParametersByCriteria.and.returnValue(of({}))
-    apiServiceSpy.getAllApplications.and.returnValue(of([]))
+    apiServiceSpy.getAllProducts.and.returnValue(of([]))
     apiServiceSpy.deleteParameter.and.returnValue(of(null))
   }))
 
@@ -234,7 +234,7 @@ describe('ParameterSearchComponent', () => {
    */
   describe('service data', () => {
     it('should get products which are assigned to data', (done) => {
-      apiServiceSpy.getAllApplications.and.returnValue(of(usedProductsOrg))
+      apiServiceSpy.getAllProducts.and.returnValue(of(usedProductsOrg))
 
       component.ngOnInit()
 
@@ -249,7 +249,7 @@ describe('ParameterSearchComponent', () => {
 
     it('should get all products assigned to', (done) => {
       const errorResponse = { status: '404', statusText: 'An error occur' }
-      apiServiceSpy.getAllApplications.and.returnValue(throwError(() => errorResponse))
+      apiServiceSpy.getAllProducts.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
 
       component.ngOnInit()
@@ -260,7 +260,7 @@ describe('ParameterSearchComponent', () => {
           done()
         },
         error: () => {
-          expect(console.error).toHaveBeenCalledOnceWith('getAllApplications', errorResponse)
+          expect(console.error).toHaveBeenCalledOnceWith('getAllProducts', errorResponse)
           done.fail
         }
       })
@@ -270,7 +270,7 @@ describe('ParameterSearchComponent', () => {
   describe('META data', () => {
     it('should get product store products - successful', (done) => {
       component.slotEmitter.emit(allProductsOrg)
-      apiServiceSpy.getAllApplications.and.returnValue(of(usedProductsOrg))
+      apiServiceSpy.getAllProducts.and.returnValue(of(usedProductsOrg))
 
       component.ngOnInit()
 

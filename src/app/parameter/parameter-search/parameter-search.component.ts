@@ -172,7 +172,7 @@ export class ParameterSearchComponent implements OnInit {
       .pipe(
         catchError((err) => {
           this.exceptionKeyMeta = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
-          console.error('getAllApplications', err)
+          console.error('getAllProducts', err)
           return of([])
         })
       )

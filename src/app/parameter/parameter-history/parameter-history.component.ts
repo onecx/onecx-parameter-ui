@@ -8,14 +8,7 @@ import { UserService } from '@onecx/angular-integration-interface'
 import { Action, Column, DataViewControlTranslations, PortalMessageService } from '@onecx/portal-integration-angular'
 import { SlotService } from '@onecx/angular-remote-components'
 
-import {
-  History,
-  HistoriesAPIService,
-  Parameter,
-  ParameterSearchCriteria,
-  ParametersAPIService,
-  Product
-} from 'src/app/shared/generated'
+import { History, HistoriesAPIService, Parameter, ParameterSearchCriteria, Product } from 'src/app/shared/generated'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 type ExtendedColumn = Column & {
@@ -171,7 +164,6 @@ export class ParameterHistoryComponent implements OnInit {
     private readonly slotService: SlotService,
     private readonly translate: TranslateService,
     private readonly msgService: PortalMessageService,
-    private readonly parameterApi: ParametersAPIService,
     private readonly historyApi: HistoriesAPIService
   ) {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
@@ -202,7 +194,7 @@ export class ParameterHistoryComponent implements OnInit {
       .pipe(
         catchError((err) => {
           this.exceptionKeyMeta = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
-          console.error('getAllApplications', err)
+          console.error('getAllHistoryProducts', err)
           return of([])
         })
       )
