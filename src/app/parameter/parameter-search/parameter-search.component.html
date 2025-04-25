@@ -194,7 +194,9 @@
                 >
                   {{ rowData['displayName'] ?? rowData['name'] }}
                 </div>
-                <div *ngIf="col.field === 'type'">{{ displayValueType(rowData['value'], rowData['importValue']) }}</div>
+                <div *ngIf="col.field === 'type'">
+                  {{ displayValueType(rowData['value'] ?? rowData['importValue']) }}
+                </div>
                 <div
                   *ngIf="col.field === 'value'"
                   class="text-ellipsis-2-lines max-w-20rem word-break-all"
@@ -202,7 +204,7 @@
                     'min-width': (rowData['value'] ?? rowData['importValue'] ?? '').length > 15 ? '10rem' : ''
                   }"
                 >
-                  {{ displayValue(rowData['value'], rowData['importValue']) }}
+                  {{ displayValue(rowData['value'] ?? rowData['importValue']) }}
                 </div>
                 <ng-container *ngIf="col.field === 'productDisplayName'">
                   {{ getProductDisplayName(rowData['productName'], metaData.allProducts) }}

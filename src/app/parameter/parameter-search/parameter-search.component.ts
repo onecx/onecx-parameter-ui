@@ -425,11 +425,10 @@ export class ParameterSearchComponent implements OnInit {
     )
   }
 
-  public displayValueType(val: any, impVal: any): string {
-    return typeof (val ?? impVal)
+  public displayValueType(val: any): string {
+    return typeof val
   }
-  public displayValue(val: any, impVal: any): string {
-    const v = val ?? impVal
-    return typeof v !== 'object' ? v : '{ ... }'
+  public displayValue(val: any): string {
+    return typeof val !== 'object' ? val : '{ ... }'
   }
 }

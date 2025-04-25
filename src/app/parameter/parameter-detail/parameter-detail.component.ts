@@ -30,65 +30,56 @@ DefaultValueAccessor.prototype.registerOnChange = function (fn) {
   })
 }
 
-// used only to validate the value against types [NUMBER | STRING]
+// used to validate the value against type NUMBER
 export function ValueValidator(): ValidatorFn {
   return (control: AbstractControl): any | null => {
     if (!control.parent || !control || !control.value) return null
-    let isValid = true
-    const val = control.value as string
-    // get the parameter value
+    const val = control.value as any
+    if (val === undefined || val === null) return null
+
+    // get the selected parameter type from form
     const typeControl = control.parent.get('valueType')
     if (!typeControl || !typeControl?.value) return null
-    const type = typeControl?.value.toUpperCase()
 
-    if (val === undefined || val === null) return null
-    if (type === 'NUMBER') isValid = Number.isFinite(val)
-    console.log('TypeValidator type  value  valid?', type, val, isValid)
-
-    if (isValid) {
-      return null // Validation passes
-    } else {
-      return { pattern: true } // Validation fails
+    let isValid = true
+    if (typeControl.value === 'NUMBER') {
+      const flo: any = val * 0.123456
+      isValid = !Number.isNaN(parseFloat(flo))
     }
+    return isValid ? null : { pattern: true }
   }
 }
+
 // used only to validate the value against types [NUMBER | STRING]
 export function TypeValidator(): ValidatorFn {
   return (control: AbstractControl): any | null => {
     if (!control.parent || !control || !control.value) return null
+    const type = control?.value
+
     let isValid = true
-    const type = control?.value.toUpperCase()
-    // get the parameter value
+    // get the parameter value from form
     const valControl = control.parent.get('value')
     if (!valControl || !valControl.value || valControl.value === null) return null
-    const val = valControl?.value
-    valControl.updateValueAndValidity() // force validation
-
-    if (val === undefined || val === null) return null
-    if (type === 'NUMBER') isValid = Number.isFinite(val)
-    console.log('TypeValidator type  value  valid?', type, val, isValid)
-
-    if (isValid) {
-      return null // Validation passes
-    } else {
-      return { pattern: true } // Validation fails
+    valControl.updateValueAndValidity() // force value validation
+    if (type === 'NUMBER') {
+      const val = valControl?.value
+      if (val === undefined || val === null) return null
+      const flo: any = val * 0.123456
+      isValid = !Number.isNaN(parseFloat(flo))
     }
+    return isValid ? null : { pattern: true }
   }
 }
+
 export function JsonValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
-    let isValid = false
+    let isValid = true
     const value = control.value as string
-    if (!value || value === '' || value === '{}') isValid = true
-    else {
+    if (value && value !== '' && value !== '{}') {
       const pattern = /:\s*(["{].*["}])\s*[,}]/
       isValid = pattern.test(value)
     }
-    if (isValid) {
-      return null // Validation passes
-    } else {
-      return { pattern: true } // Validation fails
-    }
+    return isValid ? null : { pattern: true }
   }
 }
 
