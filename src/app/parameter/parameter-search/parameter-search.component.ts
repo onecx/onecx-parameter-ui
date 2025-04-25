@@ -105,6 +105,14 @@ export class ParameterSearchComponent implements OnInit {
       css: 'text-center'
     },
     {
+      field: 'type',
+      header: 'VALUE.TYPE',
+      active: true,
+      translationPrefix: 'PARAMETER',
+      isValue: false,
+      css: 'text-center'
+    },
+    {
       field: 'productDisplayName',
       header: 'PRODUCT_NAME',
       active: true,
@@ -415,5 +423,13 @@ export class ParameterSearchComponent implements OnInit {
       allProducts.find((item) => item.name === productName)?.applications?.find((a) => a.appId === appId)?.appName ??
       appId
     )
+  }
+
+  public displayValueType(val: any, impVal: any): string {
+    return typeof (val ?? impVal)
+  }
+  public displayValue(val: any, impVal: any): string {
+    const v = val ?? impVal
+    return typeof v !== 'object' ? v : '{ ... }'
   }
 }
