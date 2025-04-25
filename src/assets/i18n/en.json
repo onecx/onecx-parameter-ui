@@ -211,6 +211,7 @@
     "COMBINED_NAME": "Name",
     "DISPLAY_NAME": "Display Name",
     "VALUE": "Value",
+    "VALUE.TYPE": "Type",
     "IMPORT_VALUE": "Import Value",
     "DESCRIPTION": "Description",
     "OPERATOR": "Auto",
@@ -223,8 +224,21 @@
       "DISPLAY_NAME": "Business Name of the Parameter",
       "DESCRIPTION": "Detailed description of the Parameter",
       "VALUE": "Value of the Parameter",
+      "VALUE.TYPE": "Type of Parameter value",
       "IMPORT_VALUE": "Imported value",
       "OPERATOR": "If set, the Workspace was created by automation."
+    }
+  },
+  "VALUE_TYPE": {
+    "STRING": "Text",
+    "NUMBER": "Number",
+    "BOOLEAN": "Boolean",
+    "OBJECT": "Object",
+    "TOOLTIPS": {
+      "STRING": "Text",
+      "NUMBER": "Number",
+      "BOOLEAN": "True/true or False/false",
+      "OBJECT": "JSON Object"
     }
   },
   "VALIDATION": {

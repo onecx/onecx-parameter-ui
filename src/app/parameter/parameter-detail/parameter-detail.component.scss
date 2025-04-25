@@ -1,7 +1,11 @@
 @import '/src/app/_pm-mixins.scss';
 
 @include text-badges;
+
 @include correct-select-button;
+@include search-criteria-select-button;
+@include search-criteria-select-button-slim;
+
 @include readable-disabled-components;
 @include dialog-footer-buttons;
 @include dialog-non-full-size-modal;

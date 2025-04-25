@@ -20,7 +20,7 @@
     <ocx-page-content>
       <p-message
         *ngIf="exceptionKey || exceptionKeyMeta"
-        id="pm_search_message_error"
+        id="pam_search_message_error"
         severity="error"
         styleClass="m-3"
         [text]="exceptionKey ? (exceptionKey | translate) : (exceptionKeyMeta ?? '' | translate)"
@@ -29,7 +29,7 @@
       <ng-container *ngIf="data$ | async as data">
         <p-message
           *ngIf="loading"
-          id="pm_search_message_loading"
+          id="pam_search_message_loading"
           severity="info"
           styleClass="m-3"
           [text]="'ACTIONS.LOADING' | translate"
@@ -37,7 +37,7 @@
         <p-table
           *ngIf="!(loading || exceptionKey)"
           #dataTable
-          id="pm_search_table"
+          id="pam_search_table"
           styleClass="mx-3 mb-2"
           [value]="data"
           [columns]="filteredColumns"
@@ -68,18 +68,18 @@
 
           <ng-template pTemplate="emptymessage">
             <tr>
-              <td id="pm_search_table_emptymessage" colspan="16">{{ 'ACTIONS.SEARCH.NO_DATA' | translate }}</td>
+              <td id="pam_search_table_emptymessage" colspan="16">{{ 'ACTIONS.SEARCH.NO_DATA' | translate }}</td>
             </tr>
           </ng-template>
 
           <ng-template pTemplate="header" let-columns>
             <tr>
-              <th pFrozenColumn id="pm_search_table_header_actions" class="text-center white-space-nowrap">
+              <th pFrozenColumn id="pam_search_table_header_actions" class="text-center white-space-nowrap">
                 {{ 'ACTIONS.LABEL' | translate }}
               </th>
               <th
                 *ngFor="let col of columns"
-                [id]="'pm_search_table_header_col_' + col.field"
+                [id]="'pam_search_table_header_col_' + col.field"
                 class="white-space-nowrap"
                 [class]="col.css"
                 [ngClass]="{ 'border-right-1': col.frozen }"
@@ -108,7 +108,7 @@
                     type="button"
                     *ocxIfPermission="'PARAMETER#VIEW'"
                     class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-                    [id]="'pm_search_table_row_' + i + '_action_view'"
+                    [id]="'pam_search_table_row_' + i + '_action_view'"
                     (click)="onDetail('VIEW', rowData, $event)"
                     [attr.aria-label]="'ACTIONS.VIEW.LABEL' | translate"
                     [pTooltip]="'ACTIONS.VIEW.LABEL' | translate"
@@ -122,7 +122,7 @@
                   pbutton
                   type="button"
                   *ocxIfPermission="'PARAMETER#EDIT'"
-                  [id]="'pm_search_table_row_' + i + '_action_edit'"
+                  [id]="'pam_search_table_row_' + i + '_action_edit'"
                   class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
                   (click)="onDetail('EDIT', rowData, $event)"
                   [attr.aria-label]="'ACTIONS.EDIT.LABEL' | translate"
@@ -137,7 +137,7 @@
                   type="button"
                   *ocxIfPermission="'PARAMETER#EDIT'"
                   class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-                  [id]="'pm_search_table_row_' + i + '_action_copy'"
+                  [id]="'pam_search_table_row_' + i + '_action_copy'"
                   (click)="onDetail('COPY', rowData, $event)"
                   [attr.aria-label]="'ACTIONS.COPY.LABEL' | translate"
                   [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
@@ -150,7 +150,7 @@
                   pbutton
                   type="button"
                   *ocxIfPermission="'USAGE#VIEW'"
-                  [id]="'pm_search_table_row_' + i + '_action_usage'"
+                  [id]="'pam_search_table_row_' + i + '_action_usage'"
                   class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
                   (click)="onDetailUsage($event, rowData)"
                   [disabled]="!rowData['isInHistory']"
@@ -165,7 +165,7 @@
                   pbutton
                   type="button"
                   *ocxIfPermission="'PARAMETER#DELETE'"
-                  [id]="'pm_search_table_row_' + i + '_action_delete'"
+                  [id]="'pam_search_table_row_' + i + '_action_delete'"
                   class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
                   (click)="onDelete($event, rowData)"
                   [attr.aria-label]="'ACTIONS.DELETE.LABEL' | translate"
@@ -178,7 +178,7 @@
               </td>
               <td
                 *ngFor="let col of columns"
-                [id]="'pm_search_table_row_' + i + '_' + col.field"
+                [id]="'pam_search_table_row_' + i + '_' + col.field"
                 [class]="col.css"
                 [ngClass]="{ 'border-right-1': col.frozen }"
                 pFrozenColumn
@@ -231,7 +231,7 @@
           <div *ngIf="item4Delete" class="flex column-gap-3 row-gap-1 justify-content-start align-items-center">
             <div class="pi pi-question-circle text-3xl danger-action-text"></div>
             <div class="flex flex-column row-gap-2">
-              <div id="pm_delete_message_text" class="mr-3 font-bold">
+              <div id="pam_delete_message_text" class="mr-3 font-bold">
                 {{ 'ACTIONS.DELETE.MESSAGE.TEXT' | translate }}
               </div>
               <div class="px-2 flex flex-column row-gap-1">
@@ -239,20 +239,23 @@
                   <div class="w-4 text-right">{{ 'PARAMETER.NAME' | translate }}:</div>
                   <div
                     class="w-8 text-left danger-action-text text-responsive max-w-15rem"
-                    id="pm_delete_parameter_name"
+                    id="pam_delete_parameter_name"
                   >
                     {{ item4Delete.displayName ?? item4Delete.name }}
                   </div>
                 </div>
                 <div class="flex flex-row column-gap-2">
                   <div class="w-4 text-right">{{ 'PARAMETER.PRODUCT_NAME' | translate }}:</div>
-                  <div class="w-8 text-left danger-action-text text-responsive max-w-15rem" id="pm_delete_product_name">
+                  <div
+                    class="w-8 text-left danger-action-text text-responsive max-w-15rem"
+                    id="pam_delete_product_name"
+                  >
                     {{ getProductDisplayName(item4Delete.productName, metaData.allProducts) }}
                   </div>
                 </div>
                 <div class="flex flex-row column-gap-2">
                   <div class="w-4 text-right">{{ 'PARAMETER.APP_ID' | translate }}:</div>
-                  <div class="w-8 text-left danger-action-text text-responsive max-w-15rem" id="pm_delete_app_id">
+                  <div class="w-8 text-left danger-action-text text-responsive max-w-15rem" id="pam_delete_app_id">
                     {{ getAppDisplayName(item4Delete.productName, item4Delete.applicationId, metaData.allProducts) }}
                   </div>
                 </div>
@@ -263,7 +266,7 @@
           <ng-template pTemplate="footer">
             <div class="flex flex-wrap justify-content-end column-gap-2 row-gap-1">
               <p-button
-                id="pm_delete_action_no"
+                id="pam_delete_action_no"
                 icon="pi pi-times"
                 pAutoFocus
                 [autofocus]="true"
@@ -275,7 +278,7 @@
                 tooltipEvent="hover"
               ></p-button>
               <p-button
-                id="pm_delete_action_yes"
+                id="pam_delete_action_yes"
                 icon="pi pi-check"
                 (onClick)="onDeleteConfirmation(data)"
                 [label]="'ACTIONS.CONFIRMATION.YES' | translate"

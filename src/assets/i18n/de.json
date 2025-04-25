@@ -211,6 +211,7 @@
     "COMBINED_NAME": "Name",
     "DISPLAY_NAME": "Anzeigename",
     "VALUE": "Wert",
+    "VALUE.TYPE": "Typ",
     "IMPORT_VALUE": "Importwert",
     "DESCRIPTION": "Beschreibung",
     "OPERATOR": "Auto",
@@ -223,8 +224,21 @@
       "DISPLAY_NAME": "Anzeigename des Parameters",
       "DESCRIPTION": "Detaillierte Beschreibung des Parameters",
       "VALUE": "Wert des Parameters",
+      "VALUE.TYPE": "Der Typ des Parameterwertes",
       "IMPORT_VALUE": "Importierter Wert",
       "OPERATOR": "Wenn gesetzt, dann wurde der Parameter automatisiert erstellt."
+    }
+  },
+  "VALUE_TYPE": {
+    "STRING": "Text",
+    "NUMBER": "Zahl",
+    "BOOLEAN": "Boolean",
+    "OBJECT": "Objekt",
+    "TOOLTIPS": {
+      "STRING": "Text",
+      "NUMBER": "Zahl",
+      "BOOLEAN": "True/true oder False/false",
+      "OBJECT": "JSON Objekt"
     }
   },
   "VALIDATION": {

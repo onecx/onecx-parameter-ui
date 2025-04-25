@@ -32,7 +32,7 @@
           <div class="mt-1 pr-3 w-12 sm:w-6">
             <span class="p-float-label" controlErrorAnchor>
               <p-dropdown
-                id="pm_detail_form_product_name"
+                id="pam_detail_form_product_name"
                 class="input-field"
                 styleClass="w-full text-responsive"
                 formControlName="productName"
@@ -48,7 +48,7 @@
                 tooltipEvent="hover"
               >
               </p-dropdown>
-              <label class="ocx-required-label" for="pm_detail_form_product_name">
+              <label class="ocx-required-label" for="pam_detail_form_product_name">
                 {{ 'PARAMETER.PRODUCT_NAME' | translate }}</label
               >
             </span>
@@ -56,7 +56,7 @@
           <div class="mt-1 pl-3 w-12 sm:w-6">
             <span class="p-float-label" controlErrorAnchor>
               <p-dropdown
-                id="pm_detail_form_app_id"
+                id="pam_detail_form_app_id"
                 class="input-field"
                 styleClass="w-full text-responsive"
                 formControlName="applicationId"
@@ -71,7 +71,7 @@
                 tooltipEvent="hover"
               >
               </p-dropdown>
-              <label class="ocx-required-label" for="pm_detail_form_app_id">
+              <label class="ocx-required-label" for="pam_detail_form_app_id">
                 {{ 'PARAMETER.APP_NAME' | translate }}</label
               >
             </span>
@@ -84,7 +84,7 @@
               <input
                 pInputText
                 type="text"
-                id="pm_detail_form_name"
+                id="pam_detail_form_name"
                 formControlName="name"
                 class="w-full pt-3 pb-2 text-responsive"
                 [attr.aria-label]="'PARAMETER.NAME' | translate"
@@ -92,7 +92,7 @@
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label class="ocx-required-label" for="pm_detail_form_name">{{ 'PARAMETER.NAME' | translate }}</label>
+              <label class="ocx-required-label" for="pam_detail_form_name">{{ 'PARAMETER.NAME' | translate }}</label>
             </span>
           </div>
         </div>
@@ -103,7 +103,7 @@
               <input
                 pInputText
                 type="text"
-                id="pm_detail_form_display_name"
+                id="pam_detail_form_display_name"
                 formControlName="displayName"
                 class="w-full pt-3 pb-2 text-responsive"
                 [attr.aria-label]="'PARAMETER.DISPLAY_NAME' | translate"
@@ -111,7 +111,7 @@
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label for="pm_detail_form_display_name">{{ 'PARAMETER.DISPLAY_NAME' | translate }}</label>
+              <label for="pam_detail_form_display_name">{{ 'PARAMETER.DISPLAY_NAME' | translate }}</label>
             </span>
           </div>
         </div>
@@ -121,7 +121,7 @@
             <span class="p-float-label" controlErrorAnchor>
               <textarea
                 pInputTextarea
-                id="pm_detail_form_description"
+                id="pam_detail_form_description"
                 formControlName="description"
                 rows="2"
                 autoResize="false"
@@ -131,7 +131,7 @@
                 tooltipEvent="hover"
               >
               </textarea>
-              <label for="pm_detail_form_description">{{ 'PARAMETER.DESCRIPTION' | translate }} </label>
+              <label for="pam_detail_form_description">{{ 'PARAMETER.DESCRIPTION' | translate }} </label>
             </span>
           </div>
         </div>
@@ -144,32 +144,81 @@
       tooltipPosition="top"
       tooltipEvent="hover"
     >
-      <div class="mt-1 relative p-fluid">
-        <p-badge
-          severity="primary"
-          [value]="5000 - parameterValue.value.length"
-          class="z-1 text-badge-right"
-          [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
-          [pTooltip]="'DIALOG.DETAIL.CHARACTERS' | translate"
+      <div class="mb-3 slim-selectbutton search-criteria-selectbutton">
+        <p-selectButton
+          #ValueType
+          inputid="pam_detail_form_value_type_switch"
+          [options]="valueTypeOptions"
+          formControlName="valueType"
+          [attr.aria-label]="'PARAMETER.VALUE.TYPE' | translate"
+          [pTooltip]="'PARAMETER.TOOLTIPS.VALUE.TYPE' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
-        />
+        >
+          <ng-template let-item pTemplate>{{ item.label | translate }}</ng-template>
+        </p-selectButton>
+
+        <ng-container *ngIf="formStatus$ | async as status">
+          <div *ngIf="status === 'INVALID'">invalid</div>
+        </ng-container>
+      </div>
+
+      <div class="relative p-fluid">
+        <p-checkbox
+          *ngIf="ValueType.value === 'BOOLEAN'"
+          type="text"
+          [binary]="true"
+          id="pam_detail_form_value"
+          styleClass="ml-3 cursor-auto shadow-none"
+          formControlName="valueBoolean"
+          [label]="'PARAMETER.VALUE' | translate"
+          [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        ></p-checkbox>
+
         <span class="p-float-label" controlErrorAnchor>
-          <textarea
-            #parameterValue
-            pInputTextarea
-            id="pm_detail_form_value"
-            class="w-full"
+          <input
+            *ngIf="ValueType.value !== 'OBJECT' && ValueType.value !== 'BOOLEAN'"
+            pInputText
+            type="text"
+            id="pam_detail_form_value"
+            class="w-full pt-3 pb-2 text-responsive"
             formControlName="value"
-            jsonColorize
-            [rows]="13"
-            [ariaLabel]="'PARAMETER.VALUE' | translate"
+            [attr.aria-label]="'PARAMETER.VALUE' | translate"
             [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
-          >
-          </textarea>
-          <label for="pm_detail_form_value">{{ 'PARAMETER.VALUE' | translate }}</label>
+          />
+
+          <ng-container *ngIf="ValueType.value === 'OBJECT'">
+            <p-badge
+              severity="primary"
+              [value]="5000 - parameterValue.value.length"
+              class="z-1 text-badge-right"
+              [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
+              [pTooltip]="'DIALOG.DETAIL.CHARACTERS' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <textarea
+              #parameterValue
+              pInputTextarea
+              id="pam_detail_form_value"
+              class="w-full"
+              formControlName="valueObject"
+              jsonColorize
+              [rows]="13"
+              [ariaLabel]="'PARAMETER.VALUE' | translate"
+              [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            >
+            </textarea>
+          </ng-container>
+          <label *ngIf="ValueType.value !== 'BOOLEAN'" for="pam_detail_form_value">
+            {{ 'PARAMETER.VALUE' | translate }}
+          </label>
         </span>
       </div>
     </p-tabPanel>
@@ -196,7 +245,7 @@
           <textarea
             #parameterImportValue
             pInputTextarea
-            id="pm_detail_import_value"
+            id="pam_detail_import_value"
             class="w-full"
             formControlName="importValue"
             jsonColorize
@@ -208,7 +257,7 @@
           >
             {{ parameter?.importValue }}
           </textarea>
-          <label for="pm_detail_import_value">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
+          <label for="pam_detail_import_value">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
         </span>
       </div>
     </p-tabPanel>
@@ -226,10 +275,9 @@
         <!-- row 1 -->
         <div
           class="ml-2 sm:ml-3 mb-1 flex flex-row flex-wrap justify-content-start align-items-center column-gap-7 row-gap-2"
-          [formGroup]="formGroup"
         >
           <p-checkbox
-            inputId="pm_detail_field_operator"
+            inputId="pam_detail_field_operator"
             styleClass="cursor-auto shadow-none"
             [disabled]="true"
             [value]="parameter?.operator"
@@ -248,7 +296,7 @@
             <input
               pInputText
               type="text"
-              id="pm_detail_field_creation_date"
+              id="pam_detail_field_creation_date"
               class="w-full sm:w-15rem pt-3 pb-2 text-responsive"
               [disabled]="true"
               [value]="parameter?.creationDate ? (parameter?.creationDate | date: dateFormat) : ''"
@@ -257,13 +305,13 @@
               tooltipPosition="top"
               tooltipEvent="hover"
             />
-            <label for="pm_detail_field_creation_date">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
+            <label for="pam_detail_field_creation_date">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
           </span>
           <span class="flex-grow-1 p-float-label">
             <input
               pInputText
               type="text"
-              id="pm_detail_field_creation_user"
+              id="pam_detail_field_creation_user"
               class="w-full pt-3 pb-2 text-responsive"
               [disabled]="true"
               [value]="parameter?.creationUser"
@@ -272,7 +320,7 @@
               tooltipPosition="top"
               tooltipEvent="hover"
             />
-            <label for="pm_detail_field_creation_user"> {{ 'INTERNAL.CREATION_USER' | translate }} </label>
+            <label for="pam_detail_field_creation_user"> {{ 'INTERNAL.CREATION_USER' | translate }} </label>
           </span>
         </div>
 
@@ -282,7 +330,7 @@
             <input
               pInputText
               type="text"
-              id="pm_detail_field_modification_date"
+              id="pam_detail_field_modification_date"
               class="w-full sm:w-15rem pt-3 pb-2"
               [disabled]="true"
               [value]="parameter?.modificationDate ? (parameter?.modificationDate | date: dateFormat) : ''"
@@ -291,13 +339,13 @@
               tooltipPosition="top"
               tooltipEvent="hover"
             />
-            <label for="pm_detail_field_modification_date"> {{ 'INTERNAL.MODIFICATION_DATE' | translate }} </label>
+            <label for="pam_detail_field_modification_date"> {{ 'INTERNAL.MODIFICATION_DATE' | translate }} </label>
           </span>
           <span class="flex-grow-1 p-float-label">
             <input
               pInputText
               type="text"
-              id="pm_detail_field_modification_user"
+              id="pam_detail_field_modification_user"
               class="w-full pt-3 pb-2 text-responsive"
               [disabled]="true"
               [value]="parameter?.modificationUser"
@@ -306,7 +354,7 @@
               tooltipPosition="top"
               tooltipEvent="hover"
             />
-            <label for="pm_detail_field_modification_user"> {{ 'INTERNAL.MODIFICATION_USER' | translate }} </label>
+            <label for="pam_detail_field_modification_user"> {{ 'INTERNAL.MODIFICATION_USER' | translate }} </label>
           </span>
         </div>
       </div>
@@ -317,7 +365,7 @@
     <div class="flex flex-wrap justify-content-end gap-2 mb-1">
       <p-button
         *ngIf="exceptionKey || changeMode === 'VIEW'"
-        id="pm_detail_action_close"
+        id="pam_detail_action_close"
         icon="pi pi-times"
         (onClick)="onDialogHide()"
         [label]="'ACTIONS.NAVIGATION.CLOSE' | translate"
@@ -328,7 +376,7 @@
       ></p-button>
       <p-button
         *ngIf="!(exceptionKey || changeMode === 'VIEW')"
-        id="pm_detail_action_cancel"
+        id="pam_detail_action_cancel"
         icon="pi pi-times"
         (onClick)="onDialogHide()"
         [label]="'ACTIONS.CANCEL' | translate"
@@ -339,7 +387,7 @@
       ></p-button>
       <p-button
         *ngIf="!(exceptionKey || changeMode === 'VIEW')"
-        id="pm_detail_action_save"
+        id="pam_detail_action_save"
         icon="pi pi-save"
         (onClick)="onSave()"
         [disabled]="!formGroup.valid"
