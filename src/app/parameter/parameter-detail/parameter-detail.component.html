@@ -138,6 +138,7 @@
       </div>
     </p-tabPanel>
 
+    <!-- VALUE => changeable -->
     <p-tabPanel
       [header]="'DIALOG.DETAIL.TAB.VALUE' | translate"
       [tooltip]="'DIALOG.DETAIL.TAB.TOOLTIPS.VALUE' | translate"
@@ -176,7 +177,7 @@
             tooltipEvent="hover"
           ></p-checkbox>
 
-          <span class="p-float-label" controlErrorAnchor>
+          <span *ngIf="ValueType.value !== 'BOOLEAN'" class="p-float-label">
             <input
               *ngIf="ValueType.value !== 'OBJECT' && ValueType.value !== 'BOOLEAN'"
               pInputText
@@ -193,7 +194,7 @@
             <ng-container *ngIf="ValueType.value === 'OBJECT'">
               <p-badge
                 severity="primary"
-                [value]="5000 - parameterValue.value.length"
+                [value]="5000 - ParameterValue.value.length"
                 class="z-1 text-badge-right"
                 [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
                 [pTooltip]="'DIALOG.DETAIL.CHARACTERS' | translate"
@@ -201,7 +202,7 @@
                 tooltipEvent="hover"
               />
               <textarea
-                #parameterValue
+                #ParameterValue
                 pInputTextarea
                 id="pam_detail_form_value"
                 class="w-full"
@@ -226,7 +227,7 @@
       </ng-container>
     </p-tabPanel>
 
-    <!-- The imported value - in case of viewing only -->
+    <!-- IMPORT VALUE - NOT changeable -->
     <p-tabPanel
       *ngIf="!['COPY', 'CREATE'].includes(changeMode)"
       [header]="'DIALOG.DETAIL.TAB.IMPORT_VALUE' | translate"
@@ -234,38 +235,81 @@
       tooltipPosition="top"
       tooltipEvent="hover"
     >
-      <div class="mt-1 relative p-fluid">
-        <p-badge
-          severity="primary"
-          [value]="5000 - parameterImportValue.value.length"
-          class="z-1 text-badge-right"
-          [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
-          [pTooltip]="'DIALOG.DETAIL.CHARACTERS' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        />
-        <span class="p-float-label">
-          <textarea
-            #parameterImportValue
-            pInputTextarea
-            id="pam_detail_import_value"
-            class="w-full"
-            formControlName="importValue"
-            jsonColorize
-            [rows]="13"
-            [ariaLabel]="'PARAMETER.IMPORT_VALUE' | translate"
-            [pTooltip]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
+      <div class="mb-3 flex flex-row flex-wrap justify-content-center align-items-center gap-3">
+        <div class="">{{ 'PARAMETER.VALUE.TYPE' | translate }}</div>
+        <div class="slim-selectbutton search-criteria-selectbutton">
+          <p-selectButton
+            #ImportValueType
+            inputid="pam_detail_form_import_value_type_switch"
+            [options]="valueTypeOptions"
+            formControlName="importValueType"
+            [attr.aria-label]="'PARAMETER.VALUE.TYPE' | translate"
+            [pTooltip]="'PARAMETER.TOOLTIPS.VALUE.TYPE' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           >
-            {{ parameter?.importValue }}
-          </textarea>
-          <label for="pam_detail_import_value">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
+            <ng-template let-item pTemplate>{{ item.label | translate }}</ng-template>
+          </p-selectButton>
+        </div>
+      </div>
+      <div class="relative p-fluid">
+        <p-checkbox
+          *ngIf="ImportValueType.value === 'BOOLEAN'"
+          type="text"
+          [binary]="true"
+          id="pam_detail_form_import_value"
+          styleClass="ml-3 cursor-auto shadow-none"
+          formControlName="importValueBoolean"
+          [label]="'PARAMETER.IMPORT_VALUE' | translate"
+          [pTooltip]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        ></p-checkbox>
+
+        <span *ngIf="ImportValueType.value !== 'BOOLEAN'" class="p-float-label">
+          <input
+            *ngIf="ImportValueType.value !== 'OBJECT' && ImportValueType.value !== 'BOOLEAN'"
+            pInputText
+            type="text"
+            id="pam_detail_form_import_value"
+            class="w-full pt-3 pb-2 text-responsive"
+            formControlName="importValue"
+            [attr.aria-label]="'PARAMETER.IMPORT_VALUE' | translate"
+            [pTooltip]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          />
+          <ng-container *ngIf="ImportValueType.value === 'OBJECT'">
+            <p-badge
+              severity="primary"
+              [value]="5000 - ParameterImportValue.value.length"
+              class="z-1 text-badge-right"
+              [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
+              [pTooltip]="'DIALOG.DETAIL.CHARACTERS' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <textarea
+              #ParameterImportValue
+              pInputTextarea
+              id="pam_detail_form_import_value"
+              class="w-full"
+              formControlName="importValue"
+              jsonColorize
+              [rows]="13"
+              [ariaLabel]="'PARAMETER.IMPORT_VALUE' | translate"
+              [pTooltip]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            >
+            </textarea>
+          </ng-container>
+          <label for="pam_detail_form_import_value">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
         </span>
       </div>
     </p-tabPanel>
 
-    <!-- The internals - in case of an existing item only -->
+    <!-- INTERNALS - in case of an existing item only -->
     <p-tabPanel
       *ngIf="!['COPY', 'CREATE'].includes(changeMode)"
       [header]="'INTERNAL.HEADER' | translate"

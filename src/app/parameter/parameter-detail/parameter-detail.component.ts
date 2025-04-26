@@ -19,7 +19,6 @@ import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
 import { ChangeMode, ExtendedProduct } from '../parameter-search/parameter-search.component'
 
 type ErrorMessageType = { summaryKey: string; detailKey?: string }
-export type ExtendedSelectItem = SelectItem & { title_key: string }
 
 // trim the value (string!) of a form control before passes to the control
 const original = DefaultValueAccessor.prototype.registerOnChange
@@ -104,12 +103,11 @@ export class ParameterDetailComponent implements OnChanges {
   public formGroup: FormGroup
   public productOptions: SelectItem[] = []
   public appOptions: SelectItem[] = []
-  // value
-  public valueTypeOptions: ExtendedSelectItem[] = [
-    { label: 'VALUE_TYPE.BOOLEAN', title_key: 'VALUE_TYPE.TOOLTIPS.BOOLEAN', value: 'BOOLEAN' },
-    { label: 'VALUE_TYPE.NUMBER', title_key: 'VALUE_TYPE.TOOLTIPS.NUMBER', value: 'NUMBER' },
-    { label: 'VALUE_TYPE.STRING', title_key: 'VALUE_TYPE.TOOLTIPS.STRING', value: 'STRING' },
-    { label: 'VALUE_TYPE.OBJECT', title_key: 'VALUE_TYPE.TOOLTIPS.OBJECT', value: 'OBJECT' }
+  public valueTypeOptions: SelectItem[] = [
+    { label: 'VALUE_TYPE.BOOLEAN', value: 'BOOLEAN' },
+    { label: 'VALUE_TYPE.NUMBER', value: 'NUMBER' },
+    { label: 'VALUE_TYPE.STRING', value: 'STRING' },
+    { label: 'VALUE_TYPE.OBJECT', value: 'OBJECT' }
   ]
 
   constructor(
@@ -125,14 +123,16 @@ export class ParameterDetailComponent implements OnChanges {
       name: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
       displayName: new FormControl(null, [Validators.maxLength(255)]),
       description: new FormControl(null, [Validators.maxLength(255)]),
-      importValue: new FormControl(null, [Validators.maxLength(5000)]),
+      importValue: new FormControl(null),
+      importValueBoolean: new FormControl(false),
+      importValueType: new FormControl(null),
       valueBoolean: new FormControl(false),
-      //valueType: new FormControl(null),
       valueObject: new FormControl(null, {
         validators: Validators.compose([JsonValidator(), Validators.maxLength(5000)]),
         updateOn: 'change'
       })
     }
+    // add extra validators with specific update event
     this.formGroup.addControl(
       'value',
       new FormControl(null, {
@@ -158,8 +158,8 @@ export class ParameterDetailComponent implements OnChanges {
     if ('CREATE' === this.changeMode && this.parameter?.id) return
     if (['EDIT', 'VIEW'].includes(this.changeMode)) {
       if (!this.parameter?.id) return
-      else this.getData(this.parameter?.id)
-    } else this.prepareForm(this.parameter)
+      else this.getData(this.parameter.id)
+    } else this.prepareForm(this.parameter) // CREATE, COPY
     // update dropdown lists
     this.productOptions = this.allProducts.map((p) => ({ label: p.displayName, value: p.name }))
   }
@@ -181,10 +181,14 @@ export class ParameterDetailComponent implements OnChanges {
     if (data) {
       this.onChangeProductName(data?.productName)
       this.formGroup.patchValue(data)
-      // manage specifics
+      // manage specifics for value
       this.formGroup.controls['valueType'].setValue((typeof data.value).toUpperCase())
       if (typeof data.value === 'boolean') this.formGroup.controls['valueBoolean'].setValue(data.value)
       if (typeof data.value === 'object') this.formGroup.controls['valueObject'].setValue(data.value)
+      // manage specifics for imported value
+      this.formGroup.controls['importValueType'].setValue((typeof data.importValue).toUpperCase())
+      if (typeof data.importValue === 'boolean')
+        this.formGroup.controls['importValueBoolean'].setValue(data.importValue)
     }
 
     switch (this.changeMode) {
@@ -201,6 +205,8 @@ export class ParameterDetailComponent implements OnChanges {
         this.formGroup.controls['applicationId'].disable()
         this.formGroup.controls['name'].disable()
         this.formGroup.controls['importValue'].disable()
+        this.formGroup.controls['importValueType'].disable()
+        this.formGroup.controls['importValueBoolean'].disable()
         this.formGroup.controls['valueType'].disable()
         break
       case 'VIEW':
