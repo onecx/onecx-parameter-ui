@@ -230,16 +230,10 @@
     }
   },
   "VALUE_TYPE": {
-    "STRING": "Text",
-    "NUMBER": "Zahl",
     "BOOLEAN": "Boolean",
+    "NUMBER": "Zahl",
     "OBJECT": "Objekt",
-    "TOOLTIPS": {
-      "STRING": "Text",
-      "NUMBER": "Zahl",
-      "BOOLEAN": "True/true oder False/false",
-      "OBJECT": "JSON Objekt"
-    }
+    "STRING": "Text"
   },
   "VALIDATION": {
     "ERRORS": {

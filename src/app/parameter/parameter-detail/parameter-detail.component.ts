@@ -29,42 +29,56 @@ DefaultValueAccessor.prototype.registerOnChange = function (fn) {
   })
 }
 
+// used only to kick the value field validation
+export function TypeValidator(): ValidatorFn {
+  return (control: AbstractControl): any | null => {
+    if (!control.parent || !control || !control.value) return null
+
+    let valueControl: AbstractControl | null
+    if (['BOOLEAN'].includes(control.value)) {
+      valueControl = control.parent.get('valueObject')
+      valueControl?.disable()
+      valueControl = control.parent.get('value')
+      valueControl?.disable()
+    }
+    if (['NUMBER', 'STRING'].includes(control.value)) {
+      valueControl = control.parent.get('valueObject')
+      valueControl?.disable()
+      valueControl = control.parent.get('value')
+      valueControl?.enable()
+      valueControl?.updateValueAndValidity() // force value & form validation
+    }
+    if (['OBJECT'].includes(control.value)) {
+      valueControl = control.parent.get('valueObject')
+      valueControl?.enable()
+      valueControl?.updateValueAndValidity() // force value & form validation
+      valueControl = control.parent.get('value')
+      valueControl!.disable()
+    }
+    return null
+  }
+}
+
 // used to validate the value against type NUMBER
 export function ValueValidator(): ValidatorFn {
   return (control: AbstractControl): any | null => {
     if (!control.parent || !control || !control.value) return null
-    const val = control.value as any
-    if (val === undefined || val === null) return null
 
     // get the selected parameter type from form
     const typeControl = control.parent.get('valueType')
     if (!typeControl || !typeControl?.value) return null
 
     let isValid = true
-    if (typeControl.value === 'NUMBER') {
-      const flo: any = val * 0.123456
-      isValid = !Number.isNaN(parseFloat(flo))
-    }
-    return isValid ? null : { pattern: true }
-  }
-}
-
-// used only to validate the value against types [NUMBER | STRING]
-export function TypeValidator(): ValidatorFn {
-  return (control: AbstractControl): any | null => {
-    if (!control.parent || !control || !control.value) return null
-    const type = control?.value
-
-    let isValid = true
-    // get the parameter value from form
-    const valControl = control.parent.get('value')
-    if (!valControl || !valControl.value || valControl.value === null) return null
-    valControl.updateValueAndValidity() // force value validation
-    if (type === 'NUMBER') {
-      const val = valControl?.value
-      if (val === undefined || val === null) return null
-      const flo: any = val * 0.123456
-      isValid = !Number.isNaN(parseFloat(flo))
+    if (['NUMBER', 'STRING'].includes(typeControl.value)) {
+      const val = control.value as any
+      if (val === undefined || val === null) {
+        // form is invalid because missing value but...
+        return null // field is ok
+      }
+      if (['NUMBER'].includes(typeControl.value)) {
+        const flo: any = val * 0.123456
+        isValid = !Number.isNaN(parseFloat(flo))
+      }
     }
     return isValid ? null : { pattern: true }
   }
@@ -97,10 +111,11 @@ export class ParameterDetailComponent implements OnChanges {
 
   public loading = false
   public exceptionKey: string | undefined = undefined
-  public valueStatus$: Observable<FormControlStatus> = of()
-
   // form
   public formGroup: FormGroup
+  public valueStatus$: Observable<FormControlStatus> = of()
+  public valueObjectStatus$: Observable<FormControlStatus> = of()
+  // value lists
   public productOptions: SelectItem[] = []
   public appOptions: SelectItem[] = []
   public valueTypeOptions: SelectItem[] = [
@@ -124,40 +139,33 @@ export class ParameterDetailComponent implements OnChanges {
       displayName: new FormControl(null, [Validators.maxLength(255)]),
       description: new FormControl(null, [Validators.maxLength(255)]),
       importValue: new FormControl(null),
-      importValueType: new FormControl(null),
+      importValueType: new FormControl(this.valueTypeOptions[2]),
       importValueBoolean: new FormControl(false),
       valueBoolean: new FormControl(false)
     }
     // add extra validators with specific update event - do it separately!
+    // default update strategy is 'changes' => updateOn: 'change'
     this.formGroup.addControl(
       'value',
       new FormControl(null, {
-        validators: Validators.compose([ValueValidator(), Validators.maxLength(5000)]),
-        updateOn: 'change'
+        validators: Validators.compose([ValueValidator(), Validators.required, Validators.maxLength(5000)])
       })
     )
     this.formGroup.addControl(
       'valueObject',
       new FormControl(null, {
-        validators: Validators.compose([JsonValidator(), Validators.maxLength(5000)]),
-        updateOn: 'change'
+        validators: Validators.compose([JsonValidator(), Validators.required, Validators.maxLength(5000)])
       })
     )
     this.formGroup.addControl(
       'valueType',
-      new FormControl(this.valueTypeOptions[2], {
-        validators: Validators.compose([TypeValidator()]),
-        updateOn: 'change'
-      })
+      new FormControl(this.valueTypeOptions[2], { validators: Validators.compose([TypeValidator()]) })
     )
-    // be informed about invalid content in value field (e.g. type is number and value is 'abc')
-    const v = this.formGroup.get('value')
-    if (v) this.valueStatus$ = v.statusChanges.pipe(map((s) => s))
-  }
-
-  // TODO
-  public onChangeValue(ev: Event) {
-    console.log('onChangeValue', ev)
+    // be informed about invalid content in value fields
+    const vField = this.formGroup.get('value')
+    if (vField) this.valueStatus$ = vField.statusChanges.pipe(map((s) => s))
+    const voField = this.formGroup.get('valueObject')
+    if (voField) this.valueObjectStatus$ = voField.statusChanges.pipe(map((s) => s))
   }
 
   public ngOnChanges() {
@@ -174,21 +182,23 @@ export class ParameterDetailComponent implements OnChanges {
   }
 
   private prepareForm(data?: Parameter): void {
-    console.log('prepareForm => ' + this.changeMode, data)
     if (data) {
       this.onChangeProductName(data?.productName)
       this.formGroup.patchValue(data)
-      // manage specifics for value
-      this.formGroup.controls['valueType'].setValue((typeof data.value).toUpperCase())
-      if (typeof data.value === 'boolean') this.formGroup.controls['valueBoolean'].setValue(data.value)
-      if (typeof data.value === 'object')
-        this.formGroup.controls['valueObject'].setValue(JSON.stringify(data.value, undefined, 2))
 
+      // manage specifics for value
+      let type = typeof data.value
+      this.formGroup.controls['valueType'].setValue(type.toUpperCase())
+      if (type === 'boolean') this.formGroup.controls['valueBoolean'].setValue(data.value)
+      if (type === 'object') {
+        this.formGroup.controls['valueObject'].setValue(JSON.stringify(data.value, undefined, 2))
+        this.formGroup.controls['value'].setValue(null) // reset!
+      }
       // manage specifics for imported value
-      this.formGroup.controls['importValueType'].setValue((typeof data.importValue).toUpperCase())
-      if (typeof data.importValue === 'boolean')
-        this.formGroup.controls['importValueBoolean'].setValue(data.importValue)
-      if (typeof data.importValue === 'object')
+      type = typeof data.importValue
+      this.formGroup.controls['importValueType'].setValue(type.toUpperCase())
+      if (type === 'boolean') this.formGroup.controls['importValueBoolean'].setValue(data.importValue)
+      if (type === 'object')
         this.formGroup.controls['importValue'].setValue(JSON.stringify(data.importValue, undefined, 2))
     }
 
@@ -200,11 +210,6 @@ export class ParameterDetailComponent implements OnChanges {
         this.formGroup.reset()
         this.formGroup.enable()
         this.formGroup.controls['valueType'].patchValue(this.valueTypeOptions[2].value)
-        this.formGroup.controls['valueType'].markAsTouched({ onlySelf: true })
-        this.formGroup.controls['valueType'].updateValueAndValidity() // force value validation
-        //this.valueStatus$ = this.formGroup.statusChanges.pipe(map((s) => s))
-        this.formGroup.controls['value'].markAsTouched({ onlySelf: true })
-        this.formGroup.controls['value'].updateValueAndValidity() // force value validation
         break
       case 'EDIT':
         this.formGroup.enable()

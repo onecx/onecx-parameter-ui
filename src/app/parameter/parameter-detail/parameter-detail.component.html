@@ -144,88 +144,90 @@
       [tooltip]="'DIALOG.DETAIL.TAB.TOOLTIPS.VALUE' | translate"
       tooltipPosition="top"
       tooltipEvent="hover"
+      *ngIf="{
+        value: valueStatus$ | async,
+        valueObject: valueObjectStatus$ | async
+      } as validationStatus"
     >
-      <ng-container *ngIf="valueStatus$ | async as valueStatus">
-        <div class="mb-3 flex flex-row flex-wrap justify-content-center align-items-center gap-3">
-          <div class="">{{ 'PARAMETER.VALUE.TYPE' | translate }}</div>
-          <div class="slim-selectbutton search-criteria-selectbutton">
-            <p-selectButton
-              #ValueType
-              inputid="pam_detail_form_value_type_switch"
-              [options]="valueTypeOptions"
-              formControlName="valueType"
-              [attr.aria-label]="'henry'"
-              [pTooltip]="'PARAMETER.TOOLTIPS.VALUE.TYPE' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            >
-              <ng-template let-item pTemplate>{{ item.label | translate }}</ng-template>
-            </p-selectButton>
-          </div>
+      <div class="mb-3 flex flex-row flex-wrap justify-content-center align-items-center gap-3">
+        <div class="">{{ 'PARAMETER.VALUE.TYPE' | translate }}</div>
+        <div class="slim-selectbutton search-criteria-selectbutton">
+          <p-selectButton
+            #ValueType
+            inputid="pam_detail_form_value_type_switch"
+            [options]="valueTypeOptions"
+            formControlName="valueType"
+            [attr.aria-label]="'henry'"
+            [pTooltip]="'PARAMETER.TOOLTIPS.VALUE.TYPE' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
+            <ng-template let-item pTemplate>{{ item.label | translate }}</ng-template>
+          </p-selectButton>
         </div>
-        <div class="relative p-fluid">
-          <p-checkbox
-            *ngIf="ValueType.value === 'BOOLEAN'"
+      </div>
+      <div class="relative p-fluid">
+        <p-checkbox
+          *ngIf="ValueType.value === 'BOOLEAN'"
+          type="text"
+          [binary]="true"
+          id="pam_detail_form_value"
+          styleClass="ml-3 cursor-auto shadow-none"
+          formControlName="valueBoolean"
+          [label]="'PARAMETER.VALUE' | translate"
+          [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        ></p-checkbox>
+
+        <span *ngIf="ValueType.value !== 'BOOLEAN'" class="p-float-label">
+          <input
+            *ngIf="ValueType.value !== 'OBJECT'; else objectTemplate"
+            pInputText
             type="text"
-            [binary]="true"
             id="pam_detail_form_value"
-            styleClass="ml-3 cursor-auto shadow-none"
-            formControlName="valueBoolean"
-            [label]="'PARAMETER.VALUE' | translate"
+            class="mb-1 w-full pt-3 pb-2 text-responsive"
+            formControlName="value"
+            [attr.aria-label]="'PARAMETER.VALUE' | translate"
             [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
-          ></p-checkbox>
-
-          <span *ngIf="ValueType.value !== 'BOOLEAN'" class="p-float-label">
-            <input
-              *ngIf="ValueType.value !== 'OBJECT'; else objectTemplate"
-              pInputText
-              type="text"
-              id="pam_detail_form_value"
-              class="w-full pt-3 pb-2 text-responsive"
-              formControlName="value"
-              [attr.aria-label]="'PARAMETER.VALUE' | translate"
-              [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
+          />
+          <ng-template #objectTemplate>
+            <p-badge
+              severity="primary"
+              [value]="5000 - ParameterValueObject.value.length"
+              class="z-1 text-badge-right"
+              [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
+              [pTooltip]="'DIALOG.DETAIL.CHARACTERS' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
             />
-            <ng-template #objectTemplate>
-              <p-badge
-                severity="primary"
-                [value]="5000 - ParameterValueObject.value.length"
-                class="z-1 text-badge-right"
-                [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
-                [pTooltip]="'DIALOG.DETAIL.CHARACTERS' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              />
-              <textarea
-                #ParameterValueObject
-                pInputTextarea
-                id="pam_detail_form_value"
-                class="w-full"
-                formControlName="valueObject"
-                [rows]="5"
-                [ariaLabel]="'PARAMETER.VALUE' | translate"
-                [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              >
-              <!---
-              {{ parameter?.value }}
-              -->
-              </textarea>
-            </ng-template>
-            <label *ngIf="ValueType.value !== 'BOOLEAN'" for="pam_detail_form_value">
-              {{ 'PARAMETER.VALUE' | translate }}
-            </label>
-          </span>
-          <label *ngIf="valueStatus === 'INVALID'" class="mt-1 block control-error">
-            {{ 'VALIDATION.ERRORS.PATTERN_ERROR' | translate }}
+            <textarea
+              #ParameterValueObject
+              pInputTextarea
+              id="pam_detail_form_value"
+              class="w-full"
+              formControlName="valueObject"
+              [rows]="5"
+              [ariaLabel]="'PARAMETER.VALUE' | translate"
+              [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            >
+            </textarea>
+          </ng-template>
+          <label *ngIf="ValueType.value !== 'BOOLEAN'" class="ocx-required-label" for="pam_detail_form_value">
+            {{ 'PARAMETER.VALUE' | translate }}
           </label>
-        </div>
-      </ng-container>
+        </span>
+        <label
+          *ngIf="validationStatus.value === 'INVALID' || validationStatus.valueObject === 'INVALID'"
+          class="block control-error"
+        >
+          {{ 'VALIDATION.ERRORS.PATTERN_ERROR' | translate }}
+        </label>
+      </div>
     </p-tabPanel>
 
     <!-- IMPORT VALUE - NOT changeable -->
