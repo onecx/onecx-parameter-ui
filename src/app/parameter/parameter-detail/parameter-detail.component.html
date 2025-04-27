@@ -145,7 +145,7 @@
       tooltipPosition="top"
       tooltipEvent="hover"
     >
-      <ng-container *ngIf="formStatus$ | async as formStatus">
+      <ng-container *ngIf="valueStatus$ | async as valueStatus">
         <div class="mb-3 flex flex-row flex-wrap justify-content-center align-items-center gap-3">
           <div class="">{{ 'PARAMETER.VALUE.TYPE' | translate }}</div>
           <div class="slim-selectbutton search-criteria-selectbutton">
@@ -154,7 +154,7 @@
               inputid="pam_detail_form_value_type_switch"
               [options]="valueTypeOptions"
               formControlName="valueType"
-              [attr.aria-label]="'PARAMETER.VALUE.TYPE' | translate"
+              [attr.aria-label]="'henry'"
               [pTooltip]="'PARAMETER.TOOLTIPS.VALUE.TYPE' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -179,7 +179,7 @@
 
           <span *ngIf="ValueType.value !== 'BOOLEAN'" class="p-float-label">
             <input
-              *ngIf="ValueType.value !== 'OBJECT' && ValueType.value !== 'BOOLEAN'"
+              *ngIf="ValueType.value !== 'OBJECT'; else objectTemplate"
               pInputText
               type="text"
               id="pam_detail_form_value"
@@ -190,11 +190,10 @@
               tooltipPosition="top"
               tooltipEvent="hover"
             />
-
-            <ng-container *ngIf="ValueType.value === 'OBJECT'">
+            <ng-template #objectTemplate>
               <p-badge
                 severity="primary"
-                [value]="5000 - ParameterValue.value.length"
+                [value]="5000 - ParameterValueObject.value.length"
                 class="z-1 text-badge-right"
                 [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
                 [pTooltip]="'DIALOG.DETAIL.CHARACTERS' | translate"
@@ -202,25 +201,27 @@
                 tooltipEvent="hover"
               />
               <textarea
-                #ParameterValue
+                #ParameterValueObject
                 pInputTextarea
                 id="pam_detail_form_value"
                 class="w-full"
                 formControlName="valueObject"
-                jsonColorize
-                [rows]="13"
+                [rows]="5"
                 [ariaLabel]="'PARAMETER.VALUE' | translate"
                 [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
+              <!---
+              {{ parameter?.value }}
+              -->
               </textarea>
-            </ng-container>
+            </ng-template>
             <label *ngIf="ValueType.value !== 'BOOLEAN'" for="pam_detail_form_value">
               {{ 'PARAMETER.VALUE' | translate }}
             </label>
           </span>
-          <label *ngIf="formStatus === 'INVALID'" class="mt-1 block control-error">
+          <label *ngIf="valueStatus === 'INVALID'" class="mt-1 block control-error">
             {{ 'VALIDATION.ERRORS.PATTERN_ERROR' | translate }}
           </label>
         </div>
@@ -268,7 +269,7 @@
 
         <span *ngIf="ImportValueType.value !== 'BOOLEAN'" class="p-float-label">
           <input
-            *ngIf="ImportValueType.value !== 'OBJECT' && ImportValueType.value !== 'BOOLEAN'"
+            *ngIf="ImportValueType.value !== 'OBJECT'; else objectTemplate"
             pInputText
             type="text"
             id="pam_detail_form_import_value"
@@ -279,10 +280,10 @@
             tooltipPosition="top"
             tooltipEvent="hover"
           />
-          <ng-container *ngIf="ImportValueType.value === 'OBJECT'">
+          <ng-template #objectTemplate>
             <p-badge
               severity="primary"
-              [value]="5000 - ParameterImportValue.value.length"
+              [value]="5000 - ParameterImportValueObject.value.length"
               class="z-1 text-badge-right"
               [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
               [pTooltip]="'DIALOG.DETAIL.CHARACTERS' | translate"
@@ -290,20 +291,19 @@
               tooltipEvent="hover"
             />
             <textarea
-              #ParameterImportValue
+              #ParameterImportValueObject
               pInputTextarea
               id="pam_detail_form_import_value"
               class="w-full"
               formControlName="importValue"
-              jsonColorize
-              [rows]="13"
+              [rows]="5"
               [ariaLabel]="'PARAMETER.IMPORT_VALUE' | translate"
               [pTooltip]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
             >
             </textarea>
-          </ng-container>
+          </ng-template>
           <label for="pam_detail_form_import_value">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
         </span>
       </div>

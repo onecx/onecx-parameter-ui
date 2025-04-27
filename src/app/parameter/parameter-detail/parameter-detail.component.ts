@@ -9,12 +9,12 @@ import {
   ValidatorFn
 } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
-import { finalize, map, Observable } from 'rxjs'
+import { finalize, map, Observable, of } from 'rxjs'
 import { SelectItem } from 'primeng/api'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
 
-import { Parameter, ParametersAPIService } from 'src/app/shared/generated'
+import { Parameter, ParametersAPIService, ParameterCreate, ParameterUpdate } from 'src/app/shared/generated'
 import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
 import { ChangeMode, ExtendedProduct } from '../parameter-search/parameter-search.component'
 
@@ -97,7 +97,7 @@ export class ParameterDetailComponent implements OnChanges {
 
   public loading = false
   public exceptionKey: string | undefined = undefined
-  public formStatus$: Observable<FormControlStatus>
+  public valueStatus$: Observable<FormControlStatus> = of()
 
   // form
   public formGroup: FormGroup
@@ -124,31 +124,40 @@ export class ParameterDetailComponent implements OnChanges {
       displayName: new FormControl(null, [Validators.maxLength(255)]),
       description: new FormControl(null, [Validators.maxLength(255)]),
       importValue: new FormControl(null),
-      importValueBoolean: new FormControl(false),
       importValueType: new FormControl(null),
-      valueBoolean: new FormControl(false),
-      valueObject: new FormControl(null, {
-        validators: Validators.compose([JsonValidator(), Validators.maxLength(5000)]),
-        updateOn: 'change'
-      })
+      importValueBoolean: new FormControl(false),
+      valueBoolean: new FormControl(false)
     }
-    // add extra validators with specific update event
+    // add extra validators with specific update event - do it separately!
     this.formGroup.addControl(
       'value',
       new FormControl(null, {
-        validators: Validators.compose([ValueValidator()]),
-        updateOn: 'blur'
+        validators: Validators.compose([ValueValidator(), Validators.maxLength(5000)]),
+        updateOn: 'change'
       })
     )
-    // this.formGroup.controls['valueType'].setValidators(Validators.compose([TypeValidator()]))
+    this.formGroup.addControl(
+      'valueObject',
+      new FormControl(null, {
+        validators: Validators.compose([JsonValidator(), Validators.maxLength(5000)]),
+        updateOn: 'change'
+      })
+    )
     this.formGroup.addControl(
       'valueType',
-      new FormControl(null, {
+      new FormControl(this.valueTypeOptions[2], {
         validators: Validators.compose([TypeValidator()]),
         updateOn: 'change'
       })
     )
-    this.formStatus$ = this.formGroup.statusChanges.pipe(map((s) => s))
+    // be informed about invalid content in value field (e.g. type is number and value is 'abc')
+    const v = this.formGroup.get('value')
+    if (v) this.valueStatus$ = v.statusChanges.pipe(map((s) => s))
+  }
+
+  // TODO
+  public onChangeValue(ev: Event) {
+    console.log('onChangeValue', ev)
   }
 
   public ngOnChanges() {
@@ -164,31 +173,23 @@ export class ParameterDetailComponent implements OnChanges {
     this.productOptions = this.allProducts.map((p) => ({ label: p.displayName, value: p.name }))
   }
 
-  // check value maatches the selected type
-  public onValueTypeChange(val: any): void {
-    if (['COPY', 'CREATE'].includes(this.changeMode)) {
-      let t = 'STRING'
-      if (val === undefined || val === null) t = 'STRING'
-      if (val === true || val === false) t = 'BOOLEAN'
-      if (Number.isFinite(val)) t = 'NUMBER'
-      if (typeof val === 'object') t = 'OBJECT'
-      console.log('detectValueType', val, typeof val, t)
-      if (this.formGroup.controls['valueType'].value !== t) this.formGroup.valid
-    }
-  }
-
   private prepareForm(data?: Parameter): void {
+    console.log('prepareForm => ' + this.changeMode, data)
     if (data) {
       this.onChangeProductName(data?.productName)
       this.formGroup.patchValue(data)
       // manage specifics for value
       this.formGroup.controls['valueType'].setValue((typeof data.value).toUpperCase())
       if (typeof data.value === 'boolean') this.formGroup.controls['valueBoolean'].setValue(data.value)
-      if (typeof data.value === 'object') this.formGroup.controls['valueObject'].setValue(data.value)
+      if (typeof data.value === 'object')
+        this.formGroup.controls['valueObject'].setValue(JSON.stringify(data.value, undefined, 2))
+
       // manage specifics for imported value
       this.formGroup.controls['importValueType'].setValue((typeof data.importValue).toUpperCase())
       if (typeof data.importValue === 'boolean')
         this.formGroup.controls['importValueBoolean'].setValue(data.importValue)
+      if (typeof data.importValue === 'object')
+        this.formGroup.controls['importValue'].setValue(JSON.stringify(data.importValue, undefined, 2))
     }
 
     switch (this.changeMode) {
@@ -198,6 +199,12 @@ export class ParameterDetailComponent implements OnChanges {
       case 'CREATE':
         this.formGroup.reset()
         this.formGroup.enable()
+        this.formGroup.controls['valueType'].patchValue(this.valueTypeOptions[2].value)
+        this.formGroup.controls['valueType'].markAsTouched({ onlySelf: true })
+        this.formGroup.controls['valueType'].updateValueAndValidity() // force value validation
+        //this.valueStatus$ = this.formGroup.statusChanges.pipe(map((s) => s))
+        this.formGroup.controls['value'].markAsTouched({ onlySelf: true })
+        this.formGroup.controls['value'].updateValueAndValidity() // force value validation
         break
       case 'EDIT':
         this.formGroup.enable()
@@ -267,8 +274,15 @@ export class ParameterDetailComponent implements OnChanges {
    */
   public onSave(): void {
     if (this.formGroup.valid) {
+      // prepare parameter value from special form fields
       if (this.changeMode === 'EDIT' && this.parameter?.id) {
-        this.parameterApi.updateParameter({ id: this.parameter?.id, parameterUpdate: this.formGroup.value }).subscribe({
+        const param: ParameterUpdate = {
+          modificationCount: this.parameter.modificationCount,
+          displayName: this.formGroup.controls['displayName'].value,
+          description: this.formGroup.controls['description'].value,
+          value: this.getValue(['valueType', 'value', 'valueBoolean', 'valueObject'])
+        }
+        this.parameterApi.updateParameter({ id: this.parameter?.id, parameterUpdate: param }).subscribe({
           next: () => {
             this.msgService.success({ summaryKey: 'ACTIONS.EDIT.MESSAGE.OK' })
             this.onDialogHide(true)
@@ -280,7 +294,15 @@ export class ParameterDetailComponent implements OnChanges {
         })
       }
       if (['COPY', 'CREATE'].includes(this.changeMode)) {
-        this.parameterApi.createParameter({ parameterCreate: this.formGroup.value }).subscribe({
+        const param: ParameterCreate = {
+          name: this.formGroup.controls['name'].value,
+          displayName: this.formGroup.controls['displayName'].value,
+          description: this.formGroup.controls['description'].value,
+          productName: this.formGroup.controls['productName'].value,
+          applicationId: this.formGroup.controls['applicationId'].value,
+          value: this.getValue(['valueType', 'value', 'valueBoolean', 'valueObject'])
+        }
+        this.parameterApi.createParameter({ parameterCreate: param }).subscribe({
           next: () => {
             this.msgService.success({ summaryKey: 'ACTIONS.CREATE.MESSAGE.OK' })
             this.onDialogHide(true)
@@ -292,6 +314,21 @@ export class ParameterDetailComponent implements OnChanges {
         })
       }
     }
+  }
+
+  private getValue(field: string[]): any {
+    let val: any
+    switch (this.formGroup.controls[field[0]].value) {
+      case 'BOOLEAN':
+        val = this.formGroup.controls[field[2]].value
+        break
+      case 'OBJECT':
+        val = this.formGroup.controls[field[3]].value ? JSON.parse(this.formGroup.controls[field[3]].value) : undefined
+        break
+      default:
+        val = this.formGroup.controls[field[1]].value
+    }
+    return val
   }
 
   private createErrorMessage(err: any) {
