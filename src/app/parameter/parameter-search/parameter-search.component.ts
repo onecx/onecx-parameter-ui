@@ -433,23 +433,25 @@ export class ParameterSearchComponent implements OnInit {
   }
 
   public displayValueType(val: any): string {
+    if (val === undefined || val === null) return 'UNKNOWN'
     return (typeof val).toUpperCase()
   }
   public displayValue(val: any): string {
+    if (!val) return ''
     return typeof val !== 'object' ? val : '{ ... }'
   }
-  public compare_deeply(val1: any, val2: any): boolean {
+  public compareDeeply(val1: any, val2: any): boolean | undefined {
+    if (!val1 || !val2) return undefined
     if (typeof val1 === typeof val2 && ['boolean', 'number', 'string'].includes(typeof val1)) return val1 === val2
-    if (typeof val1 === typeof val2 && ['object'].includes(typeof val1)) return this.compareJson(val1, val2)
-    return false
-  }
-  private compareJson(obj1: any, obj2: any): boolean {
-    const commonKeys = [...new Set([...Object.keys(obj1), ...Object.keys(obj2)])]
-    for (const key of commonKeys) {
-      if (obj1[key] !== obj2[key]) {
-        return false
+    if (typeof val1 === typeof val2 && ['object'].includes(typeof val1)) {
+      const commonKeys = [...new Set([...Object.keys(val1), ...Object.keys(val2)])]
+      for (const key of commonKeys) {
+        if (val1[key] !== val2[key]) {
+          return false
+        }
       }
+      return true
     }
-    return true
+    return undefined
   }
 }

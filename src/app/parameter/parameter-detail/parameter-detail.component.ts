@@ -34,7 +34,7 @@ DefaultValueAccessor.prototype.registerOnChange = function (fn) {
 // used only to kick the value field validation
 export function TypeValidator(): ValidatorFn {
   return (control: AbstractControl): any | null => {
-    if (!control.parent || !control || !control.value) return null
+    if (!control.parent || !control.value) return null
 
     let valueControl: AbstractControl | null
     if (['BOOLEAN'].includes(control.value)) {
@@ -64,11 +64,11 @@ export function TypeValidator(): ValidatorFn {
 // used to validate the value against type NUMBER
 export function ValueValidator(): ValidatorFn {
   return (control: AbstractControl): any | null => {
-    if (!control.parent || !control || !control.value) return null
+    if (!control.parent || !control.value) return null
 
     // get the selected parameter type from form
     const typeControl = control.parent.get('valueType')
-    if (!typeControl || !typeControl?.value) return null
+    if (!typeControl?.value) return null
 
     let isValid = true
     if (['NUMBER', 'STRING'].includes(typeControl.value)) {
@@ -88,8 +88,10 @@ export function ValueValidator(): ValidatorFn {
 
 export function JsonValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
+    if (!control.value) return null
+
     let isValid = true
-    const value = control.value as string
+    const value = control.value
     if (value && value !== '' && value !== '{}') {
       const pattern = /:\s*(["{].*["}])\s*[,}]/
       isValid = pattern.test(value)

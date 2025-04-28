@@ -239,7 +239,8 @@
     "BOOLEAN": "Boolean",
     "NUMBER": "Zahl",
     "OBJECT": "Objekt",
-    "STRING": "Text"
+    "STRING": "Text",
+    "UNKNOWN": "Unbekannt"
   },
   "VALIDATION": {
     "ERRORS": {

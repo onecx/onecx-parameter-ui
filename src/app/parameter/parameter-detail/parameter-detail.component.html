@@ -224,6 +224,7 @@
         <label
           *ngIf="validationStatus.value === 'INVALID' || validationStatus.valueObject === 'INVALID'"
           class="block control-error"
+          for="pam_detail_form_value"
         >
           {{ 'VALIDATION.ERRORS.PATTERN_ERROR' | translate }}
         </label>
