@@ -33,37 +33,39 @@ DefaultValueAccessor.prototype.registerOnChange = function (fn) {
 
 // used only to kick the value field validation
 export function TypeValidator(): ValidatorFn {
-  return (control: AbstractControl): any | null => {
-    if (!control.parent || !control.value) return null
-
+  return (control: AbstractControl): any => {
+    let isValid = false // sonar hack ;-)
     let valueControl: AbstractControl | null
-    if (['BOOLEAN'].includes(control.value)) {
-      valueControl = control.parent.get('valueObject')
-      valueControl?.disable()
-      valueControl = control.parent.get('value')
-      valueControl?.disable()
+    if (control.parent && control.value) {
+      if (['BOOLEAN'].includes(control.value)) {
+        valueControl = control.parent.get('valueObject')
+        valueControl?.disable()
+        valueControl = control.parent.get('value')
+        valueControl?.disable()
+      }
+      if (['NUMBER', 'STRING'].includes(control.value)) {
+        valueControl = control.parent.get('valueObject')
+        valueControl?.disable()
+        valueControl = control.parent.get('value')
+        valueControl?.enable()
+        valueControl?.updateValueAndValidity() // force value & form validation
+      }
+      if (['OBJECT'].includes(control.value)) {
+        valueControl = control.parent.get('valueObject')
+        valueControl?.enable()
+        valueControl?.updateValueAndValidity() // force value & form validation
+        valueControl = control.parent.get('value')
+        valueControl?.disable()
+      }
+      isValid = true
     }
-    if (['NUMBER', 'STRING'].includes(control.value)) {
-      valueControl = control.parent.get('valueObject')
-      valueControl?.disable()
-      valueControl = control.parent.get('value')
-      valueControl?.enable()
-      valueControl?.updateValueAndValidity() // force value & form validation
-    }
-    if (['OBJECT'].includes(control.value)) {
-      valueControl = control.parent.get('valueObject')
-      valueControl?.enable()
-      valueControl?.updateValueAndValidity() // force value & form validation
-      valueControl = control.parent.get('value')
-      valueControl?.disable()
-    }
-    return null
+    return isValid
   }
 }
 
 // used to validate the value against type NUMBER
 export function ValueValidator(): ValidatorFn {
-  return (control: AbstractControl): any | null => {
+  return (control: AbstractControl): any => {
     if (!control.parent || !control.value) return null
 
     // get the selected parameter type from form
@@ -186,6 +188,7 @@ export class ParameterDetailComponent implements OnChanges {
   }
 
   private prepareForm(data?: Parameter): void {
+    this.formGroup.reset()
     if (data) {
       this.onChangeProductName(data?.productName)
       this.formGroup.patchValue(data)
@@ -362,7 +365,7 @@ export class ParameterDetailComponent implements OnChanges {
       for (const i in form.controls) {
         form.controls[i].markAsTouched()
         form.controls[i].updateValueAndValidity()
-        if (form.controls[i].errors) console.log('control: ', form.controls[i].value, form.controls[i].errors)
+        if (form.controls[i].errors) console.info('control: ', form.controls[i].value, form.controls[i].errors)
       }
     }
   }
