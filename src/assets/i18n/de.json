@@ -207,25 +207,39 @@
     "PRODUCT_NAME": "Applikation",
     "APP_ID": "App",
     "APP_NAME": "App",
+    "PRODUCT_APP": "App",
     "NAME": "Name",
     "COMBINED_NAME": "Name",
     "DISPLAY_NAME": "Anzeigename",
     "VALUE": "Wert",
+    "VALUE.TYPE": "Typ",
     "IMPORT_VALUE": "Importwert",
     "DESCRIPTION": "Beschreibung",
     "OPERATOR": "Auto",
+    "EQUAL": "Gleich?",
     "TOOLTIPS": {
       "PRODUCT_NAME": "Applikation, für die der Parameter angelegt ist",
       "APP_ID": "App ID (Service), für die der Parameter angelegt ist",
       "APP_NAME": "App (Service), für die der Parameter angelegt ist",
+      "PRODUCT_APP": "Applikation und App (Service), für die der Parameter angelegt ist",
       "NAME": "Name des Parameters",
       "COMBINED_NAME": "Anzeigename oder Name des Parameters",
       "DISPLAY_NAME": "Anzeigename des Parameters",
       "DESCRIPTION": "Detaillierte Beschreibung des Parameters",
       "VALUE": "Wert des Parameters",
+      "VALUE.TYPE": "Der Typ des Parameterwertes",
       "IMPORT_VALUE": "Importierter Wert",
-      "OPERATOR": "Wenn gesetzt, dann wurde der Parameter automatisiert erstellt."
+      "OPERATOR": "Wenn gesetzt, dann wurde der Parameter automatisiert erstellt.",
+      "EQUAL": "Vergleich von Wert und importiertem Wert.",
+      "EQUAL.TRUE": "Wert und importierter Wert sind gleich",
+      "EQUAL.FALSE": "Wert und importierter Wert sind ungleich"
     }
+  },
+  "VALUE_TYPE": {
+    "BOOLEAN": "Boolean",
+    "NUMBER": "Zahl",
+    "OBJECT": "Objekt",
+    "STRING": "Text"
   },
   "VALIDATION": {
     "ERRORS": {

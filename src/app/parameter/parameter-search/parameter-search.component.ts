@@ -20,6 +20,7 @@ type ExtendedColumn = Column & {
   isValue?: boolean
   frozen?: boolean
   css?: string
+  sort?: boolean
 }
 export type ExtendedProduct = {
   name: string
@@ -91,30 +92,40 @@ export class ParameterSearchComponent implements OnInit {
     {
       field: 'name',
       header: 'COMBINED_NAME',
-      active: true,
       translationPrefix: 'PARAMETER',
+      active: true,
       frozen: true,
+      sort: true,
       css: 'word-break-all'
     },
     {
       field: 'value',
       header: 'VALUE',
-      active: true,
       translationPrefix: 'PARAMETER',
+      active: true,
       isValue: true,
       css: 'text-center'
     },
     {
-      field: 'productDisplayName',
-      header: 'PRODUCT_NAME',
+      field: 'valueType',
+      header: 'VALUE.TYPE',
+      translationPrefix: 'PARAMETER',
       active: true,
-      translationPrefix: 'PARAMETER'
+      css: 'text-center'
     },
     {
-      field: 'applicationName',
-      header: 'APP_NAME',
+      field: 'equal',
+      header: 'EQUAL',
+      translationPrefix: 'PARAMETER',
       active: true,
-      translationPrefix: 'PARAMETER'
+      css: 'text-center'
+    },
+    {
+      field: 'applicationId',
+      header: 'PRODUCT_APP',
+      translationPrefix: 'PARAMETER',
+      active: true,
+      sort: true
     },
     {
       field: 'operator',
@@ -127,8 +138,9 @@ export class ParameterSearchComponent implements OnInit {
     {
       field: 'modificationDate',
       header: 'MODIFICATION_DATE',
-      active: true,
       translationPrefix: 'INTERNAL',
+      active: true,
+      sort: true,
       isDate: true
     }
   ]
@@ -249,6 +261,12 @@ export class ParameterSearchComponent implements OnInit {
     // if service is not running or product data are not yet available
     if (aP.length === 0) aP = uP
     return { allProducts: aP, usedProducts: [...uP] } // meta data
+  }
+
+  private sortByDisplayName(a: any, b: any): number {
+    return (a.displayName ? a.displayName.toUpperCase() : '').localeCompare(
+      b.displayName ? b.displayName.toUpperCase() : ''
+    )
   }
 
   /****************************************************************************
@@ -396,12 +414,9 @@ export class ParameterSearchComponent implements OnInit {
     this.dataTable?.filterGlobal(event, 'contains')
   }
 
-  private sortByDisplayName(a: any, b: any): number {
-    return (a.displayName ? a.displayName.toUpperCase() : '').localeCompare(
-      b.displayName ? b.displayName.toUpperCase() : ''
-    )
-  }
-
+  /****************************************************************************
+   *  UI Helper
+   */
   // getting display names within HTML
   public getProductDisplayName(name: string | undefined, allProducts: ExtendedProduct[]): string | undefined {
     return allProducts.find((item) => item.name === name)?.displayName ?? name
@@ -415,5 +430,26 @@ export class ParameterSearchComponent implements OnInit {
       allProducts.find((item) => item.name === productName)?.applications?.find((a) => a.appId === appId)?.appName ??
       appId
     )
+  }
+
+  public displayValueType(val: any): string {
+    return (typeof val).toUpperCase()
+  }
+  public displayValue(val: any): string {
+    return typeof val !== 'object' ? val : '{ ... }'
+  }
+  public compare_deeply(val1: any, val2: any): boolean {
+    if (typeof val1 === typeof val2 && ['boolean', 'number', 'string'].includes(typeof val1)) return val1 === val2
+    if (typeof val1 === typeof val2 && ['object'].includes(typeof val1)) return this.compareJson(val1, val2)
+    return false
+  }
+  private compareJson(obj1: any, obj2: any): boolean {
+    const commonKeys = [...new Set([...Object.keys(obj1), ...Object.keys(obj2)])]
+    for (const key of commonKeys) {
+      if (obj1[key] !== obj2[key]) {
+        return false
+      }
+    }
+    return true
   }
 }

@@ -21,7 +21,7 @@
     <ocx-page-content>
       <p-message
         *ngIf="exceptionKey || exceptionKeyMeta"
-        id="pm_search_message_error"
+        id="pam_search_message_error"
         severity="error"
         styleClass="m-3"
         [text]="exceptionKey ? (exceptionKey | translate) : (exceptionKeyMeta ?? '' | translate)"
@@ -30,7 +30,7 @@
       <ng-container *ngIf="data$ | async as data">
         <p-message
           *ngIf="loading"
-          id="pm_usage_message_loading"
+          id="pam_usage_message_loading"
           severity="info"
           styleClass="m-3"
           [text]="'ACTIONS.LOADING' | translate"
@@ -38,7 +38,7 @@
         <p-table
           *ngIf="!(loading || exceptionKey)"
           #dataTable
-          id="pm_usage_table"
+          id="pam_usage_table"
           styleClass="mx-3 mb-2"
           [value]="data"
           [columns]="filteredColumns"
@@ -69,18 +69,18 @@
 
           <ng-template pTemplate="emptymessage">
             <tr>
-              <td id="pm_usage_table_emptymessage" colspan="16">{{ 'ACTIONS.SEARCH.NO_DATA' | translate }}</td>
+              <td id="pam_usage_table_emptymessage" colspan="16">{{ 'ACTIONS.SEARCH.NO_DATA' | translate }}</td>
             </tr>
           </ng-template>
 
           <ng-template pTemplate="header" let-columns>
             <tr>
-              <th pFrozenColumn id="pm_usage_table_header_actions" class="text-center white-space-nowrap">
+              <th pFrozenColumn id="pam_usage_table_header_actions" class="text-center white-space-nowrap">
                 {{ 'ACTIONS.LABEL' | translate }}
               </th>
               <th
                 *ngFor="let col of columns"
-                [id]="'pm_usage_table_header_col_' + col.field"
+                [id]="'pam_usage_table_header_col_' + col.field"
                 class="white-space-nowrap"
                 [class]="col.css"
                 [ngClass]="{ 'border-right-1': col.frozen }"
@@ -109,7 +109,7 @@
                     type="button"
                     *ocxIfPermission="'PARAMETER#VIEW'"
                     class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-                    [id]="'pm_search_table_row_' + i + '_action_view'"
+                    [id]="'pam_search_table_row_' + i + '_action_view'"
                     (click)="onDetail('VIEW', rowData, $event)"
                     [disabled]="!rowData.parameterId"
                     [attr.aria-label]="'ACTIONS.VIEW.LABEL' | translate"
@@ -124,7 +124,7 @@
                   pbutton
                   type="button"
                   *ocxIfPermission="'PARAMETER#EDIT'"
-                  [id]="'pm_search_table_row_' + i + '_action_edit'"
+                  [id]="'pam_search_table_row_' + i + '_action_edit'"
                   class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
                   (click)="onDetail('EDIT', rowData, $event)"
                   [disabled]="!rowData.parameterId"
@@ -139,7 +139,7 @@
                   pbutton
                   type="button"
                   *ocxIfPermission="'USAGE#VIEW'"
-                  [id]="'pm_search_table_row_' + i + '_action_usage'"
+                  [id]="'pam_search_table_row_' + i + '_action_usage'"
                   class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
                   (click)="onUsage($event, rowData)"
                   [attr.aria-label]="'DIALOG.NAVIGATION.DETAIL_USAGE.LABEL' | translate"
@@ -152,7 +152,7 @@
               </td>
               <td
                 *ngFor="let col of columns"
-                [id]="'pm_usage_table_row_' + i + '_' + col.field"
+                [id]="'pam_usage_table_row_' + i + '_' + col.field"
                 [class]="col.css"
                 [ngClass]="{ 'border-right-1': col.frozen }"
                 pFrozenColumn

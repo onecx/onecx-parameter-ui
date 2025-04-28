@@ -21,8 +21,10 @@ const parameter: Parameter = {
   applicationId: 'app1',
   name: 'name',
   displayName: 'displayName',
+  description: 'description',
   value: 'value'
 }
+
 const app1: ApplicationAbstract = { appId: 'app1-svc', appName: 'OneCX app svc 1' }
 const app2: ApplicationAbstract = { appId: 'app2-svc', appName: 'OneCX app svc 2' }
 const allProducts: ExtendedProduct[] = [
@@ -50,10 +52,19 @@ describe('ParameterDetailComponent', () => {
   }
   const formGroup = new FormGroup({
     name: new FormControl('name'),
-    value: new FormControl('value'),
     productName: new FormControl('prod name'),
+    applicationId: new FormControl('app'),
     displayName: new FormControl('display name'),
-    applicationId: new FormControl('app')
+    description: new FormControl('description'),
+    // value
+    value: new FormControl('value'),
+    valueType: new FormControl('valueType'),
+    valueBoolean: new FormControl('valueBoolean'),
+    valueObject: new FormControl('valueObject'),
+    // import value
+    importValue: new FormControl('importValue'),
+    importValueType: new FormControl('importValueType'),
+    importValueBoolean: new FormControl('importValueBoolean')
   })
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
 
@@ -263,11 +274,16 @@ describe('ParameterDetailComponent', () => {
       it('should create a parameter', () => {
         apiServiceSpy.createParameter.and.returnValue(of({}))
         component.changeMode = 'CREATE'
+        component.parameter = { ...parameter, id: undefined }
+        component.formGroup = formGroup // TODO
         spyOn(component.hideDialogAndChanged, 'emit')
-        component.formGroup = formGroup
+
+        component.ngOnChanges()
+        component.formGroup.get('value')?.updateValueAndValidity() // force value & form validation
 
         component.onSave()
 
+        expect(component.formGroup.valid).toBeTrue()
         expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.MESSAGE.OK' })
         expect(component.hideDialogAndChanged.emit).toHaveBeenCalledWith(true)
       })
@@ -275,10 +291,17 @@ describe('ParameterDetailComponent', () => {
       it('should display error if creation fails', () => {
         const errorResponse = { status: 400, statusText: 'Could not create ...' }
         apiServiceSpy.createParameter.and.returnValue(throwError(() => errorResponse))
-        spyOn(console, 'error')
         component.changeMode = 'CREATE'
-        component.formGroup = formGroup
+        component.parameter = { ...parameter, id: undefined }
+        component.formGroup = formGroup // TODO
+        spyOn(console, 'error')
 
+        component.ngOnChanges()
+        if (!component.formGroup.valid) {
+          component.validateForm(component.formGroup)
+        }
+
+        component.formGroup.get('value')?.updateValueAndValidity() // force value & form validation
         component.onSave()
 
         expect(component.formGroup.valid).toBeTrue()
@@ -291,8 +314,9 @@ describe('ParameterDetailComponent', () => {
       it('should create a parameter based on another', () => {
         apiServiceSpy.createParameter.and.returnValue(of({}))
         component.changeMode = 'COPY'
+        component.parameter = parameter
+        component.formGroup = formGroup // TODO
         spyOn(component.hideDialogAndChanged, 'emit')
-        component.formGroup = formGroup
 
         component.onSave()
 
