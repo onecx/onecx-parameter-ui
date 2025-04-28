@@ -230,7 +230,7 @@
       "VALUE.TYPE": "Der Typ des Parameterwertes",
       "IMPORT_VALUE": "Importierter Wert",
       "OPERATOR": "Wenn gesetzt, dann wurde der Parameter automatisiert erstellt.",
-      "EQUAL": "Vergleich von Wert und importiertem Wert.",
+      "EQUAL": "Vergleich von Wert und importiertem Wert",
       "EQUAL.TRUE": "Wert und importierter Wert sind gleich",
       "EQUAL.FALSE": "Wert und importierter Wert sind ungleich"
     }

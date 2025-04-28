@@ -2,7 +2,6 @@ import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
-import { FormControl, FormGroup } from '@angular/forms'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 import { SelectItem } from 'primeng/api'
@@ -50,22 +49,6 @@ describe('ParameterDetailComponent', () => {
     createParameter: jasmine.createSpy('createParameter').and.returnValue(of({})),
     updateParameter: jasmine.createSpy('updateParameter').and.returnValue(of({}))
   }
-  const formGroup = new FormGroup({
-    name: new FormControl('name'),
-    productName: new FormControl('prod name'),
-    applicationId: new FormControl('app'),
-    displayName: new FormControl('display name'),
-    description: new FormControl('description'),
-    // value
-    value: new FormControl('value'),
-    valueType: new FormControl('valueType'),
-    valueBoolean: new FormControl('valueBoolean'),
-    valueObject: new FormControl('valueObject'),
-    // import value
-    importValue: new FormControl('importValue'),
-    importValueType: new FormControl('importValueType'),
-    importValueBoolean: new FormControl('importValueBoolean')
-  })
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
 
   beforeEach(waitForAsync(() => {
@@ -192,7 +175,7 @@ describe('ParameterDetailComponent', () => {
       it('should prepare editing a parameter - successful', () => {
         apiServiceSpy.getParameterById.and.returnValue(of(parameter))
         component.changeMode = 'EDIT'
-        component.parameter = parameter
+        component.parameter = { ...parameter }
 
         component.ngOnChanges()
 
@@ -215,7 +198,7 @@ describe('ParameterDetailComponent', () => {
         const errorResponse = { status: 404, statusText: 'Not Found' }
         apiServiceSpy.getParameterById.and.returnValue(throwError(() => errorResponse))
         component.changeMode = 'EDIT'
-        component.parameter = parameter
+        component.parameter = { ...parameter }
         spyOn(console, 'error')
 
         component.ngOnChanges()
@@ -229,7 +212,7 @@ describe('ParameterDetailComponent', () => {
     describe('CREATE', () => {
       it('should prepare copying a parameter - start with data from other parameter', () => {
         component.changeMode = 'CREATE'
-        component.parameter = parameter // will be rejected due to filled
+        component.parameter = { ...parameter } // will be rejected due to filled
 
         component.ngOnChanges()
 
@@ -258,7 +241,7 @@ describe('ParameterDetailComponent', () => {
     describe('COPY', () => {
       it('should prepare copying a parameter - use data from other parameter', () => {
         component.changeMode = 'COPY'
-        component.parameter = parameter
+        component.parameter = { ...parameter }
 
         component.ngOnChanges()
 
@@ -275,15 +258,12 @@ describe('ParameterDetailComponent', () => {
         apiServiceSpy.createParameter.and.returnValue(of({}))
         component.changeMode = 'CREATE'
         component.parameter = { ...parameter, id: undefined }
-        component.formGroup = formGroup // TODO
         spyOn(component.hideDialogAndChanged, 'emit')
 
         component.ngOnChanges()
-        component.formGroup.get('value')?.updateValueAndValidity() // force value & form validation
-
+        expect(component.formGroup.valid).toBeTrue()
         component.onSave()
 
-        expect(component.formGroup.valid).toBeTrue()
         expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.MESSAGE.OK' })
         expect(component.hideDialogAndChanged.emit).toHaveBeenCalledWith(true)
       })
@@ -293,18 +273,12 @@ describe('ParameterDetailComponent', () => {
         apiServiceSpy.createParameter.and.returnValue(throwError(() => errorResponse))
         component.changeMode = 'CREATE'
         component.parameter = { ...parameter, id: undefined }
-        component.formGroup = formGroup // TODO
         spyOn(console, 'error')
 
         component.ngOnChanges()
-        if (!component.formGroup.valid) {
-          component.validateForm(component.formGroup)
-        }
-
-        component.formGroup.get('value')?.updateValueAndValidity() // force value & form validation
+        expect(component.formGroup.valid).toBeTrue()
         component.onSave()
 
-        expect(component.formGroup.valid).toBeTrue()
         expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.MESSAGE.NOK' })
         expect(console.error).toHaveBeenCalledWith('createParameter', errorResponse)
       })
@@ -314,10 +288,11 @@ describe('ParameterDetailComponent', () => {
       it('should create a parameter based on another', () => {
         apiServiceSpy.createParameter.and.returnValue(of({}))
         component.changeMode = 'COPY'
-        component.parameter = parameter
-        component.formGroup = formGroup // TODO
+        component.parameter = { ...parameter }
         spyOn(component.hideDialogAndChanged, 'emit')
 
+        component.ngOnChanges()
+        expect(component.formGroup.valid).toBeTrue()
         component.onSave()
 
         expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.MESSAGE.OK' })
@@ -326,11 +301,16 @@ describe('ParameterDetailComponent', () => {
     })
 
     describe('EDIT', () => {
-      it('should update a parameter - successful', () => {
-        apiServiceSpy.updateParameter.and.returnValue(of({}))
+      beforeEach(() => {
+        apiServiceSpy.getParameterById.and.returnValue(of(parameter))
         component.changeMode = 'EDIT'
         component.parameter = parameter
-        component.formGroup = formGroup
+        component.ngOnChanges()
+        expect(component.formGroup.valid).toBeTrue()
+      })
+
+      it('should update a parameter - successful', () => {
+        apiServiceSpy.updateParameter.and.returnValue(of({}))
         spyOn(component.hideDialogAndChanged, 'emit')
 
         component.onSave()
@@ -343,9 +323,6 @@ describe('ParameterDetailComponent', () => {
         const errorResponse = { status: 400, statusText: 'Could not update ...' }
         apiServiceSpy.updateParameter.and.returnValue(throwError(() => errorResponse))
         spyOn(console, 'error')
-        component.changeMode = 'EDIT'
-        component.parameter = parameter
-        component.formGroup = formGroup
 
         component.onSave()
 
@@ -361,9 +338,6 @@ describe('ParameterDetailComponent', () => {
         }
         apiServiceSpy.updateParameter.and.returnValue(throwError(() => errorResponse))
         spyOn(console, 'error')
-        component.changeMode = 'EDIT'
-        component.parameter = parameter
-        component.formGroup = formGroup
 
         component.onSave()
 
@@ -375,6 +349,7 @@ describe('ParameterDetailComponent', () => {
       })
 
       it('should display error if update fails due to unique constraint violation', () => {
+        apiServiceSpy.getParameterById.and.returnValue(of(parameter))
         const errorResponse = {
           status: 400,
           statusText: 'Could not update ...',
@@ -382,9 +357,6 @@ describe('ParameterDetailComponent', () => {
         }
         apiServiceSpy.updateParameter.and.returnValue(throwError(() => errorResponse))
         spyOn(console, 'error')
-        component.changeMode = 'EDIT'
-        component.parameter = parameter
-        component.formGroup = formGroup
 
         component.onSave()
 

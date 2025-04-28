@@ -191,21 +191,20 @@ export class ParameterDetailComponent implements OnChanges {
     this.formGroup.reset()
     if (data) {
       this.onChangeProductName(data?.productName)
-      this.formGroup.patchValue(data)
+      this.formGroup.patchValue(data) // fill what exist
 
-      // manage specifics for value
-      let type = typeof data.value
+      // manage specifics for value field
+      let type = data.value ? typeof data.value : 'string'
       this.formGroup.controls['valueType'].setValue(type.toUpperCase())
       if (type === 'boolean') this.formGroup.controls['valueBoolean'].setValue(data.value)
-      if (type === 'object') {
+      if (type === 'object' && data.value) {
         this.formGroup.controls['valueObject'].setValue(JSON.stringify(data.value, undefined, 2))
-        this.formGroup.controls['value'].setValue(null) // reset!
       }
-      // manage specifics for imported value
-      type = typeof data.importValue
+      // manage specifics for imported value field
+      type = data.importValue ? typeof data.importValue : 'string'
       this.formGroup.controls['importValueType'].setValue(type.toUpperCase())
       if (type === 'boolean') this.formGroup.controls['importValueBoolean'].setValue(data.importValue)
-      if (type === 'object')
+      if (type === 'object' && data.importValue)
         this.formGroup.controls['importValue'].setValue(JSON.stringify(data.importValue, undefined, 2))
     }
 
@@ -214,7 +213,6 @@ export class ParameterDetailComponent implements OnChanges {
         this.formGroup.enable()
         break
       case 'CREATE':
-        this.formGroup.reset()
         this.formGroup.enable()
         this.formGroup.controls['valueType'].patchValue(this.valueTypeOptions[2].value)
         break
