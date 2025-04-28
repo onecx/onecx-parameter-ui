@@ -437,6 +437,7 @@ export class ParameterSearchComponent implements OnInit {
     return (typeof val).toUpperCase()
   }
   public displayValue(val: any): string {
+    if (typeof val === 'boolean') return '' + val
     if (!val) return ''
     return typeof val !== 'object' ? val : '{ ... }'
   }

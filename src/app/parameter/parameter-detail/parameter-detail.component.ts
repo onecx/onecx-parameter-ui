@@ -33,7 +33,7 @@ DefaultValueAccessor.prototype.registerOnChange = function (fn) {
 
 // used only to kick the value field validation
 export function TypeValidator(): ValidatorFn {
-  return (control: AbstractControl): any | null => {
+  return (control: AbstractControl): any => {
     if (!control.parent || !control.value) return null
 
     let valueControl: AbstractControl | null
@@ -63,7 +63,7 @@ export function TypeValidator(): ValidatorFn {
 
 // used to validate the value against type NUMBER
 export function ValueValidator(): ValidatorFn {
-  return (control: AbstractControl): any | null => {
+  return (control: AbstractControl): any => {
     if (!control.parent || !control.value) return null
 
     // get the selected parameter type from form
@@ -186,6 +186,7 @@ export class ParameterDetailComponent implements OnChanges {
   }
 
   private prepareForm(data?: Parameter): void {
+    this.formGroup.reset()
     if (data) {
       this.onChangeProductName(data?.productName)
       this.formGroup.patchValue(data)
@@ -362,7 +363,7 @@ export class ParameterDetailComponent implements OnChanges {
       for (const i in form.controls) {
         form.controls[i].markAsTouched()
         form.controls[i].updateValueAndValidity()
-        if (form.controls[i].errors) console.log('control: ', form.controls[i].value, form.controls[i].errors)
+        if (form.controls[i].errors) console.info('control: ', form.controls[i].value, form.controls[i].errors)
       }
     }
   }
