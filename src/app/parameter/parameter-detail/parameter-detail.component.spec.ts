@@ -24,30 +24,6 @@ const parameter: Parameter = {
   description: 'description',
   value: 'value'
 }
-const parameterBoolean: Parameter = {
-  modificationCount: 0,
-  id: 'id',
-  productName: 'prod1',
-  applicationId: 'app1',
-  name: 'name',
-  value: true
-}
-const parameterNumber: Parameter = {
-  modificationCount: 0,
-  id: 'id',
-  productName: 'prod1',
-  applicationId: 'app1',
-  name: 'name',
-  value: 123
-}
-const parameterObject: Parameter = {
-  modificationCount: 0,
-  id: 'id',
-  productName: 'prod1',
-  applicationId: 'app1',
-  name: 'name',
-  value: { hallo: 'test' }
-}
 
 const app1: ApplicationAbstract = { appId: 'app1-svc', appName: 'OneCX app svc 1' }
 const app2: ApplicationAbstract = { appId: 'app2-svc', appName: 'OneCX app svc 2' }
