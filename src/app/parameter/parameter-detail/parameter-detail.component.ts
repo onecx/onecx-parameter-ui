@@ -34,30 +34,32 @@ DefaultValueAccessor.prototype.registerOnChange = function (fn) {
 // used only to kick the value field validation
 export function TypeValidator(): ValidatorFn {
   return (control: AbstractControl): any => {
-    if (!control.parent || !control.value) return null
-
+    let isValid = false // sonar hack ;-)
     let valueControl: AbstractControl | null
-    if (['BOOLEAN'].includes(control.value)) {
-      valueControl = control.parent.get('valueObject')
-      valueControl?.disable()
-      valueControl = control.parent.get('value')
-      valueControl?.disable()
+    if (control.parent && control.value) {
+      if (['BOOLEAN'].includes(control.value)) {
+        valueControl = control.parent.get('valueObject')
+        valueControl?.disable()
+        valueControl = control.parent.get('value')
+        valueControl?.disable()
+      }
+      if (['NUMBER', 'STRING'].includes(control.value)) {
+        valueControl = control.parent.get('valueObject')
+        valueControl?.disable()
+        valueControl = control.parent.get('value')
+        valueControl?.enable()
+        valueControl?.updateValueAndValidity() // force value & form validation
+      }
+      if (['OBJECT'].includes(control.value)) {
+        valueControl = control.parent.get('valueObject')
+        valueControl?.enable()
+        valueControl?.updateValueAndValidity() // force value & form validation
+        valueControl = control.parent.get('value')
+        valueControl?.disable()
+      }
+      isValid = true
     }
-    if (['NUMBER', 'STRING'].includes(control.value)) {
-      valueControl = control.parent.get('valueObject')
-      valueControl?.disable()
-      valueControl = control.parent.get('value')
-      valueControl?.enable()
-      valueControl?.updateValueAndValidity() // force value & form validation
-    }
-    if (['OBJECT'].includes(control.value)) {
-      valueControl = control.parent.get('valueObject')
-      valueControl?.enable()
-      valueControl?.updateValueAndValidity() // force value & form validation
-      valueControl = control.parent.get('value')
-      valueControl?.disable()
-    }
-    return null
+    return isValid
   }
 }
 
