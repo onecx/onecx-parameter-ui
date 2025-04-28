@@ -92,7 +92,7 @@
                 tooltipEvent="hover"
               >
                 <span>{{ col.translationPrefix + '.' + col.header | translate }}</span>
-                <p-sortIcon [field]="col.field"></p-sortIcon>
+                <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
                 <p-columnFilter *ngIf="col.hasFilter" type="text" [field]="col.field" display="menu"></p-columnFilter>
               </th>
             </tr>
@@ -194,9 +194,22 @@
                 >
                   {{ rowData['displayName'] ?? rowData['name'] }}
                 </div>
-                <div *ngIf="col.field === 'type'">
-                  {{ displayValueType(rowData['value'] ?? rowData['importValue']) }}
-                </div>
+                <ng-container *ngIf="col.field === 'valueType'">
+                  {{ 'VALUE_TYPE.' + displayValueType(rowData['value'] ?? rowData['importValue']) | translate }}
+                </ng-container>
+                <span
+                  *ngIf="col.field === 'equal'"
+                  class="text-lg"
+                  [ngClass]="
+                    compare_deeply(rowData['value'], rowData['importValue'])
+                      ? 'pi pi-equals'
+                      : 'pi pi-exclamation-circle danger-action-text'
+                  "
+                  [attr.aria-label]="'PARAMETER.TOOLTIPS.EQUAL.FALSE' | translate"
+                  [pTooltip]="'PARAMETER.TOOLTIPS.EQUAL.FALSE' | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                ></span>
                 <div
                   *ngIf="col.field === 'value'"
                   class="text-ellipsis-2-lines max-w-20rem word-break-all"
@@ -206,10 +219,9 @@
                 >
                   {{ displayValue(rowData['value'] ?? rowData['importValue']) }}
                 </div>
-                <ng-container *ngIf="col.field === 'productDisplayName'">
+                <ng-container *ngIf="col.field === 'applicationId'">
                   {{ getProductDisplayName(rowData['productName'], metaData.allProducts) }}
-                </ng-container>
-                <ng-container *ngIf="col.field === 'applicationName'">
+                  <br />
                   {{ getAppDisplayName(rowData['productName'], rowData['applicationId'], metaData.allProducts) }}
                 </ng-container>
                 <ng-container *ngIf="col.isBoolean">

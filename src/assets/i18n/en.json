@@ -207,6 +207,7 @@
     "PRODUCT_NAME": "Application",
     "APP_ID": "App",
     "APP_NAME": "App",
+    "PRODUCT_APP": "App",
     "NAME": "Name",
     "COMBINED_NAME": "Name",
     "DISPLAY_NAME": "Display Name",
@@ -215,10 +216,12 @@
     "IMPORT_VALUE": "Import Value",
     "DESCRIPTION": "Description",
     "OPERATOR": "Auto",
+    "EQUAL": "Equal?",
     "TOOLTIPS": {
       "PRODUCT_NAME": "Application for which the Parameter is created",
       "APP_ID": "App identifier for which the Parameter is created",
-      "APP_NAME": "App identifier for which the Parameter is created",
+      "APP_NAME": "App (service) for which the Parameter is created",
+      "PRODUCT_APP": "Application and App (service) for which the Parameter is created",
       "NAME": "Name of the Parameter",
       "COMBINED_NAME": "Business Name or Name of the Parameter",
       "DISPLAY_NAME": "Business Name of the Parameter",
@@ -226,7 +229,10 @@
       "VALUE": "Value of the Parameter",
       "VALUE.TYPE": "Type of Parameter value",
       "IMPORT_VALUE": "Imported value",
-      "OPERATOR": "If set, the Workspace was created by automation."
+      "OPERATOR": "If set, the Workspace was created by automation.",
+      "EQUAL": "Comparison of value and imported value.",
+      "EQUAL.TRUE": "Value and imported value are equal",
+      "EQUAL.FALSE": "Value and imported value are not equal"
     }
   },
   "VALUE_TYPE": {
