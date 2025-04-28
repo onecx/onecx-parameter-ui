@@ -6,7 +6,8 @@ import {
   FormGroup,
   FormControlStatus,
   Validators,
-  ValidatorFn
+  ValidatorFn,
+  ValidationErrors
 } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 import { finalize, map, Observable, of } from 'rxjs'
@@ -15,6 +16,7 @@ import { SelectItem } from 'primeng/api'
 import { PortalMessageService } from '@onecx/portal-integration-angular'
 
 import { Parameter, ParametersAPIService, ParameterCreate, ParameterUpdate } from 'src/app/shared/generated'
+
 import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
 import { ChangeMode, ExtendedProduct } from '../parameter-search/parameter-search.component'
 
@@ -53,7 +55,7 @@ export function TypeValidator(): ValidatorFn {
       valueControl?.enable()
       valueControl?.updateValueAndValidity() // force value & form validation
       valueControl = control.parent.get('value')
-      valueControl!.disable()
+      valueControl?.disable()
     }
     return null
   }
@@ -213,13 +215,14 @@ export class ParameterDetailComponent implements OnChanges {
         break
       case 'EDIT':
         this.formGroup.enable()
+        // exclude fields from change and validation
         this.formGroup.controls['productName'].disable()
         this.formGroup.controls['applicationId'].disable()
         this.formGroup.controls['name'].disable()
+        this.formGroup.controls['valueType'].disable()
         this.formGroup.controls['importValue'].disable()
         this.formGroup.controls['importValueType'].disable()
         this.formGroup.controls['importValueBoolean'].disable()
-        this.formGroup.controls['valueType'].disable()
         break
       case 'VIEW':
         this.formGroup.disable()
@@ -347,5 +350,33 @@ export class ParameterDetailComponent implements OnChanges {
             : err.error.errorCode
       }
     this.msgService.error(errMsg)
+  }
+
+  public validateForm(form: FormGroup) {
+    if (!form.valid) {
+      /* if you are using angular 8 or above, you can just do form.markAllAsTouched() which will touch 
+           all the fields without having to loop through all the fields and mark it as touched.
+        */
+      for (const i in form.controls) {
+        form.controls[i].markAsTouched()
+        form.controls[i].updateValueAndValidity()
+        if (form.controls[i].errors) console.log('control: ', form.controls[i].value, form.controls[i].errors)
+      }
+    }
+  }
+  public logFormErrors(): void {
+    let hasError = false
+    Object.keys(this.formGroup.controls).forEach((key) => {
+      const ctrlItem = this.formGroup.get(key)
+      const controlErrors: ValidationErrors | null = ctrlItem ? ctrlItem.errors : null
+
+      if (controlErrors != null) {
+        Object.keys(controlErrors).forEach((keyError) => {
+          console.info('form error: ', key, keyError)
+          hasError = true
+        })
+        if (hasError) this.formGroup.markAllAsTouched()
+      }
+    })
   }
 }
