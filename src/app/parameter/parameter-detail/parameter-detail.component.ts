@@ -192,22 +192,10 @@ export class ParameterDetailComponent implements OnChanges {
     if (data) {
       this.onChangeProductName(data?.productName)
       this.formGroup.patchValue(data) // fill what exist
-
-      // manage specifics for value field
-      let type = data.value ? typeof data.value : 'string'
-      this.formGroup.controls['valueType'].setValue(type.toUpperCase())
-      if (type === 'boolean') this.formGroup.controls['valueBoolean'].setValue(data.value)
-      if (type === 'object' && data.value) {
-        this.formGroup.controls['valueObject'].setValue(JSON.stringify(data.value, undefined, 2))
-      }
-      // manage specifics for imported value field
-      type = data.importValue ? typeof data.importValue : 'string'
-      this.formGroup.controls['importValueType'].setValue(type.toUpperCase())
-      if (type === 'boolean') this.formGroup.controls['importValueBoolean'].setValue(data.importValue)
-      if (type === 'object' && data.importValue)
-        this.formGroup.controls['importValue'].setValue(JSON.stringify(data.importValue, undefined, 2))
+      // manage specifics for value fields
+      this.manageValueFormFields(data.value, 'valueType', 'valueBoolean', 'valueObject')
+      this.manageValueFormFields(data.importValue, 'importValueType', 'importValueBoolean', 'importValue')
     }
-
     switch (this.changeMode) {
       case 'COPY':
         this.formGroup.enable()
@@ -230,6 +218,16 @@ export class ParameterDetailComponent implements OnChanges {
       case 'VIEW':
         this.formGroup.disable()
         break
+    }
+  }
+
+  // find out value type and fill special form fields
+  private manageValueFormFields(val: any, typeField: string, booleanField: string, objectField: string): void {
+    const type = val !== undefined && val !== null ? typeof val : 'string'
+    this.formGroup.controls[typeField].setValue(type.toUpperCase())
+    if (type === 'boolean') this.formGroup.controls[booleanField].setValue(val)
+    if (type === 'object' && val) {
+      this.formGroup.controls[objectField].setValue(JSON.stringify(val, undefined, 2))
     }
   }
 
