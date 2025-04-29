@@ -1,7 +1,8 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core'
+import { NO_ERRORS_SCHEMA, Component } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
+import { FormControl, FormGroup, FormsModule } from '@angular/forms'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 import { SelectItem } from 'primeng/api'
@@ -22,6 +23,10 @@ const parameterBase: Parameter = {
   displayName: 'displayName',
   description: 'description'
 }
+const form = new FormGroup({
+  name: new FormControl('name'),
+  description: new FormControl('description')
+})
 
 const app1: ApplicationAbstract = { appId: 'app1-svc', appName: 'OneCX app svc 1' }
 const app2: ApplicationAbstract = { appId: 'app2-svc', appName: 'OneCX app svc 2' }
@@ -49,6 +54,12 @@ fdescribe('ParameterDetailComponent', () => {
     updateParameter: jasmine.createSpy('updateParameter').and.returnValue(of({}))
   }
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
+
+  function initializeComponent(): void {
+    fixture = TestBed.createComponent(ParameterDetailComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -81,9 +92,8 @@ fdescribe('ParameterDetailComponent', () => {
   }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ParameterDetailComponent)
-    component = fixture.componentInstance
-    fixture.detectChanges()
+    initializeComponent()
+    component.formGroup = form
     component.displayDialog = true
     component.allProducts = allProducts
   })
@@ -565,5 +575,41 @@ fdescribe('ParameterDetailComponent', () => {
         expect(component.formGroup.controls['applicationId'].value).toBeNull()
       })
     })
+  })
+})
+
+/* Test modification of built-in Angular class registerOnChange at top of the file  */
+@Component({
+  template: `<input type="text" [(ngModel)]="value" />`
+})
+class TestComponent {
+  value: any = ''
+}
+describe('DefaultValueAccessor prototype modification', () => {
+  let component: TestComponent
+  let fixture: ComponentFixture<TestComponent>
+  let inputElement: HTMLInputElement
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [TestComponent],
+      imports: [FormsModule]
+    }).compileComponents()
+
+    fixture = TestBed.createComponent(TestComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+
+    console.log('...extensions')
+    inputElement = fixture.nativeElement.querySelector('input')
+  })
+
+  it('should trim the value on model change: value is of type string', () => {
+    console.log('...extensions ... trim')
+    inputElement.value = '  test  '
+    inputElement.dispatchEvent(new Event('input'))
+    fixture.detectChanges()
+
+    expect(component.value).toBe('test')
   })
 })

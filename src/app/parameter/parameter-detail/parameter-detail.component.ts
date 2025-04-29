@@ -24,6 +24,7 @@ type ErrorMessageType = { summaryKey: string; detailKey?: string }
 // trim the value (string!) of a form control before passes to the control
 const original = DefaultValueAccessor.prototype.registerOnChange
 DefaultValueAccessor.prototype.registerOnChange = function (fn) {
+  console.log('DefaultValueAccessor => ')
   return original.call(this, (value) => {
     const trimmed = value.trim()
     return fn(trimmed)
@@ -75,7 +76,6 @@ export function ValueValidator(): ValidatorFn {
     let isValid = true
     if (['NUMBER', 'STRING'].includes(typeControl.value)) {
       const val = control.value as any
-      console.log('ValueValidator => ', typeControl.value, val)
       if (val !== undefined && val !== null && ['NUMBER'].includes(typeControl.value)) {
         const flo: any = val * Math.PI // calculate a float number
         isValid = !Number.isNaN(parseFloat(flo))
@@ -89,10 +89,12 @@ export function JsonValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     if (!control.value) return null
     let isValid = true
+    let ex: any // sonar
     try {
       // control.value is a JavaScript object but in JSON syntax!
       JSON.parse(control.value) // is JSON?
     } catch (e) {
+      e = ex
       isValid = false
     }
     return isValid ? null : { pattern: true }
@@ -189,7 +191,6 @@ export class ParameterDetailComponent implements OnChanges {
   private prepareForm(data?: Parameter): void {
     this.formGroup.reset()
     if (data) {
-      console.log('prepareForm', data)
       this.onChangeProductName(data?.productName)
       this.formGroup.patchValue(data) // fill what exist
       // manage specifics for value fields
@@ -282,7 +283,6 @@ export class ParameterDetailComponent implements OnChanges {
    * SAVING => create or update
    */
   public onSave(): void {
-    console.log('onSave', this.changeMode, this.formGroup.valid)
     if (this.formGroup.valid) {
       // prepare parameter value from special form fields
       if (this.changeMode === 'EDIT' && this.parameter?.id) {
@@ -312,7 +312,6 @@ export class ParameterDetailComponent implements OnChanges {
           applicationId: this.formGroup.controls['applicationId'].value,
           value: this.getValue(['valueType', 'value', 'valueBoolean', 'valueObject'])
         }
-        console.log('onSave', param)
         this.parameterApi.createParameter({ parameterCreate: param }).subscribe({
           next: () => {
             this.msgService.success({ summaryKey: 'ACTIONS.CREATE.MESSAGE.OK' })
