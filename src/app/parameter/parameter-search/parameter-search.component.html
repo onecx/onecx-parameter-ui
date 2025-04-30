@@ -74,7 +74,7 @@
 
           <ng-template pTemplate="header" let-columns>
             <tr>
-              <th pFrozenColumn id="pam_search_table_header_actions" class="text-center white-space-nowrap">
+              <th pFrozenColumn id="pam_search_table_header_actions" class="text-center">
                 {{ 'ACTIONS.LABEL' | translate }}
               </th>
               <th
@@ -101,7 +101,7 @@
           <ng-template pTemplate="body" let-i="rowIndex" let-rowData let-columns="columns">
             <tr [pSelectableRow]="data">
               <!-- actions -->
-              <td pFrozenColumn class="align-items-center text-center white-space-nowrap">
+              <td pFrozenColumn class="align-items-center text-center">
                 <ng-container *ocxIfNotPermission="'PARAMETER#EDIT'">
                   <button
                     pbutton
