@@ -88,13 +88,15 @@ export function JsonValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     if (!control.value) return null
     let isValid = true
+    let ex: any // sonar
     try {
       // control.value is a JavaScript object but in JSON syntax!
       JSON.parse(control.value) // is JSON?
     } catch (e) {
+      ex = e
       isValid = false
     }
-    return isValid ? null : { pattern: true }
+    return isValid ? null : { pattern: true, error: ex }
   }
 }
 
