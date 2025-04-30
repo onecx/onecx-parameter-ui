@@ -24,7 +24,6 @@ type ErrorMessageType = { summaryKey: string; detailKey?: string }
 // trim the value (string!) of a form control before passes to the control
 const original = DefaultValueAccessor.prototype.registerOnChange
 DefaultValueAccessor.prototype.registerOnChange = function (fn) {
-  console.log('DefaultValueAccessor => ')
   return original.call(this, (value) => {
     const trimmed = value.trim()
     return fn(trimmed)
@@ -118,6 +117,7 @@ export class ParameterDetailComponent implements OnChanges {
   public loading = false
   public exceptionKey: string | undefined = undefined
   public logErrors = false
+  public test_value = ''
   // form
   public formGroup: FormGroup
   public valueStatus$: Observable<FormControlStatus> = of()

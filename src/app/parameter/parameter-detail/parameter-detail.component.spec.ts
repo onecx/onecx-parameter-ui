@@ -1,8 +1,9 @@
-import { NO_ERRORS_SCHEMA, Component } from '@angular/core'
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { Component, NO_ERRORS_SCHEMA } from '@angular/core'
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
-import { FormControl, FormGroup, FormsModule } from '@angular/forms'
+import { FormsModule } from '@angular/forms'
+import { By } from '@angular/platform-browser'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 import { SelectItem } from 'primeng/api'
@@ -23,10 +24,6 @@ const parameterBase: Parameter = {
   displayName: 'displayName',
   description: 'description'
 }
-const form = new FormGroup({
-  name: new FormControl('name'),
-  description: new FormControl('description')
-})
 
 const app1: ApplicationAbstract = { appId: 'app1-svc', appName: 'OneCX app svc 1' }
 const app2: ApplicationAbstract = { appId: 'app2-svc', appName: 'OneCX app svc 2' }
@@ -43,7 +40,7 @@ const appOptionsP1: SelectItem[] = [
   { label: app2.appName, value: app2.appId }
 ]
 
-fdescribe('ParameterDetailComponent', () => {
+describe('ParameterDetailComponent', () => {
   let component: ParameterDetailComponent
   let fixture: ComponentFixture<ParameterDetailComponent>
 
@@ -79,6 +76,7 @@ fdescribe('ParameterDetailComponent', () => {
         { provide: ParametersAPIService, useValue: apiServiceSpy }
       ]
     }).compileComponents()
+    // reset
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
     // to spy data: reset
@@ -93,7 +91,6 @@ fdescribe('ParameterDetailComponent', () => {
 
   beforeEach(() => {
     initializeComponent()
-    component.formGroup = form
     component.displayDialog = true
     component.allProducts = allProducts
   })
@@ -576,6 +573,30 @@ fdescribe('ParameterDetailComponent', () => {
       })
     })
   })
+
+  xdescribe('DefaultValueAccessor - does not work', () => {
+    beforeEach(() => {
+      const p: Parameter = { ...parameterBase, value: 'text' }
+      apiServiceSpy.getParameterById.and.returnValue(of(p))
+      component.changeMode = 'EDIT'
+      component.parameter = p
+
+      component.ngOnChanges()
+
+      expect(component.formGroup.valid).toBeTrue()
+    })
+
+    it('should trim the value on model change: value is of type string', fakeAsync(() => {
+      const inputElement = fixture.debugElement.query(By.css('input#pam_detail_form_value'))
+      console.log('...value control:', inputElement)
+      inputElement.nativeElement.dispatchEvent(new Event('input'))
+      inputElement.nativeElement.value = '  test  '
+      fixture.detectChanges()
+      tick(300)
+
+      expect(component.formGroup?.get('value')?.value).toBe('test')
+    }))
+  })
 })
 
 /* Test modification of built-in Angular class registerOnChange at top of the file  */
@@ -600,12 +621,10 @@ describe('DefaultValueAccessor prototype modification', () => {
     component = fixture.componentInstance
     fixture.detectChanges()
 
-    console.log('...extensions')
     inputElement = fixture.nativeElement.querySelector('input')
   })
 
   it('should trim the value on model change: value is of type string', () => {
-    console.log('...extensions ... trim')
     inputElement.value = '  test  '
     inputElement.dispatchEvent(new Event('input'))
     fixture.detectChanges()
