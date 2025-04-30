@@ -9,6 +9,7 @@ import { Action, Column, DataViewControlTranslations, PortalMessageService } fro
 import { SlotService } from '@onecx/angular-remote-components'
 
 import { Parameter, ParameterSearchCriteria, ParametersAPIService, Product } from 'src/app/shared/generated'
+import { sortByDisplayName } from 'src/app/shared/utils'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 type ExtendedColumn = Column & {
@@ -70,6 +71,7 @@ export class ParameterSearchComponent implements OnInit {
   public displayUsageDetailDialog = false
   public actions: Action[] = []
   public filteredColumns: Column[] = []
+  public sortByDisplayName = sortByDisplayName
 
   @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
   public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
@@ -263,12 +265,6 @@ export class ParameterSearchComponent implements OnInit {
     return { allProducts: aP, usedProducts: [...uP] } // meta data
   }
 
-  private sortByDisplayName(a: any, b: any): number {
-    return (a.displayName ? a.displayName.toUpperCase() : '').localeCompare(
-      b.displayName ? b.displayName.toUpperCase() : ''
-    )
-  }
-
   /****************************************************************************
    *  SEARCH data
    */
@@ -441,18 +437,16 @@ export class ParameterSearchComponent implements OnInit {
     if (!val) return ''
     return typeof val !== 'object' ? val : '{ ... }'
   }
-  public compareDeeply(val1: any, val2: any): boolean | undefined {
-    if (!val1 || !val2) return undefined
-    if (typeof val1 === typeof val2 && ['boolean', 'number', 'string'].includes(typeof val1)) return val1 === val2
-    if (typeof val1 === typeof val2 && ['object'].includes(typeof val1)) {
+  public compareDeeply(val1: any, val2: any): boolean {
+    if (val1 === undefined || val2 === undefined || val1 === null || val2 === null || typeof val1 !== typeof val2)
+      return false
+    if (['boolean', 'number', 'string'].includes(typeof val1)) return val1 === val2
+    if (['object'].includes(typeof val1)) {
       const commonKeys = [...new Set([...Object.keys(val1), ...Object.keys(val2)])]
       for (const key of commonKeys) {
-        if (val1[key] !== val2[key]) {
-          return false
-        }
+        if (val1[key] !== val2[key]) return false
       }
-      return true
     }
-    return undefined
+    return true
   }
 }

@@ -9,6 +9,7 @@ import { Action, Column, DataViewControlTranslations, PortalMessageService } fro
 import { SlotService } from '@onecx/angular-remote-components'
 
 import { History, HistoriesAPIService, Parameter, ParameterSearchCriteria, Product } from 'src/app/shared/generated'
+import { sortByDisplayName } from 'src/app/shared/utils'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 type ExtendedColumn = Column & {
@@ -69,6 +70,7 @@ export class ParameterHistoryComponent implements OnInit {
   public displayDeleteDialog = false
   public displayUsageDialog = false
   public actions: Action[] = []
+  public sortByDisplayName = sortByDisplayName
 
   @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
   public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
@@ -381,12 +383,6 @@ export class ParameterHistoryComponent implements OnInit {
 
   public onFilterChange(event: string): void {
     this.dataTable?.filterGlobal(event, 'contains')
-  }
-
-  private sortByDisplayName(a: any, b: any): number {
-    return (a.displayName ? a.displayName.toUpperCase() : '').localeCompare(
-      b.displayName ? b.displayName.toUpperCase() : ''
-    )
   }
 
   // getting display names within HTML

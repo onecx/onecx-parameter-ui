@@ -6,8 +6,7 @@ import {
   FormGroup,
   FormControlStatus,
   Validators,
-  ValidatorFn,
-  ValidationErrors
+  ValidatorFn
 } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 import { finalize, map, Observable, of } from 'rxjs'
@@ -37,6 +36,7 @@ export function TypeValidator(): ValidatorFn {
     let isValid = false // sonar hack ;-)
     let valueControl: AbstractControl | null
     if (control.parent && control.value) {
+      // disable unused fields to prevent validation
       if (['BOOLEAN'].includes(control.value)) {
         valueControl = control.parent.get('valueObject')
         valueControl?.disable()
@@ -48,7 +48,7 @@ export function TypeValidator(): ValidatorFn {
         valueControl?.disable()
         valueControl = control.parent.get('value')
         valueControl?.enable()
-        valueControl?.updateValueAndValidity() // force value & form validation
+        valueControl?.updateValueAndValidity()
       }
       if (['OBJECT'].includes(control.value)) {
         valueControl = control.parent.get('valueObject')
@@ -75,12 +75,8 @@ export function ValueValidator(): ValidatorFn {
     let isValid = true
     if (['NUMBER', 'STRING'].includes(typeControl.value)) {
       const val = control.value as any
-      if (val === undefined || val === null) {
-        // form is invalid because missing value but...
-        return null // field is ok
-      }
-      if (['NUMBER'].includes(typeControl.value)) {
-        const flo: any = val * 0.123456
+      if (val !== undefined && val !== null && ['NUMBER'].includes(typeControl.value)) {
+        const flo: any = val * Math.PI // calculate a float number
         isValid = !Number.isNaN(parseFloat(flo))
       }
     }
@@ -91,12 +87,12 @@ export function ValueValidator(): ValidatorFn {
 export function JsonValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     if (!control.value) return null
-
     let isValid = true
-    const value = control.value
-    if (value && value !== '' && value !== '{}') {
-      const pattern = /:\s*(["{].*["}])\s*[,}]/
-      isValid = pattern.test(value)
+    try {
+      // control.value is a JavaScript object but in JSON syntax!
+      JSON.parse(control.value) // is JSON?
+    } catch (e) {
+      isValid = false
     }
     return isValid ? null : { pattern: true }
   }
@@ -115,8 +111,11 @@ export class ParameterDetailComponent implements OnChanges {
   @Input() public dateFormat = 'medium'
   @Output() public hideDialogAndChanged = new EventEmitter<boolean>()
 
+  // dialog
   public loading = false
   public exceptionKey: string | undefined = undefined
+  public logErrors = false
+  public test_value = ''
   // form
   public formGroup: FormGroup
   public valueStatus$: Observable<FormControlStatus> = of()
@@ -191,30 +190,16 @@ export class ParameterDetailComponent implements OnChanges {
     this.formGroup.reset()
     if (data) {
       this.onChangeProductName(data?.productName)
-      this.formGroup.patchValue(data)
-
-      // manage specifics for value
-      let type = typeof data.value
-      this.formGroup.controls['valueType'].setValue(type.toUpperCase())
-      if (type === 'boolean') this.formGroup.controls['valueBoolean'].setValue(data.value)
-      if (type === 'object') {
-        this.formGroup.controls['valueObject'].setValue(JSON.stringify(data.value, undefined, 2))
-        this.formGroup.controls['value'].setValue(null) // reset!
-      }
-      // manage specifics for imported value
-      type = typeof data.importValue
-      this.formGroup.controls['importValueType'].setValue(type.toUpperCase())
-      if (type === 'boolean') this.formGroup.controls['importValueBoolean'].setValue(data.importValue)
-      if (type === 'object')
-        this.formGroup.controls['importValue'].setValue(JSON.stringify(data.importValue, undefined, 2))
+      this.formGroup.patchValue(data) // fill what exist
+      // manage specifics for value fields
+      this.manageValueFormFields(data.value, 'valueType', 'valueBoolean', 'valueObject')
+      this.manageValueFormFields(data.importValue, 'importValueType', 'importValueBoolean', 'importValue')
     }
-
     switch (this.changeMode) {
       case 'COPY':
         this.formGroup.enable()
         break
       case 'CREATE':
-        this.formGroup.reset()
         this.formGroup.enable()
         this.formGroup.controls['valueType'].patchValue(this.valueTypeOptions[2].value)
         break
@@ -232,6 +217,16 @@ export class ParameterDetailComponent implements OnChanges {
       case 'VIEW':
         this.formGroup.disable()
         break
+    }
+  }
+
+  // find out value type and fill special form fields
+  private manageValueFormFields(val: any, typeField: string, booleanField: string, objectField: string): void {
+    const type = val !== undefined && val !== null ? typeof val : 'string'
+    this.formGroup.controls[typeField].setValue(type.toUpperCase())
+    if (type === 'boolean') this.formGroup.controls[booleanField].setValue(val)
+    if (type === 'object' && val) {
+      this.formGroup.controls[objectField].setValue(JSON.stringify(val, undefined, 2))
     }
   }
 
@@ -326,7 +321,7 @@ export class ParameterDetailComponent implements OnChanges {
           }
         })
       }
-    }
+    } else this.logFormErrors()
   }
 
   private getValue(field: string[]): any {
@@ -336,7 +331,7 @@ export class ParameterDetailComponent implements OnChanges {
         val = this.formGroup.controls[field[2]].value
         break
       case 'OBJECT':
-        val = this.formGroup.controls[field[3]].value ? JSON.parse(this.formGroup.controls[field[3]].value) : undefined
+        val = JSON.parse(this.formGroup.controls[field[3]].value)
         break
       default:
         val = this.formGroup.controls[field[1]].value
@@ -357,30 +352,15 @@ export class ParameterDetailComponent implements OnChanges {
     this.msgService.error(errMsg)
   }
 
-  public validateForm(form: FormGroup) {
-    if (!form.valid) {
-      /* if you are using angular 8 or above, you can just do form.markAllAsTouched() which will touch 
-           all the fields without having to loop through all the fields and mark it as touched.
-        */
-      for (const i in form.controls) {
-        form.controls[i].markAsTouched()
-        form.controls[i].updateValueAndValidity()
-        if (form.controls[i].errors) console.info('control: ', form.controls[i].value, form.controls[i].errors)
-      }
-    }
-  }
-  public logFormErrors(): void {
-    let hasError = false
+  private logFormErrors(): void {
+    if (!this.logErrors) return
     Object.keys(this.formGroup.controls).forEach((key) => {
       const ctrlItem = this.formGroup.get(key)
-      const controlErrors: ValidationErrors | null = ctrlItem ? ctrlItem.errors : null
-
-      if (controlErrors != null) {
-        Object.keys(controlErrors).forEach((keyError) => {
-          console.info('form error: ', key, keyError)
-          hasError = true
+      if (ctrlItem?.errors) {
+        Object.keys(ctrlItem.errors).forEach((error) => {
+          console.error('form error: ', key, error)
+          ctrlItem.markAsTouched()
         })
-        if (hasError) this.formGroup.markAllAsTouched()
       }
     })
   }

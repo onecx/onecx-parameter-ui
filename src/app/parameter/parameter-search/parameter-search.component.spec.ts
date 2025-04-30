@@ -285,50 +285,6 @@ describe('ParameterSearchComponent', () => {
     })
   })
 
-  describe('sorting', () => {
-    it('should return negative value when first product name comes before second alphabetically', () => {
-      const productA = { id: 'a', name: 'name', displayName: 'Admin' }
-      const productB = { id: 'b', name: 'name', displayName: 'User' }
-      expect(component['sortByDisplayName'](productA, productB)).toBeLessThan(0)
-    })
-
-    it('should return positive value when first product name comes after second alphabetically', () => {
-      const productA = { id: 'a', name: 'name', displayName: 'User' }
-      const productB = { id: 'b', name: 'name', displayName: 'Admin' }
-      expect(component['sortByDisplayName'](productA, productB)).toBeGreaterThan(0)
-    })
-
-    it('should return zero when product names are the same', () => {
-      const productA = { id: 'a', name: 'name', displayName: 'Admin' }
-      const productB = { id: 'b', name: 'name', displayName: 'Admin' }
-      expect(component['sortByDisplayName'](productA, productB)).toBe(0)
-    })
-
-    it('should be case-insensitive', () => {
-      const productA = { id: 'a', name: 'name', displayName: 'admin' }
-      const productB = { id: 'b', name: 'name', displayName: 'Admin' }
-      expect(component['sortByDisplayName'](productA, productB)).toBe(0)
-    })
-
-    it('should handle undefined names', () => {
-      const productA = { id: 'a', name: 'name', displayName: undefined }
-      const productB = { id: 'b', name: 'name', displayName: 'Admin' }
-      expect(component['sortByDisplayName'](productA, productB)).toBeLessThan(0)
-    })
-
-    it('should handle empty string names', () => {
-      const productA = { id: 'a', name: 'name', displayName: '' }
-      const productB = { id: 'b', name: 'name', displayName: 'Admin' }
-      expect(component['sortByDisplayName'](productA, productB)).toBeLessThan(0)
-    })
-
-    it('should handle both names being undefined', () => {
-      const productA = { id: 'a', name: 'name', displayName: undefined }
-      const productB = { id: 'b', name: 'name', displayName: undefined }
-      expect(component['sortByDisplayName'](productA, productB)).toBe(0)
-    })
-  })
-
   /*
    * UI ACTIONS
    */
@@ -455,7 +411,7 @@ describe('ParameterSearchComponent', () => {
     })
   })
 
-  describe('display names', () => {
+  describe('UI display stuff', () => {
     it('should get product display name - found', () => {
       const name = component.getProductDisplayName(allProducts[0].name, allProducts)
 
@@ -481,6 +437,54 @@ describe('ParameterSearchComponent', () => {
       const name = component.getAppDisplayName(allProducts[2].name, 'unknown', allProducts)
 
       expect(name).toBe('unknown')
+    })
+
+    describe('display value type', () => {
+      it('should UNKNOWN', () => {
+        expect(component.displayValueType(undefined)).toBe('UNKNOWN')
+      })
+      it('should number', () => {
+        expect(component.displayValueType(123)).toBe('NUMBER')
+      })
+    })
+
+    describe('display value', () => {
+      it('should ', () => {
+        expect(component.displayValue(undefined)).toBe('')
+      })
+      it('should boolean', () => {
+        expect(component.displayValue(true)).toBe('true')
+      })
+      it('should text', () => {
+        expect(component.displayValue('test')).toEqual('test')
+      })
+      it('should object', () => {
+        expect(component.displayValue({ hallo: 'test' })).toEqual('{ ... }')
+      })
+    })
+
+    describe('compare objects', () => {
+      it('missing objects', () => {
+        expect(component.compareDeeply({}, undefined)).toBeFalse()
+        expect(component.compareDeeply({}, null)).toBeFalse()
+      })
+      it('should true on same values', () => {
+        expect(component.compareDeeply(true, true)).toBeTrue()
+        expect(component.compareDeeply(123, 123)).toBeTrue()
+        expect(component.compareDeeply('123', '123')).toBeTrue()
+        expect(component.compareDeeply({ hallo: 'test' }, { hallo: 'test' })).toBeTrue()
+      })
+      it('should false on different values', () => {
+        expect(component.compareDeeply(true, false)).toBeFalse()
+        expect(component.compareDeeply(123, 1234)).toBeFalse()
+        expect(component.compareDeeply('123', '1234')).toBeFalse()
+        expect(component.compareDeeply({ hallo: 'test' }, { hallo: 'test2' })).toBeFalse()
+      })
+      it('should false on different values', () => {
+        expect(component.compareDeeply(true, 12)).toBeFalse()
+        expect(component.compareDeeply(123, '123')).toBeFalse()
+        expect(component.compareDeeply({}, '1234')).toBeFalse()
+      })
     })
   })
 
