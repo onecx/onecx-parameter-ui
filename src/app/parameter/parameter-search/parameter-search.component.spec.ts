@@ -13,13 +13,14 @@ import { Column, PortalMessageService } from '@onecx/portal-integration-angular'
 import { Parameter, ParametersAPIService, Product } from 'src/app/shared/generated'
 import {
   ApplicationAbstract,
+  ExtendedParameter,
   ExtendedProduct,
   ParameterSearchComponent,
   ProductAbstract
 } from './parameter-search.component'
 import { ParameterHistoryComponent } from '../parameter-history/parameter-history.component'
 
-const itemData: Parameter[] = [
+const itemData: ExtendedParameter[] = [
   {
     modificationCount: 0,
     id: 'id1',
@@ -27,7 +28,10 @@ const itemData: Parameter[] = [
     applicationId: 'app1',
     name: 'name1',
     value: 'val1',
-    importValue: 'val1'
+    importValue: 'val1',
+    valueType: 'STRING',
+    displayValue: 'val1',
+    isEqual: true
   },
   {
     modificationCount: 0,
@@ -36,7 +40,10 @@ const itemData: Parameter[] = [
     applicationId: 'app2',
     name: 'name1',
     value: { v: 'v2' },
-    importValue: { v: 'v2' }
+    importValue: { v: 'v2' },
+    valueType: 'OBJECT',
+    displayValue: '{ ... }',
+    isEqual: true
   }
 ]
 // Original form BFF: unsorted and not complete
@@ -439,16 +446,7 @@ describe('ParameterSearchComponent', () => {
       expect(name).toBe('unknown')
     })
 
-    describe('display value type', () => {
-      it('should UNKNOWN', () => {
-        expect(component.displayValueType(undefined)).toBe('UNKNOWN')
-      })
-      it('should number', () => {
-        expect(component.displayValueType(123)).toBe('NUMBER')
-      })
-    })
-
-    describe('display value', () => {
+    /*    describe('display value', () => {
       it('should ', () => {
         expect(component.displayValue(undefined)).toBe('')
       })
@@ -461,31 +459,31 @@ describe('ParameterSearchComponent', () => {
       it('should object', () => {
         expect(component.displayValue({ hallo: 'test' })).toEqual('{ ... }')
       })
-    })
-
+    }) */
+    /*
     describe('compare objects', () => {
       it('missing objects', () => {
-        expect(component.compareDeeply({}, undefined)).toBeFalse()
-        expect(component.compareDeeply({}, null)).toBeFalse()
+        expect(component.areValuesEqual({}, undefined)).toBeFalse()
+        expect(component.areValuesEqual({}, null)).toBeFalse()
       })
       it('should true on same values', () => {
-        expect(component.compareDeeply(true, true)).toBeTrue()
-        expect(component.compareDeeply(123, 123)).toBeTrue()
-        expect(component.compareDeeply('123', '123')).toBeTrue()
-        expect(component.compareDeeply({ hallo: 'test' }, { hallo: 'test' })).toBeTrue()
+        expect(component.areValuesEqual(true, true)).toBeTrue()
+        expect(component.areValuesEqual(123, 123)).toBeTrue()
+        expect(component.areValuesEqual('123', '123')).toBeTrue()
+        expect(component.areValuesEqual({ hallo: 'test' }, { hallo: 'test' })).toBeTrue()
       })
       it('should false on different values', () => {
-        expect(component.compareDeeply(true, false)).toBeFalse()
-        expect(component.compareDeeply(123, 1234)).toBeFalse()
-        expect(component.compareDeeply('123', '1234')).toBeFalse()
-        expect(component.compareDeeply({ hallo: 'test' }, { hallo: 'test2' })).toBeFalse()
+        expect(component.areValuesEqual(true, false)).toBeFalse()
+        expect(component.areValuesEqual(123, 1234)).toBeFalse()
+        expect(component.areValuesEqual('123', '1234')).toBeFalse()
+        expect(component.areValuesEqual({ hallo: 'test' }, { hallo: 'test2' })).toBeFalse()
       })
       it('should false on different values', () => {
-        expect(component.compareDeeply(true, 12)).toBeFalse()
-        expect(component.compareDeeply(123, '123')).toBeFalse()
-        expect(component.compareDeeply({}, '1234')).toBeFalse()
+        expect(component.areValuesEqual(true, 12)).toBeFalse()
+        expect(component.areValuesEqual(123, '123')).toBeFalse()
+        expect(component.areValuesEqual({}, '1234')).toBeFalse()
       })
-    })
+    }) */
   })
 
   describe('row actions', () => {

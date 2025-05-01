@@ -8,7 +8,13 @@ import { UserService } from '@onecx/angular-integration-interface'
 import { Action, Column, DataViewControlTranslations, PortalMessageService } from '@onecx/portal-integration-angular'
 import { SlotService } from '@onecx/angular-remote-components'
 
-import { Parameter, ParameterSearchCriteria, ParametersAPIService, Product } from 'src/app/shared/generated'
+import {
+  Parameter,
+  ParameterPageResult,
+  ParameterSearchCriteria,
+  ParametersAPIService,
+  Product
+} from 'src/app/shared/generated'
 import { sortByDisplayName } from 'src/app/shared/utils'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
@@ -23,6 +29,7 @@ type ExtendedColumn = Column & {
   css?: string
   sort?: boolean
 }
+export type ExtendedParameter = Parameter & { valueType: string; displayValue: string; isEqual: boolean }
 export type ExtendedProduct = {
   name: string
   displayName: string
@@ -77,7 +84,7 @@ export class ParameterSearchComponent implements OnInit {
   public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
 
   // data
-  public data$: Observable<Parameter[]> | undefined
+  public data$: Observable<ExtendedParameter[]> | undefined
   public criteria: ParameterSearchCriteria = {}
   public metaData$!: Observable<AllMetaData>
   public usedProducts$ = new ReplaySubject<Product[]>(1) // getting data from bff endpoint
@@ -279,11 +286,21 @@ export class ParameterSearchComponent implements OnInit {
           return data.size
         }
       }),
-      map((data) => data.stream),
+      map((data: ParameterPageResult) => {
+        return (data.stream as Parameter[]).map(
+          (p) =>
+            ({
+              ...p,
+              valueType: this.displayValueType(p.value || p.importValue),
+              displayValue: this.displayValue(p.value || p.importValue),
+              isEqual: this.areValuesEqual('value', 'importValue')
+            }) as ExtendedParameter
+        )
+      }),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETERS'
         console.error('searchParametersByCriteria', err)
-        return of([] as Parameter[])
+        return of([] as ExtendedParameter[])
       }),
       finalize(() => (this.loading = false))
     )
@@ -428,16 +445,16 @@ export class ParameterSearchComponent implements OnInit {
     )
   }
 
-  public displayValueType(val: any): string {
+  private displayValueType(val: any): string {
     if (val === undefined || val === null) return 'UNKNOWN'
     return (typeof val).toUpperCase()
   }
-  public displayValue(val: any): string {
+  private displayValue(val: any): string {
     if (typeof val === 'boolean') return '' + val
     if (!val) return ''
     return typeof val !== 'object' ? val : '{ ... }'
   }
-  public compareDeeply(val1: any, val2: any): boolean {
+  private areValuesEqual(val1: any, val2: any): boolean {
     if (val1 === undefined || val2 === undefined || val1 === null || val2 === null || typeof val1 !== typeof val2)
       return false
     if (['boolean', 'number', 'string'].includes(typeof val1)) return val1 === val2
