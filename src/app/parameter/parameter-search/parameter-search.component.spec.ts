@@ -38,12 +38,46 @@ const itemData: ExtendedParameter[] = [
     id: 'id2',
     productName: 'product1',
     applicationId: 'app2',
-    name: 'name1',
+    name: 'name2',
+    value: true,
+    importValue: false,
+    valueType: 'BOOLEAN',
+    displayValue: 'true',
+    isEqual: false
+  },
+  {
+    modificationCount: 0,
+    id: 'id3',
+    productName: 'product1',
+    applicationId: 'app2',
+    name: 'name3',
     value: { v: 'v2' },
     importValue: { v: 'v2' },
     valueType: 'OBJECT',
     displayValue: '{ ... }',
     isEqual: true
+  },
+  {
+    modificationCount: 0,
+    id: 'id4',
+    productName: 'product1',
+    applicationId: 'app2',
+    name: 'name3',
+    value: { v: 'v2' },
+    importValue: { v: 'v2', w: true },
+    valueType: 'OBJECT',
+    displayValue: '{ ... }',
+    isEqual: false
+  },
+  {
+    modificationCount: 0,
+    id: 'id5',
+    productName: 'product1',
+    applicationId: 'app2',
+    name: 'name4',
+    valueType: 'UNKNOWN',
+    displayValue: '',
+    isEqual: false
   }
 ]
 // Original form BFF: unsorted and not complete
@@ -182,6 +216,12 @@ describe('ParameterSearchComponent', () => {
       component.actions[1].actionCallback()
 
       expect(component.onGoToLatestUsagePage).toHaveBeenCalled()
+    })
+
+    it('should navigate to latest usage page', () => {
+      component.onGoToLatestUsagePage()
+
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['./usage'], { relativeTo: routeMock })
     })
   })
 
@@ -338,7 +378,7 @@ describe('ParameterSearchComponent', () => {
     })
   })
 
-  describe('deletion', () => {
+  describe('xdeletion', () => {
     let items4Deletion: Parameter[] = []
 
     beforeEach(() => {
@@ -515,12 +555,6 @@ describe('ParameterSearchComponent', () => {
 
       expect(component.criteria).toEqual({})
     })
-  })
-
-  it('should navigate to latest usage page', () => {
-    component.onGoToLatestUsagePage()
-
-    expect(routerSpy.navigate).toHaveBeenCalledWith(['./usage'], { relativeTo: routeMock })
   })
 
   /**

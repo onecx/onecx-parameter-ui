@@ -287,13 +287,14 @@ export class ParameterSearchComponent implements OnInit {
         }
       }),
       map((data: ParameterPageResult) => {
+        if (!data.stream) return [] as ExtendedParameter[]
         return (data.stream as Parameter[]).map(
           (p) =>
             ({
               ...p,
               valueType: this.displayValueType(p.value || p.importValue),
               displayValue: this.displayValue(p.value || p.importValue),
-              isEqual: this.areValuesEqual('value', 'importValue')
+              isEqual: this.areValuesEqual(p.value, p.importValue)
             }) as ExtendedParameter
         )
       }),
