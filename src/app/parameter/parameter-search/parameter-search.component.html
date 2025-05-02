@@ -217,8 +217,12 @@
                         ? 'pi pi-times text-red-600'
                         : ''
                   "
-                  [attr.aria-label]="'PARAMETER.TOOLTIPS.EQUAL.FALSE' | translate"
-                  [pTooltip]="'PARAMETER.TOOLTIPS.EQUAL.FALSE' | translate"
+                  [attr.aria-label]="
+                    'PARAMETER.TOOLTIPS.EQUAL.' + (rowData['isEqual'] === true ? 'TRUE' : 'FALSE') | translate
+                  "
+                  [pTooltip]="
+                    'PARAMETER.TOOLTIPS.EQUAL.' + (rowData['isEqual'] === true ? 'TRUE' : 'FALSE') | translate
+                  "
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 ></span>
