@@ -82,12 +82,19 @@ const parameterOrgData: Parameter[] = [
 ]
 // data in component
 const parameterData: ExtendedParameter[] = [
-  { ...parameterOrgData[0], valueType: 'STRING', displayValue: 'val1', isEqual: true },
-  { ...parameterOrgData[1], valueType: 'BOOLEAN', displayValue: 'true', isEqual: false },
-  { ...parameterOrgData[2], valueType: 'OBJECT', displayValue: '{ ... }', isEqual: true },
-  { ...parameterOrgData[3], valueType: 'OBJECT', displayValue: '{ ... }', isEqual: false },
-  { ...parameterOrgData[4], valueType: 'STRING', displayValue: 'text', isEqual: false },
-  { ...parameterOrgData[5], valueType: 'UNKNOWN', displayValue: '', isEqual: undefined, displayName: 'name6' }
+  { ...parameterOrgData[0], valueType: 'STRING', importValueType: 'STRING', displayValue: 'val1', isEqual: true },
+  { ...parameterOrgData[1], valueType: 'BOOLEAN', importValueType: 'BOOLEAN', displayValue: 'true', isEqual: false },
+  { ...parameterOrgData[2], valueType: 'OBJECT', importValueType: 'OBJECT', displayValue: '{ ... }', isEqual: true },
+  { ...parameterOrgData[3], valueType: 'OBJECT', importValueType: 'OBJECT', displayValue: '{ ... }', isEqual: false },
+  { ...parameterOrgData[4], valueType: 'STRING', importValueType: 'BOOLEAN', displayValue: 'text', isEqual: false },
+  {
+    ...parameterOrgData[5],
+    valueType: 'UNKNOWN',
+    importValueType: 'UNKNOWN',
+    displayValue: '',
+    isEqual: undefined,
+    displayName: 'name6'
+  }
 ]
 // Original form BFF: unsorted and not complete
 const usedProductsOrg: Product[] = [
