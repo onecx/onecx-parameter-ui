@@ -588,7 +588,6 @@ describe('ParameterDetailComponent', () => {
 
     it('should trim the value on model change: value is of type string', fakeAsync(() => {
       const inputElement = fixture.debugElement.query(By.css('input#pam_detail_form_value'))
-      console.log('...value control:', inputElement)
       inputElement.nativeElement.dispatchEvent(new Event('input'))
       inputElement.nativeElement.value = '  test  '
       fixture.detectChanges()
