@@ -20,18 +20,17 @@ import {
 } from './parameter-search.component'
 import { ParameterHistoryComponent } from '../parameter-history/parameter-history.component'
 
-const itemData: ExtendedParameter[] = [
+// response data of parameter search service
+const parameterOrgData: Parameter[] = [
   {
     modificationCount: 0,
     id: 'id1',
     productName: 'product1',
     applicationId: 'app1',
     name: 'name1',
+    displayName: 'Name 1',
     value: 'val1',
-    importValue: 'val1',
-    valueType: 'STRING',
-    displayValue: 'val1',
-    isEqual: true
+    importValue: 'val1'
   },
   {
     modificationCount: 0,
@@ -39,11 +38,9 @@ const itemData: ExtendedParameter[] = [
     productName: 'product1',
     applicationId: 'app2',
     name: 'name2',
+    displayName: 'Name 2',
     value: true,
-    importValue: false,
-    valueType: 'BOOLEAN',
-    displayValue: 'true',
-    isEqual: false
+    importValue: false
   },
   {
     modificationCount: 0,
@@ -51,34 +48,35 @@ const itemData: ExtendedParameter[] = [
     productName: 'product1',
     applicationId: 'app2',
     name: 'name3',
+    displayName: 'name3',
     value: { v: 'v2' },
-    importValue: { v: 'v2' },
-    valueType: 'OBJECT',
-    displayValue: '{ ... }',
-    isEqual: true
+    importValue: { v: 'v2' }
   },
   {
     modificationCount: 0,
     id: 'id4',
     productName: 'product1',
     applicationId: 'app2',
-    name: 'name3',
+    name: 'name4',
+    displayName: 'Name 4',
     value: { v: 'v2' },
-    importValue: { v: 'v2', w: true },
-    valueType: 'OBJECT',
-    displayValue: '{ ... }',
-    isEqual: false
+    importValue: { v: 'v2', w: true }
   },
   {
     modificationCount: 0,
     id: 'id5',
     productName: 'product1',
     applicationId: 'app2',
-    name: 'name4',
-    valueType: 'UNKNOWN',
-    displayValue: '',
-    isEqual: false
+    name: 'name5'
   }
+]
+// data in component
+const parameterData: ExtendedParameter[] = [
+  { ...parameterOrgData[0], valueType: 'STRING', displayValue: 'val1', isEqual: true },
+  { ...parameterOrgData[1], valueType: 'BOOLEAN', displayValue: 'true', isEqual: false },
+  { ...parameterOrgData[2], valueType: 'OBJECT', displayValue: '{ ... }', isEqual: true },
+  { ...parameterOrgData[3], valueType: 'OBJECT', displayValue: '{ ... }', isEqual: false },
+  { ...parameterOrgData[4], valueType: 'UNKNOWN', displayValue: '', isEqual: false, displayName: 'name5' }
 ]
 // Original form BFF: unsorted and not complete
 const usedProductsOrg: Product[] = [
@@ -227,13 +225,13 @@ describe('ParameterSearchComponent', () => {
 
   describe('search', () => {
     it('should search parameters without search criteria', (done) => {
-      apiServiceSpy.searchParametersByCriteria.and.returnValue(of({ stream: itemData }))
+      apiServiceSpy.searchParametersByCriteria.and.returnValue(of({ stream: parameterOrgData }))
 
       component.onSearch({})
 
       component.data$?.subscribe({
         next: (data) => {
-          expect(data).toEqual(itemData)
+          expect(data).toEqual(parameterData)
           done()
         },
         error: done.fail
@@ -356,20 +354,20 @@ describe('ParameterSearchComponent', () => {
     it('should show details of a parameter', () => {
       const mode = 'EDIT'
 
-      component.onDetail(mode, itemData[0])
+      component.onDetail(mode, parameterData[0])
 
       expect(component.changeMode).toEqual(mode)
-      expect(component.itemId).toBe(itemData[0].id)
+      expect(component.itemId).toBe(parameterData[0].id)
       expect(component.displayDetailDialog).toBeTrue()
     })
 
     it('should prepare the copy of a parameter', () => {
       const mode = 'COPY'
 
-      component.onDetail(mode, itemData[0])
+      component.onDetail(mode, parameterData[0])
 
       expect(component.changeMode).toEqual(mode)
-      expect(component.item4Detail).toBe(itemData[0])
+      expect(component.item4Detail).toBe(parameterData[0])
       expect(component.displayDetailDialog).toBeTrue()
 
       component.onCloseDetail(true)
@@ -378,7 +376,7 @@ describe('ParameterSearchComponent', () => {
     })
   })
 
-  describe('xdeletion', () => {
+  describe('deletion', () => {
     let items4Deletion: Parameter[] = []
 
     beforeEach(() => {
@@ -458,7 +456,13 @@ describe('ParameterSearchComponent', () => {
     })
   })
 
-  describe('UI display stuff', () => {
+  describe('UI displaying product/app names', () => {
+    it('should manage empty product lists', () => {
+      const name = component.getProductDisplayName(allProducts[0].name, [])
+
+      expect(name).toBe(allProducts[0].name)
+    })
+
     it('should get product display name - found', () => {
       const name = component.getProductDisplayName(allProducts[0].name, allProducts)
 
@@ -471,59 +475,29 @@ describe('ParameterSearchComponent', () => {
       expect(name).toBe('unknown')
     })
 
-    it('should get app display name - found', () => {
+    describe('apps', () => {
       const ap = allProducts[0]
       const apps = ap.applications
       const app = apps[0]
-      const name = component.getAppDisplayName(allProducts[0].name, app.appId, allProducts)
 
-      expect(name).toBe(app.appName)
+      it('should manage empty product lists', () => {
+        const name = component.getAppDisplayName(allProducts[0].name, app.appId, [])
+
+        expect(name).toBe(allProducts[0].name)
+      })
+
+      it('should get app display name - found', () => {
+        const name = component.getAppDisplayName(allProducts[0].name, app.appId, allProducts)
+
+        expect(name).toBe(app.appName)
+      })
+
+      it('should get product display name - not found', () => {
+        const name = component.getAppDisplayName(allProducts[2].name, 'unknown', allProducts)
+
+        expect(name).toBe('unknown')
+      })
     })
-
-    it('should get product display name - not found', () => {
-      const name = component.getAppDisplayName(allProducts[2].name, 'unknown', allProducts)
-
-      expect(name).toBe('unknown')
-    })
-
-    /*    describe('display value', () => {
-      it('should ', () => {
-        expect(component.displayValue(undefined)).toBe('')
-      })
-      it('should boolean', () => {
-        expect(component.displayValue(true)).toBe('true')
-      })
-      it('should text', () => {
-        expect(component.displayValue('test')).toEqual('test')
-      })
-      it('should object', () => {
-        expect(component.displayValue({ hallo: 'test' })).toEqual('{ ... }')
-      })
-    }) */
-    /*
-    describe('compare objects', () => {
-      it('missing objects', () => {
-        expect(component.areValuesEqual({}, undefined)).toBeFalse()
-        expect(component.areValuesEqual({}, null)).toBeFalse()
-      })
-      it('should true on same values', () => {
-        expect(component.areValuesEqual(true, true)).toBeTrue()
-        expect(component.areValuesEqual(123, 123)).toBeTrue()
-        expect(component.areValuesEqual('123', '123')).toBeTrue()
-        expect(component.areValuesEqual({ hallo: 'test' }, { hallo: 'test' })).toBeTrue()
-      })
-      it('should false on different values', () => {
-        expect(component.areValuesEqual(true, false)).toBeFalse()
-        expect(component.areValuesEqual(123, 1234)).toBeFalse()
-        expect(component.areValuesEqual('123', '1234')).toBeFalse()
-        expect(component.areValuesEqual({ hallo: 'test' }, { hallo: 'test2' })).toBeFalse()
-      })
-      it('should false on different values', () => {
-        expect(component.areValuesEqual(true, 12)).toBeFalse()
-        expect(component.areValuesEqual(123, '123')).toBeFalse()
-        expect(component.areValuesEqual({}, '1234')).toBeFalse()
-      })
-    }) */
   })
 
   describe('row actions', () => {
@@ -531,10 +505,10 @@ describe('ParameterSearchComponent', () => {
       const event = new MouseEvent('click')
       spyOn(event, 'stopPropagation')
 
-      component.onDetailUsage(event, itemData[0])
+      component.onDetailUsage(event, parameterData[0])
 
       expect(event.stopPropagation).toHaveBeenCalled()
-      expect(component.item4Detail).toEqual(itemData[0])
+      expect(component.item4Detail).toEqual(parameterData[0])
       expect(component.displayUsageDetailDialog).toBeTrue()
     })
 

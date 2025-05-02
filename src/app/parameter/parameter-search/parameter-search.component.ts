@@ -292,6 +292,7 @@ export class ParameterSearchComponent implements OnInit {
           (p) =>
             ({
               ...p,
+              displayName: p.displayName ?? p.name,
               valueType: this.displayValueType(p.value || p.importValue),
               displayValue: this.displayValue(p.value || p.importValue),
               isEqual: this.areValuesEqual(p.value, p.importValue)
@@ -305,6 +306,31 @@ export class ParameterSearchComponent implements OnInit {
       }),
       finalize(() => (this.loading = false))
     )
+  }
+
+  /****************************************************************************
+   *  Helper, due to not calculate such things on HTML!
+   */
+  private displayValueType(val: any): string {
+    if (val === undefined || val === null) return 'UNKNOWN'
+    return (typeof val).toUpperCase()
+  }
+  private displayValue(val: any): string {
+    if (typeof val === 'boolean') return '' + val
+    if (!val) return ''
+    return typeof val !== 'object' ? val : '{ ... }'
+  }
+  private areValuesEqual(val1: any, val2: any): boolean {
+    if (val1 === undefined || val2 === undefined || val1 === null || val2 === null || typeof val1 !== typeof val2)
+      return false
+    if (['boolean', 'number', 'string'].includes(typeof val1)) return val1 === val2
+    if (['object'].includes(typeof val1)) {
+      const commonKeys = [...new Set([...Object.keys(val1), ...Object.keys(val2)])]
+      for (const key of commonKeys) {
+        if (val1[key] !== val2[key]) return false
+      }
+    }
+    return true
   }
 
   /**
@@ -336,7 +362,7 @@ export class ParameterSearchComponent implements OnInit {
       )
   }
 
-  public preparePageActions(): void {
+  private preparePageActions(): void {
     this.actions = [
       {
         labelKey: 'ACTIONS.CREATE.LABEL',
@@ -362,6 +388,12 @@ export class ParameterSearchComponent implements OnInit {
    */
   public onCriteriaReset(): void {
     this.criteria = {}
+  }
+  public onColumnsChange(activeIds: string[]) {
+    this.filteredColumns = activeIds.map((id) => this.columns.find((col) => col.field === id)) as Column[]
+  }
+  public onFilterChange(event: string): void {
+    this.dataTable?.filterGlobal(event, 'contains')
   }
 
   // Detail => CREATE, COPY, EDIT, VIEW
@@ -409,7 +441,7 @@ export class ParameterSearchComponent implements OnInit {
     })
   }
 
-  // History
+  // Usage / History
   public onDetailUsage(ev: Event, item: Parameter) {
     ev.stopPropagation()
     this.item4Detail = item
@@ -420,19 +452,11 @@ export class ParameterSearchComponent implements OnInit {
     this.item4Detail = undefined
   }
 
-  public onColumnsChange(activeIds: string[]) {
-    this.filteredColumns = activeIds.map((id) => this.columns.find((col) => col.field === id)) as Column[]
-  }
-
-  public onFilterChange(event: string): void {
-    this.dataTable?.filterGlobal(event, 'contains')
-  }
-
   /****************************************************************************
    *  UI Helper
    */
-  // getting display names within HTML
   public getProductDisplayName(name: string | undefined, allProducts: ExtendedProduct[]): string | undefined {
+    if (allProducts.length === 0) return name
     return allProducts.find((item) => item.name === name)?.displayName ?? name
   }
   public getAppDisplayName(
@@ -440,31 +464,10 @@ export class ParameterSearchComponent implements OnInit {
     appId: string | undefined,
     allProducts: ExtendedProduct[]
   ): string | undefined {
+    if (allProducts.length === 0) return productName
     return (
       allProducts.find((item) => item.name === productName)?.applications?.find((a) => a.appId === appId)?.appName ??
       appId
     )
-  }
-
-  private displayValueType(val: any): string {
-    if (val === undefined || val === null) return 'UNKNOWN'
-    return (typeof val).toUpperCase()
-  }
-  private displayValue(val: any): string {
-    if (typeof val === 'boolean') return '' + val
-    if (!val) return ''
-    return typeof val !== 'object' ? val : '{ ... }'
-  }
-  private areValuesEqual(val1: any, val2: any): boolean {
-    if (val1 === undefined || val2 === undefined || val1 === null || val2 === null || typeof val1 !== typeof val2)
-      return false
-    if (['boolean', 'number', 'string'].includes(typeof val1)) return val1 === val2
-    if (['object'].includes(typeof val1)) {
-      const commonKeys = [...new Set([...Object.keys(val1), ...Object.keys(val2)])]
-      for (const key of commonKeys) {
-        if (val1[key] !== val2[key]) return false
-      }
-    }
-    return true
   }
 }
