@@ -29,7 +29,12 @@ type ExtendedColumn = Column & {
   css?: string
   sort?: boolean
 }
-export type ExtendedParameter = Parameter & { valueType: string; displayValue: string; isEqual: boolean | undefined }
+export type ExtendedParameter = Parameter & {
+  valueType: string
+  importValueType: string
+  displayValue: string
+  isEqual: boolean | undefined
+}
 export type ExtendedProduct = {
   name: string
   displayName: string
@@ -293,7 +298,8 @@ export class ParameterSearchComponent implements OnInit {
             ({
               ...p,
               displayName: p.displayName ?? p.name,
-              valueType: this.displayValueType(p.value || p.importValue),
+              valueType: this.displayValueType(p.value),
+              importValueType: this.displayValueType(p.importValue),
               displayValue: this.displayValue(p.value || p.importValue),
               isEqual: this.areValuesEqual(p.value, p.importValue)
             }) as ExtendedParameter
@@ -321,11 +327,11 @@ export class ParameterSearchComponent implements OnInit {
     return typeof val !== 'object' ? val : '{ ... }'
   }
   private areValuesEqual(val1: any, val2: any): boolean | undefined {
-    if (val1 === undefined || val2 === undefined || val1 === null || val2 === null) return undefined
+    if ((val1 === undefined && val2 === undefined) || (val1 === null && val2 === null)) return undefined
+    if (val1 === undefined || val2 === undefined || val1 === null || val2 === null) return false
     if (typeof val1 !== typeof val2) return false
-    if (['boolean', 'number', 'string'].includes(typeof val1)) return val1 === val2
     if (['object'].includes(typeof val1)) return JSON.stringify(val1) === JSON.stringify(val2)
-    return true
+    return val1 === val2
   }
 
   /**

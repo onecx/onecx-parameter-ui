@@ -227,7 +227,7 @@
       "DISPLAY_NAME": "Anzeigename des Parameters",
       "DESCRIPTION": "Detaillierte Beschreibung des Parameters",
       "VALUE": "Wert des Parameters",
-      "VALUE.TYPE": "Der Typ des Parameterwertes",
+      "VALUE.TYPE": "Der Typ des Parameterwertes. Wenn die Typen unterschiedlich sind, dann auch der Typ des importierten Wertes.",
       "IMPORT_VALUE": "Importierter Wert",
       "OPERATOR": "Wenn gesetzt, dann wurde der Parameter automatisiert erstellt.",
       "EQUAL": "Vergleich von Wert und importiertem Wert",

@@ -227,7 +227,7 @@
       "DISPLAY_NAME": "Business Name of the Parameter",
       "DESCRIPTION": "Detailed description of the Parameter",
       "VALUE": "Value of the Parameter",
-      "VALUE.TYPE": "Type of Parameter value",
+      "VALUE.TYPE": "Type of Parameter value. If the types are different then the type of the imported value is also displayed.",
       "IMPORT_VALUE": "Imported value",
       "OPERATOR": "If set, the Workspace was created by automation",
       "EQUAL": "Comparison of value and imported value",

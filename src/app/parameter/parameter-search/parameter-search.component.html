@@ -202,12 +202,14 @@
                 >
                   {{ rowData['displayName'] }}
                 </div>
-                <span
-                  *ngIf="col.field === 'valueType'"
-                  [ngClass]="{ 'danger-action-text': rowData['valueType'] === 'UNKNOWN' }"
-                >
-                  {{ 'VALUE_TYPE.' + rowData['valueType'] | translate }}
-                </span>
+                <ng-container *ngIf="col.field === 'valueType'">
+                  <span [ngClass]="{ 'danger-action-text': rowData['valueType'] === 'UNKNOWN' }">
+                    {{ 'VALUE_TYPE.' + rowData['valueType'] | translate }}
+                  </span>
+                  <ng-container *ngIf="rowData['valueType'] !== rowData['importValueType']">
+                    | {{ 'VALUE_TYPE.' + rowData['importValueType'] | translate }}
+                  </ng-container>
+                </ng-container>
                 <span
                   *ngIf="col.field === 'equal'"
                   [ngClass]="
