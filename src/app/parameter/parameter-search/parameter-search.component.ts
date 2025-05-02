@@ -324,12 +324,7 @@ export class ParameterSearchComponent implements OnInit {
     if (val1 === undefined || val2 === undefined || val1 === null || val2 === null) return undefined
     if (typeof val1 !== typeof val2) return false
     if (['boolean', 'number', 'string'].includes(typeof val1)) return val1 === val2
-    if (['object'].includes(typeof val1)) {
-      const commonKeys = [...new Set([...Object.keys(val1), ...Object.keys(val2)])]
-      for (const key of commonKeys) {
-        if (val1[key] !== val2[key]) return false
-      }
-    }
+    if (['object'].includes(typeof val1)) return JSON.stringify(val1) === JSON.stringify(val2)
     return true
   }
 
