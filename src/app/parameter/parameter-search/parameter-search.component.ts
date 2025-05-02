@@ -29,7 +29,7 @@ type ExtendedColumn = Column & {
   css?: string
   sort?: boolean
 }
-export type ExtendedParameter = Parameter & { valueType: string; displayValue: string; isEqual: boolean }
+export type ExtendedParameter = Parameter & { valueType: string; displayValue: string; isEqual: boolean | undefined }
 export type ExtendedProduct = {
   name: string
   displayName: string
@@ -288,7 +288,7 @@ export class ParameterSearchComponent implements OnInit {
       }),
       map((data: ParameterPageResult) => {
         if (!data.stream) return [] as ExtendedParameter[]
-        return (data.stream as Parameter[]).map(
+        return data.stream.map(
           (p) =>
             ({
               ...p,
@@ -320,9 +320,9 @@ export class ParameterSearchComponent implements OnInit {
     if (!val) return ''
     return typeof val !== 'object' ? val : '{ ... }'
   }
-  private areValuesEqual(val1: any, val2: any): boolean {
-    if (val1 === undefined || val2 === undefined || val1 === null || val2 === null || typeof val1 !== typeof val2)
-      return false
+  private areValuesEqual(val1: any, val2: any): boolean | undefined {
+    if (val1 === undefined || val2 === undefined || val1 === null || val2 === null) return undefined
+    if (typeof val1 !== typeof val2) return false
     if (['boolean', 'number', 'string'].includes(typeof val1)) return val1 === val2
     if (['object'].includes(typeof val1)) {
       const commonKeys = [...new Set([...Object.keys(val1), ...Object.keys(val2)])]

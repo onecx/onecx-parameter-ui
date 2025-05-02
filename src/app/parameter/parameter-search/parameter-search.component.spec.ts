@@ -67,7 +67,17 @@ const parameterOrgData: Parameter[] = [
     id: 'id5',
     productName: 'product1',
     applicationId: 'app2',
-    name: 'name5'
+    name: 'name5',
+    displayName: 'Name 5',
+    value: 'text',
+    importValue: false
+  },
+  {
+    modificationCount: 0,
+    id: 'id6',
+    productName: 'product1',
+    applicationId: 'app2',
+    name: 'name6'
   }
 ]
 // data in component
@@ -76,7 +86,8 @@ const parameterData: ExtendedParameter[] = [
   { ...parameterOrgData[1], valueType: 'BOOLEAN', displayValue: 'true', isEqual: false },
   { ...parameterOrgData[2], valueType: 'OBJECT', displayValue: '{ ... }', isEqual: true },
   { ...parameterOrgData[3], valueType: 'OBJECT', displayValue: '{ ... }', isEqual: false },
-  { ...parameterOrgData[4], valueType: 'UNKNOWN', displayValue: '', isEqual: false, displayName: 'name5' }
+  { ...parameterOrgData[4], valueType: 'STRING', displayValue: 'text', isEqual: false },
+  { ...parameterOrgData[5], valueType: 'UNKNOWN', displayValue: '', isEqual: undefined, displayName: 'name6' }
 ]
 // Original form BFF: unsorted and not complete
 const usedProductsOrg: Product[] = [
