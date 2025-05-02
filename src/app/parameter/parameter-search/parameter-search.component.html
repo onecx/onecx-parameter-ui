@@ -101,80 +101,83 @@
           <ng-template pTemplate="body" let-i="rowIndex" let-rowData let-columns="columns">
             <tr [pSelectableRow]="data">
               <!-- actions -->
-              <td pFrozenColumn class="align-items-center text-center">
-                <ng-container *ocxIfNotPermission="'PARAMETER#EDIT'">
+              <td pFrozenColumn>
+                <!-- use the following as container to wrap button within the row height -->
+                <div class="flex flex-row flex-wrap sm:flex-nowrap justify-content-center align-items-center">
+                  <ng-container *ocxIfNotPermission="'PARAMETER#EDIT'">
+                    <button
+                      pbutton
+                      type="button"
+                      *ocxIfPermission="'PARAMETER#VIEW'"
+                      class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
+                      [id]="'pam_search_table_row_' + i + '_action_view'"
+                      (click)="onDetail('VIEW', rowData, $event)"
+                      [attr.aria-label]="'ACTIONS.VIEW.LABEL' | translate"
+                      [pTooltip]="'ACTIONS.VIEW.LABEL' | translate"
+                      tooltipPosition="top"
+                      tooltipEvent="hover"
+                    >
+                      <span class="font-medium p-button-icon pi pi-eye" aria-hidden="true"></span>
+                    </button>
+                  </ng-container>
                   <button
                     pbutton
                     type="button"
-                    *ocxIfPermission="'PARAMETER#VIEW'"
+                    *ocxIfPermission="'PARAMETER#EDIT'"
+                    [id]="'pam_search_table_row_' + i + '_action_edit'"
                     class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-                    [id]="'pam_search_table_row_' + i + '_action_view'"
-                    (click)="onDetail('VIEW', rowData, $event)"
-                    [attr.aria-label]="'ACTIONS.VIEW.LABEL' | translate"
-                    [pTooltip]="'ACTIONS.VIEW.LABEL' | translate"
+                    (click)="onDetail('EDIT', rowData, $event)"
+                    [attr.aria-label]="'ACTIONS.EDIT.LABEL' | translate"
+                    [pTooltip]="'ACTIONS.EDIT.LABEL' | translate"
                     tooltipPosition="top"
                     tooltipEvent="hover"
                   >
-                    <span class="font-medium p-button-icon pi pi-eye" aria-hidden="true"></span>
+                    <span class="font-medium p-button-icon pi pi-pencil" aria-hidden="true"></span>
                   </button>
-                </ng-container>
-                <button
-                  pbutton
-                  type="button"
-                  *ocxIfPermission="'PARAMETER#EDIT'"
-                  [id]="'pam_search_table_row_' + i + '_action_edit'"
-                  class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-                  (click)="onDetail('EDIT', rowData, $event)"
-                  [attr.aria-label]="'ACTIONS.EDIT.LABEL' | translate"
-                  [pTooltip]="'ACTIONS.EDIT.LABEL' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                >
-                  <span class="font-medium p-button-icon pi pi-pencil" aria-hidden="true"></span>
-                </button>
-                <button
-                  pbutton
-                  type="button"
-                  *ocxIfPermission="'PARAMETER#EDIT'"
-                  class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-                  [id]="'pam_search_table_row_' + i + '_action_copy'"
-                  (click)="onDetail('COPY', rowData, $event)"
-                  [attr.aria-label]="'ACTIONS.COPY.LABEL' | translate"
-                  [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                >
-                  <span class="font-medium p-button-icon pi pi-copy" aria-hidden="true"></span>
-                </button>
-                <button
-                  pbutton
-                  type="button"
-                  *ocxIfPermission="'USAGE#VIEW'"
-                  [id]="'pam_search_table_row_' + i + '_action_usage'"
-                  class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-                  (click)="onDetailUsage($event, rowData)"
-                  [disabled]="!rowData['isInHistory']"
-                  [attr.aria-label]="'DIALOG.NAVIGATION.DETAIL_USAGE.LABEL' | translate"
-                  [pTooltip]="'DIALOG.NAVIGATION.DETAIL_USAGE.LABEL' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                >
-                  <span class="font-medium p-button-icon pi pi-history" aria-hidden="true"></span>
-                </button>
-                <button
-                  pbutton
-                  type="button"
-                  *ocxIfPermission="'PARAMETER#DELETE'"
-                  [id]="'pam_search_table_row_' + i + '_action_delete'"
-                  class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-                  (click)="onDelete($event, rowData)"
-                  [attr.aria-label]="'ACTIONS.DELETE.LABEL' | translate"
-                  [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                >
-                  <span class="danger-action-text font-medium p-button-icon pi pi-trash" aria-hidden="true"></span>
-                </button>
+                  <button
+                    pbutton
+                    type="button"
+                    *ocxIfPermission="'PARAMETER#EDIT'"
+                    class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
+                    [id]="'pam_search_table_row_' + i + '_action_copy'"
+                    (click)="onDetail('COPY', rowData, $event)"
+                    [attr.aria-label]="'ACTIONS.COPY.LABEL' | translate"
+                    [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
+                    tooltipPosition="top"
+                    tooltipEvent="hover"
+                  >
+                    <span class="font-medium p-button-icon pi pi-copy" aria-hidden="true"></span>
+                  </button>
+                  <button
+                    pbutton
+                    type="button"
+                    *ocxIfPermission="'USAGE#VIEW'"
+                    [id]="'pam_search_table_row_' + i + '_action_usage'"
+                    class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
+                    (click)="onDetailUsage($event, rowData)"
+                    [disabled]="!rowData['isInHistory']"
+                    [attr.aria-label]="'DIALOG.NAVIGATION.DETAIL_USAGE.LABEL' | translate"
+                    [pTooltip]="'DIALOG.NAVIGATION.DETAIL_USAGE.LABEL' | translate"
+                    tooltipPosition="top"
+                    tooltipEvent="hover"
+                  >
+                    <span class="font-medium p-button-icon pi pi-history" aria-hidden="true"></span>
+                  </button>
+                  <button
+                    pbutton
+                    type="button"
+                    *ocxIfPermission="'PARAMETER#DELETE'"
+                    [id]="'pam_search_table_row_' + i + '_action_delete'"
+                    class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
+                    (click)="onDelete($event, rowData)"
+                    [attr.aria-label]="'ACTIONS.DELETE.LABEL' | translate"
+                    [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
+                    tooltipPosition="top"
+                    tooltipEvent="hover"
+                  >
+                    <span class="danger-action-text font-medium p-button-icon pi pi-trash" aria-hidden="true"></span>
+                  </button>
+                </div>
               </td>
               <td
                 *ngFor="let col of columns"
@@ -190,24 +193,23 @@
                   *ngIf="col.field === 'name'"
                   class="text-ellipsis-2-lines max-w-15rem word-break-all"
                   [ngStyle]="{
-                    'min-width': (rowData['displayName'] ?? rowData['name'] ?? '').length > 15 ? '8rem' : ''
+                    'min-width': rowData['displayName'].length > 15 ? '8rem' : ''
                   }"
                 >
-                  {{ rowData['displayName'] ?? rowData['name'] }}
+                  {{ rowData['displayName'] }}
                 </div>
-
-                @let valType = displayValueType(value);
-                <span *ngIf="col.field === 'valueType'" [ngClass]="{ 'danger-action-text': valType === 'UNKNOWN' }">
-                  {{ 'VALUE_TYPE.' + valType | translate }}
+                <span
+                  *ngIf="col.field === 'valueType'"
+                  [ngClass]="{ 'danger-action-text': rowData['valueType'] === 'UNKNOWN' }"
+                >
+                  {{ 'VALUE_TYPE.' + rowData['valueType'] | translate }}
                 </span>
-
-                @let comparisonResult = compareDeeply(rowData['value'], rowData['importValue']);
                 <span
                   *ngIf="col.field === 'equal'"
                   [ngClass]="
-                    comparisonResult === true
+                    rowData['isEqual'] === true
                       ? 'pi pi-check text-green-600'
-                      : comparisonResult === false
+                      : rowData['isEqual'] === false
                         ? 'pi pi-times text-red-600'
                         : ''
                   "
@@ -224,7 +226,7 @@
                     'min-width': (value ?? '').length > 15 ? '10rem' : ''
                   }"
                 >
-                  {{ displayValue(value) }}
+                  {{ rowData['displayValue'] }}
                 </div>
 
                 <ng-container *ngIf="col.field === 'applicationId'">
