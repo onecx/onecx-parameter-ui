@@ -300,7 +300,7 @@ export class ParameterSearchComponent implements OnInit {
               displayName: p.displayName ?? p.name,
               valueType: this.displayValueType(p.value),
               importValueType: this.displayValueType(p.importValue),
-              displayValue: this.displayValue(p.value || p.importValue),
+              displayValue: this.displayValue(p.value, p.importValue),
               isEqual: this.areValuesEqual(p.value, p.importValue)
             }) as ExtendedParameter
         )
@@ -321,16 +321,18 @@ export class ParameterSearchComponent implements OnInit {
     if (val === undefined || val === null) return 'UNKNOWN'
     return (typeof val).toUpperCase()
   }
-  private displayValue(val: any): string {
+  private displayValue(val: any, impVal: any): string {
     if (typeof val === 'boolean') return '' + val
-    if (!val) return ''
+    const v = val ?? impVal
+    if (typeof v === 'boolean') return '' + val
+    if (!v) return ''
     return typeof val !== 'object' ? val : '{ ... }'
   }
   private areValuesEqual(val1: any, val2: any): boolean | undefined {
     if ((val1 === undefined && val2 === undefined) || (val1 === null && val2 === null)) return undefined
     if (val1 === undefined || val2 === undefined || val1 === null || val2 === null) return false
     if (typeof val1 !== typeof val2) return false
-    if (['object'].includes(typeof val1)) return JSON.stringify(val1) === JSON.stringify(val2)
+    if (typeof val1 === 'object') return JSON.stringify(val1) === JSON.stringify(val2)
     return val1 === val2
   }
 
