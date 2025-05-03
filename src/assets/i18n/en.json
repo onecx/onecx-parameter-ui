@@ -176,7 +176,7 @@
         "START": "Start of timeframe",
         "END": "End of timeframe",
         "DURATION": "Period in which the Parameter was used with the supplied value",
-        "INSTANCE_ID": "ID of the instance that used the parameter",
+        "INSTANCE_ID": "ID of the instance that used the Parameter",
         "DEFAULT_VALUE": "Default value",
         "USED_VALUE": "Used value",
         "LAST_USED": "Last used value"
@@ -227,7 +227,7 @@
       "COMBINED_NAME": "Business Name or Name of the Parameter",
       "DISPLAY_NAME": "Business Name of the Parameter",
       "DESCRIPTION": "Detailed description of the Parameter",
-      "VALUE": "Value of the Parameter",
+      "VALUE": "Value of the Parameter - corresponds to the imported value if only this is available.",
       "VALUE.TYPE": "Type of Parameter value. If the types are different then the type of the imported value is also displayed.",
       "VALUE.TYPE.DETAIL": "Type of Parameter value.",
       "IMPORT_VALUE": "Imported value",

@@ -322,14 +322,14 @@ export class ParameterSearchComponent implements OnInit {
     return (typeof val).toUpperCase()
   }
   private displayValue(val: any, impVal: any): string {
-    if (typeof val === 'boolean') return '' + val
+    if (typeof val === 'boolean') return '' + val // true | false
     const v = val ?? impVal
-    if (typeof v === 'boolean') return '' + val
+    if (typeof v === 'boolean') return '' + v
     if (!v) return ''
-    return typeof val !== 'object' ? val : '{ ... }'
+    return typeof v === 'object' ? '{ ... }' : v
   }
   private areValuesEqual(val1: any, val2: any): boolean | undefined {
-    if ((val1 === undefined && val2 === undefined) || (val1 === null && val2 === null)) return undefined
+    if (val1 === undefined && val2 === undefined) return undefined
     if (val1 === undefined || val2 === undefined || val1 === null || val2 === null) return false
     if (typeof val1 !== typeof val2) return false
     if (typeof val1 === 'object') return JSON.stringify(val1) === JSON.stringify(val2)

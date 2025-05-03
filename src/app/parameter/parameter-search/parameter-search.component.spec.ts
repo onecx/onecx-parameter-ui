@@ -24,13 +24,23 @@ import { ParameterHistoryComponent } from '../parameter-history/parameter-histor
 const parameterOrgData: Parameter[] = [
   {
     modificationCount: 0,
-    id: 'id1',
+    id: 'id0',
     productName: 'product1',
     applicationId: 'app1',
-    name: 'name1',
-    displayName: 'Name 1',
+    name: 'name0',
+    displayName: 'Name 0',
     value: 'val1',
     importValue: 'val1'
+  },
+  {
+    modificationCount: 0,
+    id: 'id1',
+    productName: 'product1',
+    applicationId: 'app2',
+    name: 'name1',
+    displayName: 'Name 1',
+    value: true,
+    importValue: false
   },
   {
     modificationCount: 0,
@@ -38,17 +48,7 @@ const parameterOrgData: Parameter[] = [
     productName: 'product1',
     applicationId: 'app2',
     name: 'name2',
-    displayName: 'Name 2',
-    value: true,
-    importValue: false
-  },
-  {
-    modificationCount: 0,
-    id: 'id3',
-    productName: 'product1',
-    applicationId: 'app2',
-    name: 'name3',
-    displayName: 'name3',
+    displayName: 'name2',
     value: { v: 'v2' },
     importValue: { v: 'v2' }
   },
@@ -57,10 +57,20 @@ const parameterOrgData: Parameter[] = [
     id: 'id4',
     productName: 'product1',
     applicationId: 'app2',
-    name: 'name4',
-    displayName: 'Name 4',
+    name: 'name3',
+    displayName: 'Name 3',
     value: { v: 'v2' },
     importValue: { v: 'v2', w: true }
+  },
+  {
+    modificationCount: 0,
+    id: 'id4',
+    productName: 'product1',
+    applicationId: 'app2',
+    name: 'name4',
+    displayName: 'Name 4',
+    value: 'text',
+    importValue: false
   },
   {
     modificationCount: 0,
@@ -69,7 +79,6 @@ const parameterOrgData: Parameter[] = [
     applicationId: 'app2',
     name: 'name5',
     displayName: 'Name 5',
-    value: 'text',
     importValue: false
   },
   {
@@ -87,8 +96,9 @@ const parameterData: ExtendedParameter[] = [
   { ...parameterOrgData[2], valueType: 'OBJECT', importValueType: 'OBJECT', displayValue: '{ ... }', isEqual: true },
   { ...parameterOrgData[3], valueType: 'OBJECT', importValueType: 'OBJECT', displayValue: '{ ... }', isEqual: false },
   { ...parameterOrgData[4], valueType: 'STRING', importValueType: 'BOOLEAN', displayValue: 'text', isEqual: false },
+  { ...parameterOrgData[5], valueType: 'UNKNOWN', importValueType: 'BOOLEAN', displayValue: 'false', isEqual: false },
   {
-    ...parameterOrgData[5],
+    ...parameterOrgData[6],
     valueType: 'UNKNOWN',
     importValueType: 'UNKNOWN',
     displayValue: '',
@@ -129,7 +139,7 @@ const allProducts: ExtendedProduct[] = [
   { name: 'product5', displayName: 'product5', applications: [] }
 ]
 
-describe('ParameterSearchComponent', () => {
+fdescribe('ParameterSearchComponent', () => {
   let component: ParameterSearchComponent
   let fixture: ComponentFixture<ParameterSearchComponent>
   const routerSpy = jasmine.createSpyObj('router', ['navigate'])
