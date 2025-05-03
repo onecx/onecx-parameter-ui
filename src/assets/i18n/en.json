@@ -235,7 +235,7 @@
       "EQUAL": "Comparison of value and imported value",
       "EQUAL.TRUE": "Value and imported value are equal",
       "EQUAL.FALSE": "Value and imported value are not equal",
-      "EQUAL.UNDEFINED": ""
+      "EQUAL.UNDEFINED": "Not available because no value"
     }
   },
   "VALUE_TYPE": {
@@ -243,7 +243,8 @@
     "NUMBER": "Number",
     "OBJECT": "Object",
     "STRING": "Text",
-    "UNKNOWN": "Unknown"
+    "UNKNOWN": "n.a.",
+    "UNKNOWN.TOOLTIP": "Not available because no value"
   },
   "VALIDATION": {
     "ERRORS": {

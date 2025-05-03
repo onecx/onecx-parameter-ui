@@ -202,12 +202,20 @@
                 >
                   {{ rowData['displayName'] }}
                 </div>
-                <ng-container *ngIf="col.field === 'valueType'">
+
+                @let isUnknown = [rowData['valueType'], rowData['importValueType']].includes('UNKNOWN');
+                <span
+                  *ngIf="col.field === 'valueType'"
+                  [pTooltip]="isUnknown ? ('VALUE_TYPE.UNKNOWN.TOOLTIP' | translate) : ''"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
                   {{ 'VALUE_TYPE.' + rowData['valueType'] | translate }}
                   <ng-container *ngIf="rowData['valueType'] !== rowData['importValueType']">
                     | {{ 'VALUE_TYPE.' + rowData['importValueType'] | translate }}
                   </ng-container>
-                </ng-container>
+                </span>
+
                 <span
                   *ngIf="col.field === 'equal'"
                   [ngClass]="
@@ -221,14 +229,13 @@
                   [pTooltip]="'PARAMETER.TOOLTIPS.EQUAL.' + rowData['isEqual'] | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
-                ></span>
+                  >{{ rowData['isEqual'] === 'UNDEFINED' ? 'n.a.' : '' }}</span
+                >
 
                 <div
                   *ngIf="col.field === 'value'"
                   class="text-ellipsis-2-lines max-w-20rem word-break-all"
-                  [ngStyle]="{
-                    'min-width': (value ?? '').length > 15 ? '10rem' : ''
-                  }"
+                  [ngStyle]="{ 'min-width': (value ?? '').length > 15 ? '10rem' : '' }"
                 >
                   {{ rowData['displayValue'] }}
                 </div>
@@ -240,7 +247,7 @@
                 </ng-container>
 
                 <ng-container *ngIf="col.isBoolean">
-                  <span *ngIf="rowData[col.field]" class="pi pi-check text-green-600"></span>
+                  <span *ngIf="rowData[col.field] === true" class="pi pi-check text-green-600"></span>
                 </ng-container>
                 <ng-container *ngIf="col.isDate"> {{ rowData[col.field] | date: dateFormat }} </ng-container>
               </td>

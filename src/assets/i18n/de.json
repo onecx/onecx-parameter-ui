@@ -235,7 +235,7 @@
       "EQUAL": "Vergleich von Wert und importiertem Wert",
       "EQUAL.TRUE": "Wert und importierter Wert sind gleich",
       "EQUAL.FALSE": "Wert und importierter Wert sind ungleich",
-      "EQUAL.UNDEFINED": ""
+      "EQUAL.UNDEFINED": "Nicht anwendbar/verfügbar, da kein Wert"
     }
   },
   "VALUE_TYPE": {
@@ -243,7 +243,8 @@
     "NUMBER": "Zahl",
     "OBJECT": "Objekt",
     "STRING": "Text",
-    "UNKNOWN": "Unbekannt"
+    "UNKNOWN": "n.a.",
+    "UNKNOWN.TOOLTIP": "Nicht anwendbar/verfügbar, da kein Wert"
   },
   "VALIDATION": {
     "ERRORS": {
