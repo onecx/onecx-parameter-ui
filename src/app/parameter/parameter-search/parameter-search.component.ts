@@ -33,7 +33,7 @@ export type ExtendedParameter = Parameter & {
   valueType: string
   importValueType: string
   displayValue: string
-  isEqual: boolean | undefined
+  isEqual: string
 }
 export type ExtendedProduct = {
   name: string
@@ -328,12 +328,13 @@ export class ParameterSearchComponent implements OnInit {
     if (!v) return ''
     return typeof v === 'object' ? '{ ... }' : v
   }
-  private areValuesEqual(val1: any, val2: any): boolean | undefined {
-    if (val1 === undefined && val2 === undefined) return undefined
-    if (val1 === undefined || val2 === undefined || val1 === null || val2 === null) return false
-    if (typeof val1 !== typeof val2) return false
-    if (typeof val1 === 'object') return JSON.stringify(val1) === JSON.stringify(val2)
-    return val1 === val2
+  // value can be boolean
+  private areValuesEqual(val1: any, val2: any): string {
+    if (typeof val1 !== typeof val2) return 'FALSE'
+    if (typeof val1 === 'boolean') return (val1 === val2).toString().toLocaleUpperCase()
+    if (!val1 && !val2) return 'UNDEFINED' // typeof null == object!
+    if (typeof val1 === 'object') return (JSON.stringify(val1) === JSON.stringify(val2)).toString().toLocaleUpperCase()
+    return (val1 === val2).toString().toLocaleUpperCase()
   }
 
   /**

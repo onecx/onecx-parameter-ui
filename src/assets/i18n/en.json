@@ -234,7 +234,8 @@
       "OPERATOR": "If set, the Workspace was created by automation",
       "EQUAL": "Comparison of value and imported value",
       "EQUAL.TRUE": "Value and imported value are equal",
-      "EQUAL.FALSE": "Value and imported value are not equal"
+      "EQUAL.FALSE": "Value and imported value are not equal",
+      "EQUAL.UNDEFINED": ""
     }
   },
   "VALUE_TYPE": {

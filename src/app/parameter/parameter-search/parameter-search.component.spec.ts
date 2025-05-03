@@ -86,23 +86,25 @@ const parameterOrgData: Parameter[] = [
     id: 'id6',
     productName: 'product1',
     applicationId: 'app2',
-    name: 'name6'
+    name: 'name6',
+    value: undefined,
+    importValue: undefined
   }
 ]
 // data in component
 const parameterData: ExtendedParameter[] = [
-  { ...parameterOrgData[0], valueType: 'STRING', importValueType: 'STRING', displayValue: 'val1', isEqual: true },
-  { ...parameterOrgData[1], valueType: 'BOOLEAN', importValueType: 'BOOLEAN', displayValue: 'true', isEqual: false },
-  { ...parameterOrgData[2], valueType: 'OBJECT', importValueType: 'OBJECT', displayValue: '{ ... }', isEqual: true },
-  { ...parameterOrgData[3], valueType: 'OBJECT', importValueType: 'OBJECT', displayValue: '{ ... }', isEqual: false },
-  { ...parameterOrgData[4], valueType: 'STRING', importValueType: 'BOOLEAN', displayValue: 'text', isEqual: false },
-  { ...parameterOrgData[5], valueType: 'UNKNOWN', importValueType: 'BOOLEAN', displayValue: 'false', isEqual: false },
+  { ...parameterOrgData[0], valueType: 'STRING', importValueType: 'STRING', displayValue: 'val1', isEqual: 'TRUE' },
+  { ...parameterOrgData[1], valueType: 'BOOLEAN', importValueType: 'BOOLEAN', displayValue: 'true', isEqual: 'FALSE' },
+  { ...parameterOrgData[2], valueType: 'OBJECT', importValueType: 'OBJECT', displayValue: '{ ... }', isEqual: 'TRUE' },
+  { ...parameterOrgData[3], valueType: 'OBJECT', importValueType: 'OBJECT', displayValue: '{ ... }', isEqual: 'FALSE' },
+  { ...parameterOrgData[4], valueType: 'STRING', importValueType: 'BOOLEAN', displayValue: 'text', isEqual: 'FALSE' },
+  { ...parameterOrgData[5], valueType: 'UNKNOWN', importValueType: 'BOOLEAN', displayValue: 'false', isEqual: 'FALSE' },
   {
     ...parameterOrgData[6],
     valueType: 'UNKNOWN',
     importValueType: 'UNKNOWN',
     displayValue: '',
-    isEqual: undefined,
+    isEqual: 'UNDEFINED',
     displayName: 'name6'
   }
 ]
@@ -139,7 +141,7 @@ const allProducts: ExtendedProduct[] = [
   { name: 'product5', displayName: 'product5', applications: [] }
 ]
 
-fdescribe('ParameterSearchComponent', () => {
+describe('ParameterSearchComponent', () => {
   let component: ParameterSearchComponent
   let fixture: ComponentFixture<ParameterSearchComponent>
   const routerSpy = jasmine.createSpyObj('router', ['navigate'])

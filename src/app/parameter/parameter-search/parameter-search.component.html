@@ -203,9 +203,7 @@
                   {{ rowData['displayName'] }}
                 </div>
                 <ng-container *ngIf="col.field === 'valueType'">
-                  <span [ngClass]="{ 'danger-action-text': rowData['valueType'] === 'UNKNOWN' }">
-                    {{ 'VALUE_TYPE.' + rowData['valueType'] | translate }}
-                  </span>
+                  {{ 'VALUE_TYPE.' + rowData['valueType'] | translate }}
                   <ng-container *ngIf="rowData['valueType'] !== rowData['importValueType']">
                     | {{ 'VALUE_TYPE.' + rowData['importValueType'] | translate }}
                   </ng-container>
@@ -213,18 +211,14 @@
                 <span
                   *ngIf="col.field === 'equal'"
                   [ngClass]="
-                    rowData['isEqual'] === true
+                    rowData['isEqual'] === 'TRUE'
                       ? 'pi pi-check text-green-600'
-                      : rowData['isEqual'] === false
+                      : rowData['isEqual'] === 'FALSE'
                         ? 'pi pi-times text-red-600'
                         : ''
                   "
-                  [attr.aria-label]="
-                    'PARAMETER.TOOLTIPS.EQUAL.' + (rowData['isEqual'] === true ? 'TRUE' : 'FALSE') | translate
-                  "
-                  [pTooltip]="
-                    'PARAMETER.TOOLTIPS.EQUAL.' + (rowData['isEqual'] === true ? 'TRUE' : 'FALSE') | translate
-                  "
+                  [attr.aria-label]="'PARAMETER.TOOLTIPS.EQUAL.' + rowData['isEqual'] | translate"
+                  [pTooltip]="'PARAMETER.TOOLTIPS.EQUAL.' + rowData['isEqual'] | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 ></span>
