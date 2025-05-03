@@ -212,6 +212,7 @@
     "COMBINED_NAME": "Name",
     "DISPLAY_NAME": "Anzeigename",
     "VALUE": "Wert",
+    "VALUE.EMPTY": "Es ist kein Wert gespeichert.",
     "VALUE.TYPE": "Typ",
     "IMPORT_VALUE": "Importwert",
     "DESCRIPTION": "Beschreibung",
@@ -226,13 +227,15 @@
       "COMBINED_NAME": "Anzeigename oder Name des Parameters",
       "DISPLAY_NAME": "Anzeigename des Parameters",
       "DESCRIPTION": "Detaillierte Beschreibung des Parameters",
-      "VALUE": "Wert des Parameters",
-      "VALUE.TYPE": "Der Typ des Parameterwertes",
+      "VALUE": "Wert des Parameters - entspricht dem importierten Wert wenn nur dieser vorhanden.",
+      "VALUE.TYPE": "Der Typ des Parameterwertes. Wenn die Typen unterschiedlich sind, dann auch der Typ des importierten Wertes.",
+      "VALUE.TYPE.DETAIL": "Der Typ des Parameterwertes.",
       "IMPORT_VALUE": "Importierter Wert",
       "OPERATOR": "Wenn gesetzt, dann wurde der Parameter automatisiert erstellt.",
       "EQUAL": "Vergleich von Wert und importiertem Wert",
       "EQUAL.TRUE": "Wert und importierter Wert sind gleich",
-      "EQUAL.FALSE": "Wert und importierter Wert sind ungleich"
+      "EQUAL.FALSE": "Wert und importierter Wert sind ungleich",
+      "EQUAL.UNDEFINED": ""
     }
   },
   "VALUE_TYPE": {

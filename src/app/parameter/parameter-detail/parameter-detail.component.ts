@@ -146,7 +146,7 @@ export class ParameterDetailComponent implements OnChanges {
       displayName: new FormControl(null, [Validators.maxLength(255)]),
       description: new FormControl(null, [Validators.maxLength(255)]),
       importValue: new FormControl(null),
-      importValueType: new FormControl(this.valueTypeOptions[2]),
+      importValueType: new FormControl(null),
       importValueBoolean: new FormControl(false),
       valueBoolean: new FormControl(false)
     }
@@ -193,6 +193,8 @@ export class ParameterDetailComponent implements OnChanges {
     if (data) {
       this.onChangeProductName(data?.productName)
       this.formGroup.patchValue(data) // fill what exist
+      // clear value field if special type
+      if (['boolean', 'object'].includes(typeof data.value)) this.formGroup.controls['value'].setValue(null)
       // manage specifics for value fields
       this.manageValueFormFields(data.value, 'valueType', 'valueBoolean', 'valueObject')
       this.manageValueFormFields(data.importValue, 'importValueType', 'importValueBoolean', 'importValue')
@@ -211,7 +213,6 @@ export class ParameterDetailComponent implements OnChanges {
         this.formGroup.controls['productName'].disable()
         this.formGroup.controls['applicationId'].disable()
         this.formGroup.controls['name'].disable()
-        this.formGroup.controls['valueType'].disable()
         this.formGroup.controls['importValue'].disable()
         this.formGroup.controls['importValueType'].disable()
         this.formGroup.controls['importValueBoolean'].disable()
@@ -224,7 +225,7 @@ export class ParameterDetailComponent implements OnChanges {
 
   // find out value type and fill special form fields
   private manageValueFormFields(val: any, typeField: string, booleanField: string, objectField: string): void {
-    const type = val !== undefined && val !== null ? typeof val : 'string'
+    const type = val !== undefined && val !== null ? typeof val : 'unknown'
     this.formGroup.controls[typeField].setValue(type.toUpperCase())
     if (type === 'boolean') this.formGroup.controls[booleanField].setValue(val)
     if (type === 'object' && val) {
@@ -335,8 +336,11 @@ export class ParameterDetailComponent implements OnChanges {
       case 'OBJECT':
         val = JSON.parse(this.formGroup.controls[field[3]].value)
         break
+      case 'NUMBER':
+        val = this.formGroup.controls[field[1]].value * 1
+        break
       default:
-        val = this.formGroup.controls[field[1]].value
+        val = this.formGroup.controls[field[1]].value + ''
     }
     return val
   }

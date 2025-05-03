@@ -24,13 +24,23 @@ import { ParameterHistoryComponent } from '../parameter-history/parameter-histor
 const parameterOrgData: Parameter[] = [
   {
     modificationCount: 0,
-    id: 'id1',
+    id: 'id0',
     productName: 'product1',
     applicationId: 'app1',
-    name: 'name1',
-    displayName: 'Name 1',
+    name: 'name0',
+    displayName: 'Name 0',
     value: 'val1',
     importValue: 'val1'
+  },
+  {
+    modificationCount: 0,
+    id: 'id1',
+    productName: 'product1',
+    applicationId: 'app2',
+    name: 'name1',
+    displayName: 'Name 1',
+    value: true,
+    importValue: false
   },
   {
     modificationCount: 0,
@@ -38,17 +48,7 @@ const parameterOrgData: Parameter[] = [
     productName: 'product1',
     applicationId: 'app2',
     name: 'name2',
-    displayName: 'Name 2',
-    value: true,
-    importValue: false
-  },
-  {
-    modificationCount: 0,
-    id: 'id3',
-    productName: 'product1',
-    applicationId: 'app2',
-    name: 'name3',
-    displayName: 'name3',
+    displayName: 'name2',
     value: { v: 'v2' },
     importValue: { v: 'v2' }
   },
@@ -57,10 +57,20 @@ const parameterOrgData: Parameter[] = [
     id: 'id4',
     productName: 'product1',
     applicationId: 'app2',
-    name: 'name4',
-    displayName: 'Name 4',
+    name: 'name3',
+    displayName: 'Name 3',
     value: { v: 'v2' },
     importValue: { v: 'v2', w: true }
+  },
+  {
+    modificationCount: 0,
+    id: 'id4',
+    productName: 'product1',
+    applicationId: 'app2',
+    name: 'name4',
+    displayName: 'Name 4',
+    value: 'text',
+    importValue: false
   },
   {
     modificationCount: 0,
@@ -69,7 +79,6 @@ const parameterOrgData: Parameter[] = [
     applicationId: 'app2',
     name: 'name5',
     displayName: 'Name 5',
-    value: 'text',
     importValue: false
   },
   {
@@ -77,17 +86,27 @@ const parameterOrgData: Parameter[] = [
     id: 'id6',
     productName: 'product1',
     applicationId: 'app2',
-    name: 'name6'
+    name: 'name6',
+    value: undefined,
+    importValue: undefined
   }
 ]
 // data in component
 const parameterData: ExtendedParameter[] = [
-  { ...parameterOrgData[0], valueType: 'STRING', displayValue: 'val1', isEqual: true },
-  { ...parameterOrgData[1], valueType: 'BOOLEAN', displayValue: 'true', isEqual: false },
-  { ...parameterOrgData[2], valueType: 'OBJECT', displayValue: '{ ... }', isEqual: true },
-  { ...parameterOrgData[3], valueType: 'OBJECT', displayValue: '{ ... }', isEqual: false },
-  { ...parameterOrgData[4], valueType: 'STRING', displayValue: 'text', isEqual: false },
-  { ...parameterOrgData[5], valueType: 'UNKNOWN', displayValue: '', isEqual: undefined, displayName: 'name6' }
+  { ...parameterOrgData[0], valueType: 'STRING', importValueType: 'STRING', displayValue: 'val1', isEqual: 'TRUE' },
+  { ...parameterOrgData[1], valueType: 'BOOLEAN', importValueType: 'BOOLEAN', displayValue: 'true', isEqual: 'FALSE' },
+  { ...parameterOrgData[2], valueType: 'OBJECT', importValueType: 'OBJECT', displayValue: '{ ... }', isEqual: 'TRUE' },
+  { ...parameterOrgData[3], valueType: 'OBJECT', importValueType: 'OBJECT', displayValue: '{ ... }', isEqual: 'FALSE' },
+  { ...parameterOrgData[4], valueType: 'STRING', importValueType: 'BOOLEAN', displayValue: 'text', isEqual: 'FALSE' },
+  { ...parameterOrgData[5], valueType: 'UNKNOWN', importValueType: 'BOOLEAN', displayValue: 'false', isEqual: 'FALSE' },
+  {
+    ...parameterOrgData[6],
+    valueType: 'UNKNOWN',
+    importValueType: 'UNKNOWN',
+    displayValue: '',
+    isEqual: 'UNDEFINED',
+    displayName: 'name6'
+  }
 ]
 // Original form BFF: unsorted and not complete
 const usedProductsOrg: Product[] = [

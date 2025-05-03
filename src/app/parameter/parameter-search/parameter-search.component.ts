@@ -29,7 +29,12 @@ type ExtendedColumn = Column & {
   css?: string
   sort?: boolean
 }
-export type ExtendedParameter = Parameter & { valueType: string; displayValue: string; isEqual: boolean | undefined }
+export type ExtendedParameter = Parameter & {
+  valueType: string
+  importValueType: string
+  displayValue: string
+  isEqual: string
+}
 export type ExtendedProduct = {
   name: string
   displayName: string
@@ -293,8 +298,9 @@ export class ParameterSearchComponent implements OnInit {
             ({
               ...p,
               displayName: p.displayName ?? p.name,
-              valueType: this.displayValueType(p.value || p.importValue),
-              displayValue: this.displayValue(p.value || p.importValue),
+              valueType: this.displayValueType(p.value),
+              importValueType: this.displayValueType(p.importValue),
+              displayValue: this.displayValue(p.value, p.importValue),
               isEqual: this.areValuesEqual(p.value, p.importValue)
             }) as ExtendedParameter
         )
@@ -315,17 +321,20 @@ export class ParameterSearchComponent implements OnInit {
     if (val === undefined || val === null) return 'UNKNOWN'
     return (typeof val).toUpperCase()
   }
-  private displayValue(val: any): string {
-    if (typeof val === 'boolean') return '' + val
-    if (!val) return ''
-    return typeof val !== 'object' ? val : '{ ... }'
+  private displayValue(val: any, impVal: any): string {
+    if (typeof val === 'boolean') return '' + val // true | false
+    const v = val ?? impVal
+    if (typeof v === 'boolean') return '' + v
+    if (!v) return ''
+    return typeof v === 'object' ? '{ ... }' : v
   }
-  private areValuesEqual(val1: any, val2: any): boolean | undefined {
-    if (val1 === undefined || val2 === undefined || val1 === null || val2 === null) return undefined
-    if (typeof val1 !== typeof val2) return false
-    if (['boolean', 'number', 'string'].includes(typeof val1)) return val1 === val2
-    if (['object'].includes(typeof val1)) return JSON.stringify(val1) === JSON.stringify(val2)
-    return true
+  // value can be boolean
+  private areValuesEqual(val1: any, val2: any): string {
+    if (typeof val1 !== typeof val2) return 'FALSE'
+    if (typeof val1 === 'boolean') return (val1 === val2).toString().toLocaleUpperCase()
+    if (!val1 && !val2) return 'UNDEFINED' // typeof null == object!
+    if (typeof val1 === 'object') return (JSON.stringify(val1) === JSON.stringify(val2)).toString().toLocaleUpperCase()
+    return (val1 === val2).toString().toLocaleUpperCase()
   }
 
   /**
