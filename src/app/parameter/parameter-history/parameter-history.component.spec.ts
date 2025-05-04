@@ -13,32 +13,121 @@ import { Column, PortalMessageService } from '@onecx/portal-integration-angular'
 import { History, HistoriesAPIService, Product } from 'src/app/shared/generated'
 import {
   ApplicationAbstract,
+  ExtendedHistory,
   ExtendedProduct,
   ParameterHistoryComponent,
   ProductAbstract
 } from './parameter-history.component'
 import { ParameterSearchComponent } from '../parameter-search/parameter-search.component'
 
-const itemData: History[] = [
+// response data of parameter search service
+const historyRespData: History[] = [
+  {
+    id: 'id0',
+    productName: 'product1',
+    applicationId: 'app1',
+    name: 'name0',
+    usedValue: 'Val',
+    defaultValue: 'Val',
+    start: '2024-01-01T00:00:00Z',
+    end: '2024-01-01T00:10:00Z'
+  },
   {
     id: 'id1',
     productName: 'product1',
     applicationId: 'app1',
     name: 'name1',
-    usedValue: 'usedVal1',
-    defaultValue: 'defaultVal1',
-    start: '2024-01-01T00:00:00Z',
-    end: '2024-01-01T00:10:00Z'
+    usedValue: 1234,
+    defaultValue: true,
+    start: '2024-01-01T00:20:00Z',
+    end: '2024-01-01T00:25:00Z'
   },
   {
     id: 'id2',
     productName: 'product1',
     applicationId: 'app1',
     name: 'name2',
-    usedValue: 'usedVal2',
-    defaultValue: 'defaultVal2',
+    usedValue: { hallo: 'test', hi: 'all' },
+    defaultValue: { hallo: 'test' },
     start: '2024-01-01T00:20:00Z',
     end: '2024-01-01T00:25:00Z'
+  },
+  {
+    id: 'id3',
+    productName: 'product1',
+    applicationId: 'app1',
+    name: 'name3',
+    usedValue: { hallo: 'test', hi: 'all' },
+    start: '2024-01-01T00:20:00Z',
+    end: '2024-01-01T00:25:00Z'
+  },
+  {
+    id: 'id4',
+    productName: 'product1',
+    applicationId: 'app1',
+    name: 'no data',
+    start: '2024-01-01T00:20:00Z',
+    end: '2024-01-01T00:25:00Z'
+  },
+  {
+    id: 'id5',
+    productName: 'product1',
+    applicationId: 'app1',
+    name: 'boolean comparison',
+    usedValue: false,
+    defaultValue: false,
+    start: '2024-01-01T00:20:00Z',
+    end: '2024-01-01T00:25:00Z'
+  }
+]
+const historyData: ExtendedHistory[] = [
+  {
+    ...historyRespData[0],
+    valueType: 'STRING',
+    defaultValueType: 'STRING',
+    displayValue: 'Val',
+    defaultDisplayValue: 'Val',
+    isEqual: 'TRUE'
+  },
+  {
+    ...historyRespData[1],
+    valueType: 'NUMBER',
+    defaultValueType: 'BOOLEAN',
+    displayValue: '1234',
+    defaultDisplayValue: 'true',
+    isEqual: 'FALSE'
+  },
+  {
+    ...historyRespData[2],
+    valueType: 'OBJECT',
+    defaultValueType: 'OBJECT',
+    displayValue: '{ ... }',
+    defaultDisplayValue: '{ ... }',
+    isEqual: 'FALSE'
+  },
+  {
+    ...historyRespData[3],
+    valueType: 'OBJECT',
+    defaultValueType: 'UNKNOWN',
+    displayValue: '{ ... }',
+    defaultDisplayValue: '',
+    isEqual: 'FALSE'
+  },
+  {
+    ...historyRespData[4],
+    valueType: 'UNKNOWN',
+    defaultValueType: 'UNKNOWN',
+    displayValue: '',
+    defaultDisplayValue: '',
+    isEqual: 'UNDEFINED'
+  },
+  {
+    ...historyRespData[5],
+    valueType: 'BOOLEAN',
+    defaultValueType: 'BOOLEAN',
+    displayValue: 'false',
+    defaultDisplayValue: 'false',
+    isEqual: 'TRUE'
   }
 ]
 // Original form BFF: unsorted and not complete
@@ -170,13 +259,13 @@ describe('ParameterHistoryComponent', () => {
 
   describe('search', () => {
     it('should search parameters without search criteria', (done) => {
-      historyApiSpy.getAllHistoryLatest.and.returnValue(of({ stream: itemData }))
+      historyApiSpy.getAllHistoryLatest.and.returnValue(of({ stream: historyRespData }))
 
       component.onSearch({})
 
       component.data$?.subscribe({
         next: (data) => {
-          expect(data).toEqual(itemData)
+          expect(data).toEqual(historyData)
           done()
         },
         error: done.fail
@@ -298,20 +387,20 @@ describe('ParameterHistoryComponent', () => {
     it('should show details of a parameter', () => {
       const mode = 'EDIT'
 
-      component.onDetail(mode, itemData[0])
+      component.onDetail(mode, historyData[0])
 
       expect(component.changeMode).toEqual(mode)
-      expect(component.item4Detail).toBe(itemData[0])
+      expect(component.item4Detail).toBe(historyData[0])
       expect(component.displayDetailDialog).toBeTrue()
     })
 
     it('should prepare the copy of a parameter', () => {
       const mode = 'COPY'
 
-      component.onDetail(mode, itemData[0])
+      component.onDetail(mode, historyData[0])
 
       expect(component.changeMode).toEqual(mode)
-      expect(component.item4Detail).toBe(itemData[0])
+      expect(component.item4Detail).toBe(historyData[0])
       expect(component.displayDetailDialog).toBeTrue()
 
       component.onCloseDetail(true)
@@ -378,10 +467,10 @@ describe('ParameterHistoryComponent', () => {
       const event = new MouseEvent('click')
       spyOn(event, 'stopPropagation')
 
-      component.onUsage(event, itemData[0])
+      component.onUsage(event, historyData[0])
 
       expect(event.stopPropagation).toHaveBeenCalled()
-      expect(component.item4Detail).toEqual(itemData[0])
+      expect(component.item4Detail).toEqual(historyData[0])
       expect(component.displayUsageDialog).toBeTrue()
     })
 

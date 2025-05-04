@@ -171,6 +171,7 @@
       "USED_VALUE": "Verwendet",
       "LAST_USED": "Zuletzt verwendet",
       "USAGE_RELOAD": "Neuladen",
+      "EQUAL": "Gleich?",
       "TOOLTIPS": {
         "COUNT": "Wie oft im Interval benutzt?",
         "START": "Beginn des Zeitraums",
@@ -179,7 +180,11 @@
         "INSTANCE_ID": "ID der Instanz, die den Parameter benutzt hat",
         "DEFAULT_VALUE": "Standardwert",
         "USED_VALUE": "Verwendeter Wert",
-        "LAST_USED": "Zuletzt verwendet"
+        "LAST_USED": "Zuletzt verwendet",
+        "EQUAL": "Vergleich von Wert und importiertem Wert",
+        "EQUAL.TRUE": "Benutzter Wert und Default-Wert sind gleich",
+        "EQUAL.FALSE": "Benutzter Wert und Default-Wert sind ungleich",
+        "EQUAL.UNDEFINED": "Nicht anwendbar/verfügbar, da kein Wert"
       },
       "TAB": {
         "OVERVIEW": "Zusammenfassung",
@@ -228,14 +233,14 @@
       "DISPLAY_NAME": "Anzeigename des Parameters",
       "DESCRIPTION": "Detaillierte Beschreibung des Parameters",
       "VALUE": "Wert des Parameters - entspricht dem importierten Wert wenn nur dieser vorhanden.",
-      "VALUE.TYPE": "Der Typ des Parameterwertes. Wenn die Typen unterschiedlich sind, dann auch der Typ des importierten Wertes.",
+      "VALUE.TYPE": "Der Typ des Parameterwertes. Wenn die Typen unterschiedlich sind, dann beide Typen.",
       "VALUE.TYPE.DETAIL": "Der Typ des Parameterwertes.",
       "IMPORT_VALUE": "Importierter Wert",
       "OPERATOR": "Wenn gesetzt, dann wurde der Parameter automatisiert erstellt.",
       "EQUAL": "Vergleich von Wert und importiertem Wert",
       "EQUAL.TRUE": "Wert und importierter Wert sind gleich",
       "EQUAL.FALSE": "Wert und importierter Wert sind ungleich",
-      "EQUAL.UNDEFINED": ""
+      "EQUAL.UNDEFINED": "Nicht anwendbar/verfügbar, da kein Wert"
     }
   },
   "VALUE_TYPE": {
@@ -243,7 +248,8 @@
     "NUMBER": "Zahl",
     "OBJECT": "Objekt",
     "STRING": "Text",
-    "UNKNOWN": "Unbekannt"
+    "UNKNOWN": "n.a.",
+    "UNKNOWN.TOOLTIP": "Nicht anwendbar/verfügbar, da kein Wert"
   },
   "VALIDATION": {
     "ERRORS": {

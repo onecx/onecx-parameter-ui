@@ -1,11 +1,11 @@
 <div [formGroup]="criteriaForm" class="mt-1 mb-4 flex flex-row flex-wrap gap-3">
-  <span class="p-float-label">
+  <span class="p-float-label flex-grow-1">
     <input
       id="pm_history_search_criteria_name"
       pInputText
       type="text"
       formControlName="name"
-      class="w-11rem sm:w-15rem lg:w-18rem text-responsive"
+      class="w-full text-responsive"
       [attr.aria-label]="'PARAMETER.NAME' | translate"
       [pTooltip]="'PARAMETER.TOOLTIPS.COMBINED_NAME' | translate"
       tooltipPosition="top"
@@ -13,13 +13,13 @@
     />
     <label for="pm_history_search_criteria_name">{{ 'DIALOG.USAGE.NAME' | translate }}</label>
   </span>
-  <span class="p-float-label">
+  <span class="p-float-label flex-grow-1">
     <input
       id="pm_history_search_criteria_product_name"
       pInputText
       type="text"
       formControlName="productName"
-      class="w-11rem sm:w-15rem lg:w-18rem text-responsive"
+      class="w-full text-responsive"
       [attr.aria-label]="'PARAMETER.PRODUCT_NAME' | translate"
       [pTooltip]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
       tooltipPosition="top"
@@ -27,13 +27,13 @@
     />
     <label for="pm_history_search_criteria_product_name">{{ 'PARAMETER.PRODUCT_NAME' | translate }}</label>
   </span>
-  <span class="p-float-label">
+  <span class="p-float-label flex-grow-1">
     <input
       id="pm_history_search_criteria_application_id"
       pInputText
       type="text"
       formControlName="productName"
-      class="w-11rem sm:w-15rem lg:w-18rem text-responsive"
+      class="w-full text-responsive"
       [attr.aria-label]="'PARAMETER.APP_NAME' | translate"
       [pTooltip]="'PARAMETER.TOOLTIPS.APP_NAME' | translate"
       tooltipPosition="top"

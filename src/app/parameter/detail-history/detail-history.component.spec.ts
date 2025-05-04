@@ -11,7 +11,119 @@ import { UserService } from '@onecx/angular-integration-interface'
 
 import { History, HistoriesAPIService, HistoryCriteria, HistoryPageResult, Parameter } from 'src/app/shared/generated'
 import { DetailHistoryComponent } from './detail-history.component'
+import { ExtendedHistory } from '../parameter-history/parameter-history.component'
 
+// response data of parameter search service
+// response data of parameter search service
+const historyRespData: History[] = [
+  {
+    id: 'id0',
+    productName: 'product1',
+    applicationId: 'app1',
+    name: 'name0',
+    usedValue: 'Val',
+    defaultValue: 'Val',
+    start: '2024-01-01T00:00:00Z',
+    end: '2024-01-01T00:10:00Z'
+  },
+  {
+    id: 'id1',
+    productName: 'product1',
+    applicationId: 'app1',
+    name: 'name1',
+    usedValue: 1234,
+    defaultValue: true,
+    start: '2024-01-01T00:20:00Z',
+    end: '2024-01-01T00:25:00Z'
+  },
+  {
+    id: 'id2',
+    productName: 'product1',
+    applicationId: 'app1',
+    name: 'name2',
+    usedValue: { hallo: 'test', hi: 'all' },
+    defaultValue: { hallo: 'test' },
+    start: '2024-01-01T00:20:00Z',
+    end: '2024-01-01T00:25:00Z'
+  },
+  {
+    id: 'id3',
+    productName: 'product1',
+    applicationId: 'app1',
+    name: 'name3',
+    usedValue: { hallo: 'test', hi: 'all' },
+    start: '2024-01-01T00:20:00Z',
+    end: '2024-01-01T00:25:00Z'
+  },
+  {
+    id: 'id4',
+    productName: 'product1',
+    applicationId: 'app1',
+    name: 'no data',
+    start: '2024-01-01T00:20:00Z',
+    end: '2024-01-01T00:25:00Z'
+  },
+  {
+    id: 'id5',
+    productName: 'product1',
+    applicationId: 'app1',
+    name: 'boolean comparison',
+    usedValue: false,
+    defaultValue: false,
+    start: '2024-01-01T00:20:00Z',
+    end: '2024-01-01T00:25:00Z'
+  }
+]
+const historyData: ExtendedHistory[] = [
+  {
+    ...historyRespData[0],
+    valueType: 'STRING',
+    defaultValueType: 'STRING',
+    displayValue: 'Val',
+    defaultDisplayValue: 'Val',
+    isEqual: 'TRUE'
+  },
+  {
+    ...historyRespData[1],
+    valueType: 'NUMBER',
+    defaultValueType: 'BOOLEAN',
+    displayValue: '1234',
+    defaultDisplayValue: 'true',
+    isEqual: 'FALSE'
+  },
+  {
+    ...historyRespData[2],
+    valueType: 'OBJECT',
+    defaultValueType: 'OBJECT',
+    displayValue: '{ ... }',
+    defaultDisplayValue: '{ ... }',
+    isEqual: 'FALSE'
+  },
+  {
+    ...historyRespData[3],
+    valueType: 'OBJECT',
+    defaultValueType: 'UNKNOWN',
+    displayValue: '{ ... }',
+    defaultDisplayValue: '',
+    isEqual: 'FALSE'
+  },
+  {
+    ...historyRespData[4],
+    valueType: 'UNKNOWN',
+    defaultValueType: 'UNKNOWN',
+    displayValue: '',
+    defaultDisplayValue: '',
+    isEqual: 'UNDEFINED'
+  },
+  {
+    ...historyRespData[5],
+    valueType: 'BOOLEAN',
+    defaultValueType: 'BOOLEAN',
+    displayValue: 'false',
+    defaultDisplayValue: 'false',
+    isEqual: 'TRUE'
+  }
+]
 const parameter: Parameter = {
   id: 'pid',
   productName: 'prod1',
@@ -20,18 +132,6 @@ const parameter: Parameter = {
   displayName: 'displayName',
   value: 'value'
 }
-const history: History[] = [
-  {
-    id: 'h1',
-    applicationId: parameter.applicationId!,
-    productName: parameter.productName!,
-    name: parameter.name!,
-    usedValue: 'val1',
-    defaultValue: 'val1',
-    instanceId: '123',
-    count: 3
-  }
-]
 
 describe('HistoryComponent', () => {
   let component: DetailHistoryComponent
@@ -99,14 +199,14 @@ describe('HistoryComponent', () => {
         productName: parameter.productName,
         applicationId: parameter.applicationId
       }
-      const result: HistoryPageResult = { stream: history }
-      historyApiSpy.getAllHistory.and.returnValue(of(result))
+      const response: HistoryPageResult = { stream: historyRespData }
+      historyApiSpy.getAllHistory.and.returnValue(of(response))
 
       component.onSearch(criteria)
 
       component.data$?.subscribe({
         next: (data) => {
-          expect(data).toEqual(history)
+          expect(data).toEqual(historyData)
           done()
         },
         error: done.fail
@@ -119,8 +219,8 @@ describe('HistoryComponent', () => {
         productName: parameter.productName,
         applicationId: parameter.applicationId
       }
-      const result: HistoryPageResult = { stream: [] }
-      historyApiSpy.getAllHistory.and.returnValue(of(result))
+      const response: HistoryPageResult = { stream: [] }
+      historyApiSpy.getAllHistory.and.returnValue(of(response))
 
       component.onSearch(criteria)
 

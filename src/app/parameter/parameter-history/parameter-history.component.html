@@ -93,7 +93,7 @@
                 tooltipEvent="hover"
               >
                 <span>{{ col.translationPrefix + '.' + col.header | translate }}</span>
-                <p-sortIcon [field]="col.field"></p-sortIcon>
+                <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
                 <p-columnFilter *ngIf="col.hasFilter" type="text" [field]="col.field" display="menu"></p-columnFilter>
               </th>
             </tr>
@@ -166,6 +166,36 @@
                 >
                   {{ rowData['name'] }}
                 </div>
+
+                @let isUnknown = [rowData['valueType'], rowData['defaultValueType']].includes('UNKNOWN');
+                <span
+                  *ngIf="col.field === 'valueType'"
+                  [pTooltip]="isUnknown ? ('VALUE_TYPE.UNKNOWN.TOOLTIP' | translate) : ''"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  {{ 'VALUE_TYPE.' + rowData['valueType'] | translate }}
+                  <ng-container *ngIf="rowData['valueType'] !== rowData['defaultValueType']">
+                    | {{ 'VALUE_TYPE.' + rowData['defaultValueType'] | translate }}
+                  </ng-container>
+                </span>
+
+                <span
+                  *ngIf="col.field === 'equal'"
+                  [ngClass]="
+                    rowData['isEqual'] === 'TRUE'
+                      ? 'pi pi-check text-green-600'
+                      : rowData['isEqual'] === 'FALSE'
+                        ? 'pi pi-times text-red-600'
+                        : ''
+                  "
+                  [attr.aria-label]="'PARAMETER.TOOLTIPS.EQUAL.' + rowData['isEqual'] | translate"
+                  [pTooltip]="'PARAMETER.TOOLTIPS.EQUAL.' + rowData['isEqual'] | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                  >{{ rowData['isEqual'] === 'UNDEFINED' ? 'n.a.' : '' }}</span
+                >
+
                 <div
                   *ngIf="col.isValue"
                   class="text-ellipsis-2-lines max-w-20rem word-break-all"
@@ -175,13 +205,14 @@
                 >
                   {{ rowData[col.field] }}
                 </div>
+
                 <!-- product & app -->
-                <ng-container *ngIf="col.field === 'productDisplayName'">
-                  {{ getProductDisplayName(rowData['productName'], metaData.allProducts) }}
-                </ng-container>
                 <ng-container *ngIf="col.field === 'applicationName'">
+                  {{ getProductDisplayName(rowData['productName'], metaData.allProducts) }}
+                  <br />
                   {{ getAppDisplayName(rowData['productName'], rowData['applicationId'], metaData.allProducts) }}
                 </ng-container>
+
                 <!-- special formats -->
                 <ng-container *ngIf="col.isText">{{ rowData[col.field] }}</ng-container>
                 <ng-container *ngIf="col.isBoolean">

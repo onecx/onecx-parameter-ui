@@ -8,8 +8,14 @@ import { UserService } from '@onecx/angular-integration-interface'
 import { Action, Column, DataViewControlTranslations, PortalMessageService } from '@onecx/portal-integration-angular'
 import { SlotService } from '@onecx/angular-remote-components'
 
-import { History, HistoriesAPIService, Parameter, ParameterSearchCriteria, Product } from 'src/app/shared/generated'
-import { sortByDisplayName } from 'src/app/shared/utils'
+import {
+  History,
+  HistoriesAPIService,
+  HistoryPageResult,
+  ParameterSearchCriteria,
+  Product
+} from 'src/app/shared/generated'
+import { displayEqualityState, displayValue, displayValueType, sortByDisplayName } from 'src/app/shared/utils'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 type ExtendedColumn = Column & {
@@ -21,7 +27,15 @@ type ExtendedColumn = Column & {
   isText?: boolean
   limit?: boolean
   frozen?: boolean
+  sort?: boolean
   css?: string
+}
+export type ExtendedHistory = History & {
+  valueType: string
+  defaultValueType: string
+  displayValue: string
+  defaultDisplayValue: string
+  isEqual: string
 }
 export type ExtendedProduct = {
   name: string
@@ -67,7 +81,6 @@ export class ParameterHistoryComponent implements OnInit {
   public dateFormat: string
   public refreshUsedProducts = false
   public displayDetailDialog = false
-  public displayDeleteDialog = false
   public displayUsageDialog = false
   public actions: Action[] = []
   public sortByDisplayName = sortByDisplayName
@@ -76,7 +89,7 @@ export class ParameterHistoryComponent implements OnInit {
   public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
 
   // data
-  public data$: Observable<History[]> | undefined
+  public data$: Observable<ExtendedHistory[]> | undefined
   public criteria: ParameterSearchCriteria = {}
   public metaData$!: Observable<AllMetaData>
   public usedProducts$ = new ReplaySubject<Product[]>(1) // getting data from bff endpoint
@@ -94,69 +107,82 @@ export class ParameterHistoryComponent implements OnInit {
     {
       field: 'name',
       header: 'COMBINED_NAME',
-      active: true,
       translationPrefix: 'PARAMETER',
+      active: true,
       limit: false,
       frozen: true,
+      sort: true,
       css: 'word-break-all'
-    },
-    {
-      field: 'productDisplayName',
-      header: 'PRODUCT_NAME',
-      active: true,
-      translationPrefix: 'PARAMETER'
-    },
-    {
-      field: 'applicationName',
-      header: 'APP_NAME',
-      active: true,
-      translationPrefix: 'PARAMETER'
-    },
-    {
-      field: 'start',
-      header: 'START',
-      active: true,
-      translationPrefix: 'DIALOG.USAGE',
-      isDate: true
-    },
-    {
-      field: 'duration',
-      header: 'DURATION',
-      active: true,
-      translationPrefix: 'DIALOG.USAGE',
-      isDuration: true
-    },
-    {
-      field: 'count',
-      header: 'COUNT',
-      active: true,
-      translationPrefix: 'DIALOG.USAGE',
-      isText: true,
-      css: 'text-center'
-    },
-    {
-      field: 'instanceId',
-      header: 'INSTANCE_ID',
-      active: true,
-      translationPrefix: 'DIALOG.USAGE',
-      isText: true,
-      css: 'text-center'
     },
     {
       field: 'usedValue',
       header: 'USED_VALUE',
-      active: true,
       translationPrefix: 'DIALOG.USAGE',
+      active: true,
       isValue: true,
       css: 'text-center word-break-all'
     },
     {
       field: 'defaultValue',
       header: 'DEFAULT_VALUE',
-      active: true,
       translationPrefix: 'DIALOG.USAGE',
+      active: true,
       isValue: true,
       css: 'text-center word-break-all'
+    },
+    {
+      field: 'valueType',
+      translationPrefix: 'PARAMETER',
+      header: 'VALUE.TYPE',
+      active: true,
+      isValue: false,
+      css: 'text-center'
+    },
+    {
+      field: 'equal',
+      header: 'EQUAL',
+      translationPrefix: 'DIALOG.USAGE',
+      active: true,
+      css: 'text-center'
+    },
+    {
+      field: 'start',
+      header: 'START',
+      translationPrefix: 'DIALOG.USAGE',
+      active: true,
+      isDate: true,
+      sort: true
+    },
+    {
+      field: 'duration',
+      header: 'DURATION',
+      translationPrefix: 'DIALOG.USAGE',
+      active: true,
+      isDuration: true
+    },
+    {
+      field: 'count',
+      header: 'COUNT',
+      translationPrefix: 'DIALOG.USAGE',
+      active: true,
+      isText: true,
+      css: 'text-center'
+    },
+    {
+      field: 'applicationName',
+      header: 'APP_NAME',
+      translationPrefix: 'PARAMETER',
+      active: true,
+      sort: true
+    },
+    {
+      field: 'instanceId',
+      header: 'INSTANCE_ID',
+      translationPrefix: 'DIALOG.USAGE',
+      active: true,
+      isText: true,
+      sort: true,
+      css: 'text-center'
     }
   ]
 
@@ -289,11 +315,24 @@ export class ParameterHistoryComponent implements OnInit {
           return data.size
         }
       }),
-      map((data) => data.stream),
+      map((data: HistoryPageResult) => {
+        if (!data.stream) return [] as ExtendedHistory[]
+        return data.stream.map(
+          (p) =>
+            ({
+              ...p,
+              valueType: displayValueType(p.usedValue),
+              defaultValueType: displayValueType(p.defaultValue),
+              defaultDisplayValue: displayValue(p.defaultValue),
+              displayValue: displayValue(p.usedValue),
+              isEqual: displayEqualityState(p.usedValue, p.defaultValue)
+            }) as ExtendedHistory
+        )
+      }),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
         console.error('getAllHistoryLatest', err)
-        return of([] as Parameter[])
+        return of([] as ExtendedHistory[])
       }),
       finalize(() => (this.loading = false))
     )
