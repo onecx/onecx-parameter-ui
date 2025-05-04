@@ -171,6 +171,7 @@
       "USED_VALUE": "Used Value",
       "LAST_USED": "Last used",
       "USAGE_RELOAD": "Reload",
+      "EQUAL": "Equal?",
       "TOOLTIPS": {
         "COUNT": "How many times used within interval?",
         "START": "Start of timeframe",
@@ -179,7 +180,11 @@
         "INSTANCE_ID": "ID of the instance that used the Parameter",
         "DEFAULT_VALUE": "Default value",
         "USED_VALUE": "Used value",
-        "LAST_USED": "Last used value"
+        "LAST_USED": "Last used value",
+        "EQUAL": "Comparison of value and imported value",
+        "EQUAL.TRUE": "Used Value and default Value are equal",
+        "EQUAL.FALSE": "Used Value and default Value are not equal",
+        "EQUAL.UNDEFINED": "Not available because no value"
       },
       "TAB": {
         "OVERVIEW": "Summary",
@@ -228,7 +233,7 @@
       "DISPLAY_NAME": "Business Name of the Parameter",
       "DESCRIPTION": "Detailed description of the Parameter",
       "VALUE": "Value of the Parameter - corresponds to the imported value if only this is available.",
-      "VALUE.TYPE": "Type of Parameter value. If the types are different then the type of the imported value is also displayed.",
+      "VALUE.TYPE": "Type of Parameter value. If the types are different then both types.",
       "VALUE.TYPE.DETAIL": "Type of Parameter value.",
       "IMPORT_VALUE": "Imported value",
       "OPERATOR": "If set, the Workspace was created by automation",
