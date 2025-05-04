@@ -53,7 +53,7 @@
         tooltipEvent="hover"
       >
         <span>{{ col.translationPrefix + '.' + col.header | translate }}</span>
-        <p-sortIcon [field]="col.field"></p-sortIcon>
+        <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
         <p-columnFilter *ngIf="col.hasFilter" type="text" [field]="col.field" display="menu"></p-columnFilter>
       </th>
     </tr>

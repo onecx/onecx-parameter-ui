@@ -15,7 +15,7 @@ import {
   ParameterSearchCriteria,
   Product
 } from 'src/app/shared/generated'
-import { sortByDisplayName } from 'src/app/shared/utils'
+import { displayEqualityState, displayValue, displayValueType, sortByDisplayName } from 'src/app/shared/utils'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 type ExtendedColumn = Column & {
@@ -321,11 +321,11 @@ export class ParameterHistoryComponent implements OnInit {
           (p) =>
             ({
               ...p,
-              valueType: this.displayValueType(p.usedValue),
-              defaultValueType: this.displayValueType(p.defaultValue),
-              defaultDisplayValue: this.displayValue(p.defaultValue),
-              displayValue: this.displayValue(p.usedValue),
-              isEqual: this.areValuesEqual(p.usedValue, p.defaultValue)
+              valueType: displayValueType(p.usedValue),
+              defaultValueType: displayValueType(p.defaultValue),
+              defaultDisplayValue: displayValue(p.defaultValue),
+              displayValue: displayValue(p.usedValue),
+              isEqual: displayEqualityState(p.usedValue, p.defaultValue)
             }) as ExtendedHistory
         )
       }),
@@ -336,27 +336,6 @@ export class ParameterHistoryComponent implements OnInit {
       }),
       finalize(() => (this.loading = false))
     )
-  }
-
-  /****************************************************************************
-   *  Helper, due to not calculate such things on HTML!
-   */
-  private displayValueType(val: any): string {
-    if (val === undefined || val === null) return 'UNKNOWN'
-    return (typeof val).toUpperCase()
-  }
-  private displayValue(val: any): string {
-    if (typeof val === 'boolean') return '' + val // true | false
-    if (!val) return ''
-    return typeof val === 'object' ? '{ ... }' : '' + val
-  }
-  // value can be boolean
-  private areValuesEqual(val1: any, val2: any): string {
-    if (typeof val1 !== typeof val2) return 'FALSE'
-    if (typeof val1 === 'boolean') return (val1 === val2).toString().toLocaleUpperCase()
-    if (!val1 && !val2) return 'UNDEFINED' // typeof null == object!
-    if (typeof val1 === 'object') return (JSON.stringify(val1) === JSON.stringify(val2)).toString().toLocaleUpperCase()
-    return (val1 === val2).toString().toLocaleUpperCase()
   }
 
   /**

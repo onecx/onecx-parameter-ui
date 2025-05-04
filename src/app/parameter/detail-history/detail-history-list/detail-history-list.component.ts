@@ -3,7 +3,8 @@ import { TranslateService } from '@ngx-translate/core'
 
 import { Column } from '@onecx/portal-integration-angular'
 
-import { Parameter, History } from 'src/app/shared/generated'
+import { Parameter } from 'src/app/shared/generated'
+import { ExtendedHistory } from '../../parameter-history/parameter-history.component'
 
 type ExtendedColumn = Column & {
   hasFilter?: boolean
@@ -13,6 +14,7 @@ type ExtendedColumn = Column & {
   isValue?: boolean
   isText?: boolean
   limit?: boolean
+  sort?: boolean
   css?: string
 }
 
@@ -24,7 +26,7 @@ export class DetailHistoryListComponent {
   @Input() public loading = false
   @Input() public exceptionKey: string | undefined = undefined
   @Input() public parameter: Parameter | undefined = undefined
-  @Input() public data: History[] = []
+  @Input() public data: ExtendedHistory[] = []
   @Input() public dateFormat: string | undefined = undefined
 
   public filteredColumns: Column[]
@@ -32,55 +34,58 @@ export class DetailHistoryListComponent {
     {
       field: 'start',
       header: 'START',
-      active: true,
       translationPrefix: 'DIALOG.USAGE',
-      isDate: true
+      active: true,
+      isDate: true,
+      sort: true
     },
     {
       field: 'duration',
       header: 'DURATION',
-      active: true,
       translationPrefix: 'DIALOG.USAGE',
+      active: true,
       isDuration: true
     },
     {
       field: 'count',
       header: 'COUNT',
-      active: true,
       translationPrefix: 'DIALOG.USAGE',
+      active: true,
       isText: true,
       css: 'text-center'
     },
     {
       field: 'instanceId',
       header: 'INSTANCE_ID',
-      active: true,
       translationPrefix: 'DIALOG.USAGE',
+      active: true,
       isText: true,
+      sort: true,
       css: 'text-center'
     },
     {
       field: 'usedValue',
       header: 'USED_VALUE',
-      active: true,
       translationPrefix: 'DIALOG.USAGE',
+      active: true,
       isValue: true,
       css: 'text-center'
     },
     {
       field: 'defaultValue',
       header: 'DEFAULT_VALUE',
-      active: true,
       translationPrefix: 'DIALOG.USAGE',
+      active: true,
       isValue: true,
       css: 'text-center'
     },
     {
       field: 'creationDate',
       header: 'CREATION_DATE',
-      active: false,
       translationPrefix: 'INTERNAL',
-      isDate: true
+      active: false,
+      isDate: true,
+      sort: true
     }
   ]
 

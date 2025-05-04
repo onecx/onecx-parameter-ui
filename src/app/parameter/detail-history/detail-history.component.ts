@@ -2,7 +2,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
 import { catchError, finalize, map, Observable, of } from 'rxjs'
 
-import { Parameter, History, HistoriesAPIService, HistoryCriteria } from 'src/app/shared/generated'
+import { Parameter, HistoriesAPIService, HistoryCriteria, HistoryPageResult } from 'src/app/shared/generated'
+import { displayEqualityState, displayValue, displayValueType } from 'src/app/shared/utils'
+
+import { ExtendedHistory } from '../parameter-history/parameter-history.component'
 
 @Component({
   selector: 'app-detail-history',
@@ -15,9 +18,11 @@ export class DetailHistoryComponent {
   @Input() public dateFormat: string | undefined = undefined
   @Output() public hideDialog = new EventEmitter()
 
+  // dialog
   public loading = false
   public exceptionKey: string | undefined = undefined
-  public data$: Observable<History[]> = of([])
+  // data
+  public data$: Observable<ExtendedHistory[]> = of([])
 
   constructor(
     private readonly translate: TranslateService,
@@ -38,7 +43,20 @@ export class DetailHistoryComponent {
     }
     this.loading = true
     this.data$ = this.historyApiService.getAllHistory({ historyCriteria: criteria }).pipe(
-      map((results) => results.stream ?? []),
+      map((data: HistoryPageResult) => {
+        if (!data.stream) return [] as ExtendedHistory[]
+        return data.stream.map(
+          (p) =>
+            ({
+              ...p,
+              valueType: displayValueType(p.usedValue),
+              defaultValueType: displayValueType(p.defaultValue),
+              defaultDisplayValue: displayValue(p.defaultValue),
+              displayValue: displayValue(p.usedValue),
+              isEqual: displayEqualityState(p.usedValue, p.defaultValue)
+            }) as ExtendedHistory
+        )
+      }),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.USAGE'
         console.error('getAllHistory', err)

@@ -15,7 +15,7 @@ import {
   ParametersAPIService,
   Product
 } from 'src/app/shared/generated'
-import { sortByDisplayName } from 'src/app/shared/utils'
+import { displayEqualityState, displayValue2, displayValueType, sortByDisplayName } from 'src/app/shared/utils'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 type ExtendedColumn = Column & {
@@ -83,7 +83,6 @@ export class ParameterSearchComponent implements OnInit {
   public displayUsageDetailDialog = false
   public actions: Action[] = []
   public filteredColumns: Column[] = []
-  public sortByDisplayName = sortByDisplayName
 
   @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
   public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
@@ -234,7 +233,7 @@ export class ParameterSearchComponent implements OnInit {
           applications: p.applications ?? []
         })
       )
-      aps.sort(this.sortByDisplayName)
+      aps.sort(sortByDisplayName)
     }
     return aps
   }
@@ -248,7 +247,7 @@ export class ParameterSearchComponent implements OnInit {
       })
       ups.push({ name: p.productName, displayName: p.productName, applications: apps } as ExtendedProduct)
     })
-    ups.sort(this.sortByDisplayName)
+    ups.sort(sortByDisplayName)
     return ups
   }
 
@@ -270,7 +269,7 @@ export class ParameterSearchComponent implements OnInit {
           p.applications = uApps
         }
       })
-      uP.sort(this.sortByDisplayName)
+      uP.sort(sortByDisplayName)
     }
     // if service is not running or product data are not yet available
     if (aP.length === 0) aP = uP
@@ -298,10 +297,10 @@ export class ParameterSearchComponent implements OnInit {
             ({
               ...p,
               displayName: p.displayName ?? p.name,
-              valueType: this.displayValueType(p.value),
-              importValueType: this.displayValueType(p.importValue),
-              displayValue: this.displayValue(p.value, p.importValue),
-              isEqual: this.areValuesEqual(p.value, p.importValue)
+              valueType: displayValueType(p.value),
+              importValueType: displayValueType(p.importValue),
+              displayValue: displayValue2(p.value, p.importValue),
+              isEqual: displayEqualityState(p.value, p.importValue)
             }) as ExtendedParameter
         )
       }),
@@ -312,29 +311,6 @@ export class ParameterSearchComponent implements OnInit {
       }),
       finalize(() => (this.loading = false))
     )
-  }
-
-  /****************************************************************************
-   *  Helper, due to not calculate such things on HTML!
-   */
-  private displayValueType(val: any): string {
-    if (val === undefined || val === null) return 'UNKNOWN'
-    return (typeof val).toUpperCase()
-  }
-  private displayValue(val: any, impVal: any): string {
-    if (typeof val === 'boolean') return '' + val // true | false
-    const v = val ?? impVal
-    if (typeof v === 'boolean') return '' + v
-    if (!v) return ''
-    return typeof v === 'object' ? '{ ... }' : v
-  }
-  // value can be boolean
-  private areValuesEqual(val1: any, val2: any): string {
-    if (typeof val1 !== typeof val2) return 'FALSE'
-    if (typeof val1 === 'boolean') return (val1 === val2).toString().toLocaleUpperCase()
-    if (!val1 && !val2) return 'UNDEFINED' // typeof null == object!
-    if (typeof val1 === 'object') return (JSON.stringify(val1) === JSON.stringify(val2)).toString().toLocaleUpperCase()
-    return (val1 === val2).toString().toLocaleUpperCase()
   }
 
   /**
