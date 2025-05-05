@@ -79,48 +79,48 @@ const historyData: ExtendedHistory[] = [
     ...historyRespData[0],
     valueType: 'STRING',
     defaultValueType: 'STRING',
-    displayValue: 'Val',
-    defaultDisplayValue: 'Val',
+    displayUsedValue: 'Val',
+    displayDefaultValue: 'Val',
     isEqual: 'TRUE'
   },
   {
     ...historyRespData[1],
     valueType: 'NUMBER',
     defaultValueType: 'BOOLEAN',
-    displayValue: '1234',
-    defaultDisplayValue: 'true',
+    displayUsedValue: '1234',
+    displayDefaultValue: 'true',
     isEqual: 'FALSE'
   },
   {
     ...historyRespData[2],
     valueType: 'OBJECT',
     defaultValueType: 'OBJECT',
-    displayValue: '{ ... }',
-    defaultDisplayValue: '{ ... }',
+    displayUsedValue: '{ ... }',
+    displayDefaultValue: '{ ... }',
     isEqual: 'FALSE'
   },
   {
     ...historyRespData[3],
     valueType: 'OBJECT',
     defaultValueType: 'UNKNOWN',
-    displayValue: '{ ... }',
-    defaultDisplayValue: '',
+    displayUsedValue: '{ ... }',
+    displayDefaultValue: '',
     isEqual: 'FALSE'
   },
   {
     ...historyRespData[4],
     valueType: 'UNKNOWN',
     defaultValueType: 'UNKNOWN',
-    displayValue: '',
-    defaultDisplayValue: '',
+    displayUsedValue: '',
+    displayDefaultValue: '',
     isEqual: 'UNDEFINED'
   },
   {
     ...historyRespData[5],
     valueType: 'BOOLEAN',
     defaultValueType: 'BOOLEAN',
-    displayValue: 'false',
-    defaultDisplayValue: 'false',
+    displayUsedValue: 'false',
+    displayDefaultValue: 'false',
     isEqual: 'TRUE'
   }
 ]

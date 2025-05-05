@@ -51,8 +51,8 @@ export class DetailHistoryComponent {
               ...p,
               valueType: displayValueType(p.usedValue),
               defaultValueType: displayValueType(p.defaultValue),
-              defaultDisplayValue: displayValue(p.defaultValue),
-              displayValue: displayValue(p.usedValue),
+              displayDefaultValue: displayValue(p.defaultValue),
+              displayUsedValue: displayValue(p.usedValue),
               isEqual: displayEqualityState(p.usedValue, p.defaultValue)
             }) as ExtendedHistory
         )
