@@ -64,7 +64,7 @@ export class DetailHistoryListComponent {
       css: 'text-center'
     },
     {
-      field: 'usedValue',
+      field: 'displayUsedValue',
       header: 'USED_VALUE',
       translationPrefix: 'DIALOG.USAGE',
       active: true,
@@ -72,7 +72,7 @@ export class DetailHistoryListComponent {
       css: 'text-center'
     },
     {
-      field: 'defaultValue',
+      field: 'displayDefaultValue',
       header: 'DEFAULT_VALUE',
       translationPrefix: 'DIALOG.USAGE',
       active: true,
