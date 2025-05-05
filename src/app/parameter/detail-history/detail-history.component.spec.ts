@@ -14,7 +14,6 @@ import { DetailHistoryComponent } from './detail-history.component'
 import { ExtendedHistory } from '../parameter-history/parameter-history.component'
 
 // response data of parameter search service
-// response data of parameter search service
 const historyRespData: History[] = [
   {
     id: 'id0',
