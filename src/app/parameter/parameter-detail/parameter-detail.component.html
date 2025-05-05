@@ -28,112 +28,103 @@
       tooltipEvent="hover"
     >
       <div class="flex flex-column row-gap-4">
-        <div class="flex flex-row flex-wrap row-gap-4">
-          <div class="mt-1 pr-3 w-12 sm:w-6">
-            <span class="p-float-label" controlErrorAnchor>
-              <p-dropdown
-                id="pam_detail_form_product_name"
-                class="input-field"
-                styleClass="w-full text-responsive"
-                formControlName="productName"
-                [options]="productOptions"
-                (onChange)="onChangeProductName($event.value)"
-                [autoDisplayFirst]="true"
-                [appendTo]="'body'"
-                [showClear]="['COPY', 'CREATE'].includes(this.changeMode)"
-                [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_PRODUCT' | translate"
-                [ariaLabel]="'PARAMETER.PRODUCT_NAME' | translate"
-                [pTooltip]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              >
-              </p-dropdown>
-              <label class="ocx-required-label" for="pam_detail_form_product_name">
-                {{ 'PARAMETER.PRODUCT_NAME' | translate }}</label
-              >
-            </span>
-          </div>
-          <div class="mt-1 pl-3 w-12 sm:w-6">
-            <span class="p-float-label" controlErrorAnchor>
-              <p-dropdown
-                id="pam_detail_form_app_id"
-                class="input-field"
-                styleClass="w-full text-responsive"
-                formControlName="applicationId"
-                [options]="appOptions"
-                [autoDisplayFirst]="true"
-                [appendTo]="'body'"
-                [showClear]="['COPY', 'CREATE'].includes(this.changeMode)"
-                [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_APP' | translate"
-                [ariaLabel]="'PARAMETER.APP_NAME' | translate"
-                [pTooltip]="'PARAMETER.TOOLTIPS.APP_NAME' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              >
-              </p-dropdown>
-              <label class="ocx-required-label" for="pam_detail_form_app_id">
-                {{ 'PARAMETER.APP_NAME' | translate }}</label
-              >
-            </span>
-          </div>
+        <div class="flex flex-row flex-wrap gap-4">
+          <span class="p-float-label flex-grow-1" controlErrorAnchor>
+            <p-dropdown
+              id="pam_detail_form_product_name"
+              class="input-field"
+              styleClass="w-full text-responsive"
+              formControlName="productName"
+              [options]="productOptions"
+              (onChange)="onChangeProductName($event.value)"
+              [autoDisplayFirst]="true"
+              [appendTo]="'body'"
+              [showClear]="['COPY', 'CREATE'].includes(this.changeMode)"
+              [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_PRODUCT' | translate"
+              [ariaLabel]="'PARAMETER.PRODUCT_NAME' | translate"
+              [pTooltip]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            >
+            </p-dropdown>
+            <label class="ocx-required-label" for="pam_detail_form_product_name">
+              {{ 'PARAMETER.PRODUCT_NAME' | translate }}</label
+            >
+          </span>
+          <span class="p-float-label flex-grow-1" controlErrorAnchor>
+            <p-dropdown
+              id="pam_detail_form_app_id"
+              class="input-field"
+              styleClass="w-full text-responsive"
+              formControlName="applicationId"
+              [options]="appOptions"
+              [autoDisplayFirst]="true"
+              [appendTo]="'body'"
+              [showClear]="['COPY', 'CREATE'].includes(this.changeMode)"
+              [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_APP' | translate"
+              [ariaLabel]="'PARAMETER.APP_NAME' | translate"
+              [pTooltip]="'PARAMETER.TOOLTIPS.APP_NAME' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            >
+            </p-dropdown>
+            <label class="ocx-required-label" for="pam_detail_form_app_id">
+              {{ 'PARAMETER.APP_NAME' | translate }}</label
+            >
+          </span>
         </div>
 
-        <div class="flex flex-row row-gap-4">
-          <div class="p-fluid w-12">
-            <span class="p-float-label" controlErrorAnchor>
-              <input
-                pInputText
-                type="text"
-                id="pam_detail_form_name"
-                formControlName="name"
-                class="w-full pt-3 pb-2 text-responsive"
-                [attr.aria-label]="'PARAMETER.NAME' | translate"
-                [pTooltip]="'PARAMETER.TOOLTIPS.NAME' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              />
-              <label class="ocx-required-label" for="pam_detail_form_name">{{ 'PARAMETER.NAME' | translate }}</label>
-            </span>
-          </div>
+        <div class="flex flex-row gap-4">
+          <span class="p-float-label flex-grow-1" controlErrorAnchor>
+            <input
+              pInputText
+              type="text"
+              id="pam_detail_form_name"
+              formControlName="name"
+              class="w-full pt-3 pb-2 text-responsive"
+              [attr.aria-label]="'PARAMETER.NAME' | translate"
+              [pTooltip]="'PARAMETER.TOOLTIPS.NAME' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <label class="ocx-required-label" for="pam_detail_form_name">{{ 'PARAMETER.NAME' | translate }}</label>
+          </span>
         </div>
 
-        <div class="flex flex-row row-gap-4">
-          <div class="p-fluid w-12">
-            <span class="p-float-label" controlErrorAnchor>
-              <input
-                pInputText
-                type="text"
-                id="pam_detail_form_display_name"
-                formControlName="displayName"
-                class="w-full pt-3 pb-2 text-responsive"
-                [attr.aria-label]="'PARAMETER.DISPLAY_NAME' | translate"
-                [pTooltip]="'PARAMETER.TOOLTIPS.DISPLAY_NAME' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              />
-              <label for="pam_detail_form_display_name">{{ 'PARAMETER.DISPLAY_NAME' | translate }}</label>
-            </span>
-          </div>
+        <div class="flex flex-row gap-4">
+          <span class="p-float-label flex-grow-1" controlErrorAnchor>
+            <input
+              pInputText
+              type="text"
+              id="pam_detail_form_display_name"
+              formControlName="displayName"
+              class="w-full pt-3 pb-2 text-responsive"
+              [attr.aria-label]="'PARAMETER.DISPLAY_NAME' | translate"
+              [pTooltip]="'PARAMETER.TOOLTIPS.DISPLAY_NAME' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <label for="pam_detail_form_display_name">{{ 'PARAMETER.DISPLAY_NAME' | translate }}</label>
+          </span>
         </div>
 
-        <div class="flex flex-row row-gap-4">
-          <div class="p-fluid w-12">
-            <span class="p-float-label" controlErrorAnchor>
-              <textarea
-                pInputTextarea
-                id="pam_detail_form_description"
-                formControlName="description"
-                rows="2"
-                autoResize="false"
-                [ariaLabel]="'PARAMETER.DESCRIPTION' | translate"
-                [pTooltip]="'PARAMETER.TOOLTIPS.DESCRIPTION' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              >
-              </textarea>
-              <label for="pam_detail_form_description">{{ 'PARAMETER.DESCRIPTION' | translate }} </label>
-            </span>
-          </div>
+        <div class="flex flex-row gap-4">
+          <span class="p-float-label flex-grow-1" controlErrorAnchor>
+            <textarea
+              pInputTextarea
+              id="pam_detail_form_description"
+              class="w-full"
+              formControlName="description"
+              rows="2"
+              autoResize="false"
+              [ariaLabel]="'PARAMETER.DESCRIPTION' | translate"
+              [pTooltip]="'PARAMETER.TOOLTIPS.DESCRIPTION' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            >
+            </textarea>
+            <label for="pam_detail_form_description">{{ 'PARAMETER.DESCRIPTION' | translate }} </label>
+          </span>
         </div>
       </div>
     </p-tabPanel>
