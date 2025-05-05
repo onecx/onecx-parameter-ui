@@ -33,8 +33,8 @@ type ExtendedColumn = Column & {
 export type ExtendedHistory = History & {
   valueType: string
   defaultValueType: string
-  displayValue: string
-  defaultDisplayValue: string
+  displayUsedValue: string
+  displayDefaultValue: string
   isEqual: string
 }
 export type ExtendedProduct = {
@@ -115,7 +115,7 @@ export class ParameterHistoryComponent implements OnInit {
       css: 'word-break-all'
     },
     {
-      field: 'usedValue',
+      field: 'displayUsedValue',
       header: 'USED_VALUE',
       translationPrefix: 'DIALOG.USAGE',
       active: true,
@@ -123,7 +123,7 @@ export class ParameterHistoryComponent implements OnInit {
       css: 'text-center word-break-all'
     },
     {
-      field: 'defaultValue',
+      field: 'displayDefaultValue',
       header: 'DEFAULT_VALUE',
       translationPrefix: 'DIALOG.USAGE',
       active: true,
@@ -323,8 +323,8 @@ export class ParameterHistoryComponent implements OnInit {
               ...p,
               valueType: displayValueType(p.usedValue),
               defaultValueType: displayValueType(p.defaultValue),
-              defaultDisplayValue: displayValue(p.defaultValue),
-              displayValue: displayValue(p.usedValue),
+              displayDefaultValue: displayValue(p.defaultValue),
+              displayUsedValue: displayValue(p.usedValue),
               isEqual: displayEqualityState(p.usedValue, p.defaultValue)
             }) as ExtendedHistory
         )
