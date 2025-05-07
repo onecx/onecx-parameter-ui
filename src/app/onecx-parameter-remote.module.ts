@@ -90,7 +90,7 @@ export class OneCXParameterModule implements DoBootstrap {
   }
 
   ngDoBootstrap(): void {
-    const envElementName = this.appConfigService.getProperty('elementName')
+    const envElementName = this.appConfigService.getProperty('APP_ELEMENT_NAME')
     createAppEntrypoint(
       AppEntrypointComponent,
       envElementName && !envElementName.includes('$') ? envElementName : 'ocx-parameter-component',

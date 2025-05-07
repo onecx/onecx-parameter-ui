@@ -11,6 +11,7 @@ COPY dist/onecx-parameter-ui/ $DIR_HTML
 # Application environments default values
 ENV BFF_URL http://onecx-parameter-bff:8080/
 ENV APP_BASE_HREF /
+ENV APP_ELEMENT_NAME ocx-parameter-component
 
 RUN chmod 775 -R "$DIR_HTML"/assets
 USER 1001
