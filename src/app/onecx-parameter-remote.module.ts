@@ -84,7 +84,7 @@ const routes: Routes = [
 export class OneCXParameterModule implements DoBootstrap {
   constructor(
     private readonly injector: Injector,
-    private appConfigService: AppConfigService
+    private readonly appConfigService: AppConfigService
   ) {
     console.info('OneCX Parameter Module constructor')
   }
@@ -93,7 +93,7 @@ export class OneCXParameterModule implements DoBootstrap {
     const envElementName = this.appConfigService.getProperty('elementName')
     createAppEntrypoint(
       AppEntrypointComponent,
-      envElementName && envElementName !== '' ? envElementName : 'ocx-parameter-component',
+      envElementName ? envElementName : 'ocx-parameter-component',
       this.injector
     )
   }
