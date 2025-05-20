@@ -129,7 +129,7 @@
       </div>
     </p-tabPanel>
 
-    <!-- VALUE => changeable -->
+    <!-- VALUE - changeable -->
     <p-tabPanel
       [header]="'DIALOG.DETAIL.TAB.VALUE' | translate"
       [tooltip]="'DIALOG.DETAIL.TAB.TOOLTIPS.VALUE' | translate"
@@ -140,7 +140,7 @@
         valueObject: valueObjectStatus$ | async
       } as validationStatus"
     >
-      <div class="mb-3 flex flex-row flex-wrap justify-content-center align-items-center gap-3">
+      <div class="mb-4 flex flex-row flex-wrap justify-content-center align-items-center gap-3">
         <div class="">{{ 'PARAMETER.VALUE.TYPE' | translate }}</div>
         <div class="slim-selectbutton search-criteria-selectbutton">
           <p-selectButton
@@ -160,18 +160,20 @@
       <ng-container *ngIf="ValueType.value === 'UNKNOWN'"> {{ 'PARAMETER.VALUE.EMPTY' | translate }} </ng-container>
 
       <div *ngIf="ValueType.value !== 'UNKNOWN'" class="relative p-fluid">
-        <p-checkbox
-          *ngIf="ValueType.value === 'BOOLEAN'"
-          type="text"
-          [binary]="true"
-          id="pam_detail_form_value"
-          styleClass="ml-3 cursor-auto shadow-none"
-          formControlName="valueBoolean"
-          [label]="'PARAMETER.VALUE' | translate"
-          [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        ></p-checkbox>
+        <div class="mt-3 mb-4">
+          <p-checkbox
+            *ngIf="ValueType.value === 'BOOLEAN'"
+            type="text"
+            [binary]="true"
+            id="pam_detail_form_value"
+            styleClass="ml-3 cursor-auto shadow-none"
+            formControlName="valueBoolean"
+            [label]="'PARAMETER.VALUE' | translate"
+            [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          ></p-checkbox>
+        </div>
 
         <span *ngIf="ValueType.value !== 'BOOLEAN'" class="p-float-label">
           <input
@@ -232,7 +234,7 @@
       tooltipPosition="top"
       tooltipEvent="hover"
     >
-      <div class="mb-3 flex flex-row flex-wrap justify-content-center align-items-center gap-3">
+      <div class="mb-4 flex flex-row flex-wrap justify-content-center align-items-center gap-3">
         <div class="">{{ 'PARAMETER.VALUE.TYPE' | translate }}</div>
         <div class="slim-selectbutton search-criteria-selectbutton">
           <p-selectButton
@@ -254,18 +256,20 @@
       </ng-container>
 
       <div *ngIf="ImportValueType.value !== 'UNKNOWN'" class="relative p-fluid">
-        <p-checkbox
-          *ngIf="ImportValueType.value === 'BOOLEAN'"
-          type="text"
-          [binary]="true"
-          id="pam_detail_form_import_value"
-          styleClass="ml-3 cursor-auto shadow-none"
-          formControlName="importValueBoolean"
-          [label]="'PARAMETER.IMPORT_VALUE' | translate"
-          [pTooltip]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        ></p-checkbox>
+        <div class="mt-3 mb-4">
+          <p-checkbox
+            *ngIf="ImportValueType.value === 'BOOLEAN'"
+            type="text"
+            [binary]="true"
+            id="pam_detail_form_import_value"
+            styleClass="ml-3 cursor-auto shadow-none"
+            formControlName="importValueBoolean"
+            [label]="'PARAMETER.IMPORT_VALUE' | translate"
+            [pTooltip]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          ></p-checkbox>
+        </div>
 
         <span *ngIf="ImportValueType.value !== 'BOOLEAN'" class="p-float-label">
           <input
