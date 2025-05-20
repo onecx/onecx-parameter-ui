@@ -96,9 +96,9 @@ export class ParameterSearchComponent implements OnInit {
   public item4Detail: Parameter | undefined // used on detail
   public item4Delete: Parameter | undefined // used on deletion
   // slot configuration: get product infos via remote component
-  public slotName = 'onecx-product-infos'
+  public slotName = 'onecx-product-data'
   public isComponentDefined$: Observable<boolean> | undefined // check
-  public productInfos$ = new BehaviorSubject<ProductAbstract[] | undefined>(undefined) // product infos
+  public productData$ = new BehaviorSubject<ProductAbstract[] | undefined>(undefined) // product infos
   public slotEmitter = new EventEmitter<ProductAbstract[]>()
 
   public columns: ExtendedColumn[] = [
@@ -173,7 +173,7 @@ export class ParameterSearchComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.slotEmitter.subscribe(this.productInfos$)
+    this.slotEmitter.subscribe(this.productData$)
     this.onReload()
     this.getMetaData() // and trigger search
     this.prepareDialogTranslations()
@@ -209,7 +209,7 @@ export class ParameterSearchComponent implements OnInit {
   private getMetaData() {
     this.exceptionKeyMeta = undefined
     // combine all product infos and used products to one meta data structure
-    this.metaData$ = combineLatest([this.productInfos$, this.usedProducts$]).pipe(
+    this.metaData$ = combineLatest([this.productData$, this.usedProducts$]).pipe(
       map(([aP, uP]: [ProductAbstract[] | undefined, Product[]]) => {
         return this.combineProducts(
           this.convertProductAbstract2ExtendedProduct(aP),
