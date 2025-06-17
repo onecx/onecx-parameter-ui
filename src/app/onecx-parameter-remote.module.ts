@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { Router, RouterModule, Routes } from '@angular/router'
 import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core'
+import { firstValueFrom } from 'rxjs'
 
 import { AngularAuthModule } from '@onecx/angular-auth'
 import {
@@ -14,14 +15,12 @@ import {
 } from '@onecx/angular-integration-interface'
 import { createTranslateLoader, TRANSLATION_PATH, translationPathFactory } from '@onecx/angular-utils'
 import { createAppEntrypoint, initializeRouter, startsWith } from '@onecx/angular-webcomponents'
-
 import {
   PortalApiConfiguration,
   PortalCoreModule,
   PortalMissingTranslationHandler
 } from '@onecx/portal-integration-angular'
 
-import { firstValueFrom } from 'rxjs'
 import { environment } from 'src/environments/environment'
 import { AppEntrypointComponent } from './app-entrypoint.component'
 import { Configuration } from './shared/generated'

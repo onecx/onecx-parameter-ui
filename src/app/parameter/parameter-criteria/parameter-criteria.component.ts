@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 import { SelectItem } from 'primeng/api'
 
-import { Action } from '@onecx/portal-integration-angular'
+import { Action } from '@onecx/angular-accelerator'
 
 import { ParameterSearchCriteria } from 'src/app/shared/generated'
 import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
