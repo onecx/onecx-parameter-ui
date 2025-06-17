@@ -12,10 +12,9 @@ import { TranslateService } from '@ngx-translate/core'
 import { finalize, map, Observable, of } from 'rxjs'
 import { SelectItem } from 'primeng/api'
 
-import { PortalMessageService } from '@onecx/portal-integration-angular'
+import { PortalMessageService } from '@onecx/angular-integration-interface'
 
 import { Parameter, ParametersAPIService, ParameterCreate, ParameterUpdate } from 'src/app/shared/generated'
-
 import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
 import { ChangeMode, ExtendedProduct } from '../parameter-search/parameter-search.component'
 

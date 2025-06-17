@@ -7,8 +7,8 @@ import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
-import { UserService } from '@onecx/angular-integration-interface'
-import { Column, PortalMessageService } from '@onecx/portal-integration-angular'
+import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
+import { Column } from '@onecx/portal-integration-angular'
 
 import { Parameter, ParametersAPIService, Product } from 'src/app/shared/generated'
 import {

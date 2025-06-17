@@ -8,8 +8,7 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 import { SelectItem } from 'primeng/api'
 
-import { UserService } from '@onecx/angular-integration-interface'
-import { PortalMessageService } from '@onecx/portal-integration-angular'
+import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 
 import { Parameter, ParametersAPIService } from 'src/app/shared/generated'
 import { ExtendedProduct, ApplicationAbstract } from '../parameter-search/parameter-search.component'
