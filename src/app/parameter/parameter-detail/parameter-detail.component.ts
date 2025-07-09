@@ -19,6 +19,7 @@ import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
 import { ChangeMode, ExtendedProduct } from '../parameter-search/parameter-search.component'
 
 type ErrorMessageType = { summaryKey: string; detailKey?: string }
+//type FormControlError = { status: FormControlStatus; error: any }
 
 // trim the value (string!) of a form control before passes to the control
 const original = DefaultValueAccessor.prototype.registerOnChange
@@ -91,8 +92,9 @@ export function JsonValidator(): ValidatorFn {
     try {
       // control.value is a JavaScript object but in JSON syntax!
       JSON.parse(control.value) // is JSON?
-    } catch (e) {
-      ex = e
+    } catch (e: any) {
+      ex = e.toString()
+      ex = ex.substring(0, ex.indexOf('at ') - 1) // exclude stack trace
       isValid = false
     }
     return isValid ? null : { pattern: true, error: ex }
@@ -121,6 +123,8 @@ export class ParameterDetailComponent implements OnChanges {
   public formGroup: FormGroup
   public valueStatus$: Observable<FormControlStatus> = of()
   public valueObjectStatus$: Observable<FormControlStatus> = of()
+  public valueObjectError$: Observable<any> = of()
+  public valueObjectControl: AbstractControl
   // value lists
   public productOptions: SelectItem[] = []
   public appOptions: SelectItem[] = []
@@ -172,6 +176,9 @@ export class ParameterDetailComponent implements OnChanges {
     if (vField) this.valueStatus$ = vField.statusChanges.pipe(map((s) => s))
     const voField = this.formGroup.get('valueObject')
     if (voField) this.valueObjectStatus$ = voField.statusChanges.pipe(map((s) => s))
+    this.valueObjectControl = this.formGroup.controls['valueObject']
+    //if (voField) this.valueObjectError$ = of(voField.errors)
+    //valueObjectError$
   }
 
   public ngOnChanges() {
@@ -233,7 +240,7 @@ export class ParameterDetailComponent implements OnChanges {
   }
 
   /**
-   * READING data
+   * GET data from service
    */
   private getData(id: string): void {
     this.loading = true
@@ -331,6 +338,7 @@ export class ParameterDetailComponent implements OnChanges {
     switch (this.formGroup.controls[field[0]].value) {
       case 'BOOLEAN':
         val = this.formGroup.controls[field[2]].value
+        if (!val) val = false
         break
       case 'OBJECT':
         val = JSON.parse(this.formGroup.controls[field[3]].value)

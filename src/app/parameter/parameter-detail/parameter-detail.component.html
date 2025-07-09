@@ -137,7 +137,8 @@
       tooltipEvent="hover"
       *ngIf="{
         value: valueStatus$ | async,
-        valueObject: valueObjectStatus$ | async
+        valueObject: valueObjectStatus$ | async,
+        errors: valueObjectError$ | async
       } as validationStatus"
     >
       <div class="mb-4 flex flex-row flex-wrap justify-content-center align-items-center gap-3">
@@ -148,7 +149,7 @@
             inputid="pam_detail_form_value_type_switch"
             [options]="valueTypeOptions"
             formControlName="valueType"
-            [attr.aria-label]="'henry'"
+            [attr.aria-label]="'PARAMETER.TOOLTIPS.VALUE.TYPE.DETAIL' | translate"
             [pTooltip]="'PARAMETER.TOOLTIPS.VALUE.TYPE.DETAIL' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
@@ -222,6 +223,8 @@
           for="pam_detail_form_value"
         >
           {{ 'VALIDATION.ERRORS.PATTERN_ERROR' | translate }}
+          <br />
+          -> {{ valueObjectControl.errors?.['error'] }}
         </label>
       </div>
     </p-tabPanel>
