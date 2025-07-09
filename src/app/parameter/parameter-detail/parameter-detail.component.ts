@@ -124,7 +124,6 @@ export class ParameterDetailComponent implements OnChanges {
   public valueStatus$: Observable<FormControlStatus> = of()
   public valueObjectStatus$: Observable<FormControlStatus> = of()
   public valueObjectError$: Observable<any> = of()
-  public valueObjectControl: AbstractControl
   // value lists
   public productOptions: SelectItem[] = []
   public appOptions: SelectItem[] = []
@@ -176,9 +175,6 @@ export class ParameterDetailComponent implements OnChanges {
     if (vField) this.valueStatus$ = vField.statusChanges.pipe(map((s) => s))
     const voField = this.formGroup.get('valueObject')
     if (voField) this.valueObjectStatus$ = voField.statusChanges.pipe(map((s) => s))
-    this.valueObjectControl = this.formGroup.controls['valueObject']
-    //if (voField) this.valueObjectError$ = of(voField.errors)
-    //valueObjectError$
   }
 
   public ngOnChanges() {

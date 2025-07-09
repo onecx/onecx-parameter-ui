@@ -224,7 +224,7 @@
         >
           {{ 'VALIDATION.ERRORS.PATTERN_ERROR' | translate }}
           <br />
-          -> {{ valueObjectControl.errors?.['error'] }}
+          -> {{ formGroup.get('valueObject')?.errors?.['error'] }}
         </label>
       </div>
     </p-tabPanel>
