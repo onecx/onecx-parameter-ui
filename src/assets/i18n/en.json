@@ -252,6 +252,7 @@
     "UNKNOWN.TOOLTIP": "Not available because no value"
   },
   "VALIDATION": {
+    "JSON_FORMAT": "{ \"key\": \"value\", ... }",
     "ERRORS": {
       "PERSIST_ENTITY_FAILED": "A Parameter with this name already exists for the Application.",
       "EMPTY_REQUIRED_FIELD": "required field",
