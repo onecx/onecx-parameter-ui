@@ -212,6 +212,7 @@
               tooltipEvent="hover"
             >
             </textarea>
+            <div class="text-xs">Format: {{ 'VALIDATION.JSON_FORMAT' | translate }}</div>
           </ng-template>
           <label *ngIf="ValueType.value !== 'BOOLEAN'" class="ocx-required-label" for="pam_detail_form_value">
             {{ 'PARAMETER.VALUE' | translate }}
@@ -224,7 +225,7 @@
         >
           {{ 'VALIDATION.ERRORS.PATTERN_ERROR' | translate }}
           <br />
-          -> {{ formGroup.get('valueObject')?.errors?.['error'] }}
+          {{ formGroup.get('valueObject')?.errors?.['error'] }}
         </label>
       </div>
     </p-tabPanel>

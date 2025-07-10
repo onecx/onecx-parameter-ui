@@ -88,14 +88,15 @@ export function JsonValidator(): ValidatorFn {
     if (!control.value) return null
     let isValid = true
     let ex: any // sonar
-    try {
-      // control.value is a JavaScript object but in JSON syntax!
-      JSON.parse(control.value) // is JSON?
-    } catch (e: any) {
-      ex = e.toString()
-      ex = ex.substring(0, ex.indexOf('at ') - 1) // exclude stack trace
-      isValid = false
-    }
+    const value = control.value as string
+    if (value && value !== '' && value !== '{}')
+      try {
+        // control.value is a JavaScript object but in JSON syntax!
+        JSON.parse(value) // is JSON?
+      } catch (e: any) {
+        ex = e.toString() // get first line with message, exclude stacktrace
+        isValid = false
+      }
     return isValid ? null : { pattern: true, error: ex }
   }
 }
