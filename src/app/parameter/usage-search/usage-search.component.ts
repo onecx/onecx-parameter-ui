@@ -68,11 +68,11 @@ export type ProductAbstract = {
 }
 
 @Component({
-  selector: 'app-parameter-history',
-  templateUrl: './parameter-history.component.html',
-  styleUrls: ['./parameter-history.component.scss']
+  selector: 'app-usage-search',
+  templateUrl: './usage-search.component.html',
+  styleUrls: ['./usage-search.component.scss']
 })
-export class ParameterHistoryComponent implements OnInit {
+export class UsageSearchComponent implements OnInit {
   // dialog
   public loading = false
   public exceptionKey: string | undefined = undefined

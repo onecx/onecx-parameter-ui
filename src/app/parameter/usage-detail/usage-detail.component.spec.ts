@@ -10,8 +10,8 @@ import { of, throwError } from 'rxjs'
 import { UserService } from '@onecx/angular-integration-interface'
 
 import { History, HistoriesAPIService, HistoryCriteria, HistoryPageResult, Parameter } from 'src/app/shared/generated'
-import { DetailHistoryComponent } from './detail-history.component'
-import { ExtendedHistory } from '../parameter-history/parameter-history.component'
+import { UsageDetailComponent } from './usage-detail.component'
+import { ExtendedHistory } from '../usage-search/usage-search.component'
 
 // response data of parameter search service
 const historyRespData: History[] = [
@@ -133,8 +133,8 @@ const parameter: Parameter = {
 }
 
 describe('HistoryComponent', () => {
-  let component: DetailHistoryComponent
-  let fixture: ComponentFixture<DetailHistoryComponent>
+  let component: UsageDetailComponent
+  let fixture: ComponentFixture<UsageDetailComponent>
   let datePipe: DatePipe
 
   const historyApiSpy = {
@@ -146,7 +146,7 @@ describe('HistoryComponent', () => {
     datePipe = new DatePipe('en-US')
 
     TestBed.configureTestingModule({
-      declarations: [DetailHistoryComponent],
+      declarations: [UsageDetailComponent],
       imports: [
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
@@ -170,7 +170,7 @@ describe('HistoryComponent', () => {
   }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DetailHistoryComponent)
+    fixture = TestBed.createComponent(UsageDetailComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
     component.displayDialog = true

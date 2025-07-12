@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core'
 import { Column } from '@onecx/portal-integration-angular'
 
 import { Parameter } from 'src/app/shared/generated'
-import { ExtendedHistory } from '../../parameter-history/parameter-history.component'
+import { ExtendedHistory } from '../../usage-search/usage-search.component'
 
 type ExtendedColumn = Column & {
   hasFilter?: boolean
@@ -19,7 +19,7 @@ type ExtendedColumn = Column & {
 }
 
 @Component({
-  selector: 'app-detail-history-list',
+  selector: 'app-usage-detail-list',
   templateUrl: './detail-history-list.component.html'
 })
 export class DetailHistoryListComponent {
@@ -109,7 +109,7 @@ export class DetailHistoryListComponent {
     return new Date(Date.parse(end) - Date.parse(start)).toUTCString().split(' ')[4]
   }
 
-  // Details
+  // display pretty JSON
   public toJsonFormat(val: any): any {
     return JSON.stringify(val, undefined, 2)
   }

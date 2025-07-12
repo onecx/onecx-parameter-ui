@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 
 import { HistoryCriteria, Parameter } from 'src/app/shared/generated'
-import { ExtendedHistory } from '../../parameter-history/parameter-history.component'
+import { ExtendedHistory } from '../../usage-search/usage-search.component'
 
 export interface CriteriaForm {
   name: FormControl<string | undefined>
@@ -12,7 +12,7 @@ export interface CriteriaForm {
 }
 
 @Component({
-  selector: 'app-detail-history-criteria',
+  selector: 'app-usage-detail-criteria',
   templateUrl: './detail-history-criteria.component.html'
 })
 export class DetailHistoryCriteriaComponent implements OnChanges {

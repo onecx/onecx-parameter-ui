@@ -5,14 +5,14 @@ import { catchError, finalize, map, Observable, of } from 'rxjs'
 import { HistoriesAPIService, HistoryCriteria, HistoryPageResult, Parameter } from 'src/app/shared/generated'
 import { displayEqualityState, displayValue, displayValueType } from 'src/app/shared/utils'
 
-import { ExtendedHistory } from '../parameter-history/parameter-history.component'
+import { ExtendedHistory } from '../usage-search/usage-search.component'
 
 @Component({
-  selector: 'app-detail-history',
-  templateUrl: './detail-history.component.html',
-  styleUrls: ['./detail-history.component.scss']
+  selector: 'app-usage-detail',
+  templateUrl: './usage-detail.component.html',
+  styleUrls: ['./usage-detail.component.scss']
 })
-export class DetailHistoryComponent {
+export class UsageDetailComponent {
   @Input() public displayDialog = false
   @Input() public history: ExtendedHistory | undefined
   @Input() public parameter: Parameter | undefined
