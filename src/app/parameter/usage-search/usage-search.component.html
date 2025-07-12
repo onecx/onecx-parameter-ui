@@ -21,7 +21,7 @@
     <ocx-page-content>
       <p-message
         *ngIf="exceptionKey || exceptionKeyMeta"
-        id="pam_search_message_error"
+        id="pam_usage_search_message_error"
         severity="error"
         styleClass="m-3"
         [text]="exceptionKey ? (exceptionKey | translate) : (exceptionKeyMeta ?? '' | translate)"
@@ -30,7 +30,7 @@
       <ng-container *ngIf="data$ | async as data">
         <p-message
           *ngIf="loading"
-          id="pam_usage_message_loading"
+          id="pam_usage_search_message_loading"
           severity="info"
           styleClass="m-3"
           [text]="'ACTIONS.LOADING' | translate"
@@ -109,7 +109,7 @@
                     type="button"
                     *ocxIfPermission="'PARAMETER#VIEW'"
                     class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-                    [id]="'pam_search_table_row_' + i + '_action_view'"
+                    [id]="'pam_usage_search_table_row_' + i + '_action_view'"
                     (click)="onDetail('VIEW', rowData, $event)"
                     [disabled]="!rowData.parameterId"
                     [attr.aria-label]="'ACTIONS.VIEW.LABEL' | translate"
@@ -124,7 +124,7 @@
                   pbutton
                   type="button"
                   *ocxIfPermission="'PARAMETER#EDIT'"
-                  [id]="'pam_search_table_row_' + i + '_action_edit'"
+                  [id]="'pam_usage_search_table_row_' + i + '_action_edit'"
                   class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
                   (click)="onDetail('EDIT', rowData, $event)"
                   [disabled]="!rowData.parameterId"
@@ -139,7 +139,7 @@
                   pbutton
                   type="button"
                   *ocxIfPermission="'USAGE#VIEW'"
-                  [id]="'pam_search_table_row_' + i + '_action_usage'"
+                  [id]="'pam_usage_search_table_row_' + i + '_action_usage'"
                   class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
                   (click)="onUsage($event, rowData)"
                   [attr.aria-label]="'DIALOG.NAVIGATION.DETAIL_USAGE.LABEL' | translate"

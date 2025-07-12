@@ -1,13 +1,13 @@
 <p-message
   *ngIf="loading"
-  id="pam_usage_message_loading"
+  id="pam_usage_detail_message_loading"
   severity="info"
   styleClass="my-3"
   [text]="'ACTIONS.LOADING' | translate"
 ></p-message>
 <p-message
   *ngIf="exceptionKey"
-  id="pam_usage_message_error"
+  id="pam_usage_detail_message_error"
   severity="error"
   styleClass="my-3"
   [text]="exceptionKey | translate"
@@ -16,7 +16,7 @@
 <p-table
   *ngIf="!loading && !exceptionKey"
   #dataTable
-  id="pam_usage_list_table"
+  id="pam_usage_detail_list_table"
   styleClass=""
   [value]="data"
   [columns]="filteredColumns"
@@ -38,18 +38,18 @@
 >
   <ng-template pTemplate="emptymessage">
     <tr>
-      <td id="pam_usage_list_table_emptymessage" colspan="16">{{ 'ACTIONS.SEARCH.NO_DATA' | translate }}</td>
+      <td id="pam_usage_detail_list_table_emptymessage" colspan="16">{{ 'ACTIONS.SEARCH.NO_DATA' | translate }}</td>
     </tr>
   </ng-template>
 
   <ng-template pTemplate="header" let-columns>
     <tr>
-      <th pFrozenColumn id="pam_usage_table_header_actions" class="text-center white-space-nowrap">
+      <th pFrozenColumn id="pam_usage_detail_table_header_actions" class="text-center white-space-nowrap">
         {{ 'ACTIONS.LABEL' | translate }}
       </th>
       <th
         *ngFor="let col of columns"
-        [id]="'pam_usage_list_table_header_col_' + col.field"
+        [id]="'pam_usage_detail_list_table_header_col_' + col.field"
         class="white-space-nowrap"
         [class]="col.css"
         [pSortableColumn]="col.field"
@@ -85,7 +85,7 @@
           tooltipEvent="hover"
         />
       </td>
-      <td *ngFor="let col of columns" [id]="'pam_usage_list_table_row_' + i + '_' + col.field" [class]="col.css">
+      <td *ngFor="let col of columns" [id]="'pam_usage_detail_list_table_row_' + i + '_' + col.field" [class]="col.css">
         <!-- needs a div due to manage ellipsis -->
         <div
           *ngIf="col.isValue"
