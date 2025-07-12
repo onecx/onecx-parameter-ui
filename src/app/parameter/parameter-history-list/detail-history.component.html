@@ -7,8 +7,15 @@
   [draggable]="true"
   [resizable]="true"
   [maximizable]="true"
+  [style]="{ width: '800px' }"
+  [breakpoints]="{
+    '992px': '75vw',
+    '768px': '90vw',
+    '630px': '100vw'
+  }"
 >
   <app-detail-history-criteria
+    [history]="history"
     [parameter]="parameter"
     (criteriaEmitter)="onSearch($event)"
   ></app-detail-history-criteria>
@@ -16,6 +23,7 @@
   <app-detail-history-list
     [loading]="loading"
     [exceptionKey]="exceptionKey"
+    [history]="history"
     [parameter]="parameter"
     [dateFormat]="dateFormat"
     [data]="(data$ | async) ?? []"

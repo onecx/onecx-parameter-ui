@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
 import { catchError, finalize, map, Observable, of } from 'rxjs'
 
-import { Parameter, HistoriesAPIService, HistoryCriteria, HistoryPageResult } from 'src/app/shared/generated'
+import { HistoriesAPIService, HistoryCriteria, HistoryPageResult, Parameter } from 'src/app/shared/generated'
 import { displayEqualityState, displayValue, displayValueType } from 'src/app/shared/utils'
 
 import { ExtendedHistory } from '../parameter-history/parameter-history.component'
@@ -14,6 +14,7 @@ import { ExtendedHistory } from '../parameter-history/parameter-history.componen
 })
 export class DetailHistoryComponent {
   @Input() public displayDialog = false
+  @Input() public history: ExtendedHistory | undefined
   @Input() public parameter: Parameter | undefined
   @Input() public dateFormat: string | undefined = undefined
   @Output() public hideDialog = new EventEmitter()
@@ -46,14 +47,20 @@ export class DetailHistoryComponent {
       map((data: HistoryPageResult) => {
         if (!data.stream) return [] as ExtendedHistory[]
         return data.stream.map(
-          (p) =>
+          (h) =>
             ({
-              ...p,
-              valueType: displayValueType(p.usedValue),
-              defaultValueType: displayValueType(p.defaultValue),
-              displayDefaultValue: displayValue(p.defaultValue),
-              displayUsedValue: displayValue(p.usedValue),
-              isEqual: displayEqualityState(p.usedValue, p.defaultValue)
+              ...h,
+              /*
+              valueType: 'NUMBER',
+              defaultValueType: 'STRING',
+              displayDefaultValue: '123',
+              displayUsedValue: 'used 9237398498',
+              */
+              valueType: displayValueType(h.usedValue),
+              defaultValueType: displayValueType(h.defaultValue),
+              displayDefaultValue: displayValue(h.defaultValue),
+              displayUsedValue: displayValue(h.usedValue),
+              isEqual: displayEqualityState(h.usedValue, h.defaultValue)
             }) as ExtendedHistory
         )
       }),

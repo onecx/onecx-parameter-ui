@@ -1,0 +1,225 @@
+<p-message
+  *ngIf="loading"
+  id="pam_usage_message_loading"
+  severity="info"
+  styleClass="my-3"
+  [text]="'ACTIONS.LOADING' | translate"
+></p-message>
+<p-message
+  *ngIf="exceptionKey"
+  id="pam_usage_message_error"
+  severity="error"
+  styleClass="my-3"
+  [text]="exceptionKey | translate"
+></p-message>
+
+<p-table
+  *ngIf="!loading && !exceptionKey"
+  #dataTable
+  id="pam_usage_list_table"
+  styleClass=""
+  [value]="data"
+  [columns]="filteredColumns"
+  dataKey="id"
+  [globalFilterFields]="['instanceId']"
+  [reorderableColumns]="false"
+  [scrollable]="true"
+  scrollHeight="590px"
+  expandableRows="true"
+  [expandedRowKeys]="expandedRows"
+  rowExpandMode="single"
+  [rows]="10"
+  [rowsPerPageOptions]="[10, 30, 100]"
+  [paginator]="true"
+  [alwaysShowPaginator]="true"
+  paginatorPosition="bottom"
+  [showCurrentPageReport]="true"
+  currentPageReportTemplate="{first} - {last} {{ 'ACTIONS.SEARCH.OF' | translate }} {totalRecords}"
+>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td id="pam_usage_list_table_emptymessage" colspan="16">{{ 'ACTIONS.SEARCH.NO_DATA' | translate }}</td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th pFrozenColumn id="pam_usage_table_header_actions" class="text-center white-space-nowrap">
+        {{ 'ACTIONS.LABEL' | translate }}
+      </th>
+      <th
+        *ngFor="let col of columns"
+        [id]="'pam_usage_list_table_header_col_' + col.field"
+        class="white-space-nowrap"
+        [class]="col.css"
+        [pSortableColumn]="col.field"
+        [attr.aria-label]="col.translationPrefix + '.' + col.header | translate"
+        [pTooltip]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      >
+        <span>{{ col.translationPrefix + '.' + col.header | translate }}</span>
+        <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
+        <p-columnFilter *ngIf="col.hasFilter" type="text" [field]="col.field" display="menu"></p-columnFilter>
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-rowData let-i="rowIndex" let-columns="columns" let-expanded="expanded">
+    <tr [id]="'pam_usage_detail_table_row_' + i">
+      <!-- actions -->
+      <td pFrozenColumn class="align-items-center text-center white-space-nowrap">
+        <p-button
+          *ocxIfPermission="'USAGE#VIEW'"
+          type="button"
+          pRipple
+          [id]="'pam_usage_detail_table_row_' + i + '_action_expand'"
+          [pRowToggler]="rowData"
+          [text]="true"
+          [rounded]="true"
+          [plain]="true"
+          [icon]="expanded ? 'pi pi-eye-slash' : 'pi pi-eye'"
+          [attr.aria-label]="'DIALOG.USAGE.DETAIL.LABEL' | translate"
+          [pTooltip]="'DIALOG.USAGE.DETAIL.LABEL' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        />
+      </td>
+      <td *ngFor="let col of columns" [id]="'pam_usage_list_table_row_' + i + '_' + col.field" [class]="col.css">
+        <!-- needs a div due to manage ellipsis -->
+        <div
+          *ngIf="col.isValue"
+          class="text-ellipsis-2-lines"
+          [attr.aria-label]="'VALUE_TYPE.' + rowData['valueType'] | translate"
+          [pTooltip]="'VALUE_TYPE.' + rowData['valueType'] | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        >
+          {{ rowData[col.field] }}
+        </div>
+        <span
+          *ngIf="col.field === 'equal'"
+          [ngClass]="
+            rowData['isEqual'] === 'TRUE'
+              ? 'pi pi-check text-green-600'
+              : rowData['isEqual'] === 'FALSE'
+                ? 'pi pi-times text-red-600'
+                : ''
+          "
+          [attr.aria-label]="'PARAMETER.TOOLTIPS.EQUAL.' + rowData['isEqual'] | translate"
+          [pTooltip]="'PARAMETER.TOOLTIPS.EQUAL.' + rowData['isEqual'] | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        >
+          {{ rowData['isEqual'] === 'UNDEFINED' ? 'n.a.' : '' }}
+        </span>
+
+        <ng-container *ngIf="col.isText">{{ rowData[col.field] }}</ng-container>
+        <ng-container *ngIf="col.isDate">{{ rowData[col.field] | date: dateFormat }}</ng-container>
+        <ng-container *ngIf="col.isDuration">{{ onCalcDuration(rowData['start'], rowData['end']) }}</ng-container>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="rowexpansion" let-rowData let-index="rowIndex" let-columns="columns">
+    <tr>
+      <td></td>
+      <td [attr.colspan]="columns.length">
+        <div class="flex flex-row flex-wrap gap-4 justify-content-around align-items-center">
+          <ng-container
+            [ngTemplateOutlet]="historyDetailTemplate"
+            [ngTemplateOutletContext]="{
+              $implicit: rowData,
+              data: {
+                type: rowData.valueType,
+                value: rowData.usedValue,
+                labelKey: 'USAGE.USED_VALUE',
+                tooltipKey: 'USAGE.TOOLTIPS.USED_VALUE'
+              },
+              index: index
+            }"
+          />
+          <ng-container
+            [ngTemplateOutlet]="historyDetailTemplate"
+            [ngTemplateOutletContext]="{
+              $implicit: rowData,
+              data: {
+                type: rowData.defaultValueType,
+                value: rowData.defaultValue,
+                labelKey: 'USAGE.DEFAULT_VALUE',
+                tooltipKey: 'USAGE.TOOLTIPS.DEFAULT_VALUE'
+              },
+              index: index
+            }"
+          />
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<ng-template #historyDetailTemplate let-data="data" let-index="index">
+  <p-fieldset
+    [toggleable]="false"
+    [collapsed]="false"
+    [styleClass]="'px-2 w-22rem' + (index % 2 === 1 ? ' surface-100' : '')"
+    [style]="{ 'margin-top': '-0.5rem' }"
+  >
+    <ng-template pTemplate="header">{{ data.labelKey | translate }} </ng-template>
+
+    <div class="mt-1 flex flex-row flex-wrap gap-3">
+      <ng-container *ngIf="data.type === 'UNKNOWN'"> {{ 'PARAMETER.VALUE.EMPTY' | translate }} </ng-container>
+      <ng-container *ngIf="data.type !== 'UNKNOWN'">
+        <div [pTooltip]="'PARAMETER.TOOLTIPS.VALUE.TYPE.DETAIL' | translate" tooltipPosition="top" tooltipEvent="hover">
+          {{ 'VALUE_TYPE.' + data.type | translate }}
+        </div>
+
+        <div class="flex-grow-1">
+          <p-checkbox
+            *ngIf="data.type === 'BOOLEAN'"
+            type="text"
+            [binary]="true"
+            id="pam_usage_detail_form_value"
+            styleClass="ml-3 cursor-auto shadow-none"
+            [value]="data.value"
+            [label]="'PARAMETER.VALUE' | translate"
+            [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          ></p-checkbox>
+
+          <span *ngIf="data.type !== 'BOOLEAN'" class="p-float-label">
+            <input
+              *ngIf="data.type !== 'OBJECT'"
+              pInputText
+              type="text"
+              id="pam_usage_detail_form_value"
+              class="mb-1 w-full pt-3 pb-2 text-responsive"
+              [value]="data.value"
+              [attr.aria-label]="'PARAMETER.VALUE' | translate"
+              [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <textarea
+              *ngIf="data.type === 'OBJECT'"
+              pInputTextarea
+              id="pam_usage_detail_form_value"
+              class="w-full"
+              [rows]="5"
+              [value]="toJsonFormat(data.value)"
+              [ariaLabel]="data.labelKey | translate"
+              [pTooltip]="data.tooltipKey | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            >
+            </textarea>
+            <label *ngIf="data.type !== 'BOOLEAN'" for="pam_usage_detail_form_value">
+              {{ 'PARAMETER.VALUE' | translate }}
+            </label>
+          </span>
+        </div>
+      </ng-container>
+    </div>
+  </p-fieldset>
+</ng-template>

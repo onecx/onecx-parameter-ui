@@ -193,8 +193,9 @@
                   [pTooltip]="'PARAMETER.TOOLTIPS.EQUAL.' + rowData['isEqual'] | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
-                  >{{ rowData['isEqual'] === 'UNDEFINED' ? 'n.a.' : '' }}</span
                 >
+                  {{ rowData['isEqual'] === 'UNDEFINED' ? 'n.a.' : '' }}
+                </span>
 
                 <div
                   *ngIf="col.isValue"
@@ -243,6 +244,6 @@
 <app-detail-history
   [displayDialog]="displayUsageDialog"
   (hideDialog)="onCloseUsage()"
-  [parameter]="item4Detail"
+  [history]="item4Detail"
   [dateFormat]="dateFormat"
 ></app-detail-history>

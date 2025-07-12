@@ -12,9 +12,9 @@ import { ParameterSearchComponent } from './parameter-search/parameter-search.co
 import { ParameterCriteriaComponent } from './parameter-criteria/parameter-criteria.component'
 import { ParameterDetailComponent } from './parameter-detail/parameter-detail.component'
 import { ParameterHistoryComponent } from './parameter-history/parameter-history.component'
-import { DetailHistoryComponent } from './detail-history/detail-history.component'
-import { DetailHistoryCriteriaComponent } from './detail-history/detail-history-criteria/detail-history-criteria.component'
-import { DetailHistoryListComponent } from './detail-history/detail-history-list/detail-history-list.component'
+import { DetailHistoryComponent } from './parameter-history-list/detail-history.component'
+import { DetailHistoryCriteriaComponent } from './parameter-history-list/detail-history-criteria/detail-history-criteria.component'
+import { DetailHistoryListComponent } from './parameter-history-list/detail-history-list/detail-history-list.component'
 
 const routes: Routes = [
   {
