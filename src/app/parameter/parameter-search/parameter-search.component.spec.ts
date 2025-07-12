@@ -18,7 +18,7 @@ import {
   ParameterSearchComponent,
   ProductAbstract
 } from './parameter-search.component'
-import { ParameterHistoryComponent } from '../parameter-history/parameter-history.component'
+import { UsageSearchComponent } from '../usage-search/usage-search.component'
 
 // response data of parameter search service
 const paramRespData: Parameter[] = [
@@ -168,7 +168,7 @@ describe('ParameterSearchComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        provideRouter([{ path: 'usage', component: ParameterHistoryComponent }]),
+        provideRouter([{ path: 'usage', component: UsageSearchComponent }]),
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: routeMock },
         { provide: UserService, useValue: mockUserService },

@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core'
 import { Column } from '@onecx/portal-integration-angular'
 
 import { Parameter } from 'src/app/shared/generated'
-import { ExtendedHistory } from '../../parameter-history/parameter-history.component'
+import { ExtendedHistory } from '../../usage-search/usage-search.component'
 
 type ExtendedColumn = Column & {
   hasFilter?: boolean
@@ -19,54 +19,34 @@ type ExtendedColumn = Column & {
 }
 
 @Component({
-  selector: 'app-detail-history-list',
-  templateUrl: './detail-history-list.component.html'
+  selector: 'app-usage-detail-list',
+  templateUrl: './usage-detail-list.component.html'
 })
-export class DetailHistoryListComponent {
+export class UsageDetailListComponent {
   @Input() public loading = false
   @Input() public exceptionKey: string | undefined = undefined
+  @Input() public history: ExtendedHistory | undefined = undefined
   @Input() public parameter: Parameter | undefined = undefined
   @Input() public data: ExtendedHistory[] = []
   @Input() public dateFormat: string | undefined = undefined
 
+  public item4Detail: ExtendedHistory | undefined = undefined
+  public displayDetailDialog = false
+  public expandedRows: { [s: string]: boolean } = {}
   public filteredColumns: Column[]
   public columns: ExtendedColumn[] = [
     {
       field: 'start',
       header: 'START',
-      translationPrefix: 'DIALOG.USAGE',
+      translationPrefix: 'USAGE',
       active: true,
       isDate: true,
       sort: true
     },
     {
-      field: 'duration',
-      header: 'DURATION',
-      translationPrefix: 'DIALOG.USAGE',
-      active: true,
-      isDuration: true
-    },
-    {
-      field: 'count',
-      header: 'COUNT',
-      translationPrefix: 'DIALOG.USAGE',
-      active: true,
-      isText: true,
-      css: 'text-center'
-    },
-    {
-      field: 'instanceId',
-      header: 'INSTANCE_ID',
-      translationPrefix: 'DIALOG.USAGE',
-      active: true,
-      isText: true,
-      sort: true,
-      css: 'text-center'
-    },
-    {
       field: 'displayUsedValue',
       header: 'USED_VALUE',
-      translationPrefix: 'DIALOG.USAGE',
+      translationPrefix: 'USAGE',
       active: true,
       isValue: true,
       css: 'text-center'
@@ -74,9 +54,40 @@ export class DetailHistoryListComponent {
     {
       field: 'displayDefaultValue',
       header: 'DEFAULT_VALUE',
-      translationPrefix: 'DIALOG.USAGE',
+      translationPrefix: 'USAGE',
       active: true,
       isValue: true,
+      css: 'text-center'
+    },
+    {
+      field: 'equal',
+      header: 'EQUAL',
+      translationPrefix: 'USAGE',
+      active: true,
+      css: 'text-center'
+    },
+    {
+      field: 'duration',
+      header: 'DURATION',
+      translationPrefix: 'USAGE',
+      active: false,
+      isDuration: true
+    },
+    {
+      field: 'count',
+      header: 'COUNT',
+      translationPrefix: 'USAGE',
+      active: true,
+      isText: true,
+      css: 'text-center'
+    },
+    {
+      field: 'instanceId',
+      header: 'INSTANCE_ID',
+      translationPrefix: 'USAGE',
+      active: true,
+      isText: true,
+      sort: true,
       css: 'text-center'
     },
     {
@@ -96,5 +107,10 @@ export class DetailHistoryListComponent {
   public onCalcDuration(start: string, end: string): string {
     if (!start || start === '' || !end || end === '') return ''
     return new Date(Date.parse(end) - Date.parse(start)).toUTCString().split(' ')[4]
+  }
+
+  // display pretty JSON
+  public toJsonFormat(val: any): any {
+    return JSON.stringify(val, undefined, 2)
   }
 }

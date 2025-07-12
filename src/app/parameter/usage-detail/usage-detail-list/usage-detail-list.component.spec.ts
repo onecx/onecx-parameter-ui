@@ -6,17 +6,17 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { UserService } from '@onecx/angular-integration-interface'
 
-import { DetailHistoryListComponent } from './detail-history-list.component'
+import { UsageDetailListComponent } from './usage-detail-list.component'
 
 describe('HistoryListComponent', () => {
-  let component: DetailHistoryListComponent
-  let fixture: ComponentFixture<DetailHistoryListComponent>
+  let component: UsageDetailListComponent
+  let fixture: ComponentFixture<UsageDetailListComponent>
 
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [DetailHistoryListComponent],
+      declarations: [UsageDetailListComponent],
       imports: [
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
@@ -29,7 +29,7 @@ describe('HistoryListComponent', () => {
   }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DetailHistoryListComponent)
+    fixture = TestBed.createComponent(UsageDetailListComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
   })

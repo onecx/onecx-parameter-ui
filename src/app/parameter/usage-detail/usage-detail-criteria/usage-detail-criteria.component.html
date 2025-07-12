@@ -1,7 +1,7 @@
 <div [formGroup]="criteriaForm" class="mt-1 mb-4 flex flex-row flex-wrap gap-3">
   <span class="p-float-label flex-grow-1">
     <input
-      id="pm_history_search_criteria_name"
+      id="pam_usage_detail_criteria_name"
       pInputText
       type="text"
       formControlName="name"
@@ -11,11 +11,11 @@
       tooltipPosition="top"
       tooltipEvent="hover"
     />
-    <label for="pm_history_search_criteria_name">{{ 'DIALOG.USAGE.NAME' | translate }}</label>
+    <label for="pam_usage_detail_criteria_name">{{ 'PARAMETER.NAME' | translate }}</label>
   </span>
   <span class="p-float-label flex-grow-1">
     <input
-      id="pm_history_search_criteria_product_name"
+      id="pam_usage_detail_criteria_product_name"
       pInputText
       type="text"
       formControlName="productName"
@@ -25,20 +25,20 @@
       tooltipPosition="top"
       tooltipEvent="hover"
     />
-    <label for="pm_history_search_criteria_product_name">{{ 'PARAMETER.PRODUCT_NAME' | translate }}</label>
+    <label for="pam_usage_detail_criteria_product_name">{{ 'PARAMETER.PRODUCT_NAME' | translate }}</label>
   </span>
   <span class="p-float-label flex-grow-1">
     <input
-      id="pm_history_search_criteria_application_id"
+      id="pam_usage_detail_criteria_application_id"
       pInputText
       type="text"
-      formControlName="productName"
+      formControlName="applicationId"
       class="w-full text-responsive"
       [attr.aria-label]="'PARAMETER.APP_NAME' | translate"
       [pTooltip]="'PARAMETER.TOOLTIPS.APP_NAME' | translate"
       tooltipPosition="top"
       tooltipEvent="hover"
     />
-    <label for="pm_history_search_criteria_application_id">{{ 'PARAMETER.APP_NAME' | translate }}</label>
+    <label for="pam_usage_detail_criteria_application_id">{{ 'PARAMETER.APP_NAME' | translate }}</label>
   </span>
 </div>

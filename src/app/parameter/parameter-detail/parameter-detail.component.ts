@@ -118,7 +118,6 @@ export class ParameterDetailComponent implements OnChanges {
   public loading = false
   public exceptionKey: string | undefined = undefined
   public logErrors = false
-  public test_value = ''
   // form
   public formGroup: FormGroup
   public valueStatus$: Observable<FormControlStatus> = of()

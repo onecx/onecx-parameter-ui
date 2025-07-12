@@ -161,31 +161,6 @@
     "USAGE": {
       "HEADER": "Parameternutzung",
       "SUBHEADER": "Suchen und Anzeige der letzten Verwendung von Parametern (von Applikationen gemeldet)",
-      "NAME": "Parameter",
-      "COUNT": "Anzahl",
-      "START": "Start",
-      "END": "Ende",
-      "DURATION": "Dauer",
-      "INSTANCE_ID": "Instanz-ID",
-      "DEFAULT_VALUE": "Standard",
-      "USED_VALUE": "Verwendet",
-      "LAST_USED": "Zuletzt verwendet",
-      "USAGE_RELOAD": "Neuladen",
-      "EQUAL": "Gleich?",
-      "TOOLTIPS": {
-        "COUNT": "Wie oft im Interval benutzt?",
-        "START": "Beginn des Zeitraums",
-        "END": "Ende des Zeitraums",
-        "DURATION": "Zeitraum in dem der Parameter mit dem geliefertem Wert benutzt wurde",
-        "INSTANCE_ID": "ID der Instanz, die den Parameter benutzt hat",
-        "DEFAULT_VALUE": "Standardwert",
-        "USED_VALUE": "Verwendeter Wert",
-        "LAST_USED": "Zuletzt verwendet",
-        "EQUAL": "Vergleich von Wert und importiertem Wert",
-        "EQUAL.TRUE": "Benutzter Wert und Default-Wert sind gleich",
-        "EQUAL.FALSE": "Benutzter Wert und Default-Wert sind ungleich",
-        "EQUAL.UNDEFINED": "Nicht anwendbar/verfügbar, da kein Wert"
-      },
       "TAB": {
         "OVERVIEW": "Zusammenfassung",
         "LIST": "Werteliste",
@@ -195,6 +170,10 @@
           "LIST": "Liste der Einzelwerte",
           "CHART": "Grafische Darstellung der Werte"
         }
+      },
+      "DETAIL": {
+        "HEADER": "Nutzungsdetails",
+        "LABEL": "Details"
       }
     },
     "CHART": {
@@ -240,6 +219,32 @@
       "EQUAL": "Vergleich von Wert und importiertem Wert",
       "EQUAL.TRUE": "Wert und importierter Wert sind gleich",
       "EQUAL.FALSE": "Wert und importierter Wert sind ungleich",
+      "EQUAL.UNDEFINED": "Nicht anwendbar/verfügbar, da kein Wert"
+    }
+  },
+  "USAGE": {
+    "COUNT": "Anzahl",
+    "START": "Start",
+    "END": "Ende",
+    "DURATION": "Dauer",
+    "INSTANCE_ID": "Instanz-ID",
+    "DEFAULT_VALUE": "Standard",
+    "USED_VALUE": "Verwendet",
+    "LAST_USED": "Zuletzt verwendet",
+    "USAGE_RELOAD": "Neuladen",
+    "EQUAL": "Gleich?",
+    "TOOLTIPS": {
+      "COUNT": "Wie oft im Interval benutzt?",
+      "START": "Beginn des Zeitraums",
+      "END": "Ende des Zeitraums",
+      "DURATION": "Zeitraum in dem der Parameter mit dem geliefertem Wert benutzt wurde",
+      "INSTANCE_ID": "ID der Instanz, die den Parameter benutzt hat",
+      "DEFAULT_VALUE": "Standardwert",
+      "USED_VALUE": "Verwendeter Wert",
+      "LAST_USED": "Zuletzt verwendet",
+      "EQUAL": "Vergleich von Wert und importiertem Wert",
+      "EQUAL.TRUE": "Benutzter Wert und Default-Wert sind gleich",
+      "EQUAL.FALSE": "Benutzter Wert und Default-Wert sind ungleich",
       "EQUAL.UNDEFINED": "Nicht anwendbar/verfügbar, da kein Wert"
     }
   },
