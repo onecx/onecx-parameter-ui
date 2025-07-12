@@ -13,9 +13,9 @@ export interface CriteriaForm {
 
 @Component({
   selector: 'app-usage-detail-criteria',
-  templateUrl: './detail-history-criteria.component.html'
+  templateUrl: './usage-detail-criteria.component.html'
 })
-export class DetailHistoryCriteriaComponent implements OnChanges {
+export class UsageDetailCriteriaComponent implements OnChanges {
   @Input() public history: ExtendedHistory | undefined = undefined
   @Input() public parameter: Parameter | undefined = undefined
   @Output() public criteriaEmitter = new EventEmitter<HistoryCriteria>()

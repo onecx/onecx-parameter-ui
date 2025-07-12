@@ -20,9 +20,9 @@ type ExtendedColumn = Column & {
 
 @Component({
   selector: 'app-usage-detail-list',
-  templateUrl: './detail-history-list.component.html'
+  templateUrl: './usage-detail-list.component.html'
 })
-export class DetailHistoryListComponent {
+export class UsageDetailListComponent {
   @Input() public loading = false
   @Input() public exceptionKey: string | undefined = undefined
   @Input() public history: ExtendedHistory | undefined = undefined
