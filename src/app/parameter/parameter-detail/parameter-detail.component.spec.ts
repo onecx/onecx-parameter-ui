@@ -350,12 +350,25 @@ describe('ParameterDetailComponent', () => {
       expect(component.hideDialogAndChanged.emit).toHaveBeenCalledWith(true)
     })
 
-    it('should create a BOOLEAN parameter - valid', () => {
+    it('should create a BOOLEAN parameter - valid true', () => {
       apiServiceSpy.createParameter.and.returnValue(of({}))
 
       component.ngOnChanges()
       // manipulate user settings
       component.formGroup.controls['valueBoolean'].setValue(true)
+      component.formGroup.controls['valueType'].setValue('BOOLEAN')
+      expect(component.formGroup.valid).toBeTrue()
+      component.onSave()
+
+      expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.MESSAGE.OK' })
+    })
+
+    it('should create a BOOLEAN parameter - null == false', () => {
+      apiServiceSpy.createParameter.and.returnValue(of({}))
+
+      component.ngOnChanges()
+      // manipulate user settings
+      //component.formGroup.controls['valueBoolean'].setValue()
       component.formGroup.controls['valueType'].setValue('BOOLEAN')
       expect(component.formGroup.valid).toBeTrue()
       component.onSave()

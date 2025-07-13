@@ -58,5 +58,9 @@ describe('HistoryListComponent', () => {
 
       expect(duration).toBe('')
     })
+
+    it('should format JSON', () => {
+      component.toJsonFormat('{ json: true}')
+    })
   })
 })

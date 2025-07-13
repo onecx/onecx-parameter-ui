@@ -8,6 +8,7 @@ import { UserService } from '@onecx/angular-integration-interface'
 
 import { HistoryCriteria, Parameter } from 'src/app/shared/generated'
 import { UsageDetailCriteriaComponent } from './usage-detail-criteria.component'
+import { ExtendedHistory } from '../../usage-search/usage-search.component'
 
 const parameter: Parameter = {
   id: 'pid',
@@ -16,6 +17,20 @@ const parameter: Parameter = {
   name: 'name',
   displayName: 'displayName',
   value: 'value'
+}
+
+const history: ExtendedHistory = {
+  id: 'pid',
+  productName: 'prod1',
+  applicationId: 'app1',
+  name: 'name',
+  usedValue: 'used value',
+  defaultValue: 'default value',
+  valueType: 'STRING',
+  defaultValueType: 'STRING',
+  displayUsedValue: '',
+  displayDefaultValue: '',
+  isEqual: 'FALSE'
 }
 
 describe('HistoryCriteriaComponent', () => {
@@ -53,7 +68,7 @@ describe('HistoryCriteriaComponent', () => {
   })
 
   describe('ngOnChange', () => {
-    it('should fill form', () => {
+    it('should fill form with parameter', () => {
       component.parameter = parameter
       const criteria: HistoryCriteria = {
         name: parameter.name,
@@ -67,5 +82,20 @@ describe('HistoryCriteriaComponent', () => {
       expect(component.criteriaForm.value).toEqual(criteria)
       expect(component.criteriaEmitter.emit).toHaveBeenCalled()
     })
+  })
+
+  it('should fill form with history', () => {
+    component.history = history
+    const criteria: HistoryCriteria = {
+      name: parameter.name,
+      productName: parameter.productName,
+      applicationId: parameter.applicationId
+    }
+    spyOn(component.criteriaEmitter, 'emit')
+
+    component.ngOnChanges()
+
+    expect(component.criteriaForm.value).toEqual(criteria)
+    expect(component.criteriaEmitter.emit).toHaveBeenCalled()
   })
 })
