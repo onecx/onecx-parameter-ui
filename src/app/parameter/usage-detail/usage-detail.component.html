@@ -7,24 +7,32 @@
   [draggable]="true"
   [resizable]="true"
   [maximizable]="true"
+  [style]="{ width: '800px' }"
+  [breakpoints]="{
+    '992px': '75vw',
+    '768px': '90vw',
+    '630px': '100vw'
+  }"
 >
-  <app-detail-history-criteria
+  <app-usage-detail-criteria
+    [history]="history"
     [parameter]="parameter"
     (criteriaEmitter)="onSearch($event)"
-  ></app-detail-history-criteria>
+  ></app-usage-detail-criteria>
 
-  <app-detail-history-list
+  <app-usage-detail-list
     [loading]="loading"
     [exceptionKey]="exceptionKey"
+    [history]="history"
     [parameter]="parameter"
     [dateFormat]="dateFormat"
     [data]="(data$ | async) ?? []"
-  ></app-detail-history-list>
+  ></app-usage-detail-list>
 
   <ng-template pTemplate="footer">
     <div class="flex flex-wrap justify-content-end gap-2 mb-1">
       <p-button
-        id="pm_usage_action_close"
+        id="pam_usage_detail_action_close"
         icon="pi pi-times"
         (onClick)="onDialogHide()"
         [label]="'ACTIONS.NAVIGATION.CLOSE' | translate"

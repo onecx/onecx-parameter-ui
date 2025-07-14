@@ -7,7 +7,8 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 import { UserService } from '@onecx/angular-integration-interface'
 
 import { HistoryCriteria, Parameter } from 'src/app/shared/generated'
-import { DetailHistoryCriteriaComponent } from './detail-history-criteria.component'
+import { UsageDetailCriteriaComponent } from './usage-detail-criteria.component'
+import { ExtendedHistory } from '../../usage-search/usage-search.component'
 
 const parameter: Parameter = {
   id: 'pid',
@@ -18,15 +19,29 @@ const parameter: Parameter = {
   value: 'value'
 }
 
+const history: ExtendedHistory = {
+  id: 'pid',
+  productName: 'prod1',
+  applicationId: 'app1',
+  name: 'name',
+  usedValue: 'used value',
+  defaultValue: 'default value',
+  valueType: 'STRING',
+  defaultValueType: 'STRING',
+  displayUsedValue: '',
+  displayDefaultValue: '',
+  isEqual: 'FALSE'
+}
+
 describe('HistoryCriteriaComponent', () => {
-  let component: DetailHistoryCriteriaComponent
-  let fixture: ComponentFixture<DetailHistoryCriteriaComponent>
+  let component: UsageDetailCriteriaComponent
+  let fixture: ComponentFixture<UsageDetailCriteriaComponent>
 
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [DetailHistoryCriteriaComponent],
+      declarations: [UsageDetailCriteriaComponent],
       imports: [
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
@@ -39,7 +54,7 @@ describe('HistoryCriteriaComponent', () => {
   }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DetailHistoryCriteriaComponent)
+    fixture = TestBed.createComponent(UsageDetailCriteriaComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
     mockUserService.lang$.getValue.and.returnValue('de')
@@ -53,7 +68,7 @@ describe('HistoryCriteriaComponent', () => {
   })
 
   describe('ngOnChange', () => {
-    it('should fill form', () => {
+    it('should fill form with parameter', () => {
       component.parameter = parameter
       const criteria: HistoryCriteria = {
         name: parameter.name,
@@ -67,5 +82,20 @@ describe('HistoryCriteriaComponent', () => {
       expect(component.criteriaForm.value).toEqual(criteria)
       expect(component.criteriaEmitter.emit).toHaveBeenCalled()
     })
+  })
+
+  it('should fill form with history', () => {
+    component.history = history
+    const criteria: HistoryCriteria = {
+      name: parameter.name,
+      productName: parameter.productName,
+      applicationId: parameter.applicationId
+    }
+    spyOn(component.criteriaEmitter, 'emit')
+
+    component.ngOnChanges()
+
+    expect(component.criteriaForm.value).toEqual(criteria)
+    expect(component.criteriaEmitter.emit).toHaveBeenCalled()
   })
 })

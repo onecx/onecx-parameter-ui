@@ -2,7 +2,8 @@ import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core
 import { FormControl, FormGroup } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 
-import { Parameter, HistoryCriteria } from 'src/app/shared/generated'
+import { HistoryCriteria, Parameter } from 'src/app/shared/generated'
+import { ExtendedHistory } from '../../usage-search/usage-search.component'
 
 export interface CriteriaForm {
   name: FormControl<string | undefined>
@@ -11,10 +12,11 @@ export interface CriteriaForm {
 }
 
 @Component({
-  selector: 'app-detail-history-criteria',
-  templateUrl: './detail-history-criteria.component.html'
+  selector: 'app-usage-detail-criteria',
+  templateUrl: './usage-detail-criteria.component.html'
 })
-export class DetailHistoryCriteriaComponent implements OnChanges {
+export class UsageDetailCriteriaComponent implements OnChanges {
+  @Input() public history: ExtendedHistory | undefined = undefined
   @Input() public parameter: Parameter | undefined = undefined
   @Output() public criteriaEmitter = new EventEmitter<HistoryCriteria>()
 
@@ -29,11 +31,11 @@ export class DetailHistoryCriteriaComponent implements OnChanges {
   }
 
   public ngOnChanges(): void {
-    if (this.parameter) {
+    if (this.history || this.parameter) {
       this.criteriaForm.setValue({
-        name: this.parameter?.name,
-        productName: this.parameter?.productName,
-        applicationId: this.parameter?.applicationId
+        name: this.parameter?.name ?? this.history?.name,
+        productName: this.parameter?.productName ?? this.history?.productName,
+        applicationId: this.parameter?.applicationId ?? this.history?.applicationId
       })
       const criteria: HistoryCriteria = {
         productName: this.criteriaForm.value.productName,

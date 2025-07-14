@@ -161,31 +161,6 @@
     "USAGE": {
       "HEADER": "Parameter Usage",
       "SUBHEADER": "Search and display the last use of parameters (reported by applications)",
-      "NAME": "Parameter",
-      "COUNT": "Count",
-      "START": "Start",
-      "END": "End",
-      "DURATION": "Duration",
-      "INSTANCE_ID": "Instance ID",
-      "DEFAULT_VALUE": "Default Value",
-      "USED_VALUE": "Used Value",
-      "LAST_USED": "Last used",
-      "USAGE_RELOAD": "Reload",
-      "EQUAL": "Equal?",
-      "TOOLTIPS": {
-        "COUNT": "How many times used within interval?",
-        "START": "Start of timeframe",
-        "END": "End of timeframe",
-        "DURATION": "Period in which the Parameter was used with the supplied value",
-        "INSTANCE_ID": "ID of the instance that used the Parameter",
-        "DEFAULT_VALUE": "Default value",
-        "USED_VALUE": "Used value",
-        "LAST_USED": "Last used value",
-        "EQUAL": "Comparison of value and imported value",
-        "EQUAL.TRUE": "Used Value and default Value are equal",
-        "EQUAL.FALSE": "Used Value and default Value are not equal",
-        "EQUAL.UNDEFINED": "Not available because no value"
-      },
       "TAB": {
         "OVERVIEW": "Summary",
         "LIST": "Value List",
@@ -195,6 +170,10 @@
           "LIST": "List of values",
           "CHART": "Graphical presentation of the time line"
         }
+      },
+      "USAGE.DETAIL": {
+        "HEADER": "Usage Data Details",
+        "LABEL": "Details"
       }
     },
     "CHART": {
@@ -240,6 +219,32 @@
       "EQUAL": "Comparison of value and imported value",
       "EQUAL.TRUE": "Value and imported value are equal",
       "EQUAL.FALSE": "Value and imported value are not equal",
+      "EQUAL.UNDEFINED": "Not available because no value"
+    }
+  },
+  "USAGE": {
+    "COUNT": "Count",
+    "START": "Start",
+    "END": "End",
+    "DURATION": "Duration",
+    "INSTANCE_ID": "Instance ID",
+    "DEFAULT_VALUE": "Default Value",
+    "USED_VALUE": "Used Value",
+    "LAST_USED": "Last used",
+    "USAGE_RELOAD": "Reload",
+    "EQUAL": "Equal?",
+    "TOOLTIPS": {
+      "COUNT": "How many times used within interval?",
+      "START": "Start of timeframe",
+      "END": "End of timeframe",
+      "DURATION": "Period in which the Parameter was used with the supplied value",
+      "INSTANCE_ID": "ID of the instance that used the Parameter",
+      "DEFAULT_VALUE": "Default value",
+      "USED_VALUE": "Used value",
+      "LAST_USED": "Last used value",
+      "EQUAL": "Comparison of value and imported value",
+      "EQUAL.TRUE": "Used Value and default Value are equal",
+      "EQUAL.FALSE": "Used Value and default Value are not equal",
       "EQUAL.UNDEFINED": "Not available because no value"
     }
   },

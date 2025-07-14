@@ -68,11 +68,11 @@ export type ProductAbstract = {
 }
 
 @Component({
-  selector: 'app-parameter-history',
-  templateUrl: './parameter-history.component.html',
-  styleUrls: ['./parameter-history.component.scss']
+  selector: 'app-usage-search',
+  templateUrl: './usage-search.component.html',
+  styleUrls: ['./usage-search.component.scss']
 })
-export class ParameterHistoryComponent implements OnInit {
+export class UsageSearchComponent implements OnInit {
   // dialog
   public loading = false
   public exceptionKey: string | undefined = undefined
@@ -94,7 +94,7 @@ export class ParameterHistoryComponent implements OnInit {
   public metaData$!: Observable<AllMetaData>
   public usedProducts$ = new ReplaySubject<Product[]>(1) // getting data from bff endpoint
   public itemId: string | undefined // used on detail
-  public item4Detail: History | undefined
+  public item4Detail: ExtendedHistory | undefined
   public item4Delete: History | undefined // used on deletion
   // slot configuration: get product infos via remote component
   public slotName = 'onecx-product-infos'
@@ -117,7 +117,7 @@ export class ParameterHistoryComponent implements OnInit {
     {
       field: 'displayUsedValue',
       header: 'USED_VALUE',
-      translationPrefix: 'DIALOG.USAGE',
+      translationPrefix: 'USAGE',
       active: true,
       isValue: true,
       css: 'text-center word-break-all'
@@ -125,7 +125,7 @@ export class ParameterHistoryComponent implements OnInit {
     {
       field: 'displayDefaultValue',
       header: 'DEFAULT_VALUE',
-      translationPrefix: 'DIALOG.USAGE',
+      translationPrefix: 'USAGE',
       active: true,
       isValue: true,
       css: 'text-center word-break-all'
@@ -141,14 +141,14 @@ export class ParameterHistoryComponent implements OnInit {
     {
       field: 'equal',
       header: 'EQUAL',
-      translationPrefix: 'DIALOG.USAGE',
+      translationPrefix: 'USAGE',
       active: true,
       css: 'text-center'
     },
     {
       field: 'start',
       header: 'START',
-      translationPrefix: 'DIALOG.USAGE',
+      translationPrefix: 'USAGE',
       active: true,
       isDate: true,
       sort: true
@@ -156,14 +156,14 @@ export class ParameterHistoryComponent implements OnInit {
     {
       field: 'duration',
       header: 'DURATION',
-      translationPrefix: 'DIALOG.USAGE',
+      translationPrefix: 'USAGE',
       active: true,
       isDuration: true
     },
     {
       field: 'count',
       header: 'COUNT',
-      translationPrefix: 'DIALOG.USAGE',
+      translationPrefix: 'USAGE',
       active: true,
       isText: true,
       css: 'text-center'
@@ -178,7 +178,7 @@ export class ParameterHistoryComponent implements OnInit {
     {
       field: 'instanceId',
       header: 'INSTANCE_ID',
-      translationPrefix: 'DIALOG.USAGE',
+      translationPrefix: 'USAGE',
       active: true,
       isText: true,
       sort: true,
@@ -318,14 +318,14 @@ export class ParameterHistoryComponent implements OnInit {
       map((data: HistoryPageResult) => {
         if (!data.stream) return [] as ExtendedHistory[]
         return data.stream.map(
-          (p) =>
+          (h) =>
             ({
-              ...p,
-              valueType: displayValueType(p.usedValue),
-              defaultValueType: displayValueType(p.defaultValue),
-              displayDefaultValue: displayValue(p.defaultValue),
-              displayUsedValue: displayValue(p.usedValue),
-              isEqual: displayEqualityState(p.usedValue, p.defaultValue)
+              ...h,
+              valueType: displayValueType(h.usedValue),
+              defaultValueType: displayValueType(h.defaultValue),
+              displayDefaultValue: displayValue(h.defaultValue),
+              displayUsedValue: displayValue(h.usedValue),
+              isEqual: displayEqualityState(h.usedValue, h.defaultValue)
             }) as ExtendedHistory
         )
       }),
@@ -391,7 +391,7 @@ export class ParameterHistoryComponent implements OnInit {
   }
 
   // Detail => CREATE, COPY, EDIT, VIEW
-  public onDetail(mode: ChangeMode, item: History | undefined, ev?: Event): void {
+  public onDetail(mode: ChangeMode, item: ExtendedHistory | undefined, ev?: Event): void {
     ev?.stopPropagation()
     this.changeMode = mode
     this.item4Detail = item // do not manipulate this item here
@@ -406,7 +406,7 @@ export class ParameterHistoryComponent implements OnInit {
   }
 
   // History
-  public onUsage(ev: Event, item: History) {
+  public onUsage(ev: Event, item: ExtendedHistory) {
     ev.stopPropagation()
     this.item4Detail = item
     this.displayUsageDialog = true

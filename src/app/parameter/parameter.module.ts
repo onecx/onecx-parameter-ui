@@ -11,10 +11,10 @@ import { LabelResolver } from 'src/app/shared/label.resolver'
 import { ParameterSearchComponent } from './parameter-search/parameter-search.component'
 import { ParameterCriteriaComponent } from './parameter-criteria/parameter-criteria.component'
 import { ParameterDetailComponent } from './parameter-detail/parameter-detail.component'
-import { ParameterHistoryComponent } from './parameter-history/parameter-history.component'
-import { DetailHistoryComponent } from './detail-history/detail-history.component'
-import { DetailHistoryCriteriaComponent } from './detail-history/detail-history-criteria/detail-history-criteria.component'
-import { DetailHistoryListComponent } from './detail-history/detail-history-list/detail-history-list.component'
+import { UsageSearchComponent } from './usage-search/usage-search.component'
+import { UsageDetailComponent } from './usage-detail/usage-detail.component'
+import { UsageDetailCriteriaComponent } from './usage-detail/usage-detail-criteria/usage-detail-criteria.component'
+import { UsageDetailListComponent } from './usage-detail/usage-detail-list/usage-detail-list.component'
 
 const routes: Routes = [
   {
@@ -24,7 +24,7 @@ const routes: Routes = [
   },
   {
     path: 'usage',
-    component: ParameterHistoryComponent,
+    component: UsageSearchComponent,
     pathMatch: 'full',
     data: {
       breadcrumb: 'BREADCRUMBS.USAGE',
@@ -40,10 +40,10 @@ const routes: Routes = [
     ParameterSearchComponent,
     ParameterCriteriaComponent,
     ParameterDetailComponent,
-    ParameterHistoryComponent,
-    DetailHistoryComponent,
-    DetailHistoryCriteriaComponent,
-    DetailHistoryListComponent
+    UsageSearchComponent,
+    UsageDetailComponent,
+    UsageDetailCriteriaComponent,
+    UsageDetailListComponent
   ],
   imports: [
     CommonModule,

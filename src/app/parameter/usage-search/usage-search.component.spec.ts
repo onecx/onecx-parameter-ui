@@ -15,9 +15,9 @@ import {
   ApplicationAbstract,
   ExtendedHistory,
   ExtendedProduct,
-  ParameterHistoryComponent,
+  UsageSearchComponent,
   ProductAbstract
-} from './parameter-history.component'
+} from './usage-search.component'
 import { ParameterSearchComponent } from '../parameter-search/parameter-search.component'
 
 // response data of parameter search service
@@ -163,9 +163,9 @@ const allProducts: ExtendedProduct[] = [
   { name: 'product5', displayName: 'product5', applications: [] }
 ]
 
-describe('ParameterHistoryComponent', () => {
-  let component: ParameterHistoryComponent
-  let fixture: ComponentFixture<ParameterHistoryComponent>
+describe('UsageSearchComponent', () => {
+  let component: UsageSearchComponent
+  let fixture: ComponentFixture<UsageSearchComponent>
   const routerSpy = jasmine.createSpyObj('router', ['navigate'])
   const routeMock = { snapshot: { paramMap: new Map() } }
 
@@ -178,7 +178,7 @@ describe('ParameterHistoryComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ParameterHistoryComponent],
+      declarations: [UsageSearchComponent],
       imports: [
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
@@ -210,7 +210,7 @@ describe('ParameterHistoryComponent', () => {
   }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ParameterHistoryComponent)
+    fixture = TestBed.createComponent(UsageSearchComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
   })
@@ -509,7 +509,7 @@ describe('ParameterHistoryComponent', () => {
 
     it('should set default date format', () => {
       mockUserService.lang$.getValue.and.returnValue('en')
-      fixture = TestBed.createComponent(ParameterHistoryComponent)
+      fixture = TestBed.createComponent(UsageSearchComponent)
       component = fixture.componentInstance
       fixture.detectChanges()
       expect(component.dateFormat).toEqual('M/d/yy, hh:mm:ss a')

@@ -1,0 +1,20 @@
+@import '/src/app/_pm-mixins.scss';
+
+@include readable-disabled-components;
+@include dialog-footer-buttons;
+@include dialog-non-full-size-modal;
+@include displaying-text-responsive;
+@include tabview-fix-color-selected-tab;
+
+:host ::ng-deep {
+  .p-fieldset {
+    &.p-fieldset-toggleable .p-fieldset-legend a,
+    .p-fieldset-legend {
+      background-color: transparent;
+      padding: 0.3rem 0.4rem;
+    }
+    .p-fieldset-content {
+      padding: 0rem 0.2rem 0rem;
+    }
+  }
+}
