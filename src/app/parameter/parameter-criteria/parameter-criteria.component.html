@@ -10,7 +10,7 @@
     <span class="p-float-label">
       <p-dropdown
         id="pam_search_criteria_product_name"
-        styleClass="w-13rem sm:w-18rem text-responsive"
+        styleClass="w-11rem sm:w-18rem text-responsive"
         formControlName="productName"
         [options]="productOptions"
         (onChange)="onChangeProductName($event.value)"
@@ -28,7 +28,7 @@
     <span *ocxAdvanced class="p-float-label">
       <p-dropdown
         id="pam_search_criteria_application_id"
-        styleClass="w-13rem sm:w-18rem text-responsive"
+        styleClass="w-11rem sm:w-18rem text-responsive"
         formControlName="applicationId"
         [options]="appOptions"
         [showClear]="true"
@@ -48,7 +48,7 @@
         pInputText
         type="text"
         formControlName="name"
-        class="w-13rem sm:w-18rem text-responsive"
+        class="w-11rem sm:w-18rem text-responsive"
         [attr.aria-label]="'PARAMETER.NAME' | translate"
         [pTooltip]="'PARAMETER.TOOLTIPS.COMBINED_NAME' | translate"
         tooltipPosition="top"

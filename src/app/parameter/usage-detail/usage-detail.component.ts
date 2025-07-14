@@ -50,12 +50,6 @@ export class UsageDetailComponent {
           (h) =>
             ({
               ...h,
-              /*
-              valueType: 'NUMBER',
-              defaultValueType: 'STRING',
-              displayDefaultValue: '123',
-              displayUsedValue: 'used 9237398498',
-              */
               valueType: displayValueType(h.usedValue),
               defaultValueType: displayValueType(h.defaultValue),
               displayDefaultValue: displayValue(h.defaultValue),
