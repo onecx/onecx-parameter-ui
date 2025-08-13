@@ -586,7 +586,8 @@ describe('ParameterDetailComponent', () => {
     })
   })
 
-  xdescribe('DefaultValueAccessor - does not work', () => {
+  // Reason: This waits for a solution
+  xdescribe('Value trimming', () => {
     beforeEach(() => {
       const p: Parameter = { ...parameterBase, value: 'text' }
       apiServiceSpy.getParameterById.and.returnValue(of(p))
