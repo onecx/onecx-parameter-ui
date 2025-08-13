@@ -1,29 +1,26 @@
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { APP_INITIALIZER, DoBootstrap, Injector, NgModule } from '@angular/core'
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-import { Router, RouterModule, Routes } from '@angular/router'
+import { RouterModule, Routes, Router } from '@angular/router'
 import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { firstValueFrom } from 'rxjs'
 
 import { AngularAuthModule } from '@onecx/angular-auth'
+import { createTranslateLoader, provideTranslationPathFromMeta } from '@onecx/angular-utils'
+import { createAppEntrypoint, initializeRouter, startsWith } from '@onecx/angular-webcomponents'
 import {
   addInitializeModuleGuard,
   AppConfigService,
   AppStateService,
   ConfigurationService
 } from '@onecx/angular-integration-interface'
-import { createTranslateLoader, TRANSLATION_PATH, translationPathFactory } from '@onecx/angular-utils'
-import { createAppEntrypoint, initializeRouter, startsWith } from '@onecx/angular-webcomponents'
-import {
-  PortalApiConfiguration,
-  PortalCoreModule,
-  PortalMissingTranslationHandler
-} from '@onecx/portal-integration-angular'
+import { AngularAcceleratorMissingTranslationHandler } from '@onecx/angular-accelerator'
+import { PortalApiConfiguration, PortalCoreModule } from '@onecx/portal-integration-angular'
 
+import { Configuration } from './shared/generated'
 import { environment } from 'src/environments/environment'
 import { AppEntrypointComponent } from './app-entrypoint.component'
-import { Configuration } from './shared/generated'
 
 function apiConfigProvider(configService: ConfigurationService, appStateService: AppStateService) {
   return new PortalApiConfiguration(Configuration, environment.apiPrefix, configService, appStateService)
@@ -53,7 +50,10 @@ const routes: Routes = [
     TranslateModule.forRoot({
       isolate: true,
       loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] },
-      missingTranslationHandler: { provide: MissingTranslationHandler, useClass: PortalMissingTranslationHandler }
+      missingTranslationHandler: {
+        provide: MissingTranslationHandler,
+        useClass: AngularAcceleratorMissingTranslationHandler
+      }
     })
   ],
   providers: [
@@ -66,17 +66,12 @@ const routes: Routes = [
       deps: [Router, AppStateService]
     },
     {
-      provide: TRANSLATION_PATH,
-      useFactory: (appStateService: AppStateService) => translationPathFactory('assets/i18n/')(appStateService),
-      multi: true,
-      deps: [AppStateService]
-    },
-    {
       provide: APP_INITIALIZER,
       useFactory: appConfigServiceInitializer,
       multi: true,
       deps: [AppStateService, AppConfigService]
     },
+    provideTranslationPathFromMeta(import.meta.url, 'assets/i18n/'),
     provideHttpClient(withInterceptorsFromDi())
   ]
 })
