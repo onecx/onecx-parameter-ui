@@ -1,6 +1,6 @@
 /**
  * onecx-parameter-bff
- * OneCX parameter Bff
+ * Backend-For-Frontend (BFF) service for onecx-parameter. This API provides endpoints to manage Parameters and Histories
  *
  * The version of the OpenAPI document: 2.0
  * 
@@ -120,7 +120,7 @@ export class HistoriesAPIService {
     }
 
     /**
-     * Find all history entries
+     * Find all history entries by criteria
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -186,7 +186,7 @@ export class HistoriesAPIService {
     }
 
     /**
-     * Find all latest history
+     * Find all latest histories by criteria
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -252,7 +252,7 @@ export class HistoriesAPIService {
     }
 
     /**
-     * Find all products from history
+     * Get all products from history entries
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -306,7 +306,7 @@ export class HistoriesAPIService {
     }
 
     /**
-     * Get creation dates and counts by criteria
+     * Get creation dates and counts of histories by criteria
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -372,7 +372,7 @@ export class HistoriesAPIService {
     }
 
     /**
-     * Find history by Id
+     * Get a history by its id
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.

@@ -2,13 +2,15 @@
 openapi: 3.0.3
 info:
   title: onecx-parameter-bff
-  description: OneCX parameter Bff
+  description: Backend-For-Frontend (BFF) service for onecx-parameter. This API provides endpoints to manage Parameters and Histories
   version: "2.0"
 servers:
   - url: http://onecx-parameter-bff:8080/
 tags:
   - name: histories
+    description: Managing Parameter Histories
   - name: parameters
+    description: Managing Parameters
 paths:
   /histories:
     post:
@@ -18,7 +20,7 @@ paths:
             - read
       tags:
         - histories
-      description: Find all history entries
+      description: Find all history entries by criteria
       operationId: getAllHistory
       requestBody:
         content:
@@ -27,7 +29,7 @@ paths:
               $ref: '#/components/schemas/HistoryCriteria'
       responses:
         "200":
-          description: OK
+          description: History search results retrieved successfully
           content:
             application/json:
               schema:
@@ -46,7 +48,7 @@ paths:
             - read
       tags:
         - histories
-      description: Get creation dates and counts by criteria
+      description: Get creation dates and counts of histories by criteria
       operationId: getCountsByCriteria
       requestBody:
         content:
@@ -55,7 +57,7 @@ paths:
               $ref: '#/components/schemas/HistoryCountCriteria'
       responses:
         "200":
-          description: OK
+          description: History counts retrieved successfully
           content:
             application/json:
               schema:
@@ -76,9 +78,8 @@ paths:
             - read
       tags:
         - histories
-      description: Find all latest history
+      description: Find all latest histories by criteria
       operationId: getAllHistoryLatest
-
       requestBody:
         content:
           application/json:
@@ -86,7 +87,7 @@ paths:
               $ref: '#/components/schemas/HistoryCriteria'
       responses:
         "200":
-          description: OK
+          description: History search results retrieved successfully
           content:
             application/json:
               schema:
@@ -105,7 +106,7 @@ paths:
             - read
       tags:
         - histories
-      description: Find history by Id
+      description: Get a history by its id
       operationId: getHistoryById
       parameters:
         - name: id
@@ -115,7 +116,7 @@ paths:
             type: string
       responses:
         "200":
-          description: OK
+          description: History retrieved successfully
           content:
             application/json:
               schema:
@@ -127,7 +128,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         "404":
-          description: Not Found
+          description: History not found
   /histories/products:
     get:
       x-onecx:
@@ -136,11 +137,11 @@ paths:
             - read
       tags:
         - histories
-      description: Find all products from history
+      description: Get all products from history entries
       operationId: getAllHistoryProducts
       responses:
         "200":
-          description: OK
+          description: Products retrieved successfully
           content:
             application/json:
               schema:
@@ -171,7 +172,7 @@ paths:
               $ref: '#/components/schemas/ParameterSearchCriteria'
       responses:
         "200":
-          description: OK
+          description: Parameter search results retrieved successfully
           content:
             application/json:
               schema:
@@ -190,7 +191,7 @@ paths:
             - write
       tags:
         - parameters
-      description: Create parameter
+      description: Create a new parameter
       operationId: createParameter
       requestBody:
         required: true
@@ -200,7 +201,7 @@ paths:
               $ref: '#/components/schemas/ParameterCreate'
       responses:
         "204":
-          description: No Content
+          description: Parameter created successfully
         "400":
           description: Bad Request
           content:
@@ -208,7 +209,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         "404":
-          description: Not Found
+          description: Not found
   /parameters/products:
     get:
       x-onecx:
@@ -217,11 +218,11 @@ paths:
             - read
       tags:
         - parameters
-      description: Find all products
+      description: Find all products to which parameters are assigned to
       operationId: getAllProducts
       responses:
         "200":
-          description: OK
+          description: Products retrieved successfully
           content:
             application/json:
               schema:
@@ -242,7 +243,7 @@ paths:
             - read
       tags:
         - parameters
-      description: Find all parameters
+      description: Get all parameter names for a specific application id and product name
       operationId: getAllNames
       parameters:
         - name: applicationId
@@ -258,7 +259,7 @@ paths:
             type: string
       responses:
         "200":
-          description: OK
+          description: Parameter retrieved successfully
           content:
             application/json:
               schema:
@@ -277,7 +278,7 @@ paths:
             - read
       tags:
         - parameters
-      description: Find parameter by id
+      description: Get a parameter by its id
       operationId: getParameterById
       parameters:
         - name: id
@@ -287,7 +288,7 @@ paths:
             type: string
       responses:
         "200":
-          description: OK
+          description: Parameter retrieved successfully
           content:
             application/json:
               schema:
@@ -299,7 +300,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         "404":
-          description: Not Found
+          description: Parameter not found
     put:
       x-onecx:
         permissions:
@@ -307,7 +308,7 @@ paths:
             - write
       tags:
         - parameters
-      description: Update parameter
+      description: Update a parameter by its id
       operationId: updateParameter
       parameters:
         - name: id
@@ -323,7 +324,7 @@ paths:
               $ref: '#/components/schemas/ParameterUpdate'
       responses:
         "204":
-          description: No Content
+          description: Parameter updated successfully
         "400":
           description: Bad Request
           content:
@@ -331,7 +332,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         "404":
-          description: Not Found
+          description: Parameter not found
     delete:
       x-onecx:
         permissions:
@@ -339,7 +340,7 @@ paths:
             - delete
       tags:
         - parameters
-      description: Delete parameter
+      description: Delete a parameter by its id
       operationId: deleteParameter
       parameters:
         - name: id
@@ -349,7 +350,7 @@ paths:
             type: string
       responses:
         "204":
-          description: No Content
+          description: Parameter deleted successfully
         "400":
           description: Bad Request
           content:
@@ -364,7 +365,7 @@ paths:
             - read
       tags:
         - parameters
-      description: Export list of parameters
+      description: Export a list of parameters
       operationId: exportParameters
       requestBody:
         required: true
@@ -374,13 +375,13 @@ paths:
               $ref: '#/components/schemas/ExportParameterRequest'
       responses:
         "200":
-          description: OK
+          description: Parameters exported successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ParameterSnapshot'
         "404":
-          description: No parameters founds
+          description: Parameters not found
   /parameters/import:
     post:
       x-onecx:
@@ -389,7 +390,7 @@ paths:
             - write
       tags:
         - parameters
-      description: Import parameters
+      description: Import a list of parameters
       operationId: importParameters
       requestBody:
         required: true
@@ -399,7 +400,7 @@ paths:
               $ref: '#/components/schemas/ParameterSnapshot'
       responses:
         "200":
-          description: Import result
+          description: Parameters imported successfully
           content:
             application/json:
               schema:

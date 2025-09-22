@@ -11,6 +11,7 @@
       <p-dropdown
         id="pam_search_criteria_product_name"
         styleClass="w-11rem sm:w-18rem text-responsive"
+        panelStyleClass="w-11rem sm:w-18rem"
         formControlName="productName"
         [options]="productOptions"
         (onChange)="onChangeProductName($event.value)"
@@ -31,6 +32,7 @@
       <p-dropdown
         id="pam_search_criteria_application_id"
         styleClass="w-11rem sm:w-18rem text-responsive"
+        panelStyleClass="w-11rem sm:w-18rem"
         formControlName="applicationId"
         [options]="appOptions"
         [showClear]="true"
