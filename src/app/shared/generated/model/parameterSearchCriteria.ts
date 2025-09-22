@@ -1,6 +1,6 @@
 /**
  * onecx-parameter-bff
- * OneCX parameter Bff
+ * Backend-For-Frontend (BFF) service for onecx-parameter. This API provides endpoints to manage Parameters and Histories
  *
  * The version of the OpenAPI document: 2.0
  * 

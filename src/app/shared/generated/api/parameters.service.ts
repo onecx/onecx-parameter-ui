@@ -1,6 +1,6 @@
 /**
  * onecx-parameter-bff
- * OneCX parameter Bff
+ * Backend-For-Frontend (BFF) service for onecx-parameter. This API provides endpoints to manage Parameters and Histories
  *
  * The version of the OpenAPI document: 2.0
  * 
@@ -146,7 +146,7 @@ export class ParametersAPIService {
     }
 
     /**
-     * Create parameter
+     * Create a new parameter
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -215,7 +215,7 @@ export class ParametersAPIService {
     }
 
     /**
-     * Delete parameter
+     * Delete a parameter by its id
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -274,7 +274,7 @@ export class ParametersAPIService {
     }
 
     /**
-     * Export list of parameters
+     * Export a list of parameters
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -343,7 +343,7 @@ export class ParametersAPIService {
     }
 
     /**
-     * Find all parameters
+     * Get all parameter names for a specific application id and product name
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -410,7 +410,7 @@ export class ParametersAPIService {
     }
 
     /**
-     * Find all products
+     * Find all products to which parameters are assigned to
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -464,7 +464,7 @@ export class ParametersAPIService {
     }
 
     /**
-     * Find parameter by id
+     * Get a parameter by its id
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -523,7 +523,7 @@ export class ParametersAPIService {
     }
 
     /**
-     * Import parameters
+     * Import a list of parameters
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -661,7 +661,7 @@ export class ParametersAPIService {
     }
 
     /**
-     * Update parameter
+     * Update a parameter by its id
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.

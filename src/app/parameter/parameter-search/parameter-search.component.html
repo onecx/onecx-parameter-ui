@@ -108,9 +108,9 @@
                     <ng-container *ocxIfNotPermission="'PARAMETER#EDIT'">
                       <p-button
                         *ocxIfPermission="'PARAMETER#VIEW'"
+                        [id]="'pam_search_table_row_' + i + '_action_view'"
                         type="button"
                         pRipple
-                        [id]="'pam_search_table_row_' + i + '_action_view'"
                         [text]="true"
                         [plain]="true"
                         [rounded]="true"
@@ -124,9 +124,9 @@
                     </ng-container>
                     <p-button
                       *ocxIfPermission="'PARAMETER#EDIT'"
+                      [id]="'pam_search_table_row_' + i + '_action_edit'"
                       type="button"
                       pRipple
-                      [id]="'pam_search_table_row_' + i + '_action_edit'"
                       [text]="true"
                       [plain]="true"
                       [rounded]="true"
@@ -139,9 +139,9 @@
                     />
                     <p-button
                       *ocxIfPermission="'PARAMETER#EDIT'"
+                      [id]="'pam_search_table_row_' + i + '_action_copy'"
                       type="button"
                       pRipple
-                      [id]="'pam_search_table_row_' + i + '_action_copy'"
                       [text]="true"
                       [plain]="true"
                       [rounded]="true"
@@ -156,9 +156,9 @@
                   <div class="white-space-nowrap">
                     <p-button
                       *ocxIfPermission="'USAGE#VIEW'"
+                      [id]="'pam_search_table_row_' + i + '_action_usage'"
                       type="button"
                       pRipple
-                      [id]="'pam_search_table_row_' + i + '_action_usage'"
                       [text]="true"
                       [plain]="true"
                       [rounded]="true"
@@ -172,9 +172,9 @@
                     />
                     <p-button
                       *ocxIfPermission="'PARAMETER#DELETE'"
+                      [id]="'pam_search_table_row_' + i + '_action_delete'"
                       type="button"
                       pRipple
-                      [id]="'pam_search_table_row_' + i + '_action_delete'"
                       [text]="true"
                       [plain]="true"
                       [rounded]="true"
@@ -210,7 +210,7 @@
                 </div>
 
                 @let isUnknown = [rowData['valueType'], rowData['importValueType']].includes('UNKNOWN');
-                <span
+                <div
                   *ngIf="col.field === 'valueType'"
                   [pTooltip]="isUnknown ? ('VALUE_TYPE.UNKNOWN.TOOLTIP' | translate) : ''"
                   tooltipPosition="top"
@@ -220,9 +220,9 @@
                   <ng-container *ngIf="rowData['valueType'] !== rowData['importValueType']">
                     | {{ 'VALUE_TYPE.' + rowData['importValueType'] | translate }}
                   </ng-container>
-                </span>
+                </div>
 
-                <span
+                <div
                   *ngIf="col.field === 'equal'"
                   [ngClass]="
                     rowData['isEqual'] === 'TRUE'
@@ -235,8 +235,9 @@
                   [pTooltip]="'PARAMETER.TOOLTIPS.EQUAL.' + rowData['isEqual'] | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
-                  >{{ rowData['isEqual'] === 'UNDEFINED' ? 'n.a.' : '' }}</span
                 >
+                  {{ rowData['isEqual'] === 'UNDEFINED' ? 'n.a.' : '' }}
+                </div>
 
                 <div
                   *ngIf="col.field === 'value'"
@@ -246,11 +247,14 @@
                   {{ rowData['displayValue'] }}
                 </div>
 
-                <ng-container *ngIf="col.field === 'applicationId'">
-                  {{ getProductDisplayName(rowData['productName'], metaData.allProducts) }}
-                  <br />
-                  {{ getAppDisplayName(rowData['productName'], rowData['applicationId'], metaData.allProducts) }}
-                </ng-container>
+                <div *ngIf="col.field === 'applicationId'" class="flex flex-column gap-0">
+                  <div class="max-w-20rem text-responsive">
+                    {{ getProductDisplayName(rowData['productName'], metaData.allProducts) }}
+                  </div>
+                  <div class="max-w-20rem text-responsive">
+                    {{ getAppDisplayName(rowData['productName'], rowData['applicationId'], metaData.allProducts) }}
+                  </div>
+                </div>
 
                 <ng-container *ngIf="col.isBoolean">
                   <span *ngIf="rowData[col.field] === true" class="pi pi-check text-green-600"></span>
@@ -270,44 +274,48 @@
           [draggable]="true"
           [resizable]="false"
           [dismissableMask]="true"
+          [style]="{ width: '450px' }"
         >
-          <div *ngIf="item4Delete" class="flex column-gap-3 row-gap-1 justify-content-start align-items-center">
-            <div class="pi pi-question-circle text-3xl danger-action-text"></div>
-            <div class="flex flex-column row-gap-2">
-              <div id="pam_delete_message_text" class="mr-3 font-bold">
+          <div *ngIf="item4Delete" class="flex column-gap-3 justify-content-start align-items-center">
+            <div class="pi pi-question-circle text-3xl danger-action-text" aria-hidden="true"></div>
+            <section class="w-11 flex flex-column row-gap-3 justify-content-start">
+              <div
+                id="pam_delete_message_text"
+                class="mr-3 font-bold"
+                [attr.aria-label]="'ACTIONS.CONFIRMATION.QUESTION' | translate"
+                role="note"
+              >
                 {{ 'ACTIONS.DELETE.MESSAGE.TEXT' | translate }}
               </div>
+              <div
+                id="pam_delete_parameter_name"
+                class="px-5 text-center danger-action-text text-responsive"
+                [attr.aria-label]="'PARAMETER.NAME' | translate"
+                role="note"
+              >
+                {{ item4Delete.displayName ?? item4Delete.name }}
+              </div>
+
               <div class="px-2 flex flex-column row-gap-1">
                 <div class="flex flex-row column-gap-2">
-                  <div class="w-4 text-right">{{ 'PARAMETER.NAME' | translate }}:</div>
-                  <div
-                    class="w-8 text-left danger-action-text text-responsive max-w-15rem"
-                    id="pam_delete_parameter_name"
-                  >
-                    {{ item4Delete.displayName ?? item4Delete.name }}
-                  </div>
-                </div>
-                <div class="flex flex-row column-gap-2">
-                  <div class="w-4 text-right">{{ 'PARAMETER.PRODUCT_NAME' | translate }}:</div>
-                  <div
-                    class="w-8 text-left danger-action-text text-responsive max-w-15rem"
-                    id="pam_delete_product_name"
-                  >
+                  <div class="w-4 text-right font-bold">{{ 'PARAMETER.PRODUCT_NAME' | translate }}:</div>
+                  <div class="w-7 text-left text-responsive" id="pam_delete_product_name">
                     {{ getProductDisplayName(item4Delete.productName, metaData.allProducts) }}
                   </div>
                 </div>
                 <div class="flex flex-row column-gap-2">
-                  <div class="w-4 text-right">{{ 'PARAMETER.APP_ID' | translate }}:</div>
-                  <div class="w-8 text-left danger-action-text text-responsive max-w-15rem" id="pam_delete_app_id">
+                  <div class="w-4 text-right font-bold">{{ 'PARAMETER.APP_ID' | translate }}:</div>
+                  <div class="w-7 text-left text-responsive" id="pam_delete_app_id">
                     {{ getAppDisplayName(item4Delete.productName, item4Delete.applicationId, metaData.allProducts) }}
                   </div>
                 </div>
               </div>
+
               <div>{{ 'ACTIONS.DELETE.MESSAGE.INFO' | translate }}</div>
-            </div>
+            </section>
           </div>
           <ng-template pTemplate="footer">
-            <div class="flex flex-wrap justify-content-end column-gap-2 row-gap-1">
+            <footer class="flex flex-wrap justify-content-end column-gap-2 row-gap-1">
               <p-button
                 id="pam_delete_action_no"
                 icon="pi pi-times"
@@ -315,7 +323,7 @@
                 [autofocus]="true"
                 (onClick)="displayDeleteDialog = false"
                 [label]="'ACTIONS.CONFIRMATION.NO' | translate"
-                [ariaLabel]="'ACTIONS.CONFIRMATION.NO' | translate"
+                [ariaLabel]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
                 [pTooltip]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -325,12 +333,12 @@
                 icon="pi pi-check"
                 (onClick)="onDeleteConfirmation(data)"
                 [label]="'ACTIONS.CONFIRMATION.YES' | translate"
-                [ariaLabel]="'ACTIONS.CONFIRMATION.YES' | translate"
+                [ariaLabel]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
                 [pTooltip]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               ></p-button>
-            </div>
+            </footer>
           </ng-template>
         </p-dialog>
       </ng-container>

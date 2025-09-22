@@ -6,11 +6,13 @@
   [closable]="true"
   [draggable]="true"
   [resizable]="true"
-  [style]="{ width: '600px' }"
+  [style]="{ width: '620px' }"
   [breakpoints]="{
-    '992px': '75vw',
-    '768px': '90vw',
-    '630px': '100vw'
+    '992px': '72vw',
+    '848px': '80vw',
+    '768px': '88vw',
+    '730px': '95vw',
+    '650px': '100vw'
   }"
 >
   <p-message
@@ -28,12 +30,13 @@
       tooltipEvent="hover"
     >
       <div class="flex flex-column row-gap-4">
-        <div class="flex flex-row flex-wrap gap-4">
+        <div class="flex flex-row flex-wrap gap-4 justify-content-between">
           <span class="p-float-label flex-grow-1" controlErrorAnchor>
             <p-dropdown
               id="pam_detail_form_product_name"
               class="input-field"
-              styleClass="w-full text-responsive"
+              styleClass="w-20rem text-responsive"
+              panelStyleClass="w-20rem"
               formControlName="productName"
               [options]="productOptions"
               (onChange)="onChangeProductName($event.value)"
@@ -47,15 +50,16 @@
               tooltipEvent="hover"
             >
             </p-dropdown>
-            <label class="ocx-required-label" for="pam_detail_form_product_name">
-              {{ 'PARAMETER.PRODUCT_NAME' | translate }}</label
-            >
+            <label class="ocx-required-label" for="pam_detail_form_product_name" aria-hidden="true">
+              {{ 'PARAMETER.PRODUCT_NAME' | translate }}
+            </label>
           </span>
           <span class="p-float-label flex-grow-1" controlErrorAnchor>
             <p-dropdown
               id="pam_detail_form_app_id"
               class="input-field"
-              styleClass="w-full text-responsive"
+              styleClass="w-20rem text-responsive"
+              panelStyleClass="w-20rem"
               formControlName="applicationId"
               [options]="appOptions"
               [autoDisplayFirst]="true"
@@ -68,9 +72,9 @@
               tooltipEvent="hover"
             >
             </p-dropdown>
-            <label class="ocx-required-label" for="pam_detail_form_app_id">
-              {{ 'PARAMETER.APP_NAME' | translate }}</label
-            >
+            <label class="ocx-required-label" for="pam_detail_form_app_id" aria-hidden="true">
+              {{ 'PARAMETER.APP_NAME' | translate }}
+            </label>
           </span>
         </div>
 

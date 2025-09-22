@@ -25,10 +25,6 @@ app:
         onecx-product-data:
           name: 'onecx-product-data'
           description: 'Product data provided by product store'
-        onecx-product-infos:
-          name: 'onecx-product-infos'
-          description: 'Product details received from product store'
-          deprecated: true
     # Permission
     permission:
       enabled: true
