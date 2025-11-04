@@ -97,9 +97,9 @@ export class UsageSearchComponent implements OnInit {
   public item4Detail: ExtendedHistory | undefined
   public item4Delete: History | undefined // used on deletion
   // slot configuration: get product infos via remote component
-  public slotName = 'onecx-product-infos'
+  public slotName = 'onecx-product-data'
   public isComponentDefined$: Observable<boolean> | undefined // check
-  public productInfos$ = new BehaviorSubject<ProductAbstract[] | undefined>(undefined) // product infos
+  public productData$ = new BehaviorSubject<ProductAbstract[] | undefined>(undefined) // product data
   public slotEmitter = new EventEmitter<ProductAbstract[]>()
 
   public filteredColumns: Column[] = []
@@ -201,7 +201,7 @@ export class UsageSearchComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.slotEmitter.subscribe(this.productInfos$)
+    this.slotEmitter.subscribe(this.productData$)
     this.onReload()
     this.getMetaData() // and trigger search
     this.prepareDialogTranslations()
@@ -233,8 +233,8 @@ export class UsageSearchComponent implements OnInit {
   // combine used products with product data from product store
   private getMetaData() {
     this.exceptionKeyMeta = undefined
-    // combine all product infos and used products to one meta data structure
-    this.metaData$ = combineLatest([this.productInfos$, this.usedProducts$]).pipe(
+    // combine all product data and used products to one meta data structure
+    this.metaData$ = combineLatest([this.productData$, this.usedProducts$]).pipe(
       map(([aP, uP]: [ProductAbstract[] | undefined, Product[]]) => {
         return this.combineProducts(
           this.convertProductAbstract2ExtendedProduct(aP),
@@ -278,6 +278,7 @@ export class UsageSearchComponent implements OnInit {
 
   private combineProducts(aP: ExtendedProduct[], uP: ExtendedProduct[]): AllMetaData {
     // convert/enrich used products if product data are available
+    console.log('combineProducts', aP, uP)
     if (aP && uP && uP.length > 0) {
       uP.forEach((p) => {
         const pi = aP.find((ap) => ap.name === p.name) // get product data

@@ -3,8 +3,8 @@
   <ocx-slot
     *ngIf="isComponentDefined$ | async"
     [name]="slotName"
-    [inputs]="{ refresh: false }"
-    [outputs]="{ productsAndApplications: slotEmitter }"
+    [inputs]="{ dataType: 'products', logEnabled: false, logPrefix: 'parameter' }"
+    [outputs]="{ products: slotEmitter }"
   >
   </ocx-slot>
 
