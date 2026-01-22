@@ -1,2 +1,2 @@
 # onecx-parameter-ui
-OneCX Parameter
+OneCX Parameter User Interface
