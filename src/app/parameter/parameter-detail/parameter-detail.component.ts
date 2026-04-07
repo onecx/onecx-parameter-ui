@@ -179,10 +179,10 @@ export class ParameterDetailComponent implements OnChanges {
   public ngOnChanges() {
     if (!this.displayDialog) return
     this.exceptionKey = undefined
-    if (!this.parameter?.id) return
     // matching mode and given data?
-    if (['EDIT', 'VIEW'].includes(this.changeMode)) this.getData(this.parameter.id)
-    if (['CREATE', 'COPY'].includes(this.changeMode)) this.prepareForm(this.parameter)
+    if (['EDIT', 'VIEW'].includes(this.changeMode) && this.parameter?.id) this.getData(this.parameter.id)
+    else if (['COPY'].includes(this.changeMode)) this.prepareForm(this.parameter)
+    else if (['CREATE'].includes(this.changeMode)) this.prepareForm(undefined)
     // update dropdown lists
     this.productOptions = this.allProducts.map((p) => ({ label: p.displayName, value: p.name }))
   }

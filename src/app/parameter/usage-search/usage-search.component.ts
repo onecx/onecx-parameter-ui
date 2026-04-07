@@ -278,7 +278,6 @@ export class UsageSearchComponent implements OnInit {
 
   private combineProducts(aP: ExtendedProduct[], uP: ExtendedProduct[]): AllMetaData {
     // convert/enrich used products if product data are available
-    console.log('combineProducts', aP, uP)
     if (aP && uP && uP.length > 0) {
       uP.forEach((p) => {
         const pi = aP.find((ap) => ap.name === p.name) // get product data
