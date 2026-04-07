@@ -117,7 +117,7 @@
       "CREATION_USER": "Name of the user of the creation",
       "MODIFICATION_DATE": "Timestamp of the last change",
       "MODIFICATION_USER": "Name of the user of the last change",
-      "OPERATOR": "If set, the Workspace was created by automation. All changes will be lost during the next deployment."
+      "OPERATOR": "If set, the Parameter was created by automation. All changes will be lost during the next deployment."
     }
   },
   "DIALOG": {
@@ -216,7 +216,7 @@
       "VALUE.TYPE": "Type of Parameter value. If the types are different then both types.",
       "VALUE.TYPE.DETAIL": "Type of Parameter value.",
       "IMPORT_VALUE": "Imported value",
-      "OPERATOR": "If set, the Workspace was created by automation",
+      "OPERATOR": "If set, the Parameter was created by automation.",
       "EQUAL": "Comparison of value and imported value",
       "EQUAL.TRUE": "Value and imported value are equal",
       "EQUAL.FALSE": "Value and imported value are not equal",

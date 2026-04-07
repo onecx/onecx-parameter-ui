@@ -73,10 +73,10 @@ export function ValueValidator(): ValidatorFn {
 
     let isValid = true
     if (['NUMBER', 'STRING'].includes(typeControl.value)) {
-      const val = control.value as any
+      const val = control.value
       if (val !== undefined && val !== null && ['NUMBER'].includes(typeControl.value)) {
         const flo: any = val * Math.PI // calculate a float number
-        isValid = !Number.isNaN(parseFloat(flo))
+        isValid = !Number.isNaN(Number.parseFloat(flo))
       }
     }
     return isValid ? null : { pattern: true }
@@ -180,11 +180,9 @@ export class ParameterDetailComponent implements OnChanges {
     if (!this.displayDialog) return
     this.exceptionKey = undefined
     // matching mode and given data?
-    if ('CREATE' === this.changeMode && this.parameter?.id) return
-    if (['EDIT', 'VIEW'].includes(this.changeMode)) {
-      if (!this.parameter?.id) return
-      else this.getData(this.parameter.id)
-    } else this.prepareForm(this.parameter) // CREATE, COPY
+    if (['EDIT', 'VIEW'].includes(this.changeMode) && this.parameter?.id) this.getData(this.parameter.id)
+    else if (['COPY'].includes(this.changeMode)) this.prepareForm(this.parameter)
+    else if (['CREATE'].includes(this.changeMode)) this.prepareForm()
     // update dropdown lists
     this.productOptions = this.allProducts.map((p) => ({ label: p.displayName, value: p.name }))
   }

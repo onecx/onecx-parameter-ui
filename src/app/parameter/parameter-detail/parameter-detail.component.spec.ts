@@ -303,6 +303,7 @@ describe('ParameterDetailComponent', () => {
 
       it('should prepare creating a parameter - start with empty form', () => {
         component.changeMode = 'CREATE'
+        component.parameter = undefined
         spyOn(component.formGroup, 'reset')
 
         component.ngOnChanges()
@@ -332,17 +333,23 @@ describe('ParameterDetailComponent', () => {
     beforeEach(() => {
       component.displayDialog = true
       component.changeMode = 'CREATE'
-      component.parameter = { ...parameterBase, id: undefined }
+      // component.parameter = { ...parameterBase, id: undefined }
+      component.parameter = undefined
+
+      component.ngOnChanges()
+      // manipulate user settings
+      component.formGroup.controls['productName'].setValue('product')
+      component.formGroup.controls['applicationId'].setValue('app')
+      component.formGroup.controls['name'].setValue('parameterName')
     })
 
     it('should create a STRING parameter - valid', () => {
       apiServiceSpy.createParameter.and.returnValue(of({}))
       spyOn(component.hideDialogAndChanged, 'emit')
 
-      component.ngOnChanges()
-      // manipulate user settings
       component.formGroup.controls['value'].setValue('text')
       component.formGroup.controls['valueType'].setValue('STRING')
+
       expect(component.formGroup.valid).toBeTrue()
       component.onSave()
 
@@ -353,7 +360,6 @@ describe('ParameterDetailComponent', () => {
     it('should create a BOOLEAN parameter - valid true', () => {
       apiServiceSpy.createParameter.and.returnValue(of({}))
 
-      component.ngOnChanges()
       // manipulate user settings
       component.formGroup.controls['valueBoolean'].setValue(true)
       component.formGroup.controls['valueType'].setValue('BOOLEAN')
@@ -366,9 +372,7 @@ describe('ParameterDetailComponent', () => {
     it('should create a BOOLEAN parameter - null == false', () => {
       apiServiceSpy.createParameter.and.returnValue(of({}))
 
-      component.ngOnChanges()
       // manipulate user settings
-      //component.formGroup.controls['valueBoolean'].setValue()
       component.formGroup.controls['valueType'].setValue('BOOLEAN')
       expect(component.formGroup.valid).toBeTrue()
       component.onSave()
@@ -377,7 +381,6 @@ describe('ParameterDetailComponent', () => {
     })
 
     it('should create a NUMBER parameter - valid number', () => {
-      component.ngOnChanges()
       // manipulate user settings
       component.formGroup.controls['value'].setValue(12345)
       component.formGroup.controls['valueType'].setValue('NUMBER')
@@ -386,7 +389,6 @@ describe('ParameterDetailComponent', () => {
     })
 
     it('should create a NUMBER parameter - invalid number', () => {
-      component.ngOnChanges()
       // manipulate user settings
       component.formGroup.controls['valueType'].setValue('NUMBER')
       component.formGroup.controls['value'].setValue({})
@@ -397,7 +399,6 @@ describe('ParameterDetailComponent', () => {
     it('should create a OBJECT parameter - valid object', () => {
       apiServiceSpy.createParameter.and.returnValue(of({}))
 
-      component.ngOnChanges()
       // manipulate user settings
       const obj = JSON.stringify({})
       component.formGroup.controls['valueObject'].setValue(obj)
@@ -413,7 +414,6 @@ describe('ParameterDetailComponent', () => {
       apiServiceSpy.createParameter.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
 
-      component.ngOnChanges()
       // manipulate user settings
       component.formGroup.controls['value'].setValue('text')
       component.formGroup.controls['valueType'].setValue('STRING')
