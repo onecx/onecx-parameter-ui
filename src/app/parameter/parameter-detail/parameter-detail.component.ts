@@ -182,7 +182,7 @@ export class ParameterDetailComponent implements OnChanges {
     // matching mode and given data?
     if (['EDIT', 'VIEW'].includes(this.changeMode) && this.parameter?.id) this.getData(this.parameter.id)
     else if (['COPY'].includes(this.changeMode)) this.prepareForm(this.parameter)
-    else if (['CREATE'].includes(this.changeMode)) this.prepareForm(undefined)
+    else if (['CREATE'].includes(this.changeMode)) this.prepareForm()
     // update dropdown lists
     this.productOptions = this.allProducts.map((p) => ({ label: p.displayName, value: p.name }))
   }
