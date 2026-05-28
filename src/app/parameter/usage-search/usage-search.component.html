@@ -91,6 +91,7 @@
                 [pTooltip]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
+                escape="false"
               >
                 <span>{{ col.translationPrefix + '.' + col.header | translate }}</span>
                 <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>

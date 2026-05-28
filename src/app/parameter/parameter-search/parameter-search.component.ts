@@ -125,14 +125,14 @@ export class ParameterSearchComponent implements OnInit {
       header: 'VALUE.TYPE',
       translationPrefix: 'PARAMETER',
       active: true,
-      css: 'text-center'
+      css: 'text-center hidden lg:table-cell'
     },
     {
       field: 'equal',
       header: 'EQUAL',
       translationPrefix: 'PARAMETER',
       active: true,
-      css: 'text-center'
+      css: 'text-center hidden lg:table-cell'
     },
     {
       field: 'applicationId',
@@ -147,7 +147,7 @@ export class ParameterSearchComponent implements OnInit {
       active: true,
       translationPrefix: 'PARAMETER',
       isBoolean: true,
-      css: 'text-center'
+      css: 'text-center hidden lg:table-cell'
     },
     {
       field: 'modificationDate',
@@ -155,7 +155,8 @@ export class ParameterSearchComponent implements OnInit {
       translationPrefix: 'INTERNAL',
       active: true,
       sort: true,
-      isDate: true
+      isDate: true,
+      css: 'hidden lg:table-cell'
     }
   ]
 

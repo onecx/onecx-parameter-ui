@@ -90,6 +90,7 @@
                 [pTooltip]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
+                escape="false"
               >
                 <span>{{ col.translationPrefix + '.' + col.header | translate }}</span>
                 <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
@@ -209,12 +210,26 @@
                   {{ rowData['displayName'] }}
                 </div>
 
-                @let isUnknown = [rowData['valueType'], rowData['importValueType']].includes('UNKNOWN');
+                @let toolTipText =
+                  ('PARAMETER.TOOLTIPS.VALUE.TYPES' | translate) +
+                  '<br/>' +
+                  ('PARAMETER.VALUE' | translate) +
+                  ': ' +
+                  (rowData['valueType'].includes('UNKNOWN')
+                    ? ('VALUE_TYPE.UNKNOWN.TIP' | translate)
+                    : ('VALUE_TYPE.' + rowData['valueType'] | translate)) +
+                  '<br/>' +
+                  ('PARAMETER.IMPORT_VALUE' | translate) +
+                  ': ' +
+                  (rowData['importValueType'].includes('UNKNOWN')
+                    ? ('VALUE_TYPE.UNKNOWN.TIP' | translate)
+                    : ('VALUE_TYPE.' + rowData['importValueType'] | translate));
                 <div
                   *ngIf="col.field === 'valueType'"
-                  [pTooltip]="isUnknown ? ('VALUE_TYPE.UNKNOWN.TOOLTIP' | translate) : ''"
+                  [pTooltip]="toolTipText"
                   tooltipPosition="top"
                   tooltipEvent="hover"
+                  escape="false"
                 >
                   {{ 'VALUE_TYPE.' + rowData['valueType'] | translate }}
                   <ng-container *ngIf="rowData['valueType'] !== rowData['importValueType']">
