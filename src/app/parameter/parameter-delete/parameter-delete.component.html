@@ -7,11 +7,11 @@
   [draggable]="true"
   [resizable]="false"
   [dismissableMask]="true"
-  [style]="{ 'max-width': '500px' }"
+  [style]="{ width: '500px' }"
 >
-  <div *ngIf="parameter" class="flex column-gap-3 justify-content-start align-items-center">
+  <div *ngIf="parameter" class="flex flex-row column-gap-0 justify-content-start align-items-center">
     <div class="pi pi-question-circle text-3xl danger-action-text" aria-hidden="true"></div>
-    <section class="w-11 flex flex-column row-gap-3">
+    <section class="w-11 pl-4 flex flex-column row-gap-3">
       <div
         id="pam_delete_message_text"
         class="mr-3 font-bold"
@@ -22,7 +22,7 @@
       </div>
       <div
         id="pam_delete_parameter_name"
-        class="px-5 text-center danger-action-text text-responsive"
+        class="text-center danger-action-text text-responsive"
         [attr.aria-label]="'PARAMETER.NAME' | translate"
         role="note"
       >
@@ -32,13 +32,13 @@
       <div class="px-2 flex flex-column row-gap-1 text-center">
         <div class="flex flex-row column-gap-3">
           <div class="w-4 text-right font-bold">{{ 'PARAMETER.PRODUCT_NAME' | translate }}:</div>
-          <div class="w-7 text-left text-responsive" id="pam_delete_product_name">
+          <div class="w-8 text-left text-responsive" id="pam_delete_product_name">
             {{ productDisplayName }}
           </div>
         </div>
         <div class="flex flex-row column-gap-3">
           <div class="w-4 text-right font-bold">{{ 'PARAMETER.APP_ID' | translate }}:</div>
-          <div class="w-7 text-left text-responsive" id="pam_delete_app_id">
+          <div class="w-8 text-left text-responsive" id="pam_delete_app_id">
             {{ appDisplayName }}
           </div>
         </div>
