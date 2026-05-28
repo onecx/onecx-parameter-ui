@@ -121,9 +121,8 @@
   </ng-template>
 
   <ng-template pTemplate="rowexpansion" let-rowData let-index="rowIndex" let-columns="columns">
-    <tr>
-      <td></td>
-      <td [attr.colspan]="columns.length">
+    <tr class="">
+      <td [attr.colspan]="columns.length + 1">
         <div class="flex flex-row flex-wrap gap-4 justify-content-around align-items-start">
           <ng-container
             [ngTemplateOutlet]="historyDetailTemplate"
@@ -161,7 +160,7 @@
   <p-fieldset
     [toggleable]="false"
     [collapsed]="false"
-    [styleClass]="'px-2 w-22rem' + (index % 2 === 1 ? ' surface-100' : '')"
+    [styleClass]="'px-2 w-full' + (index % 2 === 1 ? ' surface-100' : '')"
     [style]="{ 'margin-top': '-0.5rem' }"
   >
     <ng-template pTemplate="header">{{ data.labelKey | translate }} </ng-template>

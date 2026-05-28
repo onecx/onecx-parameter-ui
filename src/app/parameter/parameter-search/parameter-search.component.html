@@ -202,7 +202,7 @@
                 <!-- needs a div due to manage ellipsis -->
                 <div
                   *ngIf="col.field === 'name'"
-                  class="text-ellipsis-2-lines max-w-15rem word-break-all"
+                  class="text-ellipsis-2-lines word-break-all"
                   [ngStyle]="{
                     'min-width': rowData['displayName'].length > 15 ? '8rem' : ''
                   }"
@@ -233,7 +233,8 @@
                 >
                   {{ 'VALUE_TYPE.' + rowData['valueType'] | translate }}
                   <ng-container *ngIf="rowData['valueType'] !== rowData['importValueType']">
-                    | {{ 'VALUE_TYPE.' + rowData['importValueType'] | translate }}
+                    <br />
+                    {{ 'VALUE_TYPE.' + rowData['importValueType'] | translate }}
                   </ng-container>
                 </div>
 
@@ -256,17 +257,17 @@
 
                 <div
                   *ngIf="col.field === 'value'"
-                  class="text-ellipsis-2-lines max-w-20rem word-break-all"
+                  class="text-ellipsis-2-lines word-break-all"
                   [ngStyle]="{ 'min-width': (value ?? '').length > 15 ? '10rem' : '' }"
                 >
                   {{ rowData['displayValue'] }}
                 </div>
 
-                <div *ngIf="col.field === 'applicationId'" class="flex flex-column gap-0">
-                  <div class="max-w-20rem text-responsive">
+                <div *ngIf="col.field === 'applicationId'" class="max-w-30rem">
+                  <div class="text-responsive">
                     {{ getProductDisplayName(rowData['productName'], metaData.allProducts) }}
                   </div>
-                  <div class="max-w-20rem text-responsive">
+                  <div class="text-responsive">
                     {{ getAppDisplayName(rowData['productName'], rowData['applicationId'], metaData.allProducts) }}
                   </div>
                 </div>

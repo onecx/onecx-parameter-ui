@@ -156,13 +156,13 @@ export class ParameterDetailComponent implements OnChanges {
     this.formGroup.addControl(
       'value',
       new FormControl(null, {
-        validators: Validators.compose([ValueValidator(), Validators.required, Validators.maxLength(5000)])
+        validators: Validators.compose([ValueValidator(), Validators.maxLength(5000)])
       })
     )
     this.formGroup.addControl(
       'valueObject',
       new FormControl(null, {
-        validators: Validators.compose([JsonValidator(), Validators.required, Validators.maxLength(5000)])
+        validators: Validators.compose([JsonValidator(), Validators.maxLength(5000)])
       })
     )
     this.formGroup.addControl(
