@@ -13,11 +13,11 @@ import { ExtendedHistory } from '../usage-search/usage-search.component'
   styleUrls: ['./usage-detail.component.scss']
 })
 export class UsageDetailComponent {
-  @Input() public displayDialog = false
   @Input() public history: ExtendedHistory | undefined
   @Input() public parameter: Parameter | undefined
   @Input() public dateFormat: string | undefined = undefined
-  @Output() public hideDialog = new EventEmitter()
+  @Input() public visible = false
+  @Output() public visibleChange = new EventEmitter<boolean>()
 
   // dialog
   public loading = false
@@ -29,10 +29,6 @@ export class UsageDetailComponent {
     private readonly translate: TranslateService,
     private readonly historyApiService: HistoriesAPIService
   ) {}
-
-  public onDialogHide() {
-    this.hideDialog.emit()
-  }
 
   /****************************************************************************
    *  SEARCH usage data

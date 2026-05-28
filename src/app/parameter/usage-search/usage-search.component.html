@@ -91,6 +91,7 @@
                 [pTooltip]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
+                escape="false"
               >
                 <span>{{ col.translationPrefix + '.' + col.header | translate }}</span>
                 <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
@@ -234,8 +235,8 @@
       </ng-container>
       <!-- DETAIL -->
       <app-parameter-detail
-        [displayDialog]="displayDetailDialog"
-        (hideDialogAndChanged)="onCloseDetail($event)"
+        [visible]="displayDetailDialog"
+        (visibleChange)="onCloseDetail($event)"
         [parameter]="{ id: item4Detail?.parameterId }"
         [allProducts]="metaData.allProducts"
         [changeMode]="changeMode"
@@ -246,8 +247,8 @@
 </ocx-portal-page>
 
 <app-usage-detail
-  [displayDialog]="displayUsageDialog"
-  (hideDialog)="onCloseUsage()"
+  [visible]="displayUsageDialog"
+  (visibleChange)="onCloseUsage()"
   [history]="item4Detail"
   [dateFormat]="dateFormat"
 ></app-usage-detail>

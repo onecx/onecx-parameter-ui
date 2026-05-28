@@ -57,14 +57,14 @@ export class UsageDetailListComponent {
       translationPrefix: 'USAGE',
       active: true,
       isValue: true,
-      css: 'text-center'
+      css: 'text-center hidden lg:table-cell'
     },
     {
       field: 'equal',
       header: 'EQUAL',
       translationPrefix: 'USAGE',
       active: true,
-      css: 'text-center'
+      css: 'text-center hidden lg:table-cell'
     },
     {
       field: 'duration',
@@ -88,7 +88,7 @@ export class UsageDetailListComponent {
       active: true,
       isText: true,
       sort: true,
-      css: 'text-center'
+      css: 'text-center hidden xl:table-cell'
     },
     {
       field: 'creationDate',

@@ -15,6 +15,7 @@ import { UsageSearchComponent } from './usage-search/usage-search.component'
 import { UsageDetailComponent } from './usage-detail/usage-detail.component'
 import { UsageDetailCriteriaComponent } from './usage-detail/usage-detail-criteria/usage-detail-criteria.component'
 import { UsageDetailListComponent } from './usage-detail/usage-detail-list/usage-detail-list.component'
+import { ParameterDeleteComponent } from './parameter-delete/parameter-delete.component'
 
 const routes: Routes = [
   {
@@ -40,6 +41,7 @@ const routes: Routes = [
     ParameterSearchComponent,
     ParameterCriteriaComponent,
     ParameterDetailComponent,
+    ParameterDeleteComponent,
     UsageSearchComponent,
     UsageDetailComponent,
     UsageDetailCriteriaComponent,

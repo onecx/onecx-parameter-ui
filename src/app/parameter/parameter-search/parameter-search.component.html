@@ -90,6 +90,7 @@
                 [pTooltip]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
+                escape="false"
               >
                 <span>{{ col.translationPrefix + '.' + col.header | translate }}</span>
                 <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
@@ -201,7 +202,7 @@
                 <!-- needs a div due to manage ellipsis -->
                 <div
                   *ngIf="col.field === 'name'"
-                  class="text-ellipsis-2-lines max-w-15rem word-break-all"
+                  class="text-ellipsis-2-lines word-break-all"
                   [ngStyle]="{
                     'min-width': rowData['displayName'].length > 15 ? '8rem' : ''
                   }"
@@ -209,16 +210,31 @@
                   {{ rowData['displayName'] }}
                 </div>
 
-                @let isUnknown = [rowData['valueType'], rowData['importValueType']].includes('UNKNOWN');
+                @let toolTipText =
+                  ('PARAMETER.TOOLTIPS.VALUE.TYPES' | translate) +
+                  '<br/>' +
+                  ('PARAMETER.VALUE' | translate) +
+                  ': ' +
+                  (rowData['valueType'].includes('UNKNOWN')
+                    ? ('VALUE_TYPE.UNKNOWN.TIP' | translate)
+                    : ('VALUE_TYPE.' + rowData['valueType'] | translate)) +
+                  '<br/>' +
+                  ('PARAMETER.IMPORT_VALUE' | translate) +
+                  ': ' +
+                  (rowData['importValueType'].includes('UNKNOWN')
+                    ? ('VALUE_TYPE.UNKNOWN.TIP' | translate)
+                    : ('VALUE_TYPE.' + rowData['importValueType'] | translate));
                 <div
                   *ngIf="col.field === 'valueType'"
-                  [pTooltip]="isUnknown ? ('VALUE_TYPE.UNKNOWN.TOOLTIP' | translate) : ''"
+                  [pTooltip]="toolTipText"
                   tooltipPosition="top"
                   tooltipEvent="hover"
+                  escape="false"
                 >
                   {{ 'VALUE_TYPE.' + rowData['valueType'] | translate }}
                   <ng-container *ngIf="rowData['valueType'] !== rowData['importValueType']">
-                    | {{ 'VALUE_TYPE.' + rowData['importValueType'] | translate }}
+                    <br />
+                    {{ 'VALUE_TYPE.' + rowData['importValueType'] | translate }}
                   </ng-container>
                 </div>
 
@@ -241,17 +257,17 @@
 
                 <div
                   *ngIf="col.field === 'value'"
-                  class="text-ellipsis-2-lines max-w-20rem word-break-all"
+                  class="text-ellipsis-2-lines word-break-all"
                   [ngStyle]="{ 'min-width': (value ?? '').length > 15 ? '10rem' : '' }"
                 >
                   {{ rowData['displayValue'] }}
                 </div>
 
-                <div *ngIf="col.field === 'applicationId'" class="flex flex-column gap-0">
-                  <div class="max-w-20rem text-responsive">
+                <div *ngIf="col.field === 'applicationId'" class="max-w-30rem">
+                  <div class="text-responsive">
                     {{ getProductDisplayName(rowData['productName'], metaData.allProducts) }}
                   </div>
-                  <div class="max-w-20rem text-responsive">
+                  <div class="text-responsive">
                     {{ getAppDisplayName(rowData['productName'], rowData['applicationId'], metaData.allProducts) }}
                   </div>
                 </div>
@@ -266,86 +282,21 @@
         </p-table>
 
         <!-- DELETE -->
-        <p-dialog
-          [header]="'DIALOG.DETAIL.DELETE.HEADER' | translate"
-          [(visible)]="displayDeleteDialog"
-          [modal]="true"
-          [closable]="true"
-          [draggable]="true"
-          [resizable]="false"
-          [dismissableMask]="true"
-          [style]="{ width: '450px' }"
-        >
-          <div *ngIf="item4Delete" class="flex column-gap-3 justify-content-start align-items-center">
-            <div class="pi pi-question-circle text-3xl danger-action-text" aria-hidden="true"></div>
-            <section class="w-11 flex flex-column row-gap-3 justify-content-start">
-              <div
-                id="pam_delete_message_text"
-                class="mr-3 font-bold"
-                [attr.aria-label]="'ACTIONS.CONFIRMATION.QUESTION' | translate"
-                role="note"
-              >
-                {{ 'ACTIONS.DELETE.MESSAGE.TEXT' | translate }}
-              </div>
-              <div
-                id="pam_delete_parameter_name"
-                class="px-5 text-center danger-action-text text-responsive"
-                [attr.aria-label]="'PARAMETER.NAME' | translate"
-                role="note"
-              >
-                {{ item4Delete.displayName ?? item4Delete.name }}
-              </div>
-
-              <div class="px-2 flex flex-column row-gap-1">
-                <div class="flex flex-row column-gap-2">
-                  <div class="w-4 text-right font-bold">{{ 'PARAMETER.PRODUCT_NAME' | translate }}:</div>
-                  <div class="w-7 text-left text-responsive" id="pam_delete_product_name">
-                    {{ getProductDisplayName(item4Delete.productName, metaData.allProducts) }}
-                  </div>
-                </div>
-                <div class="flex flex-row column-gap-2">
-                  <div class="w-4 text-right font-bold">{{ 'PARAMETER.APP_ID' | translate }}:</div>
-                  <div class="w-7 text-left text-responsive" id="pam_delete_app_id">
-                    {{ getAppDisplayName(item4Delete.productName, item4Delete.applicationId, metaData.allProducts) }}
-                  </div>
-                </div>
-              </div>
-
-              <div>{{ 'ACTIONS.DELETE.MESSAGE.INFO' | translate }}</div>
-            </section>
-          </div>
-          <ng-template pTemplate="footer">
-            <footer class="flex flex-wrap justify-content-end column-gap-2 row-gap-1">
-              <p-button
-                id="pam_delete_action_no"
-                icon="pi pi-times"
-                pAutoFocus
-                [autofocus]="true"
-                (onClick)="displayDeleteDialog = false"
-                [label]="'ACTIONS.CONFIRMATION.NO' | translate"
-                [ariaLabel]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
-                [pTooltip]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              ></p-button>
-              <p-button
-                id="pam_delete_action_yes"
-                icon="pi pi-check"
-                (onClick)="onDeleteConfirmation(data)"
-                [label]="'ACTIONS.CONFIRMATION.YES' | translate"
-                [ariaLabel]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
-                [pTooltip]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              ></p-button>
-            </footer>
-          </ng-template>
-        </p-dialog>
+        <app-parameter-delete
+          [visible]="displayDeleteDialog"
+          (visibleChange)="onDeleteClosed($event, data)"
+          [parameter]="item4Delete"
+          [productDisplayName]="getProductDisplayName(item4Delete?.productName, metaData?.allProducts)"
+          [appDisplayName]="
+            getAppDisplayName(item4Delete?.productName, item4Delete?.applicationId, metaData?.allProducts)
+          "
+        ></app-parameter-delete>
       </ng-container>
+
       <!-- DETAIL -->
       <app-parameter-detail
-        [displayDialog]="displayDetailDialog"
-        (hideDialogAndChanged)="onCloseDetail($event)"
+        [visible]="displayDetailDialog"
+        (visibleChange)="onCloseDetail($event)"
         [parameter]="item4Detail"
         [allProducts]="metaData.allProducts"
         [changeMode]="changeMode"
@@ -356,8 +307,8 @@
 </ocx-portal-page>
 
 <app-usage-detail
-  [displayDialog]="displayUsageDetailDialog"
-  (hideDialog)="onCloseUsageDetail()"
+  [visible]="displayUsageDetailDialog"
+  (visibleChange)="onCloseUsageDetail()"
   [parameter]="item4Detail"
   [dateFormat]="dateFormat"
 ></app-usage-detail>

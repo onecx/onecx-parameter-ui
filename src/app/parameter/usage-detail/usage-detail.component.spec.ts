@@ -173,7 +173,7 @@ describe('HistoryComponent', () => {
     fixture = TestBed.createComponent(UsageDetailComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
-    component.displayDialog = true
+    component.visible = true
   })
 
   afterEach(() => {})
@@ -182,13 +182,6 @@ describe('HistoryComponent', () => {
     it('should create', () => {
       expect(component).toBeTruthy()
     })
-  })
-
-  it('should close the dialog', () => {
-    spyOn(component.hideDialog, 'emit')
-    component.onDialogHide()
-
-    expect(component.hideDialog.emit).toHaveBeenCalled()
   })
 
   describe('search', () => {

@@ -1,7 +1,7 @@
 <p-dialog
   [header]="'DIALOG.DETAIL.' + changeMode + '.HEADER' | translate"
-  [(visible)]="displayDialog"
-  (onHide)="onDialogHide()"
+  [visible]="visible"
+  (visibleChange)="visibleChange.emit(false)"
   [modal]="true"
   [closable]="true"
   [draggable]="true"
@@ -34,7 +34,7 @@
           <span class="p-float-label flex-grow-1" controlErrorAnchor>
             <p-dropdown
               id="pam_detail_form_product_name"
-              class="input-field"
+              class="input-field pt-3 pb-2"
               styleClass="w-20rem text-responsive"
               panelStyleClass="w-20rem"
               formControlName="productName"
@@ -58,7 +58,7 @@
             <p-dropdown
               id="pam_detail_form_app_id"
               class="input-field"
-              styleClass="w-20rem text-responsive"
+              styleClass="w-20rem pt-3 pb-2 text-responsive"
               panelStyleClass="w-20rem"
               formControlName="applicationId"
               [options]="appOptions"
@@ -426,7 +426,7 @@
         *ngIf="exceptionKey || changeMode === 'VIEW'"
         id="pam_detail_action_close"
         icon="pi pi-times"
-        (onClick)="onDialogHide()"
+        (onClick)="visibleChange.emit(false)"
         [label]="'ACTIONS.NAVIGATION.CLOSE' | translate"
         [ariaLabel]="'ACTIONS.NAVIGATION.CLOSE' | translate"
         [pTooltip]="'ACTIONS.NAVIGATION.CLOSE.TOOLTIP' | translate"
@@ -437,7 +437,7 @@
         *ngIf="!(exceptionKey || changeMode === 'VIEW')"
         id="pam_detail_action_cancel"
         icon="pi pi-times"
-        (onClick)="onDialogHide()"
+        (onClick)="visibleChange.emit(false)"
         [label]="'ACTIONS.CANCEL' | translate"
         [ariaLabel]="'ACTIONS.CANCEL' | translate"
         [pTooltip]="'ACTIONS.TOOLTIPS.CANCEL_AND_CLOSE' | translate"

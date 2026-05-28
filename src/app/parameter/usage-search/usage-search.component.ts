@@ -128,7 +128,7 @@ export class UsageSearchComponent implements OnInit {
       translationPrefix: 'USAGE',
       active: true,
       isValue: true,
-      css: 'text-center word-break-all'
+      css: 'text-center word-break-all hidden xl:table-cell'
     },
     {
       field: 'valueType',
@@ -136,14 +136,14 @@ export class UsageSearchComponent implements OnInit {
       header: 'VALUE.TYPE',
       active: true,
       isValue: false,
-      css: 'text-center'
+      css: 'text-center hidden lg:table-cell'
     },
     {
       field: 'equal',
       header: 'EQUAL',
       translationPrefix: 'USAGE',
       active: true,
-      css: 'text-center'
+      css: 'text-center hidden lg:table-cell'
     },
     {
       field: 'start',
@@ -158,7 +158,8 @@ export class UsageSearchComponent implements OnInit {
       header: 'DURATION',
       translationPrefix: 'USAGE',
       active: true,
-      isDuration: true
+      isDuration: true,
+      css: 'text-center hidden lg:table-cell'
     },
     {
       field: 'count',
@@ -166,7 +167,7 @@ export class UsageSearchComponent implements OnInit {
       translationPrefix: 'USAGE',
       active: true,
       isText: true,
-      css: 'text-center'
+      css: 'text-center hidden xl:table-cell'
     },
     {
       field: 'applicationName',
@@ -182,7 +183,7 @@ export class UsageSearchComponent implements OnInit {
       active: true,
       isText: true,
       sort: true,
-      css: 'text-center'
+      css: 'text-center hidden xl:table-cell'
     }
   ]
 

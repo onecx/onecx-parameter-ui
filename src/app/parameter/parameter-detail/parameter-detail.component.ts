@@ -107,12 +107,12 @@ export function JsonValidator(): ValidatorFn {
   styleUrls: ['./parameter-detail.component.scss']
 })
 export class ParameterDetailComponent implements OnChanges {
-  @Input() public displayDialog = false
   @Input() public changeMode: ChangeMode = 'CREATE'
   @Input() public parameter: Parameter | undefined
   @Input() public allProducts: ExtendedProduct[] = []
   @Input() public dateFormat = 'medium'
-  @Output() public hideDialogAndChanged = new EventEmitter<boolean>()
+  @Input() public visible = false
+  @Output() public visibleChange = new EventEmitter<boolean>()
 
   // dialog
   public loading = false
@@ -156,13 +156,13 @@ export class ParameterDetailComponent implements OnChanges {
     this.formGroup.addControl(
       'value',
       new FormControl(null, {
-        validators: Validators.compose([ValueValidator(), Validators.required, Validators.maxLength(5000)])
+        validators: Validators.compose([ValueValidator(), Validators.maxLength(5000)])
       })
     )
     this.formGroup.addControl(
       'valueObject',
       new FormControl(null, {
-        validators: Validators.compose([JsonValidator(), Validators.required, Validators.maxLength(5000)])
+        validators: Validators.compose([JsonValidator(), Validators.maxLength(5000)])
       })
     )
     this.formGroup.addControl(
@@ -177,7 +177,7 @@ export class ParameterDetailComponent implements OnChanges {
   }
 
   public ngOnChanges() {
-    if (!this.displayDialog) return
+    if (!this.visible) return
     this.exceptionKey = undefined
     // matching mode and given data?
     if (['EDIT', 'VIEW'].includes(this.changeMode) && this.parameter?.id) this.getData(this.parameter.id)
@@ -260,7 +260,7 @@ export class ParameterDetailComponent implements OnChanges {
    *  UI Events
    */
   public onDialogHide(changed?: boolean) {
-    this.hideDialogAndChanged.emit(changed ?? false)
+    this.visibleChange.emit(changed ?? false)
     this.formGroup.reset()
   }
 

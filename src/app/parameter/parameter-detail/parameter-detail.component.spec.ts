@@ -90,7 +90,7 @@ describe('ParameterDetailComponent', () => {
 
   beforeEach(() => {
     initializeComponent()
-    component.displayDialog = true
+    component.visible = true
     component.allProducts = allProducts
   })
 
@@ -105,7 +105,7 @@ describe('ParameterDetailComponent', () => {
 
     it('should not initialize if dialog is not open', () => {
       expect(component).toBeTruthy()
-      component.displayDialog = false
+      component.visible = false
       component.ngOnChanges()
     })
   })
@@ -113,11 +113,11 @@ describe('ParameterDetailComponent', () => {
   describe('ngOnChange - init form', () => {
     describe('VIEW basics', () => {
       beforeEach(() => {
-        component.displayDialog = true
+        component.visible = true
       })
 
       it('should reject initializing if dialog is not open', () => {
-        component.displayDialog = false
+        component.visible = false
 
         component.ngOnChanges()
 
@@ -181,7 +181,7 @@ describe('ParameterDetailComponent', () => {
 
     describe('VIEW extras', () => {
       beforeEach(() => {
-        component.displayDialog = true
+        component.visible = true
       })
 
       it('should display string - default', () => {
@@ -331,7 +331,7 @@ describe('ParameterDetailComponent', () => {
 
   describe('onSave - CREATE', () => {
     beforeEach(() => {
-      component.displayDialog = true
+      component.visible = true
       component.changeMode = 'CREATE'
       // component.parameter = { ...parameterBase, id: undefined }
       component.parameter = undefined
@@ -345,7 +345,7 @@ describe('ParameterDetailComponent', () => {
 
     it('should create a STRING parameter - valid', () => {
       apiServiceSpy.createParameter.and.returnValue(of({}))
-      spyOn(component.hideDialogAndChanged, 'emit')
+      spyOn(component.visibleChange, 'emit')
 
       component.formGroup.controls['value'].setValue('text')
       component.formGroup.controls['valueType'].setValue('STRING')
@@ -354,7 +354,7 @@ describe('ParameterDetailComponent', () => {
       component.onSave()
 
       expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.MESSAGE.OK' })
-      expect(component.hideDialogAndChanged.emit).toHaveBeenCalledWith(true)
+      expect(component.visibleChange.emit).toHaveBeenCalledWith(true)
     })
 
     it('should create a BOOLEAN parameter - valid true', () => {
@@ -431,14 +431,14 @@ describe('ParameterDetailComponent', () => {
       apiServiceSpy.createParameter.and.returnValue(of({}))
       component.changeMode = 'COPY'
       component.parameter = p
-      spyOn(component.hideDialogAndChanged, 'emit')
+      spyOn(component.visibleChange, 'emit')
 
       component.ngOnChanges()
       expect(component.formGroup.valid).toBeTrue()
       component.onSave()
 
       expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.MESSAGE.OK' })
-      expect(component.hideDialogAndChanged.emit).toHaveBeenCalledWith(true)
+      expect(component.visibleChange.emit).toHaveBeenCalledWith(true)
     })
   })
 
@@ -456,12 +456,12 @@ describe('ParameterDetailComponent', () => {
 
     it('should update a parameter - successful', () => {
       apiServiceSpy.updateParameter.and.returnValue(of({}))
-      spyOn(component.hideDialogAndChanged, 'emit')
+      spyOn(component.visibleChange, 'emit')
 
       component.onSave()
 
       expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.EDIT.MESSAGE.OK' })
-      expect(component.hideDialogAndChanged.emit).toHaveBeenCalledWith(true)
+      expect(component.visibleChange.emit).toHaveBeenCalledWith(true)
     })
 
     it('should display error if update fails', () => {
@@ -515,7 +515,7 @@ describe('ParameterDetailComponent', () => {
 
   describe('Extra logging', () => {
     beforeEach(() => {
-      component.displayDialog = true
+      component.visible = true
       const p: Parameter = { ...parameterBase, id: undefined, value: 'text' }
       component.parameter = p
     })
@@ -554,10 +554,10 @@ describe('ParameterDetailComponent', () => {
   describe('Extra UI actions', () => {
     describe('Closing dialog', () => {
       it('should close the dialog if user triggers hiding', () => {
-        spyOn(component.hideDialogAndChanged, 'emit')
+        spyOn(component.visibleChange, 'emit')
         component.onDialogHide()
 
-        expect(component.hideDialogAndChanged.emit).toHaveBeenCalledWith(false)
+        expect(component.visibleChange.emit).toHaveBeenCalledWith(false)
       })
     })
 

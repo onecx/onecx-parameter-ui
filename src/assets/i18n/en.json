@@ -212,14 +212,15 @@
       "COMBINED_NAME": "Business Name or Name of the Parameter",
       "DISPLAY_NAME": "Business Name of the Parameter",
       "DESCRIPTION": "Detailed description of the Parameter",
-      "VALUE": "Value of the Parameter - corresponds to the imported value if only this is available.",
-      "VALUE.TYPE": "Type of Parameter value. If the types are different then both types.",
+      "VALUE": "Value of the Parameter<br/>Corresponds to the imported value if only this is available.",
+      "VALUE.TYPE": "Type of Parameter values:<br/>If the types of Value and Imported Value are different, then both types.",
       "VALUE.TYPE.DETAIL": "Type of Parameter value.",
+      "VALUE.TYPES": "Types of Parameter values:",
       "IMPORT_VALUE": "Imported value",
       "OPERATOR": "If set, the Parameter was created by automation.",
       "EQUAL": "Comparison of value and imported value",
       "EQUAL.TRUE": "Value and imported value are equal",
-      "EQUAL.FALSE": "Value and imported value are not equal",
+      "EQUAL.FALSE": "Value and imported value are not equal (different values or types, even if not available)",
       "EQUAL.UNDEFINED": "Not available because no value"
     }
   },
@@ -255,6 +256,7 @@
     "OBJECT": "Object",
     "STRING": "Text",
     "UNKNOWN": "n.a.",
+    "UNKNOWN.TIP": "Not available",
     "UNKNOWN.TOOLTIP": "Not available because no value"
   },
   "VALIDATION": {
