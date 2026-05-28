@@ -150,7 +150,6 @@ describe('ParameterSearchComponent', () => {
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
   const apiServiceSpy = {
-    deleteParameter: jasmine.createSpy('deleteParameter').and.returnValue(of(null)),
     getAllProducts: jasmine.createSpy('getAllProducts').and.returnValue(of([])),
     searchParametersByCriteria: jasmine.createSpy('searchParametersByCriteria').and.returnValue(of({}))
   }
@@ -183,11 +182,9 @@ describe('ParameterSearchComponent', () => {
     // reset data services
     apiServiceSpy.searchParametersByCriteria.calls.reset()
     apiServiceSpy.getAllProducts.calls.reset()
-    apiServiceSpy.deleteParameter.calls.reset()
     // to spy data: refill with neutral data
     apiServiceSpy.searchParametersByCriteria.and.returnValue(of({}))
     apiServiceSpy.getAllProducts.and.returnValue(of([]))
-    apiServiceSpy.deleteParameter.and.returnValue(of(null))
   }))
 
   beforeEach(() => {
@@ -373,7 +370,7 @@ describe('ParameterSearchComponent', () => {
 
       expect(ev.stopPropagation).toHaveBeenCalled()
       expect(component.changeMode).toEqual(mode)
-      expect(component.item4Detail).toBe(undefined)
+      expect(component.item4Detail).toEqual({})
       expect(component.displayDetailDialog).toBeTrue()
 
       component.onCloseDetail(false)
@@ -397,7 +394,7 @@ describe('ParameterSearchComponent', () => {
       component.onDetail(mode, parameterData[0])
 
       expect(component.changeMode).toEqual(mode)
-      expect(component.item4Detail).toBe(parameterData[0])
+      expect(component.item4Detail).toEqual(parameterData[0])
       expect(component.displayDetailDialog).toBeTrue()
 
       component.onCloseDetail(true)
@@ -424,41 +421,34 @@ describe('ParameterSearchComponent', () => {
       component.onDelete(ev, items4Deletion[0])
 
       expect(ev.stopPropagation).toHaveBeenCalled()
-      expect(component.item4Delete).toBe(items4Deletion[0])
+      expect(component.item4Delete).toEqual(items4Deletion[0])
       expect(component.displayDeleteDialog).toBeTrue()
     })
 
-    it('should delete a parameter with confirmation', () => {
-      apiServiceSpy.deleteParameter.and.returnValue(of(null))
+    it('should manage data after parameter deletion', () => {
       const ev: MouseEvent = new MouseEvent('type')
+      expect(items4Deletion.length).toBe(3)
 
       component.onDelete(ev, items4Deletion[1])
-      component.onDeleteConfirmation(items4Deletion) // remove but not the last of the product
+      component.onDeleteClosed(true, items4Deletion) // remove but not the last of the product
 
       expect(component.displayDeleteDialog).toBeFalse()
-      expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.MESSAGE.OK' })
+      expect(component.item4Delete).toBeUndefined()
 
       component.onDelete(ev, items4Deletion[2])
-      component.onDeleteConfirmation(items4Deletion) // remove and this was the last of the product
+      component.onDeleteClosed(true, items4Deletion) // remove and this was the last of the product
+
+      expect(component.displayDeleteDialog).toBeFalse()
+      expect(component.item4Delete).toBeUndefined()
     })
 
-    it('should display error if deleting a parameter fails', () => {
-      const errorResponse = { status: '400', statusText: 'Error on deletion' }
-      apiServiceSpy.deleteParameter.and.returnValue(throwError(() => errorResponse))
+    it('should manage data after parameter delete dialog is only closed', () => {
       const ev: MouseEvent = new MouseEvent('type')
-      spyOn(console, 'error')
 
       component.onDelete(ev, items4Deletion[0])
-      component.onDeleteConfirmation(items4Deletion)
+      component.onDeleteClosed(false, items4Deletion)
 
-      expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.MESSAGE.NOK' })
-      expect(console.error).toHaveBeenCalledWith('deleteParameter', errorResponse)
-    })
-
-    it('should reject confirmation if param was not set', () => {
-      component.onDeleteConfirmation(items4Deletion)
-
-      expect(apiServiceSpy.deleteParameter).not.toHaveBeenCalled()
+      expect(component.item4Delete).toBeUndefined()
     })
   })
 

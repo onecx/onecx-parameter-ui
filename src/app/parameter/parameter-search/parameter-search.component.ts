@@ -381,7 +381,7 @@ export class ParameterSearchComponent implements OnInit {
   public onDetail(mode: ChangeMode, item: Parameter | undefined, ev?: Event): void {
     ev?.stopPropagation()
     this.changeMode = mode
-    this.item4Detail = item
+    this.item4Detail = { ...item }
     this.itemId = item?.id
     this.displayDetailDialog = true
   }
@@ -396,30 +396,21 @@ export class ParameterSearchComponent implements OnInit {
   // DELETE => Ask for confirmation
   public onDelete(ev: Event, item: Parameter): void {
     ev.stopPropagation()
-    this.item4Delete = item
+    this.item4Delete = { ...item }
     this.displayDeleteDialog = true
   }
-  // user confirmed deletion
-  public onDeleteConfirmation(data: Parameter[]): void {
-    if (!this.item4Delete?.id) return
-    this.parameterApi.deleteParameter({ id: this.item4Delete?.id }).subscribe({
-      next: () => {
-        this.msgService.success({ summaryKey: 'ACTIONS.DELETE.MESSAGE.OK' })
-        // remove item from data
-        data = data?.filter((d) => d.id !== this.item4Delete?.id)
-        // check remaing data if product still exists - if not then reload
-        const d = data?.filter((d) => d.productName === this.item4Delete?.productName)
-        this.item4Delete = undefined
-        this.displayDeleteDialog = false
-        if (d?.length === 0)
-          this.onReload() // deletion forces reload
-        else this.onSearch({}, true)
-      },
-      error: (err) => {
-        this.msgService.error({ summaryKey: 'ACTIONS.DELETE.MESSAGE.NOK' })
-        console.error('deleteParameter', err)
-      }
-    })
+  public onDeleteClosed(deleted: boolean, data: Parameter[]): void {
+    if (deleted) {
+      // remove item from data
+      data = data?.filter((d) => d.id !== this.item4Delete?.id)
+      // check remaing data if product still exists - if not then reload
+      const d = data?.filter((d) => d.productName === this.item4Delete?.productName)
+      if (d?.length === 0)
+        this.onReload() // reload all data because if no parameter for the product exists anymore (adjust dropdown lists)
+      else this.onSearch({}, true)
+    }
+    this.displayDeleteDialog = false
+    this.item4Delete = undefined
   }
 
   // Usage / History
@@ -436,16 +427,16 @@ export class ParameterSearchComponent implements OnInit {
   /****************************************************************************
    *  UI Helper
    */
-  public getProductDisplayName(name: string | undefined, allProducts: ExtendedProduct[]): string | undefined {
-    if (allProducts.length === 0) return name
+  public getProductDisplayName(name?: string | undefined, allProducts?: ExtendedProduct[]): string | undefined {
+    if (!allProducts || allProducts.length === 0) return name
     return allProducts.find((item) => item.name === name)?.displayName ?? name
   }
   public getAppDisplayName(
-    productName: string | undefined,
-    appId: string | undefined,
-    allProducts: ExtendedProduct[]
+    productName?: string | undefined,
+    appId?: string | undefined,
+    allProducts?: ExtendedProduct[]
   ): string | undefined {
-    if (allProducts.length === 0) return productName
+    if (!allProducts || allProducts.length === 0) return productName
     return (
       allProducts.find((item) => item.name === productName)?.applications?.find((a) => a.appId === appId)?.appName ??
       appId

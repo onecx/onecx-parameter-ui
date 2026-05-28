@@ -1,7 +1,7 @@
 <p-dialog
   [header]="'DIALOG.USAGE.HEADER' | translate"
-  [(visible)]="displayDialog"
-  (onHide)="onDialogHide()"
+  [visible]="visible"
+  (visibleChange)="visibleChange.emit($event)"
   [modal]="true"
   [closable]="true"
   [draggable]="true"
@@ -34,7 +34,7 @@
       <p-button
         id="pam_usage_detail_action_close"
         icon="pi pi-times"
-        (onClick)="onDialogHide()"
+        (onClick)="visibleChange.emit(false)"
         [label]="'ACTIONS.NAVIGATION.CLOSE' | translate"
         [ariaLabel]="'ACTIONS.NAVIGATION.CLOSE' | translate"
         [pTooltip]="'ACTIONS.NAVIGATION.CLOSE.TOOLTIP' | translate"
