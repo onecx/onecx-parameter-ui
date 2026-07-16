@@ -30,7 +30,8 @@ const history: ExtendedHistory = {
   defaultValueType: 'STRING',
   displayUsedValue: '',
   displayDefaultValue: '',
-  isEqual: 'FALSE'
+  isEqual: 'FALSE',
+  imagePath: ''
 }
 
 describe('HistoryCriteriaComponent', () => {

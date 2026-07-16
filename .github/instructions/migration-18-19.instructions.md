@@ -58,6 +58,40 @@ description: Version-specific migration URLs, version mappings, known issues, an
 |---------|-------------------|-------|
 | [package] | [version] | [source page] |
 
+## Verified Reference Repo: ct-management-page (Angular 18→19, JIRA DIGIHUB-341488)
+
+Local path: `/home/suhail/projects/titans/ct-management-page` (git history intact).
+Main migration commit: `b63b3368d9fd54e7b27cb6dca3d071b3ee209099` ("Feat DIGIHUB-341488 Angular and onecx version upgrade").
+Follow-up fix commits (all tagged `DIGIHUB-341488`, mostly CSS/theme touch-ups after the main commit): `7851355d`, `4e40166d`, `119eaf0d`, `3335bfc7`, `c19ccf96`, `6b79eca4`, `8e5387df`/`1b5fbda2`/`2b3ceb6a` (3 identical "Angular version observation" commits on parallel branches — same diff), `b4874ae1`/`5a67fc75`/`a355b8f7` (comment CSS fix, 3x same diff), `331395a9`/`a9356766`/`169ae83d` (waiting-reason CSS fix, 3x same diff), `4b1f5325`, `160b04cf` (a revert, later re-applied), `1358b05c`, `e1c21405`, `e03938d9`/`eaf0b2fe`/`573aceb8`/`cb6d7842`/`4b04e07c` ("part2" — eslint/sonar/misc fixes).
+Consolidated squashed diff available: parent commit `7063a6e9c81dd26f7ffd71ca6840f733756d4cbb` → final commit `4b04e07c` gives the true end-state delta (use `git diff 7063a6e9 4b04e07c -- <file>` in that repo to re-pull if needed).
+
+### Verified dependency version bumps (from real working package.json diff)
+- `@angular/*` (animations, cdk, common, compiler, core, elements, forms, material, platform-browser, platform-browser-dynamic, router): `^18.1.2` → `^19.2.14`
+- `@angular-devkit/build-angular`, `@angular-eslint/*`, `@angular/cli`, `@angular/compiler-cli`: → `^19.2.14`/`~19.2.14`
+- `@ngrx/component`, `@ngrx/effects`, `@ngrx/router-store`, `@ngrx/store`, `@ngrx/store-devtools`: `^18.0.1` → `^19.2.1`
+- `@ngx-translate/core`: `^15.0.0` → `^16.0.4`
+- `@onecx/*` (accelerator, angular-accelerator, angular-auth, angular-integration-interface, angular-remote-components, angular-testing, angular-utils, angular-webcomponents, integration-interface, ngrx-accelerator): `^5.50.0` → `^6.11.0` — **NOTE: our repo is currently on `^5.47.5`, so resolve to latest stable 6.x via `npm view <pkg> dist-tags` rather than hardcoding 6.11.0**
+- `@onecx/keycloak-auth`, `@onecx/portal-integration-angular`, `@onecx/portal-layout-styles` — NOT present in ct-management-page's package.json at all (before or after), so this reference repo doesn't prove what happens to these three for onecx-parameter-ui, which DOES depend on all three currently. Must rely on official docs for their v6 replacement/removal (see Post-Migration Import Corrections section above — these map to `@onecx/angular-accelerator`/`@onecx/angular-utils` functional providers).
+- NEW added: `@onecx/nx-plugin: ^1.13.1`, `@primeng/themes: ^19.0.0`, `modify-source-webpack-plugin: ^4.1.0`
+- `keycloak-angular`: `^16.0.1` → `^19.0.2` (keycloak-js stayed `^25.0.2`)
+- `primeflex`: `^3.3.1` → `^4.0.0`; `primeng`: `^17.18.7` → `^19.1.3`
+- `rxjs`: `~7.8.1` → `~7.8.2`; `zone.js`: `~0.14.10` → `~0.15.1`
+- `ngx-build-plus`: `^18.0.0` → `^19.0.0`; NEW devDependency `webpack: 5.94.0` (pinned exact)
+- `build` script simplified: removed a manual `cp dist/.../styles.*.css dist/.../styles.css` step — became just `"ng build"`
+
+### Verified code pattern changes (from consolidated diff, applicable structurally to onecx-parameter-ui's app.module.ts / onecx-parameter-remote.module.ts)
+- `PortalCoreModule.forRoot(...)` / `PortalCoreModule.forMicroFrontend()` from `@onecx/portal-integration-angular` — REMOVED. Replaced by importing `AngularAcceleratorModule` from `@onecx/angular-accelerator` plus explicit functional providers: `provideThemeConfig()`, `provideAngularUtils()` (both from `@onecx/angular-utils`), `provideTokenInterceptor()` (from `@onecx/angular-auth`), `providePortalDialogService()` (from `@onecx/angular-accelerator`), `provideTranslationConnectionService()` (from `@onecx/angular-utils`).
+- `KeycloakAuthModule` import from `@onecx/keycloak-auth` — REMOVED entirely; replaced by `provideTokenInterceptor()` from `@onecx/angular-auth`.
+- `addInitializeModuleGuard(routes)` — REMOVED; just use `RouterModule.forRoot(routes)` directly.
+- `translateServiceInitializer` (old `APP_INITIALIZER` factory from portal-integration-angular) — REMOVED; the router `APP_INITIALIZER` now solely uses `initializeRouter` from `@onecx/angular-webcomponents` with `deps: [Router, AppStateService]`.
+- `StoreModule.forRoot(reducers, {metaReducers})` / `StoreDevtoolsModule.instrument({...})` (NgModule style) — replaced with functional `provideStore(reducers, {metaReducers})` / `provideStoreDevtools({...})` from `@ngrx/store` / `@ngrx/store-devtools` (same options object).
+- Constructor injection replaced with `inject()` function calls in several components (e.g. `AppEntrypointComponent`) — `PrimeNGConfig` from `primeng/api` renamed to `PrimeNG` from `primeng/config`.
+- Components using `@NgModule` declarations (not standalone) need explicit `standalone: false` in the `@Component` decorator (Angular 19 schematics default new components to standalone).
+- `.eslintrc.json`: if any legacy NgModule-based files remain, add an override block disabling `@angular-eslint/prefer-standalone` scoped to those files/folders (new lint rule enabled by `@angular-eslint` v19 schematics flags standalone-preference by default).
+- `angular.json`: `assets` array glob entries pointing at `@onecx/portal-integration-angular/assets/` removed (package no longer used this way); `styles` array changed from bare string paths to object form `{ "input": "src/styles.scss", "bundleName": "styles", "inject": true }`; `outputHashing` changed from `"all"` to `"none"` in production config in this specific repo (verify against our own current angular.json before blindly copying — this may be app-specific, not a hard requirement).
+- `webpack.config.js`: already contains `module: { parser: { javascript: { importMeta: false } } }` in OUR onecx-parameter-ui repo (confirmed via read) — this is the SAME fix ct-management-page added during their 18→19 migration to suppress webpack's `import.meta` parsing errors. Since we already have it, do NOT re-add — but note it does NOT eliminate the separate `AutoPublicPathRuntimeModule`-injected `import.meta.url` issue in `styles.js` for direct/standalone access (see repo memory `onecx-dev-local-setup.md` for the fully diagnosed, already-resolved-by-avoidance root cause of that separate issue).
+- ct-management-page's webpack.config.js ALSO added a `ModifySourcePlugin` patching PrimeNG's compiled `document.createElement(...)` calls and `Theme.setLoadedStyleName` to work around a PrimeNG-in-module-federation style-loading issue. This is app-specific (uses Leaflet + custom elements) — do NOT copy blindly into onecx-parameter-ui; only apply if the same specific symptom (PrimeNG theme/style double-injection error) is observed during our own Phase B/C validation.
+
 ## Special Migration Rules (Angular 18 → 19 Specific)
 
 These rules apply specifically to the Angular 18 → 19 migration path:

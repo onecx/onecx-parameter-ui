@@ -1,11 +1,9 @@
-import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core'
+import { Component, OnInit, EventEmitter } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
-import { TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
-import { Table } from 'primeng/table'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
-import { Action, Column, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+import { Action, ColumnType, DataAction, DataTableColumn, Filter, FilterType } from '@onecx/angular-accelerator'
 import { SlotService } from '@onecx/angular-remote-components'
 
 import {
@@ -18,24 +16,14 @@ import {
 import { displayEqualityState, displayValue, displayValueType, sortByDisplayName } from 'src/app/shared/utils'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
-type ExtendedColumn = Column & {
-  hasFilter?: boolean
-  isBoolean?: boolean
-  isDate?: boolean
-  isDuration?: boolean
-  isValue?: boolean
-  isText?: boolean
-  limit?: boolean
-  frozen?: boolean
-  sort?: boolean
-  css?: string
-}
 export type ExtendedHistory = History & {
   valueType: string
   defaultValueType: string
   displayUsedValue: string
   displayDefaultValue: string
   isEqual: string
+  imagePath: string
+  [key: string]: unknown
 }
 export type ExtendedProduct = {
   name: string
@@ -83,10 +71,9 @@ export class UsageSearchComponent implements OnInit {
   public displayDetailDialog = false
   public displayUsageDialog = false
   public actions: Action[] = []
+  public additionalActions: DataAction[] = []
+  public filters: Filter[] = []
   public sortByDisplayName = sortByDisplayName
-
-  @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
-  public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
 
   // data
   public data$: Observable<ExtendedHistory[]> | undefined
@@ -102,89 +89,24 @@ export class UsageSearchComponent implements OnInit {
   public productData$ = new BehaviorSubject<ProductAbstract[] | undefined>(undefined) // product data
   public slotEmitter = new EventEmitter<ProductAbstract[]>()
 
-  public filteredColumns: Column[] = []
-  public columns: ExtendedColumn[] = [
+  public columns: DataTableColumn[] = [
+    { id: 'name', nameKey: 'PARAMETER.COMBINED_NAME', columnType: ColumnType.STRING, sortable: true },
+    { id: 'displayUsedValue', nameKey: 'USAGE.USED_VALUE', columnType: ColumnType.STRING },
+    { id: 'displayDefaultValue', nameKey: 'USAGE.DEFAULT_VALUE', columnType: ColumnType.STRING },
+    { id: 'valueType', nameKey: 'PARAMETER.VALUE.TYPE', columnType: ColumnType.STRING },
+    { id: 'equal', nameKey: 'USAGE.EQUAL', columnType: ColumnType.STRING },
+    { id: 'start', nameKey: 'USAGE.START', columnType: ColumnType.DATE, sortable: true },
+    { id: 'duration', nameKey: 'USAGE.DURATION', columnType: ColumnType.STRING },
+    { id: 'count', nameKey: 'USAGE.COUNT', columnType: ColumnType.NUMBER },
     {
-      field: 'name',
-      header: 'COMBINED_NAME',
-      translationPrefix: 'PARAMETER',
-      active: true,
-      limit: false,
-      frozen: true,
-      sort: true,
-      css: 'word-break-all'
+      id: 'applicationName',
+      nameKey: 'PARAMETER.APP_NAME',
+      columnType: ColumnType.STRING,
+      sortable: true,
+      filterable: true,
+      filterType: FilterType.EQUAL
     },
-    {
-      field: 'displayUsedValue',
-      header: 'USED_VALUE',
-      translationPrefix: 'USAGE',
-      active: true,
-      isValue: true,
-      css: 'text-center word-break-all'
-    },
-    {
-      field: 'displayDefaultValue',
-      header: 'DEFAULT_VALUE',
-      translationPrefix: 'USAGE',
-      active: true,
-      isValue: true,
-      css: 'text-center word-break-all hidden xl:table-cell'
-    },
-    {
-      field: 'valueType',
-      translationPrefix: 'PARAMETER',
-      header: 'VALUE.TYPE',
-      active: true,
-      isValue: false,
-      css: 'text-center hidden lg:table-cell'
-    },
-    {
-      field: 'equal',
-      header: 'EQUAL',
-      translationPrefix: 'USAGE',
-      active: true,
-      css: 'text-center hidden lg:table-cell'
-    },
-    {
-      field: 'start',
-      header: 'START',
-      translationPrefix: 'USAGE',
-      active: true,
-      isDate: true,
-      sort: true
-    },
-    {
-      field: 'duration',
-      header: 'DURATION',
-      translationPrefix: 'USAGE',
-      active: true,
-      isDuration: true,
-      css: 'text-center hidden lg:table-cell'
-    },
-    {
-      field: 'count',
-      header: 'COUNT',
-      translationPrefix: 'USAGE',
-      active: true,
-      isText: true,
-      css: 'text-center hidden xl:table-cell'
-    },
-    {
-      field: 'applicationName',
-      header: 'APP_NAME',
-      translationPrefix: 'PARAMETER',
-      active: true,
-      sort: true
-    },
-    {
-      field: 'instanceId',
-      header: 'INSTANCE_ID',
-      translationPrefix: 'USAGE',
-      active: true,
-      isText: true,
-      sort: true,
-      css: 'text-center hidden xl:table-cell'
-    }
+    { id: 'instanceId', nameKey: 'USAGE.INSTANCE_ID', columnType: ColumnType.STRING, sortable: true }
   ]
 
   constructor(
@@ -192,12 +114,21 @@ export class UsageSearchComponent implements OnInit {
     private readonly router: Router,
     private readonly user: UserService,
     private readonly slotService: SlotService,
-    private readonly translate: TranslateService,
     private readonly msgService: PortalMessageService,
     private readonly historyApi: HistoriesAPIService
   ) {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
-    this.filteredColumns = this.columns.filter((a) => a.active === true)
+    const startColumn = this.columns.find((c) => c.id === 'start')
+    if (startColumn) startColumn.dateFormat = this.dateFormat
+    this.additionalActions = [
+      {
+        id: 'usage',
+        labelKey: 'DIALOG.NAVIGATION.DETAIL_USAGE.LABEL',
+        icon: 'pi pi-history',
+        permission: 'USAGE#VIEW',
+        callback: (item) => this.onUsage(item)
+      }
+    ]
     this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.slotName)
   }
 
@@ -205,7 +136,6 @@ export class UsageSearchComponent implements OnInit {
     this.slotEmitter.subscribe(this.productData$)
     this.onReload()
     this.getMetaData() // and trigger search
-    this.prepareDialogTranslations()
     this.preparePageActions()
   }
 
@@ -322,6 +252,7 @@ export class UsageSearchComponent implements OnInit {
           (h) =>
             ({
               ...h,
+              imagePath: '',
               valueType: displayValueType(h.usedValue),
               defaultValueType: displayValueType(h.defaultValue),
               displayDefaultValue: displayValue(h.defaultValue),
@@ -337,35 +268,6 @@ export class UsageSearchComponent implements OnInit {
       }),
       finalize(() => (this.loading = false))
     )
-  }
-
-  /**
-   * Dialog preparation
-   */
-  private prepareDialogTranslations(): void {
-    this.dataViewControlsTranslations$ = this.translate
-      .get([
-        'PARAMETER.PRODUCT_NAME',
-        'PARAMETER.APP_ID',
-        'PARAMETER.NAME',
-        'PARAMETER.DISPLAY_NAME',
-        'DIALOG.DATAVIEW.FILTER'
-      ])
-      .pipe(
-        map((data) => {
-          return {
-            filterInputPlaceholder: data['DIALOG.DATAVIEW.FILTER'],
-            filterInputTooltip:
-              data['PARAMETER.PRODUCT_NAME'] +
-              ', ' +
-              data['PARAMETER.APP_ID'] +
-              ', ' +
-              data['PARAMETER.DISPLAY_NAME'] +
-              ', ' +
-              data['PARAMETER.NAME']
-          } as DataViewControlTranslations
-        })
-      )
   }
 
   public preparePageActions(): void {
@@ -407,8 +309,7 @@ export class UsageSearchComponent implements OnInit {
   }
 
   // History
-  public onUsage(ev: Event, item: ExtendedHistory) {
-    ev.stopPropagation()
+  public onUsage(item: ExtendedHistory) {
     this.item4Detail = item
     this.displayUsageDialog = true
   }
@@ -417,12 +318,8 @@ export class UsageSearchComponent implements OnInit {
     this.item4Detail = undefined
   }
 
-  public onColumnsChange(activeIds: string[]) {
-    this.filteredColumns = activeIds.map((id) => this.columns.find((col) => col.field === id)) as Column[]
-  }
-
-  public onFilterChange(event: string): void {
-    this.dataTable?.filterGlobal(event, 'contains')
+  public onFilterChange(filters: Filter[]): void {
+    this.filters = filters
   }
 
   // getting display names within HTML

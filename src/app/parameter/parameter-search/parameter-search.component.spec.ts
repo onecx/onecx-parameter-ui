@@ -3,12 +3,11 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { provideRouter, Router, ActivatedRoute } from '@angular/router'
-import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
-import { Column } from '@onecx/portal-integration-angular'
+import { Filter } from '@onecx/angular-accelerator'
 
 import { Parameter, ParametersAPIService, Product } from 'src/app/shared/generated'
 import {
@@ -89,25 +88,86 @@ const paramRespData: Parameter[] = [
     name: 'name6',
     value: undefined,
     importValue: undefined
-  }
+  },
+  {
+    modificationCount: 0,
+    productName: 'product1',
+    applicationId: 'app2',
+    name: 'name7',
+    displayName: 'Name 7',
+    value: 'val7',
+    importValue: 'val7'
+  } as Parameter
 ]
 // data in component
-const parameterData: ExtendedParameter[] = [
-  { ...paramRespData[0], valueType: 'STRING', importValueType: 'STRING', displayValue: 'val1', isEqual: 'TRUE' },
-  { ...paramRespData[1], valueType: 'BOOLEAN', importValueType: 'BOOLEAN', displayValue: 'true', isEqual: 'FALSE' },
-  { ...paramRespData[2], valueType: 'OBJECT', importValueType: 'OBJECT', displayValue: '{ ... }', isEqual: 'TRUE' },
-  { ...paramRespData[3], valueType: 'OBJECT', importValueType: 'OBJECT', displayValue: '{ ... }', isEqual: 'FALSE' },
-  { ...paramRespData[4], valueType: 'STRING', importValueType: 'BOOLEAN', displayValue: 'text', isEqual: 'FALSE' },
-  { ...paramRespData[5], valueType: 'UNKNOWN', importValueType: 'BOOLEAN', displayValue: 'false', isEqual: 'FALSE' },
+const parameterData = [
+  {
+    ...paramRespData[0],
+    valueType: 'STRING',
+    importValueType: 'STRING',
+    displayValue: 'val1',
+    isEqual: 'TRUE',
+    imagePath: ''
+  },
+  {
+    ...paramRespData[1],
+    valueType: 'BOOLEAN',
+    importValueType: 'BOOLEAN',
+    displayValue: 'true',
+    isEqual: 'FALSE',
+    imagePath: ''
+  },
+  {
+    ...paramRespData[2],
+    valueType: 'OBJECT',
+    importValueType: 'OBJECT',
+    displayValue: '{ ... }',
+    isEqual: 'TRUE',
+    imagePath: ''
+  },
+  {
+    ...paramRespData[3],
+    valueType: 'OBJECT',
+    importValueType: 'OBJECT',
+    displayValue: '{ ... }',
+    isEqual: 'FALSE',
+    imagePath: ''
+  },
+  {
+    ...paramRespData[4],
+    valueType: 'STRING',
+    importValueType: 'BOOLEAN',
+    displayValue: 'text',
+    isEqual: 'FALSE',
+    imagePath: ''
+  },
+  {
+    ...paramRespData[5],
+    valueType: 'UNKNOWN',
+    importValueType: 'BOOLEAN',
+    displayValue: 'false',
+    isEqual: 'FALSE',
+    imagePath: ''
+  },
   {
     ...paramRespData[6],
     valueType: 'UNKNOWN',
     importValueType: 'UNKNOWN',
     displayValue: '',
     isEqual: 'UNDEFINED',
-    displayName: 'name6'
+    displayName: 'name6',
+    imagePath: ''
+  },
+  {
+    ...paramRespData[7],
+    id: '',
+    valueType: 'STRING',
+    importValueType: 'STRING',
+    displayValue: 'val7',
+    isEqual: 'TRUE',
+    imagePath: ''
   }
-]
+] as ExtendedParameter[]
 // Original form BFF: unsorted and not complete
 const usedProductsOrg: Product[] = [
   { productName: 'product2', displayName: undefined, applications: ['app2-svc'] },
@@ -198,29 +258,10 @@ describe('ParameterSearchComponent', () => {
       expect(component).toBeTruthy()
     })
 
-    it('should call OnInit and populate filteredColumns/actions correctly', () => {
+    it('should call OnInit and populate columns correctly', () => {
       component.ngOnInit()
-      expect(component.filteredColumns[0]).toEqual(component.columns[0])
-    })
-
-    it('dataview translations', (done) => {
-      const translationData = {
-        'DIALOG.DATAVIEW.FILTER': 'filter'
-      }
-      const translateService = TestBed.inject(TranslateService)
-      spyOn(translateService, 'get').and.returnValue(of(translationData))
-
-      component.ngOnInit()
-
-      component.dataViewControlsTranslations$?.subscribe({
-        next: (data) => {
-          if (data) {
-            expect(data.filterInputPlaceholder).toEqual('filter')
-          }
-          done()
-        },
-        error: done.fail
-      })
+      expect(component.columns[0].id).toEqual('name')
+      expect(component.columns.length).toBeGreaterThan(0)
     })
   })
 
@@ -415,27 +456,22 @@ describe('ParameterSearchComponent', () => {
     })
 
     it('should prepare the deletion of a parameter - ok', () => {
-      const ev: MouseEvent = new MouseEvent('type')
-      spyOn(ev, 'stopPropagation')
+      component.onDelete(items4Deletion[0])
 
-      component.onDelete(ev, items4Deletion[0])
-
-      expect(ev.stopPropagation).toHaveBeenCalled()
       expect(component.item4Delete).toEqual(items4Deletion[0])
       expect(component.displayDeleteDialog).toBeTrue()
     })
 
     it('should manage data after parameter deletion', () => {
-      const ev: MouseEvent = new MouseEvent('type')
       expect(items4Deletion.length).toBe(3)
 
-      component.onDelete(ev, items4Deletion[1])
+      component.onDelete(items4Deletion[1])
       component.onDeleteClosed(true, items4Deletion) // remove but not the last of the product
 
       expect(component.displayDeleteDialog).toBeFalse()
       expect(component.item4Delete).toBeUndefined()
 
-      component.onDelete(ev, items4Deletion[2])
+      component.onDelete(items4Deletion[2])
       component.onDeleteClosed(true, items4Deletion) // remove and this was the last of the product
 
       expect(component.displayDeleteDialog).toBeFalse()
@@ -443,36 +479,20 @@ describe('ParameterSearchComponent', () => {
     })
 
     it('should manage data after parameter delete dialog is only closed', () => {
-      const ev: MouseEvent = new MouseEvent('type')
-
-      component.onDelete(ev, items4Deletion[0])
+      component.onDelete(items4Deletion[0])
       component.onDeleteClosed(false, items4Deletion)
 
       expect(component.item4Delete).toBeUndefined()
     })
   })
 
-  describe('filter columns', () => {
-    it('should update the columns that are seen in data', () => {
-      const columns: Column[] = [
-        { field: 'productName', header: 'PRODUCT_NAME' },
-        { field: 'description', header: 'DESCRIPTION' }
-      ]
-      const expectedColumn = { field: 'productName', header: 'PRODUCT_NAME' }
-      component.columns = columns
+  describe('filter change', () => {
+    it('should update the filters used by the data view', () => {
+      const filters: Filter[] = [{ columnId: 'applicationId', value: 'app1' }]
 
-      component.onColumnsChange(['productName'])
+      component.onFilterChange(filters)
 
-      expect(component.filteredColumns).not.toContain(columns[1])
-      expect(component.filteredColumns).toEqual([jasmine.objectContaining(expectedColumn)])
-    })
-
-    it('should apply a filter to the result table', () => {
-      component.dataTable = jasmine.createSpyObj('dataTable', ['filterGlobal'])
-
-      component.onFilterChange('test')
-
-      expect(component.dataTable?.filterGlobal).toHaveBeenCalledWith('test', 'contains')
+      expect(component.filters).toEqual(filters)
     })
   })
 
@@ -522,12 +542,8 @@ describe('ParameterSearchComponent', () => {
 
   describe('row actions', () => {
     it('should display usage detail dialog', () => {
-      const event = new MouseEvent('click')
-      spyOn(event, 'stopPropagation')
+      component.onDetailUsage(parameterData[0])
 
-      component.onDetailUsage(event, parameterData[0])
-
-      expect(event.stopPropagation).toHaveBeenCalled()
       expect(component.item4Detail).toEqual(parameterData[0])
       expect(component.displayUsageDetailDialog).toBeTrue()
     })
@@ -538,6 +554,24 @@ describe('ParameterSearchComponent', () => {
       component.onCloseUsageDetail()
 
       expect(component.displayUsageDetailDialog).toBeFalse()
+    })
+
+    it('should invoke onDetail via the copy additionalAction callback', () => {
+      spyOn(component, 'onDetail')
+      const copyAction = component.additionalActions.find((a) => a.id === 'copy')
+
+      copyAction?.callback?.(parameterData[0])
+
+      expect(component.onDetail).toHaveBeenCalledWith('COPY', parameterData[0])
+    })
+
+    it('should invoke onDetailUsage via the usage additionalAction callback', () => {
+      spyOn(component, 'onDetailUsage')
+      const usageAction = component.additionalActions.find((a) => a.id === 'usage')
+
+      usageAction?.callback?.(parameterData[0])
+
+      expect(component.onDetailUsage).toHaveBeenCalledWith(parameterData[0])
     })
   })
 

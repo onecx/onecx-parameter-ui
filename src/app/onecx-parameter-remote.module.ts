@@ -7,7 +7,7 @@ import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ng
 import { firstValueFrom } from 'rxjs'
 
 import { AngularAuthModule } from '@onecx/angular-auth'
-import { createTranslateLoader, provideTranslationPathFromMeta } from '@onecx/angular-utils'
+import { createTranslateLoader, PortalApiConfiguration, provideTranslationPathFromMeta } from '@onecx/angular-utils'
 import { createAppEntrypoint, initializeRouter, startsWith } from '@onecx/angular-webcomponents'
 import {
   addInitializeModuleGuard,
@@ -16,7 +16,7 @@ import {
   ConfigurationService
 } from '@onecx/angular-integration-interface'
 import { AngularAcceleratorMissingTranslationHandler } from '@onecx/angular-accelerator'
-import { PortalApiConfiguration, PortalCoreModule } from '@onecx/portal-integration-angular'
+import { PortalCoreModule } from '@onecx/portal-integration-angular'
 
 import { Configuration } from './shared/generated'
 import { environment } from 'src/environments/environment'

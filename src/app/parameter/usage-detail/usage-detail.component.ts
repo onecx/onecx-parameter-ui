@@ -50,7 +50,8 @@ export class UsageDetailComponent {
               defaultValueType: displayValueType(h.defaultValue),
               displayDefaultValue: displayValue(h.defaultValue),
               displayUsedValue: displayValue(h.usedValue),
-              isEqual: displayEqualityState(h.usedValue, h.defaultValue)
+              isEqual: displayEqualityState(h.usedValue, h.defaultValue),
+              imagePath: ''
             }) as ExtendedHistory
         )
       }),

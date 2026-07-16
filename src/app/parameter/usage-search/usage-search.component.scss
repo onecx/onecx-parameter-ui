@@ -16,15 +16,6 @@
   }
   --table-body-cell-padding: 0.5rem;
 
-  // hide unusable stuff
-  ocx-column-group-selection,
-  ocx-data-view-controls div div button {
-    display: none;
-  }
-  ocx-data-view-controls div {
-    justify-content: center !important;
-  }
-
   .max-height-for-2-lines {
     max-height: 2.5rem;
   }

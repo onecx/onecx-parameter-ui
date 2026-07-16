@@ -1,12 +1,9 @@
-import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core'
+import { Component, OnInit, EventEmitter } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
-import { TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
-import { Table } from 'primeng/table'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
-import { Action } from '@onecx/angular-accelerator'
-import { Column, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+import { Action, ColumnType, DataAction, DataTableColumn, Filter, FilterType } from '@onecx/angular-accelerator'
 import { SlotService } from '@onecx/angular-remote-components'
 
 import {
@@ -19,22 +16,14 @@ import {
 import { displayEqualityState, displayValue2, displayValueType, sortByDisplayName } from 'src/app/shared/utils'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
-type ExtendedColumn = Column & {
-  hasFilter?: boolean
-  isBoolean?: boolean
-  isDate?: boolean
-  isDuration?: boolean
-  isText?: boolean
-  isValue?: boolean
-  frozen?: boolean
-  css?: string
-  sort?: boolean
-}
 export type ExtendedParameter = Parameter & {
+  id: string
   valueType: string
   importValueType: string
   displayValue: string
   isEqual: string
+  imagePath: string
+  [key: string]: unknown
 }
 export type ExtendedProduct = {
   name: string
@@ -83,10 +72,8 @@ export class ParameterSearchComponent implements OnInit {
   public displayDeleteDialog = false
   public displayUsageDetailDialog = false
   public actions: Action[] = []
-  public filteredColumns: Column[] = []
-
-  @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
-  public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
+  public additionalActions: DataAction[] = []
+  public filters: Filter[] = []
 
   // data
   public data$: Observable<ExtendedParameter[]> | undefined
@@ -102,62 +89,21 @@ export class ParameterSearchComponent implements OnInit {
   public productData$ = new BehaviorSubject<ProductAbstract[] | undefined>(undefined) // product infos
   public slotEmitter = new EventEmitter<ProductAbstract[]>()
 
-  public columns: ExtendedColumn[] = [
+  public columns: DataTableColumn[] = [
+    { id: 'name', nameKey: 'PARAMETER.COMBINED_NAME', columnType: ColumnType.STRING, sortable: true },
+    { id: 'value', nameKey: 'PARAMETER.VALUE', columnType: ColumnType.STRING },
+    { id: 'valueType', nameKey: 'PARAMETER.VALUE.TYPE', columnType: ColumnType.STRING },
+    { id: 'equal', nameKey: 'PARAMETER.EQUAL', columnType: ColumnType.STRING },
     {
-      field: 'name',
-      header: 'COMBINED_NAME',
-      translationPrefix: 'PARAMETER',
-      active: true,
-      frozen: true,
-      sort: true,
-      css: 'word-break-all'
+      id: 'applicationId',
+      nameKey: 'PARAMETER.PRODUCT_APP',
+      columnType: ColumnType.STRING,
+      sortable: true,
+      filterable: true,
+      filterType: FilterType.EQUAL
     },
-    {
-      field: 'value',
-      header: 'VALUE',
-      translationPrefix: 'PARAMETER',
-      active: true,
-      isValue: true,
-      css: 'text-center'
-    },
-    {
-      field: 'valueType',
-      header: 'VALUE.TYPE',
-      translationPrefix: 'PARAMETER',
-      active: true,
-      css: 'text-center hidden lg:table-cell'
-    },
-    {
-      field: 'equal',
-      header: 'EQUAL',
-      translationPrefix: 'PARAMETER',
-      active: true,
-      css: 'text-center hidden lg:table-cell'
-    },
-    {
-      field: 'applicationId',
-      header: 'PRODUCT_APP',
-      translationPrefix: 'PARAMETER',
-      active: true,
-      sort: true
-    },
-    {
-      field: 'operator',
-      header: 'OPERATOR',
-      active: true,
-      translationPrefix: 'PARAMETER',
-      isBoolean: true,
-      css: 'text-center hidden lg:table-cell'
-    },
-    {
-      field: 'modificationDate',
-      header: 'MODIFICATION_DATE',
-      translationPrefix: 'INTERNAL',
-      active: true,
-      sort: true,
-      isDate: true,
-      css: 'hidden lg:table-cell'
-    }
+    { id: 'operator', nameKey: 'PARAMETER.OPERATOR', columnType: ColumnType.STRING },
+    { id: 'modificationDate', nameKey: 'INTERNAL.MODIFICATION_DATE', columnType: ColumnType.DATE, sortable: true }
   ]
 
   constructor(
@@ -165,12 +111,29 @@ export class ParameterSearchComponent implements OnInit {
     private readonly router: Router,
     private readonly user: UserService,
     private readonly slotService: SlotService,
-    private readonly translate: TranslateService,
     private readonly msgService: PortalMessageService,
     private readonly parameterApi: ParametersAPIService
   ) {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
-    this.filteredColumns = this.columns.filter((a) => a.active === true)
+    const modificationDateColumn = this.columns.find((c) => c.id === 'modificationDate')
+    if (modificationDateColumn) modificationDateColumn.dateFormat = this.dateFormat
+    this.additionalActions = [
+      {
+        id: 'copy',
+        labelKey: 'ACTIONS.COPY.LABEL',
+        icon: 'pi pi-copy',
+        permission: 'PARAMETER#EDIT',
+        callback: (item) => this.onDetail('COPY', item)
+      },
+      {
+        id: 'usage',
+        labelKey: 'DIALOG.NAVIGATION.DETAIL_USAGE.LABEL',
+        icon: 'pi pi-history',
+        permission: 'USAGE#VIEW',
+        actionEnabledField: 'isInHistory',
+        callback: (item) => this.onDetailUsage(item)
+      }
+    ]
     this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.slotName)
   }
 
@@ -178,7 +141,6 @@ export class ParameterSearchComponent implements OnInit {
     this.slotEmitter.subscribe(this.productData$)
     this.onReload()
     this.getMetaData() // and trigger search
-    this.prepareDialogTranslations()
     this.preparePageActions()
   }
 
@@ -298,6 +260,8 @@ export class ParameterSearchComponent implements OnInit {
           (p) =>
             ({
               ...p,
+              id: p.id ?? '',
+              imagePath: '',
               displayName: p.displayName ?? p.name,
               valueType: displayValueType(p.value),
               importValueType: displayValueType(p.importValue),
@@ -313,35 +277,6 @@ export class ParameterSearchComponent implements OnInit {
       }),
       finalize(() => (this.loading = false))
     )
-  }
-
-  /**
-   * Dialog preparation
-   */
-  private prepareDialogTranslations(): void {
-    this.dataViewControlsTranslations$ = this.translate
-      .get([
-        'PARAMETER.PRODUCT_NAME',
-        'PARAMETER.APP_ID',
-        'PARAMETER.NAME',
-        'PARAMETER.DISPLAY_NAME',
-        'DIALOG.DATAVIEW.FILTER'
-      ])
-      .pipe(
-        map((data) => {
-          return {
-            filterInputPlaceholder: data['DIALOG.DATAVIEW.FILTER'],
-            filterInputTooltip:
-              data['PARAMETER.PRODUCT_NAME'] +
-              ', ' +
-              data['PARAMETER.APP_ID'] +
-              ', ' +
-              data['PARAMETER.DISPLAY_NAME'] +
-              ', ' +
-              data['PARAMETER.NAME']
-          } as DataViewControlTranslations
-        })
-      )
   }
 
   private preparePageActions(): void {
@@ -371,11 +306,8 @@ export class ParameterSearchComponent implements OnInit {
   public onCriteriaReset(): void {
     this.criteria = {}
   }
-  public onColumnsChange(activeIds: string[]) {
-    this.filteredColumns = activeIds.map((id) => this.columns.find((col) => col.field === id)) as Column[]
-  }
-  public onFilterChange(event: string): void {
-    this.dataTable?.filterGlobal(event, 'contains')
+  public onFilterChange(filters: Filter[]): void {
+    this.filters = filters
   }
 
   // Detail => CREATE, COPY, EDIT, VIEW
@@ -395,8 +327,7 @@ export class ParameterSearchComponent implements OnInit {
   }
 
   // DELETE => Ask for confirmation
-  public onDelete(ev: Event, item: Parameter): void {
-    ev.stopPropagation()
+  public onDelete(item: Parameter): void {
     this.item4Delete = { ...item }
     this.displayDeleteDialog = true
   }
@@ -415,8 +346,7 @@ export class ParameterSearchComponent implements OnInit {
   }
 
   // Usage / History
-  public onDetailUsage(ev: Event, item: Parameter) {
-    ev.stopPropagation()
+  public onDetailUsage(item: Parameter) {
     this.item4Detail = item
     this.displayUsageDetailDialog = true
   }

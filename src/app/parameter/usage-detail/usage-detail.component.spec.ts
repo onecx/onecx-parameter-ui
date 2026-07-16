@@ -73,14 +73,15 @@ const historyRespData: History[] = [
     end: '2024-01-01T00:25:00Z'
   }
 ]
-const historyData: ExtendedHistory[] = [
+const historyData = [
   {
     ...historyRespData[0],
     valueType: 'STRING',
     defaultValueType: 'STRING',
     displayUsedValue: 'Val',
     displayDefaultValue: 'Val',
-    isEqual: 'TRUE'
+    isEqual: 'TRUE',
+    imagePath: ''
   },
   {
     ...historyRespData[1],
@@ -88,7 +89,8 @@ const historyData: ExtendedHistory[] = [
     defaultValueType: 'BOOLEAN',
     displayUsedValue: '1234',
     displayDefaultValue: 'true',
-    isEqual: 'FALSE'
+    isEqual: 'FALSE',
+    imagePath: ''
   },
   {
     ...historyRespData[2],
@@ -96,7 +98,8 @@ const historyData: ExtendedHistory[] = [
     defaultValueType: 'OBJECT',
     displayUsedValue: '{ ... }',
     displayDefaultValue: '{ ... }',
-    isEqual: 'FALSE'
+    isEqual: 'FALSE',
+    imagePath: ''
   },
   {
     ...historyRespData[3],
@@ -104,7 +107,8 @@ const historyData: ExtendedHistory[] = [
     defaultValueType: 'UNKNOWN',
     displayUsedValue: '{ ... }',
     displayDefaultValue: '',
-    isEqual: 'FALSE'
+    isEqual: 'FALSE',
+    imagePath: ''
   },
   {
     ...historyRespData[4],
@@ -112,7 +116,8 @@ const historyData: ExtendedHistory[] = [
     defaultValueType: 'UNKNOWN',
     displayUsedValue: '',
     displayDefaultValue: '',
-    isEqual: 'UNDEFINED'
+    isEqual: 'UNDEFINED',
+    imagePath: ''
   },
   {
     ...historyRespData[5],
@@ -120,9 +125,10 @@ const historyData: ExtendedHistory[] = [
     defaultValueType: 'BOOLEAN',
     displayUsedValue: 'false',
     displayDefaultValue: 'false',
-    isEqual: 'TRUE'
+    isEqual: 'TRUE',
+    imagePath: ''
   }
-]
+] as ExtendedHistory[]
 const parameter: Parameter = {
   id: 'pid',
   productName: 'prod1',
