@@ -5,8 +5,11 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { provideErrorTailorConfig, errorTailorImports } from '@ngneat/error-tailor'
 
 import { AutoCompleteModule } from 'primeng/autocomplete'
+import { BadgeModule } from 'primeng/badge'
+import { ButtonModule } from 'primeng/button'
 import { CalendarModule } from 'primeng/calendar'
 import { CardModule } from 'primeng/card'
+import { CheckboxModule } from 'primeng/checkbox'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { ConfirmPopupModule } from 'primeng/confirmpopup'
 import { ConfirmationService } from 'primeng/api'
@@ -16,9 +19,10 @@ import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog'
 import { DropdownModule } from 'primeng/dropdown'
 import { FieldsetModule } from 'primeng/fieldset'
 import { InputTextModule } from 'primeng/inputtext'
-import { InputTextareaModule } from 'primeng/inputtextarea'
+import { TextareaModule } from 'primeng/textarea'
 import { KeyFilterModule } from 'primeng/keyfilter'
 import { ListboxModule } from 'primeng/listbox'
+import { MessageModule } from 'primeng/message'
 import { MultiSelectModule } from 'primeng/multiselect'
 import { SelectButtonModule } from 'primeng/selectbutton'
 import { TableModule } from 'primeng/table'
@@ -26,17 +30,21 @@ import { TabViewModule } from 'primeng/tabview'
 import { ToastModule } from 'primeng/toast'
 import { TooltipModule } from 'primeng/tooltip'
 
-import { PortalCoreModule, PortalDialogService } from '@onecx/portal-integration-angular'
+import { AngularAcceleratorModule, PortalDialogService } from '@onecx/angular-accelerator'
+import { PortalPageComponent } from '@onecx/angular-utils'
 
 import { LabelResolver } from './label.resolver'
 
 @NgModule({
   declarations: [],
   imports: [
-    PortalCoreModule.forMicroFrontend(),
+    AngularAcceleratorModule,
     AutoCompleteModule,
+    BadgeModule,
+    ButtonModule,
     CalendarModule,
     CardModule,
+    CheckboxModule,
     CommonModule,
     ConfirmDialogModule,
     ConfirmPopupModule,
@@ -47,10 +55,12 @@ import { LabelResolver } from './label.resolver'
     FieldsetModule,
     FormsModule,
     InputTextModule,
-    InputTextareaModule,
+    TextareaModule,
     KeyFilterModule,
     ListboxModule,
+    MessageModule,
     MultiSelectModule,
+    PortalPageComponent,
     ReactiveFormsModule,
     SelectButtonModule,
     TableModule,
@@ -62,8 +72,11 @@ import { LabelResolver } from './label.resolver'
   ],
   exports: [
     AutoCompleteModule,
+    BadgeModule,
+    ButtonModule,
     CalendarModule,
     CardModule,
+    CheckboxModule,
     CommonModule,
     ConfirmDialogModule,
     ConfirmPopupModule,
@@ -74,10 +87,12 @@ import { LabelResolver } from './label.resolver'
     FieldsetModule,
     FormsModule,
     InputTextModule,
-    InputTextareaModule,
+    TextareaModule,
     KeyFilterModule,
     ListboxModule,
+    MessageModule,
     MultiSelectModule,
+    PortalPageComponent,
     ReactiveFormsModule,
     SelectButtonModule,
     TableModule,

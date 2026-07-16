@@ -173,11 +173,11 @@
             id="pam_detail_form_value"
             styleClass="ml-3 cursor-auto shadow-none"
             formControlName="valueBoolean"
-            [label]="'PARAMETER.VALUE' | translate"
             [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           ></p-checkbox>
+          <label for="pam_detail_form_value">{{ 'PARAMETER.VALUE' | translate }}</label>
         </div>
 
         <span *ngIf="ValueType.value !== 'BOOLEAN'" class="p-float-label">
@@ -195,7 +195,7 @@
           />
           <ng-template #objectTemplate>
             <p-badge
-              severity="primary"
+              severity="info"
               [value]="5000 - ParameterValueObject.value.length"
               class="z-1 text-badge-right"
               [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
@@ -272,11 +272,11 @@
             id="pam_detail_form_import_value"
             styleClass="ml-3 cursor-auto shadow-none"
             formControlName="importValueBoolean"
-            [label]="'PARAMETER.IMPORT_VALUE' | translate"
             [pTooltip]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           ></p-checkbox>
+          <label for="pam_detail_form_import_value">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
         </div>
 
         <span *ngIf="ImportValueType.value !== 'BOOLEAN'" class="p-float-label">
@@ -294,7 +294,7 @@
           />
           <ng-template #objectTemplate>
             <p-badge
-              severity="primary"
+              severity="info"
               [value]="5000 - ParameterImportValueObject.value.length"
               class="z-1 text-badge-right"
               [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
@@ -341,12 +341,12 @@
             [disabled]="true"
             [value]="parameter?.operator"
             [binary]="true"
-            [label]="'INTERNAL.OPERATOR' | translate"
             [ariaLabel]="'INTERNAL.OPERATOR' | translate"
             [pTooltip]="'INTERNAL.TOOLTIPS.OPERATOR' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           ></p-checkbox>
+          <label for="pam_detail_field_operator">{{ 'INTERNAL.OPERATOR' | translate }}</label>
         </div>
 
         <!-- row 2 -->

@@ -13,7 +13,8 @@ export interface CriteriaForm {
 
 @Component({
   selector: 'app-usage-detail-criteria',
-  templateUrl: './usage-detail-criteria.component.html'
+  templateUrl: './usage-detail-criteria.component.html',
+  standalone: false
 })
 export class UsageDetailCriteriaComponent implements OnChanges {
   @Input() public history: ExtendedHistory | undefined = undefined

@@ -10,7 +10,8 @@ import { ExtendedHistory } from '../usage-search/usage-search.component'
 @Component({
   selector: 'app-usage-detail',
   templateUrl: './usage-detail.component.html',
-  styleUrls: ['./usage-detail.component.scss']
+  styleUrls: ['./usage-detail.component.scss'],
+  standalone: false
 })
 export class UsageDetailComponent {
   @Input() public history: ExtendedHistory | undefined

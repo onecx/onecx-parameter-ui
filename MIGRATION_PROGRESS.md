@@ -322,7 +322,37 @@ Status: **In Progress — Phase 1 (Planning) complete, Angular 18→19 leg**
 
 **Phase B Tasks (doc-driven — fetched from OneCX/Angular upgrade guide at approval time):**
 
-> Since this is a plain Angular CLI workspace (not Nx), Phase B will follow the official Angular Update Guide (`https://angular.dev/update-guide?v=18.0-19.0&l=3`) rather than the NX-specific upgrade page. These tasks are NOT pre-planned — they are discovered at Phase B execution time per process rules.
+> Since this is a plain Angular CLI workspace (not Nx), Phase B will follow the official Angular Update Guide (`https://angular.dev/update-guide?v=18.0-19.0&l=3`) rather than the NX-specific upgrade page.
+
+**[B.1] Core Angular 18 → 19 upgrade + @onecx/\* 5.x → 6.x upgrade + build-break remediation**
+
+- [x] completed
+- Source pages: `https://angular.dev/update-guide?v=18.0-19.0&l=3`; OneCX migration doc patterns already captured in `migration-18-19.instructions.md` (Adjust Standalone Mode, Update Component Imports, Remove @onecx/portal-layout-styles, Update Translations, Post-Migration Import Corrections sections)
+- Applicability: must-have — entire application depends on `@angular/core` and `@onecx/*` packages
+- Repository evidence:
+  - `grep -rn "portal-integration-angular\|portal-layout-styles\|PortalCoreModule\|InitializeModuleGuard\|addInitializeModuleGuard\|FilterType.EQUAL[^S]" src/` → no matches (all old patterns removed)
+  - `grep -E "@angular/core|@angular/cli|@onecx/" package.json` → `@angular/core: ^19.2.25`, `@angular/cli: ~19.2.27`, all `@onecx/*` packages at `^6.27.0`, `@onecx/angular-standalone-shell` newly added at `^6.27.0`; `@onecx/portal-integration-angular` and `@onecx/portal-layout-styles` fully removed from `package.json` (not bumped — removed, per doc-driven replacement pattern)
+- Sub-steps executed:
+  - Bump `@angular/core`/`@angular/cli` to 19.2.x and `@onecx/*` to 6.27.0 — done
+  - Remove `@onecx/portal-integration-angular` / `@onecx/portal-layout-styles` from `package.json`, `angular.json` (assets glob), `webpack.config.js` (module-federation shared + sharedMappings) — done
+  - Replace `<ocx-portal-viewport>` → `<ocx-standalone-shell-viewport>` (`@onecx/angular-standalone-shell`) in `app.component.html` — done
+  - Replace `PortalCoreModule.forRoot(...)` → `AngularAcceleratorModule` + `StandaloneShellModule` imports in `app.module.ts`; add `provideThemeConfig()`, `provideAngularUtils()`, `provideTokenInterceptor()` providers — done
+  - Replace `PortalCoreModule.forMicroFrontend()` + `InitializeModuleGuard`/`addInitializeModuleGuard` → `AngularAcceleratorModule` + plain `RouterModule.forChild(routes)` in `parameter.module.ts` — done
+  - Fix `PortalApiConfiguration` constructor arg-count mismatch in `onecx-parameter-remote.module.ts` (2-arg signature: `Configuration`, `environment.apiPrefix`) — done
+  - Fix `FilterType.EQUAL` → `FilterType.EQUALS` in `parameter-search.component.ts` and `usage-search.component.ts` — done (cross-referenced with Phase C task C.2, now resolved here; C.2 marked `[-]` below)
+  - Replace deprecated `APP_INITIALIZER` provider objects with `provideAppInitializer()` + `inject()` in `onecx-parameter-remote.module.ts` (Angular 19 deprecation, caught via lint) — done
+  - Fix test-only TS2722 errors (`actionCallback` now optional in `@onecx/angular-accelerator` v6 `Action` type) via optional chaining (`actionCallback?.()`) in `parameter-search.component.spec.ts` (2 call sites) and `usage-search.component.spec.ts` (1 call site) — done
+  - `.eslintrc.json`: added `"@angular-eslint/prefer-standalone": "off"` override (repo intentionally keeps NgModule-based components, not standalone) — done
+- Files changed: `package.json`, `package-lock.json`, `angular.json`, `webpack.config.js`, `.eslintrc.json`, `src/styles.scss`, `src/app/app.module.ts`, `src/app/app.component.ts`, `src/app/app.component.html`, `src/app/app-entrypoint.component.ts`, `src/app/onecx-parameter-remote.module.ts`, `src/app/parameter/parameter.module.ts`, `src/app/parameter/parameter-search/parameter-search.component.ts`, `src/app/parameter/parameter-search/parameter-search.component.spec.ts`, `src/app/parameter/usage-search/usage-search.component.ts`, `src/app/parameter/usage-search/usage-search.component.spec.ts`, `src/app/parameter/parameter-criteria/parameter-criteria.component.ts`, `src/app/parameter/parameter-delete/parameter-delete.component.ts`, `src/app/parameter/parameter-detail/parameter-detail.component.ts`, `src/app/parameter/parameter-detail/parameter-detail.component.html`, `src/app/parameter/parameter-detail/parameter-detail.component.spec.ts`, `src/app/parameter/usage-detail/usage-detail.component.ts`, `src/app/parameter/usage-detail/usage-detail-criteria/usage-detail-criteria.component.ts`, `src/app/parameter/usage-detail/usage-detail-list/usage-detail-list.component.ts`, `src/app/parameter/usage-detail/usage-detail-list/usage-detail-list.component.html`, `src/app/shared/shared.module.ts`
+- Validation:
+  - npm run build: **PASS** — exit 0, no errors (baseline cosmetic warnings unchanged: `app.component.ts`/`app.module.ts` unused-in-tsconfig; new sass deprecation warnings from dart-sass upgrade are non-blocking build-tool warnings, not lint/code issues)
+  - npm run lint: **PASS** — "All files pass linting", 0 errors, 0 warnings (initially surfaced 2 new `APP_INITIALIZER` deprecation warnings, fixed via `provideAppInitializer()` migration, re-verified clean)
+  - npm run test: **PASS** — 146 SUCCESS / 147 total (1 skipped), exactly matching Phase A baseline; coverage 100% statements (578/578), 100% branches (211/211), 100% functions (162/162), 100% lines (519/519) — matches Phase A baseline exactly (initially failed with 3 TS2722 compile errors in spec files due to `actionCallback` becoming optional in the new `@onecx/angular-accelerator` v6 types; fixed via optional chaining, re-verified clean)
+- Final outcome: **success** — Angular 19.2.25 / @onecx 6.27.0 baseline stable, build/lint/test all PASS matching Phase A baseline exactly.
+- Edge cases:
+  - Two migration-executor subagent invocations for this task returned empty final messages despite performing real file edits (verified independently via `git status --short` after each); all downstream verification (build/lint/test, diff review, package version checks) was performed directly rather than trusting subagent self-report, per session operational protocol.
+  - `@onecx/portal-integration-angular` / `@onecx/portal-layout-styles` were REMOVED entirely (not version-bumped) — confirmed no v6.x equivalents exist and all their exports are now provided by `@onecx/angular-accelerator`, `@onecx/angular-standalone-shell`, `@onecx/angular-utils`.
+  - `provideTranslationConnectionService()` from `@onecx/angular-utils` — still not added; remains deferred to Phase C per A.9 edge-case note (package is now at v6.27.0 so it's technically available; to be picked up in a Phase C task per "Post-Migration Import Corrections" doc guidance).
 
 ---
 
@@ -346,14 +376,14 @@ Status: **In Progress — Phase 1 (Planning) complete, Angular 18→19 leg**
 
 **[C.2]. Update FilterType Value**
 
-- [ ] not started
+- [x] completed (resolved during Phase B, see B.1 edge cases)
 - Source page: https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-19/update-filtertype-value.html
-- Applicability: TBD by executor (`FilterType.EQUAL`→`FilterType.EQUALS`, `FilterType.TRUTHY`→`FilterType.IS_NOT_EMPTY`)
-- Repository evidence: grep for `FilterType.EQUAL|FilterType.TRUTHY` at Phase 1 time returned 0 matches — must be re-checked after Phase B package upgrade (FilterType enum comes from `@onecx/angular-accelerator`, only meaningful post-upgrade).
-- Sub-steps executed: [TBD]
-- Files changed: [TBD]
-- Validation: build [TBD] | lint [TBD] | test [TBD]
-- Final outcome: [TBD]
+- Applicability: must-have — confirmed via `grep -rn "FilterType\." src/` after Phase B package upgrade: `FilterType.EQUALS` used in `parameter-search.component.ts:104` and `usage-search.component.ts:108`; no `FilterType.TRUTHY` usages found anywhere in the codebase
+- Repository evidence: pre-upgrade grep (Phase 1) returned 0 matches since the enum only became a compile error after the `@onecx/angular-accelerator` v6 bump; post-upgrade build surfaced `TS2551: Property 'EQUAL' does not exist, did you mean 'EQUALS'?` in both files, which was fixed as part of B.1's build-break remediation
+- Sub-steps executed: rename `FilterType.EQUAL` → `FilterType.EQUALS` in both call sites — done; `FilterType.TRUTHY` → `FilterType.IS_NOT_EMPTY` — not-applicable (no usages found)
+- Files changed: `src/app/parameter/parameter-search/parameter-search.component.ts`, `src/app/parameter/usage-search/usage-search.component.ts` (already listed in B.1's files-changed list)
+- Validation: build **PASS** | lint **PASS** | test **PASS** (see B.1 validation evidence — same invocation)
+- Final outcome: **success** — folded into and validated as part of Phase B (B.1) since the error only manifested after the core package upgrade; no separate Phase C action needed.
 
 **[C.3]. Update ConfigurationService Usage**
 

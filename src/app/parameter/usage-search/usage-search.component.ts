@@ -58,7 +58,8 @@ export type ProductAbstract = {
 @Component({
   selector: 'app-usage-search',
   templateUrl: './usage-search.component.html',
-  styleUrls: ['./usage-search.component.scss']
+  styleUrls: ['./usage-search.component.scss'],
+  standalone: false
 })
 export class UsageSearchComponent implements OnInit {
   // dialog
@@ -104,7 +105,7 @@ export class UsageSearchComponent implements OnInit {
       columnType: ColumnType.STRING,
       sortable: true,
       filterable: true,
-      filterType: FilterType.EQUAL
+      filterType: FilterType.EQUALS
     },
     { id: 'instanceId', nameKey: 'USAGE.INSTANCE_ID', columnType: ColumnType.STRING, sortable: true }
   ]

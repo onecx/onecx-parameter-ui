@@ -270,7 +270,7 @@ describe('ParameterSearchComponent', () => {
       spyOn(component, 'onDetail')
 
       component.ngOnInit()
-      component.actions[0].actionCallback()
+      component.actions[0].actionCallback?.()
 
       expect(component.onDetail).toHaveBeenCalled()
     })
@@ -279,7 +279,7 @@ describe('ParameterSearchComponent', () => {
       spyOn(component, 'onGoToLatestUsagePage')
 
       component.ngOnInit()
-      component.actions[1].actionCallback()
+      component.actions[1].actionCallback?.()
 
       expect(component.onGoToLatestUsagePage).toHaveBeenCalled()
     })

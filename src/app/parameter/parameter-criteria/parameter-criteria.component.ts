@@ -18,7 +18,8 @@ export interface CriteriaForm {
 @Component({
   selector: 'app-parameter-criteria',
   templateUrl: './parameter-criteria.component.html',
-  styleUrls: ['./parameter-criteria.component.scss']
+  styleUrls: ['./parameter-criteria.component.scss'],
+  standalone: false
 })
 export class ParameterCriteriaComponent implements OnChanges {
   @Input() public type = 'PARAMETER'

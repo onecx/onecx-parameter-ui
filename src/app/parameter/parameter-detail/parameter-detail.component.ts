@@ -104,7 +104,8 @@ export function JsonValidator(): ValidatorFn {
 @Component({
   selector: 'app-parameter-detail',
   templateUrl: './parameter-detail.component.html',
-  styleUrls: ['./parameter-detail.component.scss']
+  styleUrls: ['./parameter-detail.component.scss'],
+  standalone: false
 })
 export class ParameterDetailComponent implements OnChanges {
   @Input() public changeMode: ChangeMode = 'CREATE'

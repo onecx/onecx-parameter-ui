@@ -2,8 +2,7 @@ import { NgModule } from '@angular/core'
 import { CommonModule, DatePipe } from '@angular/common'
 import { RouterModule, Routes } from '@angular/router'
 
-import { InitializeModuleGuard, addInitializeModuleGuard } from '@onecx/angular-integration-interface'
-import { PortalCoreModule } from '@onecx/portal-integration-angular'
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
 import { SharedModule } from 'src/app/shared/shared.module'
 import { LabelResolver } from 'src/app/shared/label.resolver'
@@ -47,13 +46,8 @@ const routes: Routes = [
     UsageDetailCriteriaComponent,
     UsageDetailListComponent
   ],
-  imports: [
-    CommonModule,
-    PortalCoreModule.forMicroFrontend(),
-    [RouterModule.forChild(addInitializeModuleGuard(routes))],
-    SharedModule
-  ],
-  providers: [InitializeModuleGuard, DatePipe]
+  imports: [CommonModule, AngularAcceleratorModule, [RouterModule.forChild(routes)], SharedModule],
+  providers: [DatePipe]
 })
 export class ParameterModule {
   constructor() {

@@ -7,7 +7,8 @@ import { Parameter, ParametersAPIService } from 'src/app/shared/generated'
 
 @Component({
   selector: 'app-parameter-delete',
-  templateUrl: './parameter-delete.component.html'
+  templateUrl: './parameter-delete.component.html',
+  standalone: false
 })
 export class ParameterDeleteComponent {
   @Input() parameter: Parameter | undefined

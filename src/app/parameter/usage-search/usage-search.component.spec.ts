@@ -237,7 +237,7 @@ describe('UsageSearchComponent', () => {
       spyOn(component, 'onGoToParameterSearchPage')
 
       component.ngOnInit()
-      component.actions[0].actionCallback()
+      component.actions[0].actionCallback?.()
 
       expect(component.onGoToParameterSearchPage).toHaveBeenCalled()
     })

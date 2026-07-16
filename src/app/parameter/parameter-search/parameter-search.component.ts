@@ -58,7 +58,8 @@ export type ProductAbstract = {
 @Component({
   selector: 'app-parameter-search',
   templateUrl: './parameter-search.component.html',
-  styleUrls: ['./parameter-search.component.scss']
+  styleUrls: ['./parameter-search.component.scss'],
+  standalone: false
 })
 export class ParameterSearchComponent implements OnInit {
   // dialog
@@ -100,7 +101,7 @@ export class ParameterSearchComponent implements OnInit {
       columnType: ColumnType.STRING,
       sortable: true,
       filterable: true,
-      filterType: FilterType.EQUAL
+      filterType: FilterType.EQUALS
     },
     { id: 'operator', nameKey: 'PARAMETER.OPERATOR', columnType: ColumnType.STRING },
     { id: 'modificationDate', nameKey: 'INTERNAL.MODIFICATION_DATE', columnType: ColumnType.DATE, sortable: true }

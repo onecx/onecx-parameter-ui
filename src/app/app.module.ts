@@ -6,11 +6,16 @@ import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { TranslateLoader, TranslateModule, MissingTranslationHandler } from '@ngx-translate/core'
 
-import { AngularAuthModule } from '@onecx/angular-auth'
-import { createTranslateLoader, provideTranslationPathFromMeta } from '@onecx/angular-utils'
+import { AngularAuthModule, provideTokenInterceptor } from '@onecx/angular-auth'
+import {
+  createTranslateLoader,
+  provideTranslationPathFromMeta,
+  provideThemeConfig,
+  provideAngularUtils
+} from '@onecx/angular-utils'
 import { APP_CONFIG } from '@onecx/angular-integration-interface'
-import { AngularAcceleratorMissingTranslationHandler } from '@onecx/angular-accelerator'
-import { PortalCoreModule } from '@onecx/portal-integration-angular'
+import { AngularAcceleratorMissingTranslationHandler, AngularAcceleratorModule } from '@onecx/angular-accelerator'
+import { StandaloneShellModule } from '@onecx/angular-standalone-shell'
 
 import { environment } from 'src/environments/environment'
 import { AppComponent } from './app.component'
@@ -29,7 +34,8 @@ const routes: Routes = [
     BrowserModule,
     BrowserAnimationsModule,
     AngularAuthModule,
-    PortalCoreModule.forRoot('onecx-parameter-ui'),
+    AngularAcceleratorModule,
+    StandaloneShellModule,
     RouterModule.forRoot(routes, {
       initialNavigation: 'enabledBlocking',
       enableTracing: true
@@ -46,6 +52,9 @@ const routes: Routes = [
   providers: [
     { provide: APP_CONFIG, useValue: environment },
     provideTranslationPathFromMeta(import.meta.url, 'assets/i18n/'),
+    provideThemeConfig(),
+    provideAngularUtils(),
+    provideTokenInterceptor(),
     provideHttpClient(withInterceptorsFromDi())
   ]
 })
