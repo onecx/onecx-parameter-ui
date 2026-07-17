@@ -17,6 +17,7 @@ import { DialogModule } from 'primeng/dialog'
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog'
 import { SelectModule } from 'primeng/select'
 import { FieldsetModule } from 'primeng/fieldset'
+import { FloatLabelModule } from 'primeng/floatlabel'
 import { InputTextModule } from 'primeng/inputtext'
 import { TextareaModule } from 'primeng/textarea'
 import { KeyFilterModule } from 'primeng/keyfilter'
@@ -51,6 +52,7 @@ import { LabelResolver } from './label.resolver'
     SelectModule,
     DynamicDialogModule,
     FieldsetModule,
+    FloatLabelModule,
     FormsModule,
     InputTextModule,
     TextareaModule,
@@ -82,6 +84,7 @@ import { LabelResolver } from './label.resolver'
     SelectModule,
     DynamicDialogModule,
     FieldsetModule,
+    FloatLabelModule,
     FormsModule,
     InputTextModule,
     TextareaModule,

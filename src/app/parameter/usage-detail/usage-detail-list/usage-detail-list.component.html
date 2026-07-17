@@ -184,9 +184,11 @@
             tooltipPosition="top"
             tooltipEvent="hover"
           ></p-checkbox>
-          <label for="pam_usage_detail_form_value">{{ 'PARAMETER.VALUE' | translate }}</label>
+          <label *ngIf="data.type === 'BOOLEAN'" for="pam_usage_detail_form_value">{{
+            'PARAMETER.VALUE' | translate
+          }}</label>
 
-          <span *ngIf="data.type !== 'BOOLEAN'" class="p-float-label">
+          <p-floatlabel *ngIf="data.type !== 'BOOLEAN'">
             <input
               *ngIf="data.type !== 'OBJECT'"
               pInputText
@@ -215,7 +217,7 @@
             <label *ngIf="data.type !== 'BOOLEAN'" for="pam_usage_detail_form_value">
               {{ 'PARAMETER.VALUE' | translate }}
             </label>
-          </span>
+          </p-floatlabel>
         </div>
       </ng-container>
     </div>

@@ -64,7 +64,7 @@
       <p-tabpanel value="0">
         <div class="flex flex-column row-gap-4">
           <div class="flex flex-row flex-wrap gap-4 justify-content-between">
-            <span class="p-float-label flex-grow-1" controlErrorAnchor>
+            <p-floatlabel class="flex-grow-1" controlErrorAnchor>
               <p-select
                 id="pam_detail_form_product_name"
                 class="input-field"
@@ -85,8 +85,8 @@
               <label class="ocx-required-label" for="pam_detail_form_product_name" aria-hidden="true">
                 {{ 'PARAMETER.PRODUCT_NAME' | translate }}
               </label>
-            </span>
-            <span class="p-float-label flex-grow-1" controlErrorAnchor>
+            </p-floatlabel>
+            <p-floatlabel class="flex-grow-1" controlErrorAnchor>
               <p-select
                 id="pam_detail_form_app_id"
                 class="input-field"
@@ -106,11 +106,11 @@
               <label class="ocx-required-label" for="pam_detail_form_app_id" aria-hidden="true">
                 {{ 'PARAMETER.APP_NAME' | translate }}
               </label>
-            </span>
+            </p-floatlabel>
           </div>
 
           <div class="flex flex-row gap-4">
-            <span class="p-float-label flex-grow-1" controlErrorAnchor>
+            <p-floatlabel class="flex-grow-1" controlErrorAnchor>
               <input
                 pInputText
                 type="text"
@@ -123,11 +123,11 @@
                 tooltipEvent="hover"
               />
               <label class="ocx-required-label" for="pam_detail_form_name">{{ 'PARAMETER.NAME' | translate }}</label>
-            </span>
+            </p-floatlabel>
           </div>
 
           <div class="flex flex-row gap-4">
-            <span class="p-float-label flex-grow-1" controlErrorAnchor>
+            <p-floatlabel class="flex-grow-1" controlErrorAnchor>
               <input
                 pInputText
                 type="text"
@@ -140,11 +140,11 @@
                 tooltipEvent="hover"
               />
               <label for="pam_detail_form_display_name">{{ 'PARAMETER.DISPLAY_NAME' | translate }}</label>
-            </span>
+            </p-floatlabel>
           </div>
 
           <div class="flex flex-row gap-4">
-            <span class="p-float-label flex-grow-1" controlErrorAnchor>
+            <p-floatlabel class="flex-grow-1" controlErrorAnchor>
               <textarea
                 pInputTextarea
                 id="pam_detail_form_description"
@@ -159,7 +159,7 @@
               >
               </textarea>
               <label for="pam_detail_form_description">{{ 'PARAMETER.DESCRIPTION' | translate }} </label>
-            </span>
+            </p-floatlabel>
           </div>
         </div>
       </p-tabpanel>
@@ -186,7 +186,7 @@
               tooltipPosition="top"
               tooltipEvent="hover"
             >
-              <ng-template let-item pTemplate>{{ item.label | translate }}</ng-template>
+              <ng-template let-item pTemplate="item">{{ item.label | translate }}</ng-template>
             </p-selectButton>
           </div>
         </div>
@@ -205,10 +205,12 @@
               tooltipPosition="top"
               tooltipEvent="hover"
             ></p-checkbox>
-            <label for="pam_detail_form_value">{{ 'PARAMETER.VALUE' | translate }}</label>
+            <label *ngIf="ValueType.value === 'BOOLEAN'" for="pam_detail_form_value">{{
+              'PARAMETER.VALUE' | translate
+            }}</label>
           </div>
 
-          <span *ngIf="ValueType.value !== 'BOOLEAN'" class="p-float-label">
+          <p-floatlabel *ngIf="ValueType.value !== 'BOOLEAN'">
             <input
               *ngIf="ValueType.value !== 'OBJECT'; else objectTemplate"
               pInputText
@@ -249,7 +251,7 @@
             <label *ngIf="ValueType.value !== 'BOOLEAN'" class="ocx-required-label" for="pam_detail_form_value">
               {{ 'PARAMETER.VALUE' | translate }}
             </label>
-          </span>
+          </p-floatlabel>
           <label
             *ngIf="validationStatus.value === 'INVALID' || validationStatus.valueObject === 'INVALID'"
             class="block control-error"
@@ -277,7 +279,7 @@
               tooltipPosition="top"
               tooltipEvent="hover"
             >
-              <ng-template let-item pTemplate>{{ item.label | translate }}</ng-template>
+              <ng-template let-item pTemplate="item">{{ item.label | translate }}</ng-template>
             </p-selectButton>
           </div>
         </div>
@@ -298,10 +300,12 @@
               tooltipPosition="top"
               tooltipEvent="hover"
             ></p-checkbox>
-            <label for="pam_detail_form_import_value">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
+            <label *ngIf="ImportValueType.value === 'BOOLEAN'" for="pam_detail_form_import_value">{{
+              'PARAMETER.IMPORT_VALUE' | translate
+            }}</label>
           </div>
 
-          <span *ngIf="ImportValueType.value !== 'BOOLEAN'" class="p-float-label">
+          <p-floatlabel *ngIf="ImportValueType.value !== 'BOOLEAN'">
             <input
               *ngIf="ImportValueType.value !== 'OBJECT'; else objectTemplate"
               pInputText
@@ -339,7 +343,7 @@
               </textarea>
             </ng-template>
             <label for="pam_detail_form_import_value">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
-          </span>
+          </p-floatlabel>
         </div>
       </p-tabpanel>
 
@@ -366,7 +370,7 @@
 
           <!-- row 2 -->
           <div class="flex flex-row flex-wrap gap-4">
-            <span class="flex-grow-1 sm:flex-grow-0 p-float-label">
+            <p-floatlabel class="flex-grow-1 sm:flex-grow-0">
               <input
                 pInputText
                 type="text"
@@ -380,8 +384,8 @@
                 tooltipEvent="hover"
               />
               <label for="pam_detail_field_creation_date">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
-            </span>
-            <span class="flex-grow-1 p-float-label">
+            </p-floatlabel>
+            <p-floatlabel class="flex-grow-1">
               <input
                 pInputText
                 type="text"
@@ -395,12 +399,12 @@
                 tooltipEvent="hover"
               />
               <label for="pam_detail_field_creation_user"> {{ 'INTERNAL.CREATION_USER' | translate }} </label>
-            </span>
+            </p-floatlabel>
           </div>
 
           <!-- row 4 -->
           <div class="flex flex-row flex-wrap gap-4">
-            <span class="flex-grow-1 sm:flex-grow-0 p-float-label">
+            <p-floatlabel class="flex-grow-1 sm:flex-grow-0">
               <input
                 pInputText
                 type="text"
@@ -414,8 +418,8 @@
                 tooltipEvent="hover"
               />
               <label for="pam_detail_field_modification_date"> {{ 'INTERNAL.MODIFICATION_DATE' | translate }} </label>
-            </span>
-            <span class="flex-grow-1 p-float-label">
+            </p-floatlabel>
+            <p-floatlabel class="flex-grow-1">
               <input
                 pInputText
                 type="text"
@@ -429,7 +433,7 @@
                 tooltipEvent="hover"
               />
               <label for="pam_detail_field_modification_user"> {{ 'INTERNAL.MODIFICATION_USER' | translate }} </label>
-            </span>
+            </p-floatlabel>
           </div>
         </div>
       </p-tabpanel>
