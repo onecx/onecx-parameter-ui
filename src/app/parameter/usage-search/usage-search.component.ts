@@ -98,23 +98,62 @@ export class UsageSearchComponent implements OnInit {
   public slotEmitter = new EventEmitter<ProductAbstract[]>()
 
   public columns: DataTableColumn[] = [
-    { id: 'name', nameKey: 'PARAMETER.COMBINED_NAME', columnType: ColumnType.STRING, sortable: true },
-    { id: 'displayUsedValue', nameKey: 'USAGE.USED_VALUE', columnType: ColumnType.STRING },
-    { id: 'displayDefaultValue', nameKey: 'USAGE.DEFAULT_VALUE', columnType: ColumnType.STRING },
-    { id: 'valueType', nameKey: 'PARAMETER.VALUE.TYPE', columnType: ColumnType.STRING },
-    { id: 'equal', nameKey: 'USAGE.EQUAL', columnType: ColumnType.STRING },
-    { id: 'start', nameKey: 'USAGE.START', columnType: ColumnType.DATE, sortable: true },
-    { id: 'duration', nameKey: 'USAGE.DURATION', columnType: ColumnType.STRING },
-    { id: 'count', nameKey: 'USAGE.COUNT', columnType: ColumnType.NUMBER },
+    {
+      id: 'name',
+      nameKey: 'PARAMETER.COMBINED_NAME',
+      columnType: ColumnType.STRING,
+      sortable: true,
+      predefinedGroupKeys: ['DEFAULT']
+    },
+    {
+      id: 'displayUsedValue',
+      nameKey: 'USAGE.USED_VALUE',
+      columnType: ColumnType.STRING,
+      predefinedGroupKeys: ['DEFAULT']
+    },
+    {
+      id: 'displayDefaultValue',
+      nameKey: 'USAGE.DEFAULT_VALUE',
+      columnType: ColumnType.STRING,
+      predefinedGroupKeys: ['DEFAULT']
+    },
+    {
+      id: 'valueType',
+      nameKey: 'PARAMETER.VALUE.TYPE',
+      columnType: ColumnType.STRING,
+      predefinedGroupKeys: ['DEFAULT']
+    },
+    { id: 'equal', nameKey: 'USAGE.EQUAL', columnType: ColumnType.STRING, predefinedGroupKeys: ['DEFAULT'] },
+    {
+      id: 'start',
+      nameKey: 'USAGE.START',
+      columnType: ColumnType.DATE,
+      sortable: true,
+      predefinedGroupKeys: ['DEFAULT']
+    },
+    {
+      id: 'duration',
+      nameKey: 'USAGE.DURATION',
+      columnType: ColumnType.STRING,
+      predefinedGroupKeys: ['DEFAULT']
+    },
+    { id: 'count', nameKey: 'USAGE.COUNT', columnType: ColumnType.NUMBER, predefinedGroupKeys: ['DEFAULT'] },
     {
       id: 'applicationName',
       nameKey: 'PARAMETER.APP_NAME',
       columnType: ColumnType.STRING,
       sortable: true,
       filterable: true,
-      filterType: FilterType.EQUALS
+      filterType: FilterType.EQUALS,
+      predefinedGroupKeys: ['DEFAULT']
     },
-    { id: 'instanceId', nameKey: 'USAGE.INSTANCE_ID', columnType: ColumnType.STRING, sortable: true }
+    {
+      id: 'instanceId',
+      nameKey: 'USAGE.INSTANCE_ID',
+      columnType: ColumnType.STRING,
+      sortable: true,
+      predefinedGroupKeys: ['DEFAULT']
+    }
   ]
 
   constructor() {

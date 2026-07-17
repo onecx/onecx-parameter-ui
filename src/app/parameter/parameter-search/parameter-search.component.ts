@@ -98,20 +98,43 @@ export class ParameterSearchComponent implements OnInit {
   public slotEmitter = new EventEmitter<ProductAbstract[]>()
 
   public columns: DataTableColumn[] = [
-    { id: 'name', nameKey: 'PARAMETER.COMBINED_NAME', columnType: ColumnType.STRING, sortable: true },
-    { id: 'value', nameKey: 'PARAMETER.VALUE', columnType: ColumnType.STRING },
-    { id: 'valueType', nameKey: 'PARAMETER.VALUE.TYPE', columnType: ColumnType.STRING },
-    { id: 'equal', nameKey: 'PARAMETER.EQUAL', columnType: ColumnType.STRING },
+    {
+      id: 'name',
+      nameKey: 'PARAMETER.COMBINED_NAME',
+      columnType: ColumnType.STRING,
+      sortable: true,
+      predefinedGroupKeys: ['DEFAULT']
+    },
+    { id: 'value', nameKey: 'PARAMETER.VALUE', columnType: ColumnType.STRING, predefinedGroupKeys: ['DEFAULT'] },
+    {
+      id: 'valueType',
+      nameKey: 'PARAMETER.VALUE.TYPE',
+      columnType: ColumnType.STRING,
+      predefinedGroupKeys: ['DEFAULT']
+    },
+    { id: 'equal', nameKey: 'PARAMETER.EQUAL', columnType: ColumnType.STRING, predefinedGroupKeys: ['DEFAULT'] },
     {
       id: 'applicationId',
       nameKey: 'PARAMETER.PRODUCT_APP',
       columnType: ColumnType.STRING,
       sortable: true,
       filterable: true,
-      filterType: FilterType.EQUALS
+      filterType: FilterType.EQUALS,
+      predefinedGroupKeys: ['DEFAULT']
     },
-    { id: 'operator', nameKey: 'PARAMETER.OPERATOR', columnType: ColumnType.STRING },
-    { id: 'modificationDate', nameKey: 'INTERNAL.MODIFICATION_DATE', columnType: ColumnType.DATE, sortable: true }
+    {
+      id: 'operator',
+      nameKey: 'PARAMETER.OPERATOR',
+      columnType: ColumnType.STRING,
+      predefinedGroupKeys: ['DEFAULT']
+    },
+    {
+      id: 'modificationDate',
+      nameKey: 'INTERNAL.MODIFICATION_DATE',
+      columnType: ColumnType.DATE,
+      sortable: true,
+      predefinedGroupKeys: ['DEFAULT']
+    }
   ]
 
   constructor() {
