@@ -838,11 +838,15 @@ Reference data source: `.github/instructions/migration-19-20.instructions.md` (u
 
 **[C2.2]. Adjust ngrx-accelerator library utilities**
 
-- [ ] not started
-- Source page (fetched full content this invocation): https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-20/adjust-ngrx-accelerator.html — no H2 sub-headings. States several store-connector utilities moved from `ngrx-accelerator` to `ngrx-integration-interface`: `OneCxActions`, `oneCxReducer`, `OneCxSelectors`, `getOneCxSelectors`, `createOneCxSelector`, `LocationState`, `OneCxState`, `NavigatedEventStoreConnectorService`, `provideNavigatedEventStoreConnector`, `PermissionsStoreConnectorService`, `providePermissionsStoreConnector`. Update imports to reference `ngrx-integration-interface` instead of `ngrx-accelerator`.
-- Tentative applicability: **not applicable (confirmed via fresh full-repo grep + package.json check this invocation)** — `@onecx/ngrx-accelerator` is **not present** in [package.json](package.json) at all (confirmed via direct grep of `package.json` for `ngrx-accelerator` → 0 matches), and fresh full-repo grep for every listed symbol (`OneCxActions|oneCxReducer|OneCxSelectors|getOneCxSelectors|createOneCxSelector|LocationState|OneCxState|NavigatedEventStoreConnectorService|provideNavigatedEventStoreConnector|PermissionsStoreConnectorService|providePermissionsStoreConnector|ngrx-accelerator`) found 0 matches anywhere in `src/**` (only self-referential matches in instruction/progress-doc files). This app only uses `@ngrx/effects`/`@ngrx/router-store` directly (bare NgRx, not the OneCX `ngrx-accelerator` wrapper library).
-- Sub-steps to execute: not-applicable (no old-symbol usage found to migrate) — executor should re-confirm with fresh grep before marking `[-]`.
-- Files likely affected: none expected.
+- [-] not applicable
+- **Source pages**: https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-20/adjust-ngrx-accelerator.html (fetched full content this invocation) — no H2 sub-headings. States several store-connector utilities moved from `ngrx-accelerator` to `ngrx-integration-interface`: `OneCxActions`, `oneCxReducer`, `OneCxSelectors`, `getOneCxSelectors`, `createOneCxSelector`, `LocationState`, `OneCxState`, `NavigatedEventStoreConnectorService`, `provideNavigatedEventStoreConnector`, `PermissionsStoreConnectorService`, `providePermissionsStoreConnector`.
+- **Applicability**: not applicable.
+- **Repository evidence**: fresh full-repo grep this invocation for `OneCxActions|oneCxReducer|OneCxSelectors|getOneCxSelectors|createOneCxSelector|LocationState|OneCxState|NavigatedEventStoreConnectorService|provideNavigatedEventStoreConnector|PermissionsStoreConnectorService|providePermissionsStoreConnector|ngrx-accelerator` across `src/**` → 0 matches. `@onecx/ngrx-accelerator` is not present in [package.json](package.json). This app only uses `@ngrx/effects`/`@ngrx/router-store` directly (bare NgRx, not the OneCX `ngrx-accelerator` wrapper library).
+- **Sub-steps executed**: not-applicable — no old-symbol usage found to migrate.
+- **Files changed**: none.
+- **Validation**: not applicable, no code changes made.
+- **Final outcome**: success (confirmed not applicable).
+- **Edge cases**: none.
 
 **[C2.3]. Update package imports for PrimeNG theming**
 
@@ -860,11 +864,15 @@ Reference data source: `.github/instructions/migration-19-20.instructions.md` (u
 
 **[C2.4]. Update package imports for style utilities**
 
-- [ ] not started
-- Source page (fetched full content this invocation): https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-20/update-style-package.html — 2 H2 sections: "Update import path" (style utilities moved to `@onecx/angular-utils/style` subpackage; `import { updateStylesForMfeChange } from '@onecx/angular-utils'` → `import { updateStylesForMfeChange } from '@onecx/angular-utils/style'`) and "Style subpackage public API contents" (functions: `addStyleToHead`, `createApplicationScopedCss`, `createCssRequestHeaders`, `createStyleUsedByMfeRc`, `fetchAppCss`, `getAllStylesUsedByKey`, `getAppStyleByScope`, `getStyleUsageCount`, `getStyleUsageCountForRc`, `isResponseValidCss`, `isStyleUsedByMfe`, `removeAllMfeUsagesFromStyles`, `removeAllRcUsagesFromStyles`, `removeMfeUsageFromStyle`, `removeRcUsageFromStyle`, `replaceRootAndHtmlWithScope`, `replaceRootWithScope`, `replaceStyleContent`, `slotNameToPropertyName`, `updateStylesForMfeChange`, `updateStylesForRcCreation`, `useStyleForMfe`, `useStyleForRc`; constants: `dataAppStylesAttribute`/`dataAppStylesKey`/`dataMfeStylesAttribute`/`dataMfeStylesKey`/`dataRcStylesAttribute`/`dataRcStylesKey`/`dataRcStylesStart`/`dataShellStylesAttribute`/`dataShellStylesKey`).
-- Tentative applicability: **not applicable (pending final confirmation)** — fresh full-repo grep this invocation for every listed function/constant name found 0 matches anywhere in `src/**` (only self-referential matches expected in progress-doc notes, none actually found for this specific symbol set). This app's micro-frontend style handling appears to rely on framework-level/library-internal usage (via `@onecx/angular-webcomponents`'s `bootstrapModule`) rather than direct app-level calls to these utility functions.
-- Sub-steps to execute: not-applicable (no old-path import of any listed symbol found) — executor should re-confirm with fresh grep before marking `[-]`, including checking `src/bootstrap.ts` and `src/app/app-entrypoint.component.ts` explicitly since those are the most likely call sites for style-related MFE utilities if any exist.
-- Files likely affected: none expected, pending final confirmation.
+- [-] not applicable
+- **Source pages**: https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-20/update-style-package.html (fetched full content this invocation) — 2 H2 sections: "Update import path" (style utilities moved to `@onecx/angular-utils/style` subpackage) and "Style subpackage public API contents" (functions: `addStyleToHead`, `createApplicationScopedCss`, `createCssRequestHeaders`, `createStyleUsedByMfeRc`, `fetchAppCss`, `getAllStylesUsedByKey`, `getAppStyleByScope`, `getStyleUsageCount`, `getStyleUsageCountForRc`, `isResponseValidCss`, `isStyleUsedByMfe`, `removeAllMfeUsagesFromStyles`, `removeAllRcUsagesFromStyles`, `removeMfeUsageFromStyle`, `removeRcUsageFromStyle`, `replaceRootAndHtmlWithScope`, `replaceRootWithScope`, `replaceStyleContent`, `slotNameToPropertyName`, `updateStylesForMfeChange`, `updateStylesForRcCreation`, `useStyleForMfe`, `useStyleForRc`; constants: `dataAppStylesAttribute`/`dataAppStylesKey`/`dataMfeStylesAttribute`/`dataMfeStylesKey`/`dataRcStylesAttribute`/`dataRcStylesKey`/`dataRcStylesStart`/`dataShellStylesAttribute`/`dataShellStylesKey`).
+- **Applicability**: not applicable.
+- **Repository evidence**: fresh full-repo grep this invocation for every listed function/constant name across `src/**` (including [src/bootstrap.ts](src/bootstrap.ts) and [src/app/app-entrypoint.component.ts](src/app/app-entrypoint.component.ts) explicitly) → 0 matches. This app's micro-frontend style handling relies on framework-level/library-internal usage (via `@onecx/angular-webcomponents`'s `createAppEntrypoint`) rather than direct app-level calls to these utility functions.
+- **Sub-steps executed**: not-applicable — no old-path import of any listed symbol found.
+- **Files changed**: none.
+- **Validation**: not applicable, no code changes made.
+- **Final outcome**: success (confirmed not applicable).
+- **Edge cases**: none.
 
 **[C2.5]. Migrate to `OnecxTranslateLoader`**
 
@@ -886,27 +894,39 @@ Reference data source: `.github/instructions/migration-19-20.instructions.md` (u
 
 **[C2.6]. Updated ObjectDetailItem interface for PageHeaderComponent**
 
-- [ ] not started
-- Source page (fetched full content this invocation): https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-20/use-new-object-detail-item-interface.html — no H2 sub-headings. States `PageHeaderComponent`'s `objectDetails` input uses an updated `ObjectDetailItem` interface: `labelTooltip` (string) → `labelTooltipKey` (TranslationKey); `valueTooltip` (string) → `valueTooltipKey` (TranslationKey); `actionItemTooltip` (string) → `actionItemTooltipKey` (TranslationKey); `actionItemAriaLabelKey` (string) → now of type `TranslationKey`.
-- Tentative applicability: **not applicable (pending final confirmation)** — fresh full-repo grep this invocation for `objectDetails|ObjectDetailItem|labelTooltip|valueTooltip|actionItemTooltip|actionItemAriaLabelKey|PageHeaderComponent` found 0 matches anywhere in `src/**` (only 1 self-referential match in this document's own 18→19-leg A.2 grep-pattern list, not an actual usage). This app does not appear to use `PageHeaderComponent`'s `objectDetails` input anywhere.
-- Sub-steps to execute: not-applicable (no `objectDetails`/`ObjectDetailItem` usage found) — executor should re-confirm with fresh grep before marking `[-]`.
-- Files likely affected: none expected.
+- [-] not applicable
+- **Source pages**: https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-20/use-new-object-detail-item-interface.html (fetched full content this invocation) — no H2 sub-headings. States `PageHeaderComponent`'s `objectDetails` input uses an updated `ObjectDetailItem` interface: `labelTooltip`→`labelTooltipKey`, `valueTooltip`→`valueTooltipKey`, `actionItemTooltip`→`actionItemTooltipKey`, `actionItemAriaLabelKey` now typed `TranslationKey`.
+- **Applicability**: not applicable.
+- **Repository evidence**: fresh full-repo grep this invocation for `objectDetails|ObjectDetailItem|labelTooltip|valueTooltip|actionItemTooltip|actionItemAriaLabelKey|PageHeaderComponent` across `src/**` → 0 matches. This app does not use `PageHeaderComponent`'s `objectDetails` input anywhere.
+- **Sub-steps executed**: not-applicable — no `objectDetails`/`ObjectDetailItem` usage found.
+- **Files changed**: none.
+- **Validation**: not applicable, no code changes made.
+- **Final outcome**: success (confirmed not applicable).
+- **Edge cases**: none.
 
 **[C2.7]. PortalDialogService Signature Changes**
 
-- [ ] not started
-- Source page (fetched full content this invocation): https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-20/portal-dialog-service-signature-changes.html — 2 H2 sections: "Summary of Changes" (`openDialog<T>` return type changed from `Observable<DialogState<T>>` to `Observable<DialogState<T> | null>`) and "Update Your Application" (callers must handle the `Observable<null>` case — dialog creation failure — and check console for `PortalDialogService` warnings/errors).
-- Tentative applicability: **partial / needs runtime+type-level re-check at execution time** — `PortalDialogService` IS registered as the `DialogService` provider in [src/app/shared/shared.module.ts](src/app/shared/shared.module.ts) (line 33 import from `@onecx/angular-accelerator`, line 109 `{ provide: DialogService, useClass: PortalDialogService }`), but fresh full-repo grep this invocation for `openDialog(` or direct `.open(` calls found **0 explicit call sites** anywhere in `src/**` outside this provider registration — no component in this repo appears to directly invoke `.openDialog()`. This suggests either (a) genuinely not applicable since no app code consumes the changed return type, or (b) `openDialog()` calls exist via a different alias/pattern not caught by this exact grep string (e.g. via a wrapped service method) — **must be re-verified at execution time with a broader search** (e.g. `grep -rn "DialogService" --include="*.ts"` combined with reading every component that injects `DialogService`/`PortalDialogService`) before confirming `[-]`.
-- Sub-steps to execute: re-grep with broader patterns at execution time; if any call site found, wrap result handling to check for `null` per the doc; if none found, confirm `[-]` not applicable.
-- Files likely affected: [src/app/shared/shared.module.ts](src/app/shared/shared.module.ts) (provider only, unlikely to need change) and any component found to call `.openDialog()` (none identified yet).
+- [-] not applicable
+- **Source pages**: https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-20/portal-dialog-service-signature-changes.html (fetched full content this invocation) — 2 H2 sections: "Summary of Changes" (`openDialog<T>` return type changed from `Observable<DialogState<T>>` to `Observable<DialogState<T> | null>`) and "Update Your Application" (callers must handle the `Observable<null>` case).
+- **Applicability**: not applicable.
+- **Repository evidence**: broader fresh grep this invocation for `DialogService|PortalDialogService|openDialog` across `src/**` → 3 matches, ALL confined to [src/app/shared/shared.module.ts](src/app/shared/shared.module.ts) (line 17 `import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog'`, line 32 `import { AngularAcceleratorModule, PortalDialogService } from '@onecx/angular-accelerator'`, line 106 `{ provide: DialogService, useClass: PortalDialogService }`). No component anywhere in the repo injects `DialogService`/`PortalDialogService` or calls `.openDialog(`/`.open(` — confirmed by the fact this is the only file matching the search. The provider registration itself does not consume the return type of `openDialog`, so the signature change (`Observable<DialogState<T>>` → `Observable<DialogState<T> | null>`) has no call site to update.
+- **Sub-steps executed**: not-applicable — no `.openDialog()` call site found anywhere to update for null-handling.
+- **Files changed**: none.
+- **Validation**: not applicable, no code changes made.
+- **Final outcome**: success (confirmed not applicable).
+- **Edge cases**: none — provider registration in [src/app/shared/shared.module.ts](src/app/shared/shared.module.ts) requires no change since it doesn't call `openDialog()` itself, only registers the class as the `DialogService` implementation.
 
 **[C2.8]. Leverage Angular Guards**
 
-- [ ] not started
-- Source page (fetched full content this invocation): https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-20/updated-guards-usage.html — no H2 sub-headings. States v7/Angular-20-based apps can fully use Angular's built-in `canActivate`/`canDeactivate`/`canActivateChild` guards; deprecated string-based guards (e.g. `canActivate: ['guardName']`) are filtered out/ignored automatically and must not be used.
-- Tentative applicability: **not applicable (confirmed via fresh full-repo grep this invocation)** — grep for `canActivate|canDeactivate|canActivateChild` across the entire repo found **0 matches anywhere**, including in all 3 route definitions found in [src/app/app.module.ts](src/app/app.module.ts) (line 23 `const routes`), [src/app/onecx-parameter-remote.module.ts](src/app/onecx-parameter-remote.module.ts) (line 36 `const routes`), and [src/app/parameter/parameter.module.ts](src/app/parameter/parameter.module.ts) (line 19 `const routes`) — direct read of `parameter.module.ts`'s route array confirmed no `canActivate`/guard properties on any route object (only `path`/`component`/`pathMatch`/`data`). This app uses no route guards at all (string-based or function-based).
-- Sub-steps to execute: not-applicable (no guards of any kind present to convert) — executor should re-confirm with fresh grep of all 3 route files before marking `[-]`.
-- Files likely affected: none expected.
+- [-] not applicable
+- **Source pages**: https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-20/updated-guards-usage.html (fetched full content this invocation) — no H2 sub-headings. States v7/Angular-20-based apps can fully use Angular's built-in `canActivate`/`canDeactivate`/`canActivateChild` guards; deprecated string-based guards are filtered out/ignored automatically.
+- **Applicability**: not applicable.
+- **Repository evidence**: fresh full-repo grep this invocation for `canActivate|canDeactivate|canActivateChild` across `src/**` → 0 matches, including in all 3 route definitions in [src/app/app.module.ts](src/app/app.module.ts), [src/app/onecx-parameter-remote.module.ts](src/app/onecx-parameter-remote.module.ts), and [src/app/parameter/parameter.module.ts](src/app/parameter/parameter.module.ts). This app uses no route guards at all (string-based or function-based).
+- **Sub-steps executed**: not-applicable — no guards of any kind present to convert.
+- **Files changed**: none.
+- **Validation**: not applicable, no code changes made.
+- **Final outcome**: success (confirmed not applicable).
+- **Edge cases**: none.
 
 ---
 
