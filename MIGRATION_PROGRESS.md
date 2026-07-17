@@ -579,11 +579,11 @@ Status: **In Progress — Phase 1 (Planning) complete, Angular 18→19 leg**
 
 ### Phase C: Error Recovery Loop (After All Phase C Tasks Complete)
 
-- [ ] Rerun: npm run build (should now pass)
-- [ ] Rerun: npm run lint (must pass — 0 errors, vs baseline 0 warnings)
-- [ ] Rerun: npm run test (should pass, coverage at or above 100% baseline)
-- [ ] For each error recorded during Phase C: check if NOW fixed → update entry
-- [ ] Remaining unfixed errors: document for manual fix, add to blockers
+- [x] Rerun: npm run build — **PASS** (exit 0, no errors; only pre-existing cosmetic warnings)
+- [x] Rerun: npm run lint — **PASS** (0 errors, 0 warnings — "All files pass linting")
+- [x] Rerun: npm run test — **PASS** (146/147, 1 skipped; coverage 100%/100%/100%/100%, matches baseline exactly)
+- [x] For each error recorded during Phase C: check if NOW fixed → update entry — no unresolved errors were carried forward; all build-break errors encountered during Phase B/C were fixed at the time they were found (see B.1 edge cases and C.2/C.5/C.7/C.8 cross-references)
+- [x] Remaining unfixed errors: document for manual fix, add to blockers — none; no blockers
 
 ---
 
