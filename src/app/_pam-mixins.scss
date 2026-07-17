@@ -120,10 +120,11 @@
 @mixin text-badges {
   :host ::ng-deep {
     .text-badge-right {
-      display: inline-block;
       position: absolute;
       right: 40px;
-      top: -10px;
+      top: -1.5rem;
+      width: auto;
+      white-space: nowrap;
     }
   }
 }
