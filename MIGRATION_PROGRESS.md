@@ -404,146 +404,176 @@ Status: **In Progress — Phase 1 (Planning) complete, Angular 18→19 leg**
 
 **[C.3]. Update ConfigurationService Usage**
 
-- [ ] not started
-- Source page: https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-19/update-configuration-service-usage.html
-- Applicability: must-have
-- Repository evidence: `ConfigurationService` imported and used synchronously in [src/app/onecx-parameter-remote.module.ts](src/app/onecx-parameter-remote.module.ts) (`apiConfigProvider` function, line 25; also `this.appConfigService.getProperty(...)` call at line 87) — these calls will need `await`/Promise handling once v6 makes these methods async.
-- Sub-steps executed: [TBD]
-- Files changed: [TBD]
-- Validation: build [TBD] | lint [TBD] | test [TBD]
-- Final outcome: [TBD]
+- [-] not applicable
+- Source page (fetched this invocation): https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-19/update-configuration-service-usage.html — 1 H2 ("Update the following methods") + "Example" subsection. Doc states 3 methods of `ConfigurationService` (imported from `@onecx/angular-integration-interface`) became async in v6: `getProperty(key)`, `getConfig()`, `setProperty(key, val)` — each now returns a `Promise` and callers must `await`/`.then()`/wrap in `from(...)` for observables. Doc's explicit Guidelines line states: "Update only methods of `ConfigurationService` imported from `@onecx/angular-integration-interface`."
+- Applicability: **not applicable** — the doc's scope is strictly the `ConfigurationService` class, not the similarly-named-but-distinct `AppConfigService` class. This repo does not use `ConfigurationService` anywhere.
+- Repository evidence:
+  1. `grep -rn "ConfigurationService" src --include="*.ts"` (entire repo, this invocation) → **0 matches**. The class this doc page describes is never imported or used.
+  2. `grep -rn "AppConfigService" src --include="*.ts"` → 4 matches, all in [src/app/onecx-parameter-remote.module.ts](src/app/onecx-parameter-remote.module.ts) (import line 18, `appConfigServiceInitializer` function signature line 29, `inject(AppConfigService)` line 68, constructor param line 81) plus the `this.appConfigService.getProperty('APP_ELEMENT_NAME')` call in `ngDoBootstrap()`. This is a **separate, distinct class** from `ConfigurationService` (confirmed by reading both `.d.ts` files below), unaffected by this migration doc.
+  3. Type-check evidence from actually-installed `@onecx/angular-integration-interface@6.27.0` package (not assumed from memory):
+     - `node_modules/@onecx/angular-integration-interface/lib/services/configuration.service.d.ts` → `ConfigurationService.getProperty(key: CONFIG_KEY): Promise<string | undefined>`, `setProperty(key, val): Promise<void>`, `getConfig(): Promise<Config | undefined>` — confirms these ARE async in the installed version, matching the doc, but this class is unused in the repo.
+     - `node_modules/@onecx/angular-integration-interface/lib/services/app-config-service.d.ts` → `AppConfigService.getProperty(key: string): string | undefined`, `setProperty(key, val): void`, `getConfig(): { [key: string]: string }` — all still **synchronous**, confirming `AppConfigService` was NOT changed by this v6 breaking change and the repo's existing synchronous call at `ngDoBootstrap()` (`this.appConfigService.getProperty('APP_ELEMENT_NAME')`) remains correct as-is.
+- Sub-steps executed:
+  1. `getProperty(key)` → `await getProperty(key)` — not-applicable (repo only calls `AppConfigService.getProperty`, which is synchronous and out of this doc's scope).
+  2. `getConfig()` → `await getConfig()` — not-applicable (no `ConfigurationService.getConfig()` usage found).
+  3. `setProperty(key, val)` → `await setProperty(key, val)` — not-applicable (no `ConfigurationService.setProperty()` usage found).
+  4. Mock updates (Jest/Jasmine `mockResolvedValue`/`Promise.resolve`) — not-applicable, no test mocks of `ConfigurationService` exist (confirmed via `grep -rn "ConfigurationService" src --include="*.spec.ts"` → 0 matches).
+- Files changed: none — no code modification made or required.
+- Validation: skipped (no file changes — task not applicable; per Step 6 runtime check, build/lint/test were not re-run since no source was modified). Prior baseline from C.1/B.1 remains valid: build PASS, lint PASS (0 warnings), test PASS (146/147, 100% coverage across all 4 metrics).
+- Final outcome: **success** (not applicable — verified with fresh grep across entire `src/` plus direct inspection of the installed `@onecx/angular-integration-interface@6.27.0` `.d.ts` type definitions, not assumption).
+- Edge cases: Naming similarity between `ConfigurationService` and `AppConfigService` is a likely source of confusion in earlier planning (the original evidence note in this task recorded before execution incorrectly attributed the synchronous `appConfigService.getProperty()` call to this doc's `ConfigurationService`.) — corrected here with direct type-level verification. If a future OneCX version deprecates/changes `AppConfigService` itself, that would be a separate, not-yet-documented breaking change outside this task's scope.
 
 **[C.4]. Update Component Imports Post Migration**
 
-- [ ] not started
+- [x] completed (resolved during Phase B, see B.1)
 - Source page: https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-19/update-component-import-post-migration.html
-- Applicability: TBD by executor — must re-grep after Phase B upgrade for: `DialogMessageContentComponent`, `DialogInlineComponent`, `GlobalErrorComponent`, `LoadingIndicatorComponent`, `BasicDirective`, `RelativeDatePipe`, `ExportDataService`, `PortalDialogService`, `BreadcrumbService`, `DataTableColumn`, `ColumnType`, `Action`, `UserService`, `PortalMessageService`, etc.
-- Repository evidence: `PortalDialogService` already found imported from `@onecx/portal-integration-angular` in [src/app/shared/shared.module.ts](src/app/shared/shared.module.ts) (line 29) — this is explicitly listed in this doc's "Components Moved to Different Libraries" section (target: `@onecx/angular-accelerator`). `Action` also found in multiple component files, also listed in this doc's target list.
-- Sub-steps executed: [TBD]
-- Files changed: [TBD]
-- Validation: build [TBD] | lint [TBD] | test [TBD]
-- Final outcome: [TBD]
+- Applicability: must-have — confirmed via fresh grep after Phase B
+- Repository evidence: `grep -rn "from '@onecx/portal-integration-angular'" src/ --include="*.ts"` → 0 matches (package removed entirely in Phase B). `PortalDialogService` now imported from `@onecx/angular-accelerator` ([src/app/shared/shared.module.ts](src/app/shared/shared.module.ts):33). `PortalMessageService`/`UserService` imported from `@onecx/angular-integration-interface` (multiple component files). `Action`/`ColumnType`/`DataTableColumn`/`Filter`/`FilterType` imported from `@onecx/angular-accelerator` ([parameter-search.component.ts](src/app/parameter/parameter-search/parameter-search.component.ts):6, [usage-search.component.ts](src/app/parameter/usage-search/usage-search.component.ts):6). No `DialogMessageContentComponent`/`DialogInlineComponent`/`GlobalErrorComponent`/`LoadingIndicatorComponent`/`BasicDirective`/`RelativeDatePipe`/`ExportDataService`/`BreadcrumbService` usages found anywhere in the codebase — not-applicable for those items.
+- Sub-steps executed: all listed component/service imports verified at their new target packages — done; items with no repo usage — not-applicable
+- Files changed: none in this task (already correct as a byproduct of Phase B's `PortalCoreModule`/`portal-integration-angular` removal)
+- Validation: build **PASS** | lint **PASS** | test **PASS** (146/147, 100% coverage — see B.1/C.1 validation runs, re-confirmed with fresh grep only, no code change needed)
+- Final outcome: **success** — folded into Phase B (B.1); all imports already at correct v6 target locations, no separate action required.
 
 **[C.5]. Update Portal API Configuration object parameters**
 
-- [ ] not started
+- [x] completed (resolved during Phase B, see B.1)
 - Source page: https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-19/update-portal-api-configuration.html
 - Applicability: must-have
-- Repository evidence: `new PortalApiConfiguration(...)` constructed with 4 args (`Configuration, environment.apiPrefix, configService, appStateService`) in [src/app/onecx-parameter-remote.module.ts](src/app/onecx-parameter-remote.module.ts) (`apiConfigProvider` function, line ~26) — v6 constructor only takes 2 args (class + prefix), the 2 service params must be removed from the call.
-- Sub-steps executed: [TBD]
-- Files changed: [TBD]
-- Validation: build [TBD] | lint [TBD] | test [TBD]
-- Final outcome: [TBD]
+- Repository evidence: [src/app/onecx-parameter-remote.module.ts](src/app/onecx-parameter-remote.module.ts):25-27 — `apiConfigProvider()` now calls `new PortalApiConfiguration(Configuration, environment.apiPrefix)` with exactly 2 args, matching the v6 constructor signature
+- Sub-steps executed: remove `configService`/`appStateService` args from `PortalApiConfiguration` constructor call — done
+- Files changed: none in this task (already fixed as part of B.1's build-break remediation, which hit this exact `TS2554` arg-count error)
+- Validation: build **PASS** | lint **PASS** | test **PASS** (see B.1 validation evidence)
+- Final outcome: **success** — folded into and validated as part of Phase B (B.1).
 
 **[C.6]. Remove @onecx/portal-layout-styles**
 
-- [ ] not started
+- [x] completed (resolved during Phase B, see B.1)
 - Source page: https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-19/remove-portal-layout-styles.html
 - Applicability: must-have
-- Repository evidence: `@onecx/portal-layout-styles` in [package.json](package.json) (line 66) and imported twice in [src/styles.scss](src/styles.scss) (lines 9–10: `shell/shell.scss`, `primeng/theme-light.scss`); also referenced in [webpack.config.js](webpack.config.js) shared config (line 32). This is an Angular CLI app (not Nx) — the "For Angular CLI Application Styles" `postbuild` script variant applies, not the NX/project.json variant.
-- Sub-steps executed: [TBD]
-- Files changed: [TBD]
-- Validation: build [TBD] | lint [TBD] | test [TBD]
-- Final outcome: [TBD]
+- Repository evidence: `grep -n "portal-layout-styles\|shell.scss\|theme-light.scss" src/styles.scss webpack.config.js package.json` → 0 matches. [package.json](package.json) no longer lists `@onecx/portal-layout-styles`. [src/styles.scss](src/styles.scss) no longer imports `shell/shell.scss`/`primeng/theme-light.scss` — now imports `node_modules/@onecx/angular-accelerator/assets/styles.scss` instead. [webpack.config.js](webpack.config.js) shared config no longer references the package.
+- Sub-steps executed: remove package dependency, remove scss imports, remove webpack shared entry — all done
+- Files changed: none in this task (already removed as part of B.1's `PortalCoreModule`/`portal-integration-angular` removal)
+- Validation: build **PASS** | lint **PASS** | test **PASS** (see B.1 validation evidence)
+- Final outcome: **success** — folded into and validated as part of Phase B (B.1).
 
 **[C.7]. Remove addInitializeModuleGuard()**
 
-- [ ] not started
+- [x] completed (resolved during Phase B, see B.1)
 - Source page: https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-19/remove-add-initialize-module-guard.html
 - Applicability: must-have
-- Repository evidence: `addInitializeModuleGuard` imported and used in [src/app/onecx-parameter-remote.module.ts](src/app/onecx-parameter-remote.module.ts) (lines 13, 49: `RouterModule.forRoot(addInitializeModuleGuard(routes))`) and in [src/app/parameter/parameter.module.ts](src/app/parameter/parameter.module.ts) (lines 5, 53: `RouterModule.forChild(addInitializeModuleGuard(routes))`).
-- Sub-steps executed: [TBD]
-- Files changed: [TBD]
-- Validation: build [TBD] | lint [TBD] | test [TBD]
-- Final outcome: [TBD]
+- Repository evidence: `grep -rn "addInitializeModuleGuard\|InitializeModuleGuard" src/ --include="*.ts"` → 0 matches. [src/app/onecx-parameter-remote.module.ts](src/app/onecx-parameter-remote.module.ts) and [src/app/parameter/parameter.module.ts](src/app/parameter/parameter.module.ts) now use plain `RouterModule.forRoot(routes)`/`RouterModule.forChild(routes)` without the guard wrapper.
+- Sub-steps executed: remove `addInitializeModuleGuard` import and wrapper calls, remove `InitializeModuleGuard` from providers — done
+- Files changed: none in this task (already removed as part of B.1's build-break remediation)
+- Validation: build **PASS** | lint **PASS** | test **PASS** (see B.1 validation evidence)
+- Final outcome: **success** — folded into and validated as part of Phase B (B.1).
 
 **[C.8]. Remove PortalCoreModule**
 
-- [ ] not started
+- [x] completed (resolved during Phase B, see B.1)
 - Source page: https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-19/remove-portal-core-module.html
 - Applicability: must-have
-- Repository evidence: `PortalCoreModule` imported in [src/app/onecx-parameter-remote.module.ts](src/app/onecx-parameter-remote.module.ts) (line 19), [src/app/parameter/parameter.module.ts](src/app/parameter/parameter.module.ts) (line 6), [src/app/shared/shared.module.ts](src/app/shared/shared.module.ts) (line 29); `PortalCoreModule.forRoot('onecx-parameter-ui')` also used in [src/app/app.module.ts](src/app/app.module.ts) (line 33). This is a **prerequisite gate task**: doc explicitly states verify all `@onecx/portal-integration-angular` imports are migrated (i.e. A.2, C.4 done) before running `npm uninstall @onecx/portal-integration-angular`.
-- Sub-steps executed: [TBD]
-- Files changed: [TBD]
-- Validation: build [TBD] | lint [TBD] | test [TBD]
-- Final outcome: [TBD]
+- Repository evidence: `grep -rn "PortalCoreModule" src/` → 0 matches. `grep -E "portal-integration-angular" package.json` → not found (package fully uninstalled). [src/app/app.module.ts](src/app/app.module.ts) now imports `AngularAcceleratorModule` + `StandaloneShellModule` instead of `PortalCoreModule.forRoot(...)`; [src/app/parameter/parameter.module.ts](src/app/parameter/parameter.module.ts) uses `AngularAcceleratorModule` instead of `PortalCoreModule.forMicroFrontend()`.
+- Sub-steps executed: verify all portal-integration-angular imports migrated (prerequisite gate) — done, confirmed via C.4; remove `PortalCoreModule` usages — done; `npm uninstall @onecx/portal-integration-angular` — done (package absent from package.json)
+- Files changed: none in this task (already removed as part of B.1's build-break remediation)
+- Validation: build **PASS** | lint **PASS** | test **PASS** (see B.1 validation evidence)
+- Final outcome: **success** — folded into and validated as part of Phase B (B.1).
 
 **[C.9]. Adjust Standalone Mode**
 
-- [ ] not started
+- [x] completed (resolved during Phase B, see B.1)
 - Source page: https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-19/adjust-standalone-mode.html
-- Applicability: **must-have** — per custom rule in `migration-18-19.instructions.md`, applies whenever `<ocx-portal-viewport>` is found, regardless of whether `@onecx/standalone-shell` is in package.json.
-- Repository evidence: `<ocx-portal-viewport>` found in [src/app/app.component.html](src/app/app.component.html) (line 1). `@onecx/standalone-shell` is NOT currently in package.json (new install required).
-- Sub-steps executed: [TBD]
-- Files changed: [TBD]
-- Validation: build [TBD] | lint [TBD] | test [TBD]
-- Final outcome: [TBD]
+- Applicability: must-have
+- Repository evidence: `grep -rn "ocx-portal-viewport" src/` → 0 matches. [src/app/app.component.html](src/app/app.component.html) now contains `<ocx-standalone-shell-viewport></ocx-standalone-shell-viewport>`. `@onecx/angular-standalone-shell@^6.27.0` present in [package.json](package.json), imported as `StandaloneShellModule` in [src/app/app.module.ts](src/app/app.module.ts).
+- Sub-steps executed: install `@onecx/angular-standalone-shell`, replace `<ocx-portal-viewport>` tag, import `StandaloneShellModule` — all done
+- Files changed: none in this task (already applied as part of B.1's build-break remediation)
+- Validation: build **PASS** | lint **PASS** | test **PASS** (see B.1 validation evidence)
+- Final outcome: **success** — folded into and validated as part of Phase B (B.1).
 
 **[C.10]. Replace BASE_URL injection token**
 
-- [ ] not started
+- [-] not applicable
 - Source page: https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-19/update-base-url.html
-- Applicability: TBD by executor
-- Repository evidence: 0 matches for `BASE_URL`/`REMOTE_COMPONENT_CONFIG` found in `src/**/*.ts` at Phase 1 time — this app currently has only ONE remote entrypoint ([src/app/onecx-parameter-remote.module.ts](src/app/onecx-parameter-remote.module.ts)/`bootstrap.ts` pattern); executor must re-grep specifically for `bootstrapRemoteComponent(` calls and any `BASE_URL` provider before marking not-applicable.
-- Sub-steps executed: [TBD]
-- Files changed: [TBD]
-- Validation: build [TBD] | lint [TBD] | test [TBD]
-- Final outcome: [TBD]
+- Applicability: not applicable — confirmed via fresh grep after Phase B
+- Repository evidence: `grep -rn "BASE_URL\|REMOTE_COMPONENT_CONFIG\|bootstrapRemoteComponent" src/ --include="*.ts"` → 0 matches (re-checked post Phase-B/C.1 upgrade, entire codebase, not just one folder)
+- Sub-steps executed: not-applicable — pattern absent from entire codebase
+- Files changed: none
+- Validation: build **PASS** | lint **PASS** | test **PASS** (no changes made, baseline unaffected)
+- Final outcome: **success** — not applicable, no `BASE_URL`/`REMOTE_COMPONENT_CONFIG`/`bootstrapRemoteComponent` usage exists in this app.
 
 **[C.11]. Update Theme Service usage**
 
-- [ ] not started
+- [-] not applicable
 - Source page: https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-19/update-theme-service.html
-- Applicability: TBD by executor
-- Repository evidence: 0 direct matches for `ThemeService`/`baseUrlV1`/`getThemeRef`/`loadAndApplyTheme`/`.apply(` in `src/` at Phase 1 time (only mentioned in `.github/instructions/migration-18-19.instructions.md`). Executor must re-confirm with fresh grep before marking `[-]`.
-- Sub-steps executed: [TBD]
-- Files changed: [TBD]
-- Validation: build [TBD] | lint [TBD] | test [TBD]
-- Final outcome: [TBD]
+- Applicability: not applicable — confirmed via fresh grep after Phase B
+- Repository evidence: `grep -rn "ThemeService\|baseUrlV1\|getThemeRef\|loadAndApplyTheme" src/ --include="*.ts"` → 0 matches (re-checked post Phase-B/C.1 upgrade, entire codebase)
+- Sub-steps executed: not-applicable — pattern absent from entire codebase
+- Files changed: none
+- Validation: build **PASS** | lint **PASS** | test **PASS** (no changes made, baseline unaffected)
+- Final outcome: **success** — not applicable, no `ThemeService`/theme-preview usage exists in this app.
 
 **[C.12]. Add Webpack Plugin for PrimeNG**
 
-- [ ] not started
-- Source page: https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-19/add-required-plugin-to-primeng.html (direct URL fetch failed twice with "Failed to extract meaningful content" — content instead retrieved via OneCX MCP tool `about_onecx`, which is an approved fallback source per rules)
-- Applicability: **must-have** — repo uses `primeng` (confirmed in package.json), doc states "these changes are required for apps using PrimeNG only".
-- Repository evidence: `primeng@^17.18.11` in [package.json](package.json); will become `^19.0.0` after C.1. Plugin adds a `document.createElement` patch + `Theme.setLoadedStyleName` no-op patch scoped to `primeng` module resources, via `modify-source-webpack-plugin@^4`.
-- Sub-steps executed: [TBD]
-- Files changed: [TBD]
-- Validation: build [TBD] | lint [TBD] | test [TBD]
-- Final outcome: [TBD]
+- [x] completed
+- Source page (fetched full content this invocation, direct URL fetch succeeded — no MCP fallback needed this time): https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-19/add-required-plugin-to-primeng.html — 1 H2 section "Install and Configure the Webpack Plugin": "In OneCX version 6 uses PrimeNG 19 and requires applications to add a Webpack plugin. This change is required after upgrading to Angular 19." (NOTE box: "This setup will be replaced by a OneCX-provided Webpack plugin in a future version.") Steps: (1) install `modify-source-webpack-plugin@^4` compatible with Webpack 5; (2) import `ModifySourcePlugin`/`ReplaceOperation` in `webpack.config.js`; (3) create a `modifyPrimeNgPlugin` with a rule `test`ing `module.resource.includes('primeng')` and two `ReplaceOperation`s (scope `all`) — one rewriting `document.createElement(...)` calls to `document.createElementFromPrimeNg({...})`, one no-op-ing `Theme.setLoadedStyleName`; (4) add the plugin instance to the Webpack `plugins` array.
+- Applicability: **must-have** — doc language is unconditional ("requires applications", not "if using SSR/specific component"), confirmed applicable to any app using PrimeNG 19 + OneCX v6 module federation, which this repo is.
+- Repository evidence: `primeng: "^19.1.4"` confirmed in [package.json](package.json) (line 73). `grep -rn "modify-source-webpack-plugin" package.json webpack.config.js` → 0 matches prior to this task (plugin absent). `npm view modify-source-webpack-plugin@4 peerDependencies` → `{ webpack: '^4.37.0 || ^5.0.0' }`, compatible with this repo's pinned `webpack: 5.94.0`.
+- Sub-steps executed:
+  1. Install `modify-source-webpack-plugin@^4` as devDependency — done (`npm install modify-source-webpack-plugin@^4 --save-dev`, resolved to 4.1.0, added 2 packages, no peer conflicts).
+  2. Import `ModifySourcePlugin`/`ReplaceOperation` in [webpack.config.js](webpack.config.js) — done.
+  3. Create `modifyPrimeNgPlugin` with the exact `test`/`operations` rule from the doc (both `ReplaceOperation`s, verbatim match patterns/replacements) — done.
+  4. Add `modifyPrimeNgPlugin` to the `plugins` array (`plugins: [...plugins, modifyPrimeNgPlugin]`) — done.
+- Files changed: [webpack.config.js](webpack.config.js) (added plugin import, `modifyPrimeNgPlugin` instance, appended to `module.exports.plugins`), [package.json](package.json) (added `modify-source-webpack-plugin: ^4.1.0` devDependency), `package-lock.json` (regenerated lock entries).
+- Validation: build **PASS** (via VS Code task `npm:build` — only pre-existing baseline warnings: Sass `@import` deprecation warnings in 5 component `.scss` files, `app.component.ts`/`app.module.ts` unused-in-tsconfig cosmetic warnings; no new errors/warnings) | lint **PASS** (via VS Code task `npm:lint` — "All files pass linting", 0 warnings, matches baseline) | test **PASS** (via VS Code task `npm:test` — 146 SUCCESS / 147 total, 1 skipped, matches baseline exactly; coverage 100% statements (578/578), 100% branches (211/211), 100% functions (162/162), 100% lines (519/519))
+- Final outcome: **success**
+- Edge cases: unlike the earlier planning-phase attempt, the direct URL fetch succeeded on this invocation (no MCP fallback required) — doc content independently re-verified matches what was previously retrieved via `about_onecx` MCP, confirming no drift. This is a required (not optional/defensive) workaround per OneCX v6 + PrimeNG 19 + module federation — doc explicitly states it will be superseded by an official OneCX-provided plugin in a future release, implying it's a stopgap, not a one-off fix for a specific component/SSR scenario.
 
 **[C.13]. Add Webpack Plugin for Angular Material**
 
-- [ ] not started
-- Source page: https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-19/add-angular-material-plugin.html
-- Applicability: **likely not applicable, needs confirmation at execution time** — `@angular/cdk` IS present in [package.json](package.json) (line 41 area) but grep for direct `from '@angular/cdk'` imports in `src/` returned 0 matches (cdk appears to be only a transitive dependency, likely pulled in by `primeng`/`@angular/material`-adjacent tooling, not used directly). `@angular/material` itself is NOT a dependency at all. Doc's webpack `test` function matches on `module.resource.includes('@angular/cdk')` at the bundling level, which could still trigger even without a direct source import — executor MUST verify by checking the actual webpack module graph / build output, not just source-level greps, before marking `[-]`.
-- Repository evidence: `@angular/cdk: ^18.2.12` in [package.json](package.json); no `@angular/material` dependency; no direct `@angular/cdk` imports found in `src/**/*.ts`.
-- Sub-steps executed: [TBD]
-- Files changed: [TBD]
-- Validation: build [TBD] | lint [TBD] | test [TBD]
-- Final outcome: [TBD]
+- [x] completed
+- Source page (fetched full content this invocation): https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-19/add-angular-material-plugin.html — 1 H2 section "Install and Configure Webpack Plugin": "In OneCX v6, applications using Angular Material or Angular CDK must add a Webpack plugin. This change is required after upgrading to Angular 19." Steps: (1) install `modify-source-webpack-plugin` (no `--save-dev` version pin specified on this page, unlike C.12's `^4`); (2) import `ModifySourcePlugin`/`ReplaceOperation`; (3) create `modifyMaterialPlugin` with rule `test`ing `module.resource.includes('@angular/material')` OR `module.resource.includes('@angular/cdk')`, with one `ReplaceOperation` (scope `all`) rewriting `document.createElement(` calls to `document.createElementFromMaterial({...},`; (4) add to Webpack `plugins` array.
+- Applicability: **must-have — confirmed via actual webpack module graph, NOT just source-level grep** (per task instructions, source-level grep alone was insufficient and could have produced a false negative)
+- Repository evidence (multi-step verification):
+  1. Source-level grep: `grep -rn "@angular/cdk" package.json` → present as a direct dependency (`^19.2.19`, pulled in during Phase B); `@angular/material` — absent from `package.json` entirely. Direct `from '@angular/cdk'`/`from '@angular/material'` TS imports in `src/**/*.ts` → 0 matches (confirms planner's initial note was correct that there's no DIRECT source-level usage).
+  2. Deeper check — does `primeng` pull in `@angular/cdk` transitively? `node_modules/primeng/package.json` lists `@angular/cdk: ^19.0.0` as a **peerDependency** (app must supply it); `grep -rl "@angular/cdk" node_modules/primeng/fesm2022/*.mjs` → 3 primeng sub-modules internally import `@angular/cdk`: `primeng-listbox.mjs`, `primeng-orderlist.mjs`, `primeng-picklist.mjs`. Specifically `primeng-listbox.mjs` imports `DragDropModule`/`CDK_DRAG_CONFIG` from `@angular/cdk/drag-drop`.
+  3. Repo usage check: `grep -rn "ListboxModule" src/` → imported and added to both `imports` and `exports` arrays of [src/app/shared/shared.module.ts](src/app/shared/shared.module.ts) (lines 24, 60, 92) — statically referenced at the NgModule level (even though no `<p-listbox>` tag was found in any `.html` template, NgModule-based Angular does NOT tree-shake an imported/exported module class out of the JS bundle the way standalone-component apps can — the import edge in the module graph is real and persists into the webpack bundle).
+  4. **Actual webpack module-graph verification (the decisive check, per task's explicit instruction not to rely on source grep alone)**: ran `ng build --stats-json`; despite the process hitting a Node OOM crash while serializing the (very large, includes hundreds of locale sub-bundles) stats file, a 1.06 GB partial `dist/onecx-parameter-ui/stats.json` was written before the crash. Direct text-search (not JSON parse, since the file was truncated mid-write) confirmed real, non-hypothetical module entries: `"name":"./node_modules/@angular/cdk/fesm2022/a11y-module-BYox5gpI.mjs"` and `"name":"./node_modules/@angular/cdk/fesm2022/a11y.mjs"` actually present in the compiled module graph (131,009 raw occurrences of the string `@angular/cdk` across the stats file, reflecting many chunk/locale duplications of the same underlying modules). This proves the doc's `test: module.resource.includes('@angular/cdk')` predicate WOULD match real bundled modules in this app's build — confirming applicability beyond doubt. Truncated stats.json file removed after inspection (not committed, not a build artifact worth keeping).
+- Conclusion: even though no PrimeNG/Angular Material component using `@angular/cdk` is rendered in any template today, `@angular/cdk` code is genuinely bundled into this app's output (via `ListboxModule`'s internal `@angular/cdk/drag-drop` dependency, itself pulled in because `ListboxModule` is statically imported/exported in `shared.module.ts`). The planner's initial "likely not applicable" hypothesis is **overturned** by this deeper verification — task **applies**.
+- Sub-steps executed:
+  1. Install `modify-source-webpack-plugin` — not-applicable as a fresh install (already present at `^4.1.0` in [package.json](package.json) `devDependencies`, installed during C.12 in this same session; same package satisfies both doc pages' requirements, no version conflict since C.12 pinned `^4` and this page's install command has no version constraint).
+  2. Import `ModifySourcePlugin`/`ReplaceOperation` — not-applicable as a new import (already imported once at the top of [webpack.config.js](webpack.config.js) from C.12; reused for this task, no duplicate import added).
+  3. Create `modifyMaterialPlugin` with the exact `test`/`operations` rule from the doc (verbatim match pattern/replacement, OR-condition on `@angular/material`/`@angular/cdk`) — done.
+  4. Add `modifyMaterialPlugin` to the `plugins` array alongside `modifyPrimeNgPlugin` (`plugins: [...plugins, modifyPrimeNgPlugin, modifyMaterialPlugin]`) — done.
+- Files changed: [webpack.config.js](webpack.config.js) (added `modifyMaterialPlugin` instance, appended to `module.exports.plugins`; no `package.json` change needed since `modify-source-webpack-plugin` was already installed by C.12).
+- Post-change sweep: re-verified [webpack.config.js](webpack.config.js) contains both `modifyPrimeNgPlugin` and `modifyMaterialPlugin` in the final `plugins` array, no duplicate `require()` of `modify-source-webpack-plugin`.
+- Validation: build **PASS** (via VS Code task `npm:build` — only pre-existing baseline warnings, no new errors) | lint: **initially FAILED** (`prettier/prettier` error — "Delete `⏎·········`" trailing-whitespace/formatting issue at webpack.config.js:60 introduced by the manual edit) → fixed via `npx eslint --fix webpack.config.js` → re-ran full build → lint → test sequence: build **PASS**, lint **PASS** ("All files pass linting", 0 warnings, matches baseline), test **PASS** (146 SUCCESS / 147 total, 1 skipped, matches baseline; coverage 100% statements (578/578), 100% branches (211/211), 100% functions (162/162), 100% lines (519/519))
+- Final outcome: **success**
+- Edge cases: this task directly contradicted the planner's tentative "likely not applicable" note — the task instructions explicitly warned that source-level grep alone was insufficient and required checking the actual webpack module graph/build output, which is exactly what surfaced the true applicability here. `ng build --stats-json` triggered a Node OOM crash while writing the (huge, locale-bundle-heavy) stats file — this is a known characteristic of this app's stats-json generation with the default Node heap size, not a regression caused by this task's changes; the crash occurred after code compilation succeeded and after enough of the stats file was written to provide decisive module-graph evidence, so it did not block verification. The truncated stats.json was deleted immediately after inspection (never intended to be a committed artifact). One lint error (trailing whitespace from the manual multi_replace edit) was caught and fixed in this same invocation per the Error Handling protocol — not deferred.
 
 **[C.14]. Provide ThemeConfig**
 
-- [ ] not started
+- [x] completed (resolved during Phase B, see B.1)
 - Source page: https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-19/provide-theme-config.html
-- Applicability: **must-have** — repo uses primeng (doc: "required for apps using PrimeNG only"). Per custom rule in `migration-18-19.instructions.md`: apply to all `@NgModule` files AND all `bootstrapRemoteComponent` files.
-- Repository evidence: primeng confirmed as dependency; [src/app/app.module.ts](src/app/app.module.ts) and [src/app/onecx-parameter-remote.module.ts](src/app/onecx-parameter-remote.module.ts) are the two `@NgModule`-based entrypoints that will need `provideThemeConfig()` from `@onecx/angular-utils` added to their `providers` arrays.
-- Sub-steps executed: [TBD]
-- Files changed: [TBD]
-- Validation: build [TBD] | lint [TBD] | test [TBD]
-- Final outcome: [TBD]
+- Applicability: must-have
+- Repository evidence: `grep -n "provideThemeConfig" src/app/app.module.ts src/app/onecx-parameter-remote.module.ts` → present in both files' `providers` arrays, imported from `@onecx/angular-utils`.
+- Sub-steps executed: add `provideThemeConfig()` to both `@NgModule`-based entrypoints — done
+- Files changed: none in this task (already added as part of B.1's build-break remediation)
+- Validation: build **PASS** | lint **PASS** | test **PASS** (see B.1 validation evidence)
+- Final outcome: **success** — folded into and validated as part of Phase B (B.1).
 
 **[C.15]. Update Webpack Config to Use Dynamic Shared Entries**
 
-- [ ] not started
-- Source page: https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-19/update-webpack-config.html
-- Applicability: must-have
-- Repository evidence: current [webpack.config.js](webpack.config.js) uses a fully hardcoded `share({...})` object listing ~19 individual packages (lines 10–32) — doc requires replacing this with a loop using `getOneCXSharedRecommendations` from `@onecx/accelerator` over `Object.keys(dependencies)` from `package.json`.
-- Sub-steps executed: [TBD]
-- Files changed: [TBD]
-- Validation: build [TBD] | lint [TBD] | test [TBD]
-- Final outcome: [TBD]
+- [x] completed
+- Source page (fetched full content this invocation): https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-19/update-webpack-config.html — 1 H2 section "Update webpack.config.js" + "Example" subsection: "In OneCX v6, the `shared` entries in `webpack.config.js` should no longer be hardcoded. Shared configuration can instead be generated dynamically using `getOneCXSharedRecommendations` from `@onecx/accelerator`, based on the dependencies declared in `package.json`." Bullets: (1) import `getOneCXSharedRecommendations` from `@onecx/accelerator` and `dependencies` from `./package.json`; (2) replace hardcoded `share({...})` entries with a loop over `Object.keys(dependencies)`, calling `getOneCXSharedRecommendations(libName, { requiredVersion: 'auto', includeSecondaries: true })` per dependency, adding to `sharedEntries` only if the result is not `false`; (3) pass `sharedEntries` to `share(sharedEntries)` instead of the hardcoded object.
+- Applicability: **must-have**
+- Repository evidence: prior [webpack.config.js](webpack.config.js) hardcoded 19 individual `share({...})` entries. Verified `@onecx/accelerator@6.27.0` (installed) exports `getOneCXSharedRecommendations` at its package root: `node_modules/@onecx/accelerator/src/lib/utils/get-onecx-shared-recommendations.d.ts` declares `export declare function getOneCXSharedRecommendations(libraryName: string, sharedConfig: SharedLibraryConfig): false | SharedLibraryConfig`, and `node -e "require('@onecx/accelerator').getOneCXSharedRecommendations"` → confirmed `function` (not undefined), satisfying the API-resolution protocol before adoption.
+- Sub-steps executed:
+  1. Import `getOneCXSharedRecommendations` from `@onecx/accelerator` and `dependencies` from `./package.json` — done.
+  2. Replace hardcoded `share({...})` block with a loop over `Object.keys(dependencies)` calling `getOneCXSharedRecommendations(libName, { requiredVersion: 'auto', includeSecondaries: true })`, populating `sharedEntries` — done. Dry-run via `node -e` before editing confirmed the loop resolves 27 of this repo's 40 `dependencies` entries into `sharedEntries` (matched against the function's internal allow-list of `/^@angular.*$/`, `/^@onecx.*$/`, `/^rxjs.*$/`, `/^primeng.*$/`, `/^@ngx-translate.*$/`, `/^@ngrx.*$/` patterns) — output included all 17 previously-hardcoded `@angular/@onecx/primeng/rxjs` entries plus additional ones the old hardcoded list omitted (`@angular/cdk`, `@angular/animations`, `@angular/compiler`, `@angular/elements`, `@angular/platform-browser-dynamic`, `@ngrx/effects`, `@ngrx/router-store`, `@onecx/angular-standalone-shell`, `@onecx/angular-testing`, `@angular-architects/module-federation`).
+  3. Pass `sharedEntries` to `share(sharedEntries)` in `withModuleFederationPlugin({...})` — done.
+- Files changed: [webpack.config.js](webpack.config.js) — replaced the entire hardcoded `shared: share({...19 entries...})` block with the `getOneCXSharedRecommendations` loop + `shared: share(sharedEntries)`; no `package.json`/`package-lock.json` changes needed (`@onecx/accelerator@6.27.0` already installed from Phase B).
+- Validation: build **PASS** (via VS Code task `npm:build` — only pre-existing baseline warnings: Sass `@import` deprecation warnings in 5 `.scss` files, `app.component.ts`/`app.module.ts` unused-in-tsconfig; no new errors, no module-federation "shared module not found"/version-mismatch warnings introduced — grepped full build log for `shared module|singleton|not shared|version mismatch|WARNING in`, 0 new matches) | lint **PASS** (via VS Code task `npm:lint` — "All files pass linting", 0 warnings, matches baseline) | test **PASS** (via VS Code task `npm:test` — 146 SUCCESS / 147 total, 1 skipped, matches baseline exactly; coverage 100% statements (578/578), 100% branches (211/211), 100% functions (162/162), 100% lines (519/519))
+- Final outcome: **success**
+- Edge cases: **two non-Angular/onecx/primeng/rxjs/ngrx/ngx-translate dependencies dropped out of the shared config** as a direct consequence of following the doc exactly — `@ngneat/error-tailor` (previously explicitly shared with `{ requiredVersion: 'auto', includeSecondaries: true }`) and the standalone `'@angular/common/http'` sub-entry (previously listed separately; now folded under `@angular/common`'s `includeSecondaries: true`, which the recommendation function also sets) are no longer individually present, because `getOneCXSharedRecommendations`'s internal allow-list regex (`/^@angular.*$/|/^@onecx.*$/|/^rxjs.*$/|/^primeng.*$/|/^@ngx-translate.*$/|/^@ngrx.*$/`) does not match `@ngneat/error-tailor` at all — it returns `false` for it, so it is excluded from `sharedEntries` entirely (each remote/host now bundles its own copy instead of sharing a singleton instance). This is the doc's exact documented behavior (the "After" example shows no accommodation for non-listed packages), not an oversight — flagging as a genuine behavior change for developer awareness, since module-federation runtime correctness (avoiding duplicate `ErrorTailorModule` instances across remotes) cannot be verified by this repo's isolated build/lint/test alone and would only surface in a full shell+remotes integration run. Similarly, the previous fine-grained `@angular/common: { includeSecondaries: { skip: ['@angular/common/http/testing'] } }` customization is now overridden by the recommendation function forcing `sharedConfig.singleton = false; sharedConfig.strictVersion = false; sharedConfig.eager = false` on the generic `{ requiredVersion: 'auto', includeSecondaries: true }` input — the `skip` sub-option is lost since it's not part of the doc's documented call signature. No build/lint/test regression resulted from either change in this repo's own validation; both are recorded here as forward-looking integration risks per the doc-driven mandate (doc is silent on preserving custom overrides, so none were preserved, per the "defer to what current docs say" rule).
 
 ---
 
@@ -561,10 +591,10 @@ Status: **In Progress — Phase 1 (Planning) complete, Angular 18→19 leg**
 
 <!-- Updated continuously — helps resume across chat sessions -->
 
-- Last executed step: Phase 1 planning complete — baseline checks passed, documentation discovered, task tree built for Angular 18→19 leg.
-- Next planned step: Await developer review of Phase A task list, then begin executing A.1 (Remove @onecx/keycloak-auth) on "Continue execution" command.
-- Open issues/blockers: None. Two tentative "not applicable" calls (A.5, A.6, A.7, A.8) need re-confirmation by executor with fresh grep at execution time before marking `[-]` per rules (not skipped outright by planner).
-- Recent discoveries: `add-required-plugin-to-primeng.html` does not render via direct fetch (returns "Failed to extract meaningful content" both attempts) — content was successfully retrieved via the OneCX MCP `about_onecx` tool instead; this MCP fallback should be preferred for that specific page going forward.
+- Last executed step: Phase C tasks C.12 (Add Webpack Plugin for PrimeNG), C.13 (Add Webpack Plugin for Angular Material), C.15 (Update Webpack Config to Use Dynamic Shared Entries) executed individually with build→lint→test validation after each. All three applied (none were not-applicable) and all three validated PASS (build/lint/test, 146/147 tests, 100% coverage). All 15 Phase C tasks are now resolved (12 completed, 3 not applicable) — 0 remaining `[ ]` in Phase C.
+- Next planned step: Run the Phase C Error Recovery Loop (final full re-validation + review of any remaining unfixed errors) and obtain developer sign-off before considering the migration complete. Changes from this session are uncommitted, pending developer review.
+- Open issues/blockers: None blocking. Two forward-looking integration risks flagged in C.15 (not build/lint/test-verifiable in this isolated repo): `@ngneat/error-tailor` and the `@angular/common/http/testing` skip-override are no longer part of the webpack `shared` config after adopting `getOneCXSharedRecommendations` exactly as documented — only surfaces as a risk in a full shell+remotes module-federation integration run, not in this repo's own build/lint/test.
+- Recent discoveries: `add-required-plugin-to-primeng.html` rendered successfully via direct fetch this session (previously required the OneCX MCP `about_onecx` fallback) — no drift found between the two sources. `ng build --stats-json` reliably OOM-crashes on this repo (large locale-bundle stats file) but still writes a usable partial stats.json before crashing — sufficient for module-graph verification (used to confirm C.13's applicability); this stats.json is not a committed artifact and was deleted after inspection.
 
 ---
 
@@ -591,12 +621,12 @@ Status: **In Progress — Phase 1 (Planning) complete, Angular 18→19 leg**
 **Start date:** 2026-07-16
 **End date:** [pending]
 **Total tasks:** 25 (Phase A: 9 tasks + 1 build-state-record, Phase C: 15)
-**Completed:** 0
-**Skipped:** 0
+**Completed:** 18 (Phase A: 6, Phase C: 12)
+**Skipped (not applicable):** 7 (Phase A: 4, Phase C: 3)
 
-**Test coverage baseline:** 100% → **Final coverage:** [pending]
-**Lint warning baseline:** 0 → **Final lint warnings:** [pending]
+**Test coverage baseline:** 100% → **Final coverage (as of C.15):** 100% statements/branches/functions/lines (578/578, 211/211, 162/162, 519/519) — unchanged from baseline
+**Lint warning baseline:** 0 → **Final lint warnings (as of C.15):** 0
 
 **Critical blockers:** none
 
-**Sign-off:** [pending]
+**Sign-off:** [pending — awaiting developer review of uncommitted C.12/C.13/C.15 changes and Phase C Error Recovery Loop]
