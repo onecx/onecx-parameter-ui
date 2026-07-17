@@ -792,7 +792,7 @@ Reference data source: `.github/instructions/migration-19-20.instructions.md` (u
 | `webpack`                                                                                                                                                                                                                     | `5.95.0`                    | unchanged                                                                                                  | reference repo diff (`supplier-rules-regular-page`)                                                                                                                                                              |
 | `ngrx-store-localstorage`, `zod`, `@onecx/ngrx-accelerator`                                                                                                                                                                   | not present                 | N/A                                                                                                        | not applicable — none of these are used in this repo (confirmed via fresh grep + `package.json` inspection this invocation)                                                                                      |
 
-**Developer approval:** [ ] not yet requested — pending Phase A2 completion.
+**Developer approval:** [x] approved 2026-07-17 — proceed with core Angular 20 upgrade.
 
 ---
 
