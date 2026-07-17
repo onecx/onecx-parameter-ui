@@ -2,9 +2,11 @@ import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
-import { TranslateTestingModule } from 'ngx-translate-testing'
+import { TranslateModule, provideTranslateService } from '@ngx-translate/core'
 
 import { UserService } from '@onecx/angular-integration-interface'
+
+import { provideTestTranslateLoader } from 'src/app/shared/translate-loader-testing'
 
 import { UsageDetailListComponent } from './usage-detail-list.component'
 
@@ -17,14 +19,20 @@ describe('HistoryListComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [UsageDetailListComponent],
-      imports: [
-        TranslateTestingModule.withTranslations({
-          de: require('src/assets/i18n/de.json'),
-          en: require('src/assets/i18n/en.json')
-        }).withDefaultLanguage('en')
-      ],
+      imports: [TranslateModule],
       schemas: [NO_ERRORS_SCHEMA],
-      providers: [provideHttpClient(), provideHttpClientTesting(), { provide: UserService, useValue: mockUserService }]
+      providers: [
+        provideTranslateService({
+          defaultLanguage: 'en',
+          loader: provideTestTranslateLoader({
+            de: require('src/assets/i18n/de.json'),
+            en: require('src/assets/i18n/en.json')
+          })
+        }),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: UserService, useValue: mockUserService }
+      ]
     }).compileComponents()
   }))
 

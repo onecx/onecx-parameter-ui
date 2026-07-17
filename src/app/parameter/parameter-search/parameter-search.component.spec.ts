@@ -3,8 +3,10 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { provideRouter, Router, ActivatedRoute } from '@angular/router'
-import { TranslateTestingModule } from 'ngx-translate-testing'
+import { TranslateModule, provideTranslateService } from '@ngx-translate/core'
 import { of, throwError } from 'rxjs'
+
+import { provideTestTranslateLoader } from 'src/app/shared/translate-loader-testing'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 import { Filter } from '@onecx/angular-accelerator'
@@ -217,14 +219,16 @@ describe('ParameterSearchComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ParameterSearchComponent],
-      imports: [
-        TranslateTestingModule.withTranslations({
-          de: require('src/assets/i18n/de.json'),
-          en: require('src/assets/i18n/en.json')
-        }).withDefaultLanguage('en')
-      ],
+      imports: [TranslateModule],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
+        provideTranslateService({
+          defaultLanguage: 'en',
+          loader: provideTestTranslateLoader({
+            de: require('src/assets/i18n/de.json'),
+            en: require('src/assets/i18n/en.json')
+          })
+        }),
         provideHttpClient(),
         provideHttpClientTesting(),
         provideRouter([{ path: 'usage', component: UsageSearchComponent }]),

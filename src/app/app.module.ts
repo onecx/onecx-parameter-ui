@@ -1,20 +1,26 @@
 import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { RouterModule, Routes } from '@angular/router'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-import { TranslateLoader, TranslateModule, MissingTranslationHandler } from '@ngx-translate/core'
+import {
+  TranslateModule,
+  provideTranslateService,
+  provideTranslateLoader,
+  provideMissingTranslationHandler
+} from '@ngx-translate/core'
 
 import { AngularAuthModule, provideTokenInterceptor } from '@onecx/angular-auth'
 import {
-  createTranslateLoader,
+  OnecxTranslateLoader,
+  MultiLanguageMissingTranslationHandler,
   provideTranslationPathFromMeta,
-  provideThemeConfig,
   provideAngularUtils
 } from '@onecx/angular-utils'
+import { provideThemeConfig } from '@onecx/angular-utils/theme/primeng'
 import { APP_CONFIG } from '@onecx/angular-integration-interface'
-import { AngularAcceleratorMissingTranslationHandler, AngularAcceleratorModule } from '@onecx/angular-accelerator'
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 import { StandaloneShellModule } from '@onecx/angular-standalone-shell'
 
 import { environment } from 'src/environments/environment'
@@ -40,18 +46,16 @@ const routes: Routes = [
       initialNavigation: 'enabledBlocking',
       enableTracing: true
     }),
-    TranslateModule.forRoot({
-      isolate: true,
-      loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] },
-      missingTranslationHandler: {
-        provide: MissingTranslationHandler,
-        useClass: AngularAcceleratorMissingTranslationHandler
-      }
-    })
+    TranslateModule
   ],
   providers: [
     { provide: APP_CONFIG, useValue: environment },
     provideTranslationPathFromMeta(import.meta.url, 'assets/i18n/'),
+    provideTranslateService({
+      defaultLanguage: 'en',
+      loader: provideTranslateLoader(OnecxTranslateLoader),
+      missingTranslationHandler: provideMissingTranslationHandler(MultiLanguageMissingTranslationHandler)
+    }),
     provideThemeConfig(),
     provideAngularUtils(),
     provideTokenInterceptor(),

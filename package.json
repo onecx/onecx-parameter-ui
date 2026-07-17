@@ -114,7 +114,6 @@
     "karma-sonarqube-unit-reporter": "^0.0.23",
     "modify-source-webpack-plugin": "^4.1.0",
     "ngx-build-plus": "^20.0.0",
-    "ngx-translate-testing": "^7.0.0",
     "postcss": "8.5.3",
     "postcss-import": "~16.1.0",
     "postcss-preset-env": "~10.1.3",

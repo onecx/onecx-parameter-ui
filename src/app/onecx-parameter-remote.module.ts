@@ -1,22 +1,28 @@
 import { DoBootstrap, inject, Injector, NgModule, provideAppInitializer } from '@angular/core'
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule, Routes, Router } from '@angular/router'
-import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core'
+import {
+  TranslateModule,
+  provideTranslateService,
+  provideTranslateLoader,
+  provideMissingTranslationHandler
+} from '@ngx-translate/core'
 import { firstValueFrom } from 'rxjs'
 
 import { AngularAuthModule, provideTokenInterceptor } from '@onecx/angular-auth'
 import {
-  createTranslateLoader,
+  OnecxTranslateLoader,
+  MultiLanguageMissingTranslationHandler,
   PortalApiConfiguration,
   provideTranslationPathFromMeta,
-  provideThemeConfig,
   provideAngularUtils
 } from '@onecx/angular-utils'
+import { provideThemeConfig } from '@onecx/angular-utils/theme/primeng'
 import { createAppEntrypoint, initializeRouter, startsWith } from '@onecx/angular-webcomponents'
 import { AppConfigService, AppStateService } from '@onecx/angular-integration-interface'
-import { AngularAcceleratorMissingTranslationHandler, AngularAcceleratorModule } from '@onecx/angular-accelerator'
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
 import { Configuration } from './shared/generated'
 import { environment } from 'src/environments/environment'
@@ -47,17 +53,15 @@ const routes: Routes = [
     BrowserAnimationsModule,
     AngularAcceleratorModule,
     RouterModule.forRoot(routes),
-    TranslateModule.forRoot({
-      isolate: true,
-      loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] },
-      missingTranslationHandler: {
-        provide: MissingTranslationHandler,
-        useClass: AngularAcceleratorMissingTranslationHandler
-      }
-    })
+    TranslateModule
   ],
   providers: [
     { provide: Configuration, useFactory: apiConfigProvider },
+    provideTranslateService({
+      defaultLanguage: 'en',
+      loader: provideTranslateLoader(OnecxTranslateLoader),
+      missingTranslationHandler: provideMissingTranslationHandler(MultiLanguageMissingTranslationHandler)
+    }),
     provideAppInitializer(() => {
       const router = inject(Router)
       const appStateService = inject(AppStateService)
