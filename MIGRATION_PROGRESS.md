@@ -619,7 +619,7 @@ Status: **Angular 18→19 leg COMPLETE (Phases 1/A/B/C all signed off, committed
 ## Summary
 
 **Start date:** 2026-07-16
-**End date:** [pending]
+**End date:** 2026-07-17
 **Total tasks:** 25 (Phase A: 9 tasks + 1 build-state-record, Phase C: 15)
 **Completed:** 18 (Phase A: 6, Phase C: 12)
 **Skipped (not applicable):** 7 (Phase A: 4, Phase C: 3)
@@ -629,7 +629,7 @@ Status: **Angular 18→19 leg COMPLETE (Phases 1/A/B/C all signed off, committed
 
 **Critical blockers:** none
 
-**Sign-off:** [pending — awaiting developer review of uncommitted C.12/C.13/C.15 changes and Phase C Error Recovery Loop]
+**Sign-off:** Leg complete — all Phase A/B/C tasks resolved, Error Recovery Loop passed, changes committed (`eac4d1d`..`24f329c`, closed out in `1bd7f6d`). 18→19 leg fully closed; migration proceeded to the 19→20 leg.
 
 ---
 
@@ -932,10 +932,20 @@ Reference data source: `.github/instructions/migration-19-20.instructions.md` (u
 
 ## Angular 19→20 Leg — Current Session Context
 
-- Last executed step: **Phase B2 (Core Upgrade Gate) — executed.** Package versions confirmed at target (`@angular/*` 20.3.26, `primeng` 20.4.0, `@onecx/*` 7.12.0, `@ngx-translate/core` 17.0.0, `typescript` 5.9.3, etc. — full list in Execution Evidence above). Required a clean `node_modules`/`package-lock.json` reinstall (stale state from earlier session). Forced minimal fixes for non-C2-mapped, build/lint-blocking breakage: PrimeNG v20 Calendar/Dropdown/TabView removals, `tsconfig.json` `moduleResolution` → `bundler` (for `@primeuix/utils` subpath exports), and the `@angular/core:inject` schematic (for the new `@angular-eslint/prefer-inject` rule), including fixing its side effects (reverted 3 generated/lint-ignored files it incorrectly touched, prettier semicolon cleanup, fixed `label.resolver.spec.ts`). Build now fails with ONLY the 4 expected C2.3/C2.5-mapped `TS2305` errors (`createTranslateLoader`/`provideThemeConfig` not exported from `@onecx/angular-utils`). Lint passes (0 errors, 6 non-blocking deprecation warnings). Test suite fails to load entirely (`ngx-translate-testing@7.0.0` incompatible with `@ngx-translate/core@17`, no newer version exists) — reclassified as C2.5-blocking, no pass/fail counts obtainable until C2.5 executes. Changes left **uncommitted** for review per instruction.
-- Next planned step: obtain developer review of Phase B2 changes, then proceed to Phase C2 starting with **C2.3** (Update package imports for PrimeNG theming) and **C2.5** (Migrate to `OnecxTranslateLoader`) — these two unblock both the build and the test suite (via `ngx-translate-testing`/`TranslateTestingModule` rework) and should likely be executed first, ahead of C2.1/C2.2/C2.4/C2.6-C2.8, to restore a green build/test baseline.
-- Open issues/blockers: **test suite cannot run at all** (Karma load error) until C2.5 is executed — this is a new, more specific finding than the Phase 1 planning-time notes (which only flagged `app.component.ts` constructor-injection and `DialogService` call-site checks as needing deeper verification). C2.7's broader `DialogService` call-site search still not yet performed (unaffected by this invocation).
+- Last executed step: **Phase C2 fully closed.** C2.1 (cross-referenced from Phase B2), C2.3 (PrimeNG theming subpath) and C2.5 (`OnecxTranslateLoader` migration, including full `ngx-translate-testing` replacement across 8 spec files) executed and validated. C2.2, C2.4, C2.6, C2.7, C2.8 all reconfirmed **not applicable** via fresh full-repo grep this session (no old-symbol usage, no style-utility usage, no `PageHeaderComponent`/`ObjectDetailItem` usage, no `.openDialog()` call sites, no route guards). All 8 Phase C2 tasks resolved — 0 remaining `[ ]` in Phase C2. Final validation: build **PASS** (exit 0), lint **PASS** (0 errors, 6 baseline deprecation warnings, unchanged), test **PASS** (149/150, 1 skipped, coverage 100% statements/branches/functions/lines — 583/583, 213/213, 165/165, 523/523). All changes committed (`a70a4a0`, `018bb45`).
+- Next planned step: none remaining — 19→20 leg is complete. Developer should review and push the branch (`feat/DIGIHUB-374758/angular-upgrade-version-20`, currently 13 commits ahead of `origin`) and open a PR when ready.
+- Open issues/blockers: none. The full 18→19→20 migration is complete: both legs' Phase A/B/C (and A2/B2/C2) tasks are resolved, build/lint/test are green, and 100% test coverage is maintained end-to-end from the Phase 1 baseline.
 
 ---
+
+## Final Migration Summary (18 → 19 → 20)
+
+**Start date:** 2026-07-16
+**End date:** 2026-07-17
+**Legs completed:** 18→19 (full), 19→20 (full)
+**Final Angular version:** 20.3.26 | **Final `@onecx/*` version:** 7.12.0 | **Final `primeng` version:** 20.4.0
+**Final validation:** build PASS (exit 0) | lint PASS (0 errors, 6 pre-existing deprecation warnings) | test PASS (149/150, 1 skipped) | coverage 100% statements/branches/functions/lines
+**Critical blockers:** none
+**Outstanding action:** push branch and open PR (not done automatically — requires explicit developer action)
 
 ---
