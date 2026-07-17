@@ -361,18 +361,35 @@ Status: **In Progress — Phase 1 (Planning) complete, Angular 18→19 leg**
 > Execute after Phase B is confirmed stable (developer sign-off).
 > Validation order: build → lint → test. Transitional build/test failures allowed per task if fully documented.
 
+**Developer sign-off (Phase B → C gate):**
+
+- [x] Phase B confirmed stable — build/lint/test all PASS matching Phase A baseline (146/147 tests, 100% coverage), committed as `7af02f4`
+- Approval recorded by: developer, via chat confirmation ("continue execution") on 2026-07-17, after reviewing Phase B completion summary
+
 ### Phase C Tasks (discovered by planner)
 
 **[C.1]. Required Package Updates**
 
-- [ ] not started
-- Source page: https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-19/update-packages.html
-- Applicability: must-have
-- Repository evidence: [package.json](package.json) currently has `@ngx-translate/core@^15.0.0` (needs `^16.0.0`), `primeng@^17.18.11` (needs `^19.0.0`), `primeflex@^3.3.1` (needs `^4.0.0`), `ngx-build-plus@^18.0.0` (needs `^19.0.0`). `primeicons@^7.0.0` and `@ngx-translate/http-loader@^8.0.0` already match target.
-- Sub-steps executed: [TBD]
-- Files changed: [TBD]
-- Validation: build [TBD] | lint [TBD] | test [TBD]
-- Final outcome: [TBD]
+- [x] completed
+- Source page (fetched full content this invocation): https://onecx.github.io/docs/documentation/current/onecx-portal-ui-libs/migrations/angular-19/update-packages.html — 1 H2 section "Installation Commands" with a version table: `@onecx/*` → `^6.x.y`, `@ngrx/*` → `^19.x.y`, `primeng` → `^19.0.0`, `primeicons` → `^7.0.0`, `primeflex` → `^4.0.0`, `@ngx-translate/core` → `^16.0.0`, `@ngx-translate/http-loader` → `^8.0.0`, `ngrx-store-localstorage` → `^19.0.0`, `ngx-build-plus` → `^19.0.0`. Note: "Do not add keycloak-js to your package.json dependencies."
+- Applicability: **must-have (partial — most already satisfied by Phase B)**
+- Repository evidence: Fresh read of [package.json](package.json) plus `npm ls` this invocation showed `@ngx-translate/core@16.0.4` (already ✓ target `^16.0.0`), `@ngx-translate/http-loader@8.0.0` (already ✓), `primeng@19.1.4` (already ✓ target `^19.0.0`), `primeicons@7.0.0` (already ✓), `ngx-build-plus@19.0.0` (already ✓ target `^19.0.0`), all `@onecx/*` packages at `^6.27.0` (already ✓, done in Phase B/B.1) — these were all resolved as transitive/direct dependency bumps during the Phase B core upgrade (`7af02f4`), not by this task. Only `primeflex` remained outdated: `^3.3.1` in [package.json](package.json), needed `^4.0.0`. `ngrx-store-localstorage` — not present in `package.json` (not used by this app, not applicable). `@ngrx/*` (`@ngrx/effects`, `@ngrx/router-store`) already at `^19.2.1` (already ✓). `keycloak-js` present at `^25.0.6` as a direct dependency — doc says "do not add keycloak-js to your package.json dependencies" but it was already present pre-existing in this repo before this migration leg (not added by this task); left untouched per no-defer/no-unrelated-change rule (removing it is out of scope for C.1 and would require separate verification of why/where it's used — not part of this doc page's actionable instructions beyond the note).
+- Sub-steps executed:
+  1. Update `@onecx/*` to `^6.x.y` — not-applicable this invocation, already done in Phase B (confirmed `^6.27.0` via `npm ls`).
+  2. Update `@ngrx/*` to `^19.x.y` — not-applicable, already at `^19.2.1`.
+  3. Update `primeng` to `^19.0.0` — not-applicable, already at `^19.1.4` (Phase B).
+  4. Update `primeicons` to `^7.0.0` — not-applicable, already current.
+  5. Update `primeflex` to `^4.0.0` — **done**: verified `npm view primeflex@4.0.0 peerDependencies` returns empty (no peer deps, pure CSS/SCSS utility package, compatible with any Angular version); verified `primeflex.scss`/`primeflex.css` still ship at package root in v4.0.0 (via `npm pack --dry-run`), so the existing `@import 'node_modules/primeflex/primeflex.scss';` in [src/styles.scss](src/styles.scss) remains valid with no path change needed; ran `npm install primeflex@^4.0.0`.
+  6. Update `@ngx-translate/core` to `^16.0.0` — not-applicable, already at `^16.0.4`.
+  7. Update `@ngx-translate/http-loader` to `^8.0.0` — not-applicable, already current.
+  8. Update `ngrx-store-localstorage` to `^19.0.0` — not-applicable, package not used anywhere in this repo (confirmed absent from `package.json` and `grep -r "ngrx-store-localstorage"` returned 0 matches).
+  9. Update `ngx-build-plus` to `^19.0.0` — not-applicable, already at `^19.0.0`.
+  10. `keycloak-js` "do not add to dependencies" note — not-applicable to this task (pre-existing direct dependency from before this migration leg started; not added by C.1; flagged as an edge case, not touched here to stay within task scope).
+- Files changed: [package.json](package.json) (`primeflex`: `^3.3.1` → `^4.0.0`), `package-lock.json` (regenerated lock entries for `primeflex`).
+- Post-change sweep: re-ran `npm ls primeng primeflex @ngx-translate/core @ngx-translate/http-loader ngx-build-plus primeicons` — all packages confirmed at target versions, `primeflex@4.0.0` resolved with no dependency-tree conflicts.
+- Validation: build **PASS** (`npm run build` via VS Code task `npm:build` — bundle generated successfully, only pre-existing baseline warnings: Sass `@import` deprecation warnings in 5 component `.scss` files from the dart-sass upgrade in Phase B, and `app.component.ts`/`app.module.ts` "unused in tsconfig" cosmetic warnings — both pre-existing, unrelated to this task, no new warnings) | lint **PASS** (`npm run lint` via VS Code task `npm:lint` — "All files pass linting", 0 errors, 0 warnings, matches baseline) | test **PASS** (`npm run test:ci` — 146 SUCCESS / 147 total, 1 skipped, exactly matching the Phase A/B baseline; coverage 100% statements (578/578), 100% branches (211/211), 100% functions (162/162), 100% lines (519/519) — matches baseline exactly, no regression)
+- Final outcome: **success**
+- Edge cases: This task's doc page overlaps heavily with Phase B's `B.1` core upgrade, which already bumped `@onecx/*`, `@ngrx/*`, `primeng`, `primeicons`, `@ngx-translate/core`, `@ngx-translate/http-loader`, and `ngx-build-plus` to their v19-compatible targets as a side effect of resolving peer-dependency requirements during the Angular 19 upgrade — only `primeflex` (a standalone CSS utility library with no peer dependency on Angular/PrimeNG) had been left behind since nothing in the dependency tree forced its bump. No PrimeNG-specific v18→v19 API breaking changes were triggered by this task since `primeng` itself was not touched here (already upgraded in Phase B, where any resulting component API changes would have already surfaced as build/lint errors — none did in this invocation). `primeflex` v3→v4 utility class renames (if any) are a runtime CSS/visual concern, not a build-time TypeScript/lint concern — no build errors were produced by the SCSS import, and grep confirmed `primeflex` is only referenced via the single global `@import` in [src/styles.scss](src/styles.scss) (no direct utility class usage found requiring inspection in `.html`/`.ts` template bindings). `keycloak-js` pre-existing-dependency note left as a flagged edge case, not remediated (out of scope for C.1).
 
 **[C.2]. Update FilterType Value**
 
