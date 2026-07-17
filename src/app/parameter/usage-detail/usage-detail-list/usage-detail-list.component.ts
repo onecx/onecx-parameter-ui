@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core'
+import { Component, Input, inject } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
 
 import { Parameter } from 'src/app/shared/generated'
@@ -29,6 +29,8 @@ type ExtendedColumn = Column & {
   standalone: false
 })
 export class UsageDetailListComponent {
+  readonly translate = inject(TranslateService)
+
   @Input() public loading = false
   @Input() public exceptionKey: string | undefined = undefined
   @Input() public history: ExtendedHistory | undefined = undefined
@@ -106,7 +108,7 @@ export class UsageDetailListComponent {
     }
   ]
 
-  constructor(public readonly translate: TranslateService) {
+  constructor() {
     this.filteredColumns = this.columns.filter((a) => a.active === true)
   }
 

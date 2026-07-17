@@ -7,7 +7,6 @@ import { provideErrorTailorConfig, errorTailorImports } from '@ngneat/error-tail
 import { AutoCompleteModule } from 'primeng/autocomplete'
 import { BadgeModule } from 'primeng/badge'
 import { ButtonModule } from 'primeng/button'
-import { CalendarModule } from 'primeng/calendar'
 import { CardModule } from 'primeng/card'
 import { CheckboxModule } from 'primeng/checkbox'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
@@ -16,7 +15,7 @@ import { ConfirmationService } from 'primeng/api'
 import { DataViewModule } from 'primeng/dataview'
 import { DialogModule } from 'primeng/dialog'
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog'
-import { DropdownModule } from 'primeng/dropdown'
+import { SelectModule } from 'primeng/select'
 import { FieldsetModule } from 'primeng/fieldset'
 import { InputTextModule } from 'primeng/inputtext'
 import { TextareaModule } from 'primeng/textarea'
@@ -26,7 +25,7 @@ import { MessageModule } from 'primeng/message'
 import { MultiSelectModule } from 'primeng/multiselect'
 import { SelectButtonModule } from 'primeng/selectbutton'
 import { TableModule } from 'primeng/table'
-import { TabViewModule } from 'primeng/tabview'
+import { TabsModule } from 'primeng/tabs'
 import { ToastModule } from 'primeng/toast'
 import { TooltipModule } from 'primeng/tooltip'
 
@@ -42,7 +41,6 @@ import { LabelResolver } from './label.resolver'
     AutoCompleteModule,
     BadgeModule,
     ButtonModule,
-    CalendarModule,
     CardModule,
     CheckboxModule,
     CommonModule,
@@ -50,7 +48,7 @@ import { LabelResolver } from './label.resolver'
     ConfirmPopupModule,
     DataViewModule,
     DialogModule,
-    DropdownModule,
+    SelectModule,
     DynamicDialogModule,
     FieldsetModule,
     FormsModule,
@@ -64,7 +62,7 @@ import { LabelResolver } from './label.resolver'
     ReactiveFormsModule,
     SelectButtonModule,
     TableModule,
-    TabViewModule,
+    TabsModule,
     ToastModule,
     TooltipModule,
     TranslateModule,
@@ -74,7 +72,6 @@ import { LabelResolver } from './label.resolver'
     AutoCompleteModule,
     BadgeModule,
     ButtonModule,
-    CalendarModule,
     CardModule,
     CheckboxModule,
     CommonModule,
@@ -82,7 +79,7 @@ import { LabelResolver } from './label.resolver'
     ConfirmPopupModule,
     DataViewModule,
     DialogModule,
-    DropdownModule,
+    SelectModule,
     DynamicDialogModule,
     FieldsetModule,
     FormsModule,
@@ -96,7 +93,7 @@ import { LabelResolver } from './label.resolver'
     ReactiveFormsModule,
     SelectButtonModule,
     TableModule,
-    TabViewModule,
+    TabsModule,
     ToastModule,
     TooltipModule,
     TranslateModule,
@@ -122,9 +119,9 @@ import { LabelResolver } from './label.resolver'
         },
         deps: [TranslateService]
       },
-      //this is required because primeng calendar wraps things in an ugly way
+      //this is required because primeng wraps things in an ugly way
       blurPredicate: (element: Element) => {
-        return ['INPUT', 'TEXTAREA', 'SELECT', 'CUSTOM-DATE', 'P-CALENDAR', 'P-DROPDOWN'].includes(element.tagName)
+        return ['INPUT', 'TEXTAREA', 'SELECT', 'CUSTOM-DATE', 'P-DATEPICKER', 'P-SELECT'].includes(element.tagName)
       }
     })
   ]

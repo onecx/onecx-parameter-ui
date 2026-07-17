@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter } from '@angular/core'
+import { Component, OnInit, EventEmitter, inject } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
 
@@ -62,6 +62,13 @@ export type ProductAbstract = {
   standalone: false
 })
 export class ParameterSearchComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute)
+  private readonly router = inject(Router)
+  private readonly user = inject(UserService)
+  private readonly slotService = inject(SlotService)
+  private readonly msgService = inject(PortalMessageService)
+  private readonly parameterApi = inject(ParametersAPIService)
+
   // dialog
   public loading = false
   public exceptionKey: string | undefined = undefined
@@ -107,14 +114,7 @@ export class ParameterSearchComponent implements OnInit {
     { id: 'modificationDate', nameKey: 'INTERNAL.MODIFICATION_DATE', columnType: ColumnType.DATE, sortable: true }
   ]
 
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly user: UserService,
-    private readonly slotService: SlotService,
-    private readonly msgService: PortalMessageService,
-    private readonly parameterApi: ParametersAPIService
-  ) {
+  constructor() {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     const modificationDateColumn = this.columns.find((c) => c.id === 'modificationDate')
     if (modificationDateColumn) modificationDateColumn.dateFormat = this.dateFormat

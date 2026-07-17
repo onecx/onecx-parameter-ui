@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core'
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
 import { catchError, finalize, map, Observable, of } from 'rxjs'
 
@@ -14,6 +14,9 @@ import { ExtendedHistory } from '../usage-search/usage-search.component'
   standalone: false
 })
 export class UsageDetailComponent {
+  private readonly translate = inject(TranslateService)
+  private readonly historyApiService = inject(HistoriesAPIService)
+
   @Input() public history: ExtendedHistory | undefined
   @Input() public parameter: Parameter | undefined
   @Input() public dateFormat: string | undefined = undefined
@@ -25,11 +28,6 @@ export class UsageDetailComponent {
   public exceptionKey: string | undefined = undefined
   // data
   public data$: Observable<ExtendedHistory[]> = of([])
-
-  constructor(
-    private readonly translate: TranslateService,
-    private readonly historyApiService: HistoriesAPIService
-  ) {}
 
   /****************************************************************************
    *  SEARCH usage data

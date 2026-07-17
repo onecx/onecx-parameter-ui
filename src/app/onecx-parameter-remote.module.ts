@@ -76,10 +76,10 @@ const routes: Routes = [
   ]
 })
 export class OneCXParameterModule implements DoBootstrap {
-  constructor(
-    private readonly injector: Injector,
-    private readonly appConfigService: AppConfigService
-  ) {
+  private readonly injector = inject(Injector)
+  private readonly appConfigService = inject(AppConfigService)
+
+  constructor() {
     console.info('OneCX Parameter Module constructor')
   }
 

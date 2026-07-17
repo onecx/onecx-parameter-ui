@@ -474,14 +474,14 @@
 
 @mixin tabview-reduce-padding {
   :host ::ng-deep {
-    .p-tabview .p-tabview-panels {
+    .p-tabs .p-tabpanels {
       padding: 1.4rem 0 0 0;
     }
   }
 }
 @mixin tabview-fix-color-selected-tab {
   :host ::ng-deep {
-    --tabview-header-active-bg: rgb(from var(--primary-color) r g b / 0.12) !important;
+    --p-tabs-tab-active-background: rgb(from var(--primary-color) r g b / 0.12) !important;
   }
 }
 

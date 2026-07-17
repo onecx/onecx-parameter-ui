@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter } from '@angular/core'
+import { Component, OnInit, EventEmitter, inject } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
 
@@ -62,6 +62,13 @@ export type ProductAbstract = {
   standalone: false
 })
 export class UsageSearchComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute)
+  private readonly router = inject(Router)
+  private readonly user = inject(UserService)
+  private readonly slotService = inject(SlotService)
+  private readonly msgService = inject(PortalMessageService)
+  private readonly historyApi = inject(HistoriesAPIService)
+
   // dialog
   public loading = false
   public exceptionKey: string | undefined = undefined
@@ -110,14 +117,7 @@ export class UsageSearchComponent implements OnInit {
     { id: 'instanceId', nameKey: 'USAGE.INSTANCE_ID', columnType: ColumnType.STRING, sortable: true }
   ]
 
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly user: UserService,
-    private readonly slotService: SlotService,
-    private readonly msgService: PortalMessageService,
-    private readonly historyApi: HistoriesAPIService
-  ) {
+  constructor() {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     const startColumn = this.columns.find((c) => c.id === 'start')
     if (startColumn) startColumn.dateFormat = this.dateFormat

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import { Component, EventEmitter, Input, OnChanges, Output, inject } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 
@@ -17,13 +17,15 @@ export interface CriteriaForm {
   standalone: false
 })
 export class UsageDetailCriteriaComponent implements OnChanges {
+  readonly translate = inject(TranslateService)
+
   @Input() public history: ExtendedHistory | undefined = undefined
   @Input() public parameter: Parameter | undefined = undefined
   @Output() public criteriaEmitter = new EventEmitter<HistoryCriteria>()
 
   public criteriaForm: FormGroup<CriteriaForm>
 
-  constructor(public readonly translate: TranslateService) {
+  constructor() {
     this.criteriaForm = new FormGroup<CriteriaForm>({
       name: new FormControl<string | undefined>({ value: undefined, disabled: true }, { nonNullable: true }),
       productName: new FormControl<string | undefined>({ value: undefined, disabled: true }, { nonNullable: true }),

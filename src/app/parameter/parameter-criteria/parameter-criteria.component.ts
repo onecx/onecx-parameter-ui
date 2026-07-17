@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import { Component, EventEmitter, Input, OnChanges, Output, inject } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 import { SelectItem } from 'primeng/api'
@@ -22,6 +22,8 @@ export interface CriteriaForm {
   standalone: false
 })
 export class ParameterCriteriaComponent implements OnChanges {
+  readonly translate = inject(TranslateService)
+
   @Input() public type = 'PARAMETER'
   @Input() public actions: Action[] = []
   @Input() public usedProducts: ExtendedProduct[] = [] // products used with data
@@ -32,7 +34,7 @@ export class ParameterCriteriaComponent implements OnChanges {
   public productOptions: SelectItem[] = []
   public appOptions: SelectItem[] = []
 
-  constructor(public readonly translate: TranslateService) {
+  constructor() {
     this.criteriaForm = new FormGroup<CriteriaForm>({
       productName: new FormControl<string | null>(null),
       applicationId: new FormControl<string | null>(null),

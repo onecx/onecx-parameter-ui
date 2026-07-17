@@ -1,3 +1,5 @@
+import { TestBed } from '@angular/core/testing'
+import { TranslateService } from '@ngx-translate/core'
 import { Observable, of } from 'rxjs'
 import { LabelResolver } from './label.resolver'
 
@@ -16,7 +18,10 @@ describe('LabelResolver', () => {
   const routerStateSpy = jasmine.createSpyObj('RouterStateSnapshot', [''])
 
   beforeEach(async () => {
-    labelResolver = new LabelResolver(translateServiceSpy)
+    TestBed.configureTestingModule({
+      providers: [LabelResolver, { provide: TranslateService, useValue: translateServiceSpy }]
+    })
+    labelResolver = TestBed.inject(LabelResolver)
     translateServiceSpy.get.calls.reset()
     const dataSpy = Object.getOwnPropertyDescriptor(activatedRouteSpy, 'data')?.get as jasmine.Spy<() => {}>
     dataSpy.and.returnValue({})
