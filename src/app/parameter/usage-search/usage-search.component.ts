@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
 import { Table } from 'primeng/table'
 
+import { OcxContentComponent } from '@onecx/angular-accelerator'
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 import { Action, Column, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 import { SlotService } from '@onecx/angular-remote-components'

@@ -5,7 +5,7 @@ import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observa
 import { Table } from 'primeng/table'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
-import { Action } from '@onecx/angular-accelerator'
+import { Action, OcxContentComponent } from '@onecx/angular-accelerator'
 import { Column, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 import { SlotService } from '@onecx/angular-remote-components'
 

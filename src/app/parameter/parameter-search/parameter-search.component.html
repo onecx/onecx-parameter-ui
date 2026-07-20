@@ -17,7 +17,7 @@
       (resetSearchEmitter)="onCriteriaReset()"
     ></app-parameter-criteria>
 
-    <ocx-page-content>
+    <ocx-content>
       <p-message
         *ngIf="exceptionKey || exceptionKeyMeta"
         id="pam_search_message_error"
@@ -302,7 +302,7 @@
         [changeMode]="changeMode"
         [dateFormat]="dateFormat"
       ></app-parameter-detail>
-    </ocx-page-content>
+    </ocx-content>
   </ng-container>
 </ocx-portal-page>
 
