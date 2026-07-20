@@ -2,7 +2,16 @@ import { NgModule } from '@angular/core'
 import { CommonModule, DatePipe } from '@angular/common'
 import { RouterModule, Routes } from '@angular/router'
 
+import { ButtonModule } from 'primeng/button'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputTextModule } from 'primeng/inputtext'
+import { RippleModule } from 'primeng/ripple'
+import { TooltipModule } from 'primeng/tooltip'
+
 import { InitializeModuleGuard, addInitializeModuleGuard } from '@onecx/angular-integration-interface'
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 import { PortalCoreModule } from '@onecx/portal-integration-angular'
 
 import { SharedModule } from 'src/app/shared/shared.module'
@@ -49,7 +58,15 @@ const routes: Routes = [
   ],
   imports: [
     CommonModule,
+    AngularAcceleratorModule,
+    ButtonModule,
+    FloatLabelModule,
+    InputGroupAddonModule,
+    InputGroupModule,
+    InputTextModule,
     PortalCoreModule.forMicroFrontend(),
+    RippleModule,
+    TooltipModule,
     [RouterModule.forChild(addInitializeModuleGuard(routes))],
     SharedModule
   ],

@@ -1,12 +1,20 @@
-import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core'
+import { Component, EventEmitter, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
-import { Table } from 'primeng/table'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
-import { Action, OcxContentComponent } from '@onecx/angular-accelerator'
-import { Column, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+import {
+  Action,
+  ColumnType,
+  DataSortDirection,
+  DataTableColumn,
+  Filter,
+  OcxContentComponent,
+  RowListGridData,
+  Sort
+} from '@onecx/angular-accelerator'
+import { Column } from '@onecx/portal-integration-angular'
 import { SlotService } from '@onecx/angular-remote-components'
 
 import {
@@ -35,6 +43,10 @@ export type ExtendedParameter = Parameter & {
   importValueType: string
   displayValue: string
   isEqual: string
+}
+export type ParameterTableRow = ExtendedParameter & {
+  imagePath: string
+  [columnId: string]: unknown
 }
 export type ExtendedProduct = {
   name: string
@@ -83,13 +95,17 @@ export class ParameterSearchComponent implements OnInit {
   public displayDeleteDialog = false
   public displayUsageDetailDialog = false
   public actions: Action[] = []
-  public filteredColumns: Column[] = []
 
-  @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
-  public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
+  public interactiveColumns: DataTableColumn[] = []
+  public displayedColumnKeys: string[] = []
+  public interactiveRows: ParameterTableRow[] = []
+  private allRows: ParameterTableRow[] = []
+  public filterText = ''
+  public sortField = 'name'
+  public sortDirection: DataSortDirection = DataSortDirection.NONE
+  public tableFilters: Filter[] = []
 
   // data
-  public data$: Observable<ExtendedParameter[]> | undefined
   public criteria: ParameterSearchCriteria = {}
   public metaData$!: Observable<AllMetaData>
   public usedProducts$ = new ReplaySubject<Product[]>(1) // getting data from bff endpoint
@@ -170,15 +186,14 @@ export class ParameterSearchComponent implements OnInit {
     private readonly parameterApi: ParametersAPIService
   ) {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
-    this.filteredColumns = this.columns.filter((a) => a.active === true)
     this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.slotName)
+    this.syncInteractiveColumns()
   }
 
   public ngOnInit(): void {
     this.slotEmitter.subscribe(this.productData$)
     this.onReload()
-    this.getMetaData() // and trigger search
-    this.prepareDialogTranslations()
+    this.getMetaData()
     this.preparePageActions()
   }
 
@@ -285,65 +300,46 @@ export class ParameterSearchComponent implements OnInit {
     this.loading = true
     this.exceptionKey = undefined
     if (!reuseCriteria) this.criteria = { ...criteria }
-    this.data$ = this.parameterApi.searchParametersByCriteria({ parameterSearchCriteria: { ...this.criteria } }).pipe(
-      tap((data: any) => {
-        if (data.totalElements === 0) {
-          this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
-          return data.size
-        }
-      }),
-      map((data: ParameterPageResult) => {
-        if (!data.stream) return [] as ExtendedParameter[]
-        return data.stream.map(
-          (p) =>
-            ({
-              ...p,
-              displayName: p.displayName ?? p.name,
-              valueType: displayValueType(p.value),
-              importValueType: displayValueType(p.importValue),
-              displayValue: displayValue2(p.value, p.importValue),
-              isEqual: displayEqualityState(p.value, p.importValue)
-            }) as ExtendedParameter
-        )
-      }),
-      catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETERS'
-        console.error('searchParametersByCriteria', err)
-        return of([] as ExtendedParameter[])
-      }),
-      finalize(() => (this.loading = false))
-    )
+    this.parameterApi
+      .searchParametersByCriteria({ parameterSearchCriteria: { ...this.criteria } })
+      .pipe(
+        tap((data: any) => {
+          if (data.totalElements === 0) {
+            this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
+            return data.size
+          }
+        }),
+        map((data: ParameterPageResult) => {
+          if (!data.stream) return [] as ParameterTableRow[]
+          return data.stream.map(
+            (p) =>
+              ({
+                ...p,
+                displayName: p.displayName ?? p.name,
+                valueType: displayValueType(p.value),
+                importValueType: displayValueType(p.importValue),
+                displayValue: displayValue2(p.value, p.importValue),
+                isEqual: displayEqualityState(p.value, p.importValue),
+                imagePath: ''
+              }) as ParameterTableRow
+          )
+        }),
+        catchError((err) => {
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETERS'
+          console.error('searchParametersByCriteria', err)
+          return of([] as ParameterTableRow[])
+        }),
+        finalize(() => (this.loading = false))
+      )
+      .subscribe((rows) => {
+        this.allRows = rows
+        this.applyFilterAndSort()
+      })
   }
 
   /**
    * Dialog preparation
    */
-  private prepareDialogTranslations(): void {
-    this.dataViewControlsTranslations$ = this.translate
-      .get([
-        'PARAMETER.PRODUCT_NAME',
-        'PARAMETER.APP_ID',
-        'PARAMETER.NAME',
-        'PARAMETER.DISPLAY_NAME',
-        'DIALOG.DATAVIEW.FILTER'
-      ])
-      .pipe(
-        map((data) => {
-          return {
-            filterInputPlaceholder: data['DIALOG.DATAVIEW.FILTER'],
-            filterInputTooltip:
-              data['PARAMETER.PRODUCT_NAME'] +
-              ', ' +
-              data['PARAMETER.APP_ID'] +
-              ', ' +
-              data['PARAMETER.DISPLAY_NAME'] +
-              ', ' +
-              data['PARAMETER.NAME']
-          } as DataViewControlTranslations
-        })
-      )
-  }
-
   private preparePageActions(): void {
     this.actions = [
       {
@@ -370,12 +366,26 @@ export class ParameterSearchComponent implements OnInit {
    */
   public onCriteriaReset(): void {
     this.criteria = {}
+    this.filterText = ''
+    this.applyFilterAndSort()
   }
-  public onColumnsChange(activeIds: string[]) {
-    this.filteredColumns = activeIds.map((id) => this.columns.find((col) => col.field === id)) as Column[]
+  public onColumnsChange(activeIds: string[]): void {
+    this.displayedColumnKeys = activeIds
   }
-  public onFilterChange(event: string): void {
-    this.dataTable?.filterGlobal(event, 'contains')
+  public onFilterChange(event: Filter[]): void {
+    this.tableFilters = event
+  }
+  public onGlobalFilter(value: string): void {
+    this.filterText = value
+    this.applyFilterAndSort()
+  }
+  public onClearGlobalFilter(): void {
+    this.filterText = ''
+    this.applyFilterAndSort()
+  }
+  public onSortChange(event: Sort): void {
+    this.sortField = event.sortColumn
+    this.sortDirection = event.sortDirection
   }
 
   // Detail => CREATE, COPY, EDIT, VIEW
@@ -400,14 +410,10 @@ export class ParameterSearchComponent implements OnInit {
     this.item4Delete = { ...item }
     this.displayDeleteDialog = true
   }
-  public onDeleteClosed(deleted: boolean, data: Parameter[]): void {
+  public onDeleteClosed(deleted: boolean): void {
     if (deleted) {
-      // remove item from data
-      data = data?.filter((d) => d.id !== this.item4Delete?.id)
-      // check remaing data if product still exists - if not then reload
-      const d = data?.filter((d) => d.productName === this.item4Delete?.productName)
-      if (d?.length === 0)
-        this.onReload() // reload all data because if no parameter for the product exists anymore (adjust dropdown lists)
+      const remainingForProduct = this.allRows.filter((d) => d.productName === this.item4Delete?.productName)
+      if (remainingForProduct.length === 0) this.onReload()
       else this.onSearch({}, true)
     }
     this.displayDeleteDialog = false
@@ -442,5 +448,50 @@ export class ParameterSearchComponent implements OnInit {
       allProducts.find((item) => item.name === productName)?.applications?.find((a) => a.appId === appId)?.appName ??
       appId
     )
+  }
+
+  /****************************************************************************
+   *  Interactive Data View
+   */
+  private syncInteractiveColumns(): void {
+    const dataColumns = this.columns.map((column) => ({
+      id: column.field,
+      nameKey: column.translationPrefix ? `${column.translationPrefix}.${column.header}` : column.header,
+      tooltipKey: column.translationPrefix ? `${column.translationPrefix}.TOOLTIPS.${column.header}` : undefined,
+      columnType: this.getColumnType(column),
+      sortable: !!column.sort,
+      filterable: !!column.hasFilter
+    }))
+
+    this.interactiveColumns = [
+      {
+        id: 'actions',
+        nameKey: 'ACTIONS.LABEL',
+        columnType: ColumnType.STRING,
+        sortable: false,
+        filterable: false
+      },
+      ...dataColumns
+    ]
+    this.displayedColumnKeys = this.interactiveColumns.map((column) => column.id)
+  }
+
+  private getColumnType(column: ExtendedColumn): ColumnType {
+    if (column.isDate) return ColumnType.DATE
+    return ColumnType.STRING
+  }
+
+  private applyFilterAndSort(): void {
+    const normalizedQuery = this.filterText.trim().toLowerCase()
+    if (!normalizedQuery) {
+      this.interactiveRows = [...this.allRows]
+      return
+    }
+    this.interactiveRows = this.allRows.filter((row) => {
+      const searchFields = [row.productName ?? '', row.applicationId ?? '', row.name ?? '', row.displayName ?? '']
+        .join(' ')
+        .toLowerCase()
+      return searchFields.includes(normalizedQuery)
+    })
   }
 }

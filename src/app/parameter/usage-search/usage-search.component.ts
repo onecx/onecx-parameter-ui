@@ -1,12 +1,20 @@
-import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core'
+import { Component, EventEmitter, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
-import { Table } from 'primeng/table'
 
-import { OcxContentComponent } from '@onecx/angular-accelerator'
+import {
+  Action,
+  ColumnType,
+  DataSortDirection,
+  DataTableColumn,
+  Filter,
+  OcxContentComponent,
+  RowListGridData,
+  Sort
+} from '@onecx/angular-accelerator'
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
-import { Action, Column, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+import { Column } from '@onecx/portal-integration-angular'
 import { SlotService } from '@onecx/angular-remote-components'
 
 import {
@@ -37,6 +45,10 @@ export type ExtendedHistory = History & {
   displayUsedValue: string
   displayDefaultValue: string
   isEqual: string
+}
+export type UsageTableRow = ExtendedHistory & {
+  imagePath: string
+  [columnId: string]: unknown
 }
 export type ExtendedProduct = {
   name: string
@@ -86,11 +98,16 @@ export class UsageSearchComponent implements OnInit {
   public actions: Action[] = []
   public sortByDisplayName = sortByDisplayName
 
-  @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
-  public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
+  public interactiveColumns: DataTableColumn[] = []
+  public displayedColumnKeys: string[] = []
+  public interactiveRows: UsageTableRow[] = []
+  private allRows: UsageTableRow[] = []
+  public filterText = ''
+  public sortField = 'start'
+  public sortDirection: DataSortDirection = DataSortDirection.NONE
+  public tableFilters: Filter[] = []
 
   // data
-  public data$: Observable<ExtendedHistory[]> | undefined
   public criteria: ParameterSearchCriteria = {}
   public metaData$!: Observable<AllMetaData>
   public usedProducts$ = new ReplaySubject<Product[]>(1) // getting data from bff endpoint
@@ -103,7 +120,6 @@ export class UsageSearchComponent implements OnInit {
   public productData$ = new BehaviorSubject<ProductAbstract[] | undefined>(undefined) // product data
   public slotEmitter = new EventEmitter<ProductAbstract[]>()
 
-  public filteredColumns: Column[] = []
   public columns: ExtendedColumn[] = [
     {
       field: 'name',
@@ -198,15 +214,14 @@ export class UsageSearchComponent implements OnInit {
     private readonly historyApi: HistoriesAPIService
   ) {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
-    this.filteredColumns = this.columns.filter((a) => a.active === true)
     this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.slotName)
+    this.syncInteractiveColumns()
   }
 
   public ngOnInit(): void {
     this.slotEmitter.subscribe(this.productData$)
     this.onReload()
-    this.getMetaData() // and trigger search
-    this.prepareDialogTranslations()
+    this.getMetaData()
     this.preparePageActions()
   }
 
@@ -310,65 +325,46 @@ export class UsageSearchComponent implements OnInit {
     this.loading = true
     this.exceptionKey = undefined
     if (!reuseCriteria) this.criteria = { ...criteria }
-    this.data$ = this.historyApi.getAllHistoryLatest({ historyCriteria: { ...this.criteria } }).pipe(
-      tap((data: any) => {
-        if (data.totalElements === 0) {
-          this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
-          return data.size
-        }
-      }),
-      map((data: HistoryPageResult) => {
-        if (!data.stream) return [] as ExtendedHistory[]
-        return data.stream.map(
-          (h) =>
-            ({
-              ...h,
-              valueType: displayValueType(h.usedValue),
-              defaultValueType: displayValueType(h.defaultValue),
-              displayDefaultValue: displayValue(h.defaultValue),
-              displayUsedValue: displayValue(h.usedValue),
-              isEqual: displayEqualityState(h.usedValue, h.defaultValue)
-            }) as ExtendedHistory
-        )
-      }),
-      catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
-        console.error('getAllHistoryLatest', err)
-        return of([] as ExtendedHistory[])
-      }),
-      finalize(() => (this.loading = false))
-    )
+    this.historyApi
+      .getAllHistoryLatest({ historyCriteria: { ...this.criteria } })
+      .pipe(
+        tap((data: any) => {
+          if (data.totalElements === 0) {
+            this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
+            return data.size
+          }
+        }),
+        map((data: HistoryPageResult) => {
+          if (!data.stream) return [] as UsageTableRow[]
+          return data.stream.map(
+            (h) =>
+              ({
+                ...h,
+                valueType: displayValueType(h.usedValue),
+                defaultValueType: displayValueType(h.defaultValue),
+                displayDefaultValue: displayValue(h.defaultValue),
+                displayUsedValue: displayValue(h.usedValue),
+                isEqual: displayEqualityState(h.usedValue, h.defaultValue),
+                imagePath: ''
+              }) as UsageTableRow
+          )
+        }),
+        catchError((err) => {
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
+          console.error('getAllHistoryLatest', err)
+          return of([] as UsageTableRow[])
+        }),
+        finalize(() => (this.loading = false))
+      )
+      .subscribe((rows) => {
+        this.allRows = rows
+        this.applyFilterAndSort()
+      })
   }
 
   /**
    * Dialog preparation
    */
-  private prepareDialogTranslations(): void {
-    this.dataViewControlsTranslations$ = this.translate
-      .get([
-        'PARAMETER.PRODUCT_NAME',
-        'PARAMETER.APP_ID',
-        'PARAMETER.NAME',
-        'PARAMETER.DISPLAY_NAME',
-        'DIALOG.DATAVIEW.FILTER'
-      ])
-      .pipe(
-        map((data) => {
-          return {
-            filterInputPlaceholder: data['DIALOG.DATAVIEW.FILTER'],
-            filterInputTooltip:
-              data['PARAMETER.PRODUCT_NAME'] +
-              ', ' +
-              data['PARAMETER.APP_ID'] +
-              ', ' +
-              data['PARAMETER.DISPLAY_NAME'] +
-              ', ' +
-              data['PARAMETER.NAME']
-          } as DataViewControlTranslations
-        })
-      )
-  }
-
   public preparePageActions(): void {
     this.actions = [
       {
@@ -386,6 +382,8 @@ export class UsageSearchComponent implements OnInit {
    */
   public onCriteriaReset(): void {
     this.criteria = {}
+    this.filterText = ''
+    this.applyFilterAndSort()
   }
 
   public onGoToParameterSearchPage() {
@@ -418,12 +416,23 @@ export class UsageSearchComponent implements OnInit {
     this.item4Detail = undefined
   }
 
-  public onColumnsChange(activeIds: string[]) {
-    this.filteredColumns = activeIds.map((id) => this.columns.find((col) => col.field === id)) as Column[]
+  public onColumnsChange(activeIds: string[]): void {
+    this.displayedColumnKeys = activeIds
   }
-
-  public onFilterChange(event: string): void {
-    this.dataTable?.filterGlobal(event, 'contains')
+  public onFilterChange(event: Filter[]): void {
+    this.tableFilters = event
+  }
+  public onGlobalFilter(value: string): void {
+    this.filterText = value
+    this.applyFilterAndSort()
+  }
+  public onClearGlobalFilter(): void {
+    this.filterText = ''
+    this.applyFilterAndSort()
+  }
+  public onSortChange(event: Sort): void {
+    this.sortField = event.sortColumn
+    this.sortDirection = event.sortDirection
   }
 
   // getting display names within HTML
@@ -444,5 +453,50 @@ export class UsageSearchComponent implements OnInit {
   public onCalcDuration(start: string, end: string): string {
     if (!start || start === '' || !end || end === '') return ''
     return new Date(Date.parse(end) - Date.parse(start)).toUTCString().split(' ')[4]
+  }
+
+  /****************************************************************************
+   *  Interactive Data View
+   */
+  private syncInteractiveColumns(): void {
+    const dataColumns = this.columns.map((column) => ({
+      id: column.field,
+      nameKey: column.translationPrefix ? `${column.translationPrefix}.${column.header}` : column.header,
+      tooltipKey: column.translationPrefix ? `${column.translationPrefix}.TOOLTIPS.${column.header}` : undefined,
+      columnType: this.getColumnType(column),
+      sortable: !!column.sort,
+      filterable: !!column.hasFilter
+    }))
+
+    this.interactiveColumns = [
+      {
+        id: 'actions',
+        nameKey: 'ACTIONS.LABEL',
+        columnType: ColumnType.STRING,
+        sortable: false,
+        filterable: false
+      },
+      ...dataColumns
+    ]
+    this.displayedColumnKeys = this.interactiveColumns.map((column) => column.id)
+  }
+
+  private getColumnType(column: ExtendedColumn): ColumnType {
+    if (column.isDate) return ColumnType.DATE
+    return ColumnType.STRING
+  }
+
+  private applyFilterAndSort(): void {
+    const normalizedQuery = this.filterText.trim().toLowerCase()
+    if (!normalizedQuery) {
+      this.interactiveRows = [...this.allRows]
+      return
+    }
+    this.interactiveRows = this.allRows.filter((row) => {
+      const searchFields = [row.productName ?? '', row.applicationId ?? '', row.name ?? '', row.displayName ?? '']
+        .join(' ')
+        .toLowerCase()
+      return searchFields.includes(normalizedQuery)
+    })
   }
 }
