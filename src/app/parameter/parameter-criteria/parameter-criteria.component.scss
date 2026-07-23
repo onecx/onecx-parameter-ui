@@ -1,4 +1,4 @@
-@import '/src/app/_pam-mixins.scss';
+@use '/src/app/_pam-mixins.scss' as *;
 
 @include correct-search-criteria;
 @include displaying-text-responsive;

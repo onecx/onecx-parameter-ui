@@ -5,21 +5,30 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { provideErrorTailorConfig, errorTailorImports } from '@ngneat/error-tailor'
 
 import { AutoCompleteModule } from 'primeng/autocomplete'
+import { BadgeModule } from 'primeng/badge'
+import { ButtonModule } from 'primeng/button'
 import { CalendarModule } from 'primeng/calendar'
 import { CardModule } from 'primeng/card'
+import { CheckboxModule } from 'primeng/checkbox'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { ConfirmPopupModule } from 'primeng/confirmpopup'
 import { ConfirmationService } from 'primeng/api'
 import { DataViewModule } from 'primeng/dataview'
 import { DialogModule } from 'primeng/dialog'
-import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog'
+import { DynamicDialogModule } from 'primeng/dynamicdialog'
 import { DropdownModule } from 'primeng/dropdown'
+import { SelectModule } from 'primeng/select'
 import { FieldsetModule } from 'primeng/fieldset'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
 import { InputTextModule } from 'primeng/inputtext'
 import { TextareaModule } from 'primeng/textarea'
 import { KeyFilterModule } from 'primeng/keyfilter'
 import { ListboxModule } from 'primeng/listbox'
+import { MessageModule } from 'primeng/message'
 import { MultiSelectModule } from 'primeng/multiselect'
+import { RippleModule } from 'primeng/ripple'
 import { SelectButtonModule } from 'primeng/selectbutton'
 import { TableModule } from 'primeng/table'
 import { TabViewModule } from 'primeng/tabview'
@@ -34,8 +43,11 @@ import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
   imports: [
     AngularAcceleratorModule,
     AutoCompleteModule,
+    BadgeModule,
+    ButtonModule,
     CalendarModule,
     CardModule,
+    CheckboxModule,
     CommonModule,
     ConfirmDialogModule,
     ConfirmPopupModule,
@@ -44,14 +56,20 @@ import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
     DropdownModule,
     DynamicDialogModule,
     FieldsetModule,
+    FloatLabelModule,
     FormsModule,
+    InputGroupModule,
+    InputGroupAddonModule,
     InputTextModule,
     TextareaModule,
     KeyFilterModule,
     ListboxModule,
+    MessageModule,
     MultiSelectModule,
     ReactiveFormsModule,
+    RippleModule,
     SelectButtonModule,
+    SelectModule,
     TableModule,
     TabViewModule,
     ToastModule,
@@ -61,8 +79,11 @@ import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
   ],
   exports: [
     AutoCompleteModule,
+    BadgeModule,
+    ButtonModule,
     CalendarModule,
     CardModule,
+    CheckboxModule,
     CommonModule,
     ConfirmDialogModule,
     ConfirmPopupModule,
@@ -71,14 +92,20 @@ import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
     DropdownModule,
     DynamicDialogModule,
     FieldsetModule,
+    FloatLabelModule,
     FormsModule,
+    InputGroupModule,
+    InputGroupAddonModule,
     InputTextModule,
     TextareaModule,
     KeyFilterModule,
     ListboxModule,
+    MessageModule,
     MultiSelectModule,
     ReactiveFormsModule,
+    RippleModule,
     SelectButtonModule,
+    SelectModule,
     TableModule,
     TabViewModule,
     ToastModule,
@@ -107,7 +134,9 @@ import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
       },
       //this is required because primeng calendar wraps things in an ugly way
       blurPredicate: (element: Element) => {
-        return ['INPUT', 'TEXTAREA', 'SELECT', 'CUSTOM-DATE', 'P-CALENDAR', 'P-DROPDOWN'].includes(element.tagName)
+        return ['INPUT', 'TEXTAREA', 'SELECT', 'CUSTOM-DATE', 'P-CALENDAR', 'P-DROPDOWN', 'P-SELECT'].includes(
+          element.tagName
+        )
       }
     })
   ]

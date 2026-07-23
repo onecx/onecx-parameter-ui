@@ -9,12 +9,19 @@ import {
   DataSortDirection,
   DataTableColumn,
   Filter,
-  OcxContentComponent,
-  RowListGridData,
-  Sort
+  Sort,
+  AngularAcceleratorModule
 } from '@onecx/angular-accelerator'
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 import { SlotService } from '@onecx/angular-remote-components'
+import { PortalPageComponent } from '@onecx/angular-utils'
+import { ButtonModule } from 'primeng/button'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { MessageModule } from 'primeng/message'
+import { RippleModule } from 'primeng/ripple'
+import { SharedModule } from 'src/app/shared/shared.module'
 
 import {
   History,
@@ -24,20 +31,11 @@ import {
   Product
 } from 'src/app/shared/generated'
 import { displayEqualityState, displayValue, displayValueType, sortByDisplayName } from 'src/app/shared/utils'
+import { UsageDetailComponent } from '../usage-detail/usage-detail.component'
+import { ParameterCriteriaComponent } from '../parameter-criteria/parameter-criteria.component'
+import { ParameterDetailComponent } from '../parameter-detail/parameter-detail.component'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
-type ExtendedColumn = Column & {
-  hasFilter?: boolean
-  isBoolean?: boolean
-  isDate?: boolean
-  isDuration?: boolean
-  isValue?: boolean
-  isText?: boolean
-  limit?: boolean
-  frozen?: boolean
-  sort?: boolean
-  css?: string
-}
 export type ExtendedHistory = History & {
   valueType: string
   defaultValueType: string
@@ -82,7 +80,21 @@ export type ProductAbstract = {
 @Component({
   selector: 'app-usage-search',
   templateUrl: './usage-search.component.html',
-  styleUrls: ['./usage-search.component.scss']
+  styleUrls: ['./usage-search.component.scss'],
+  imports: [
+    AngularAcceleratorModule,
+    SharedModule,
+    PortalPageComponent,
+    ButtonModule,
+    FloatLabelModule,
+    InputGroupAddonModule,
+    InputGroupModule,
+    MessageModule,
+    RippleModule,
+    ParameterCriteriaComponent,
+    UsageDetailComponent,
+    ParameterDetailComponent
+  ]
 })
 export class UsageSearchComponent implements OnInit {
   // dialog
@@ -119,87 +131,70 @@ export class UsageSearchComponent implements OnInit {
   public productData$ = new BehaviorSubject<ProductAbstract[] | undefined>(undefined) // product data
   public slotEmitter = new EventEmitter<ProductAbstract[]>()
 
-  public columns: ExtendedColumn[] = [
+  public columns: DataTableColumn[] = [
     {
-      field: 'name',
-      header: 'COMBINED_NAME',
-      translationPrefix: 'PARAMETER',
-      active: true,
-      limit: false,
-      frozen: true,
-      sort: true,
-      css: 'word-break-all'
+      id: 'name',
+      nameKey: 'PARAMETER.COMBINED_NAME',
+      tooltipKey: 'PARAMETER.TOOLTIPS.COMBINED_NAME',
+      columnType: ColumnType.STRING,
+      sortable: true
     },
     {
-      field: 'displayUsedValue',
-      header: 'USED_VALUE',
-      translationPrefix: 'USAGE',
-      active: true,
-      isValue: true,
-      css: 'text-center word-break-all'
+      id: 'displayUsedValue',
+      nameKey: 'USAGE.USED_VALUE',
+      tooltipKey: 'USAGE.TOOLTIPS.USED_VALUE',
+      columnType: ColumnType.STRING
     },
     {
-      field: 'displayDefaultValue',
-      header: 'DEFAULT_VALUE',
-      translationPrefix: 'USAGE',
-      active: true,
-      isValue: true,
-      css: 'text-center word-break-all hidden xl:table-cell'
+      id: 'displayDefaultValue',
+      nameKey: 'USAGE.DEFAULT_VALUE',
+      tooltipKey: 'USAGE.TOOLTIPS.DEFAULT_VALUE',
+      columnType: ColumnType.STRING
     },
     {
-      field: 'valueType',
-      translationPrefix: 'PARAMETER',
-      header: 'VALUE.TYPE',
-      active: true,
-      isValue: false,
-      css: 'text-center hidden lg:table-cell'
+      id: 'valueType',
+      nameKey: 'PARAMETER.VALUE.TYPE',
+      tooltipKey: 'PARAMETER.TOOLTIPS.VALUE.TYPE',
+      columnType: ColumnType.STRING
     },
     {
-      field: 'equal',
-      header: 'EQUAL',
-      translationPrefix: 'USAGE',
-      active: true,
-      css: 'text-center hidden lg:table-cell'
+      id: 'equal',
+      nameKey: 'USAGE.EQUAL',
+      tooltipKey: 'USAGE.TOOLTIPS.EQUAL',
+      columnType: ColumnType.STRING
     },
     {
-      field: 'start',
-      header: 'START',
-      translationPrefix: 'USAGE',
-      active: true,
-      isDate: true,
-      sort: true
+      id: 'start',
+      nameKey: 'USAGE.START',
+      tooltipKey: 'USAGE.TOOLTIPS.START',
+      columnType: ColumnType.DATE,
+      sortable: true
     },
     {
-      field: 'duration',
-      header: 'DURATION',
-      translationPrefix: 'USAGE',
-      active: true,
-      isDuration: true,
-      css: 'text-center hidden lg:table-cell'
+      id: 'duration',
+      nameKey: 'USAGE.DURATION',
+      tooltipKey: 'USAGE.TOOLTIPS.DURATION',
+      columnType: ColumnType.STRING
     },
     {
-      field: 'count',
-      header: 'COUNT',
-      translationPrefix: 'USAGE',
-      active: true,
-      isText: true,
-      css: 'text-center hidden xl:table-cell'
+      id: 'count',
+      nameKey: 'USAGE.COUNT',
+      tooltipKey: 'USAGE.TOOLTIPS.COUNT',
+      columnType: ColumnType.STRING
     },
     {
-      field: 'applicationName',
-      header: 'APP_NAME',
-      translationPrefix: 'PARAMETER',
-      active: true,
-      sort: true
+      id: 'applicationName',
+      nameKey: 'PARAMETER.APP_NAME',
+      tooltipKey: 'PARAMETER.TOOLTIPS.APP_NAME',
+      columnType: ColumnType.STRING,
+      sortable: true
     },
     {
-      field: 'instanceId',
-      header: 'INSTANCE_ID',
-      translationPrefix: 'USAGE',
-      active: true,
-      isText: true,
-      sort: true,
-      css: 'text-center hidden xl:table-cell'
+      id: 'instanceId',
+      nameKey: 'USAGE.INSTANCE_ID',
+      tooltipKey: 'USAGE.TOOLTIPS.INSTANCE_ID',
+      columnType: ColumnType.STRING,
+      sortable: true
     }
   ]
 
@@ -458,15 +453,6 @@ export class UsageSearchComponent implements OnInit {
    *  Interactive Data View
    */
   private syncInteractiveColumns(): void {
-    const dataColumns = this.columns.map((column) => ({
-      id: column.field,
-      nameKey: column.translationPrefix ? `${column.translationPrefix}.${column.header}` : column.header,
-      tooltipKey: column.translationPrefix ? `${column.translationPrefix}.TOOLTIPS.${column.header}` : undefined,
-      columnType: this.getColumnType(column),
-      sortable: !!column.sort,
-      filterable: !!column.hasFilter
-    }))
-
     this.interactiveColumns = [
       {
         id: 'actions',
@@ -475,14 +461,9 @@ export class UsageSearchComponent implements OnInit {
         sortable: false,
         filterable: false
       },
-      ...dataColumns
+      ...this.columns
     ]
     this.displayedColumnKeys = this.interactiveColumns.map((column) => column.id)
-  }
-
-  private getColumnType(column: ExtendedColumn): ColumnType {
-    if (column.isDate) return ColumnType.DATE
-    return ColumnType.STRING
   }
 
   private applyFilterAndSort(): void {
@@ -492,7 +473,7 @@ export class UsageSearchComponent implements OnInit {
       return
     }
     this.interactiveRows = this.allRows.filter((row) => {
-      const searchFields = [row.productName ?? '', row.applicationId ?? '', row.name ?? '', row.displayName ?? '']
+      const searchFields = [row.productName ?? '', row.applicationId ?? '', row.name ?? '', row['displayName'] ?? '']
         .join(' ')
         .toLowerCase()
       return searchFields.includes(normalizedQuery)

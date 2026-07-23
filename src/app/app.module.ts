@@ -7,7 +7,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { TranslateLoader, TranslateModule, MissingTranslationHandler } from '@ngx-translate/core'
 
 import { AngularAuthModule } from '@onecx/angular-auth'
-import { provideTranslationPathFromMeta, createTranslateLoader, provideThemeConfig } from '@onecx/angular-utils'
+import {
+  provideTranslationPathFromMeta,
+  createTranslateLoader,
+  provideThemeConfig,
+  providePermissionService
+} from '@onecx/angular-utils'
 import { APP_CONFIG } from '@onecx/angular-integration-interface'
 import { AngularAcceleratorMissingTranslationHandler, AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
@@ -46,7 +51,8 @@ const routes: Routes = [
     { provide: APP_CONFIG, useValue: environment },
     provideTranslationPathFromMeta(import.meta.url, 'assets/i18n/'),
     provideHttpClient(withInterceptorsFromDi()),
-    provideThemeConfig()
+    provideThemeConfig(),
+    providePermissionService()
   ]
 })
 export class AppModule {

@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { provideRouter, Router, ActivatedRoute } from '@angular/router'
-import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
@@ -219,29 +218,9 @@ describe('UsageSearchComponent', () => {
       expect(component).toBeTruthy()
     })
 
-    it('should call OnInit and populate filteredColumns/actions correctly', () => {
+    it('should call OnInit and populate displayedColumnKeys/actions correctly', () => {
       component.ngOnInit()
-      expect(component.filteredColumns[0]).toEqual(component.columns[0])
-    })
-
-    it('dataview translations', (done) => {
-      const translationData = {
-        'DIALOG.DATAVIEW.FILTER': 'filter'
-      }
-      const translateService = TestBed.inject(TranslateService)
-      spyOn(translateService, 'get').and.returnValue(of(translationData))
-
-      component.ngOnInit()
-
-      component.dataViewControlsTranslations$?.subscribe({
-        next: (data) => {
-          if (data) {
-            expect(data.filterInputPlaceholder).toEqual('filter')
-          }
-          done()
-        },
-        error: done.fail
-      })
+      expect(component.displayedColumnKeys).toContain(component.columns[0].id)
     })
   })
 
@@ -257,53 +236,31 @@ describe('UsageSearchComponent', () => {
   })
 
   describe('search', () => {
-    it('should search parameters without search criteria', (done) => {
+    it('should search parameters without search criteria', () => {
       historyApiSpy.getAllHistoryLatest.and.returnValue(of({ stream: historyRespData }))
 
       component.onSearch({})
 
-      component.data$?.subscribe({
-        next: (data) => {
-          expect(data).toEqual(historyData)
-          done()
-        },
-        error: done.fail
-      })
+      expect(component.interactiveRows.length).toEqual(historyData.length)
     })
 
-    it('should display an info message if there is no result', (done) => {
+    it('should display an info message if there is no result', () => {
       historyApiSpy.getAllHistoryLatest.and.returnValue(of({ totalElements: 0, stream: [] }))
 
       component.onSearch({})
 
-      component.data$?.subscribe({
-        next: (data) => {
-          expect(data.length).toEqual(0)
-          expect(msgServiceSpy.info).toHaveBeenCalledOnceWith({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
-          done()
-        },
-        error: done.fail
-      })
+      expect(msgServiceSpy.info).toHaveBeenCalledOnceWith({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
     })
 
-    it('should display an error message if the search fails', (done) => {
+    it('should display an error message if the search fails', () => {
       const errorResponse = { status: '403', statusText: 'Not authorized' }
       historyApiSpy.getAllHistoryLatest.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
 
       component.onSearch({})
 
-      component.data$?.subscribe({
-        next: (data) => {
-          expect(data).toEqual([])
-          done()
-        },
-        error: () => {
-          expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.SEARCH_FAILED' })
-          expect(console.error).toHaveBeenCalledWith('getAllHistoryLatest', errorResponse)
-          done.fail
-        }
-      })
+      expect(component.interactiveRows).toEqual([])
+      expect(console.error).toHaveBeenCalledWith('getAllHistoryLatest', errorResponse)
     })
   })
 
@@ -409,26 +366,16 @@ describe('UsageSearchComponent', () => {
   })
 
   describe('filter columns', () => {
-    it('should update the columns that are seen in data', () => {
-      const columns: Column[] = [
-        { field: 'productName', header: 'PRODUCT_NAME' },
-        { field: 'description', header: 'DESCRIPTION' }
-      ]
-      const expectedColumn = { field: 'productName', header: 'PRODUCT_NAME' }
-      component.columns = columns
+    it('should update displayedColumnKeys when columns change', () => {
+      component.onColumnsChange(['productName', 'description'])
 
-      component.onColumnsChange(['productName'])
-
-      expect(component.filteredColumns).not.toContain(columns[1])
-      expect(component.filteredColumns).toEqual([jasmine.objectContaining(expectedColumn)])
+      expect(component.displayedColumnKeys).toEqual(['productName', 'description'])
     })
 
-    it('should apply a filter to the result table', () => {
-      component.dataTable = jasmine.createSpyObj('dataTable', ['filterGlobal'])
+    it('should update filterText on global filter', () => {
+      component.onGlobalFilter('test')
 
-      component.onFilterChange('test')
-
-      expect(component.dataTable?.filterGlobal).toHaveBeenCalledWith('test', 'contains')
+      expect(component.filterText).toBe('test')
     })
   })
 

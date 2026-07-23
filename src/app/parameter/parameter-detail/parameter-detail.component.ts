@@ -13,9 +13,15 @@ import { finalize, map, Observable, of } from 'rxjs'
 import { SelectItem } from 'primeng/api'
 
 import { PortalMessageService } from '@onecx/angular-integration-interface'
+import { BadgeModule } from 'primeng/badge'
+import { CheckboxModule } from 'primeng/checkbox'
+import { DropdownModule } from 'primeng/dropdown'
+import { SelectButtonModule } from 'primeng/selectbutton'
+import { TabViewModule } from 'primeng/tabview'
 
 import { Parameter, ParametersAPIService, ParameterCreate, ParameterUpdate } from 'src/app/shared/generated'
 import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
+import { SharedModule } from 'src/app/shared/shared.module'
 import { ChangeMode, ExtendedProduct } from '../parameter-search/parameter-search.component'
 
 type ErrorMessageType = { summaryKey: string; detailKey?: string }
@@ -104,7 +110,8 @@ export function JsonValidator(): ValidatorFn {
 @Component({
   selector: 'app-parameter-detail',
   templateUrl: './parameter-detail.component.html',
-  styleUrls: ['./parameter-detail.component.scss']
+  styleUrls: ['./parameter-detail.component.scss'],
+  imports: [SharedModule, BadgeModule, CheckboxModule, DropdownModule, SelectButtonModule, TabViewModule]
 })
 export class ParameterDetailComponent implements OnChanges {
   @Input() public changeMode: ChangeMode = 'CREATE'
