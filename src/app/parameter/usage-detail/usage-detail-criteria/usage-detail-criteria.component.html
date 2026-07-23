@@ -1,5 +1,5 @@
 <div [formGroup]="criteriaForm" class="mt-1 mb-4 flex flex-row flex-wrap gap-3">
-  <span class="p-float-label flex-grow-1">
+  <p-floatlabel variant="on" class="flex-grow-1">
     <input
       id="pam_usage_detail_criteria_name"
       pInputText
@@ -12,8 +12,8 @@
       tooltipEvent="hover"
     />
     <label for="pam_usage_detail_criteria_name">{{ 'PARAMETER.NAME' | translate }}</label>
-  </span>
-  <span class="p-float-label flex-grow-1">
+  </p-floatlabel>
+  <p-floatlabel variant="on" class="flex-grow-1">
     <input
       id="pam_usage_detail_criteria_product_name"
       pInputText
@@ -26,8 +26,8 @@
       tooltipEvent="hover"
     />
     <label for="pam_usage_detail_criteria_product_name">{{ 'PARAMETER.PRODUCT_NAME' | translate }}</label>
-  </span>
-  <span class="p-float-label flex-grow-1">
+  </p-floatlabel>
+  <p-floatlabel variant="on" class="flex-grow-1">
     <input
       id="pam_usage_detail_criteria_application_id"
       pInputText
@@ -40,5 +40,5 @@
       tooltipEvent="hover"
     />
     <label for="pam_usage_detail_criteria_application_id">{{ 'PARAMETER.APP_NAME' | translate }}</label>
-  </span>
+  </p-floatlabel>
 </div>

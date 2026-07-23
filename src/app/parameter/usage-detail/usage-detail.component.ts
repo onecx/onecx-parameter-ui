@@ -4,13 +4,17 @@ import { catchError, finalize, map, Observable, of } from 'rxjs'
 
 import { HistoriesAPIService, HistoryCriteria, HistoryPageResult, Parameter } from 'src/app/shared/generated'
 import { displayEqualityState, displayValue, displayValueType } from 'src/app/shared/utils'
+import { SharedModule } from 'src/app/shared/shared.module'
 
 import { ExtendedHistory } from '../usage-search/usage-search.component'
+import { UsageDetailCriteriaComponent } from './usage-detail-criteria/usage-detail-criteria.component'
+import { UsageDetailListComponent } from './usage-detail-list/usage-detail-list.component'
 
 @Component({
   selector: 'app-usage-detail',
   templateUrl: './usage-detail.component.html',
-  styleUrls: ['./usage-detail.component.scss']
+  styleUrls: ['./usage-detail.component.scss'],
+  imports: [SharedModule, UsageDetailCriteriaComponent, UsageDetailListComponent]
 })
 export class UsageDetailComponent {
   @Input() public history: ExtendedHistory | undefined

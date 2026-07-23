@@ -2,8 +2,15 @@ import { NgModule } from '@angular/core'
 import { CommonModule, DatePipe } from '@angular/common'
 import { RouterModule, Routes } from '@angular/router'
 
-import { InitializeModuleGuard, addInitializeModuleGuard } from '@onecx/angular-integration-interface'
-import { PortalCoreModule } from '@onecx/portal-integration-angular'
+import { ButtonModule } from 'primeng/button'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputTextModule } from 'primeng/inputtext'
+import { RippleModule } from 'primeng/ripple'
+import { TooltipModule } from 'primeng/tooltip'
+
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
 import { SharedModule } from 'src/app/shared/shared.module'
 import { LabelResolver } from 'src/app/shared/label.resolver'
@@ -16,6 +23,7 @@ import { UsageDetailComponent } from './usage-detail/usage-detail.component'
 import { UsageDetailCriteriaComponent } from './usage-detail/usage-detail-criteria/usage-detail-criteria.component'
 import { UsageDetailListComponent } from './usage-detail/usage-detail-list/usage-detail-list.component'
 import { ParameterDeleteComponent } from './parameter-delete/parameter-delete.component'
+import { providePermissionService, provideThemeConfig } from '@onecx/angular-utils'
 
 const routes: Routes = [
   {
@@ -37,7 +45,7 @@ const routes: Routes = [
   }
 ]
 @NgModule({
-  declarations: [
+  imports: [
     ParameterSearchComponent,
     ParameterCriteriaComponent,
     ParameterDetailComponent,
@@ -45,15 +53,21 @@ const routes: Routes = [
     UsageSearchComponent,
     UsageDetailComponent,
     UsageDetailCriteriaComponent,
-    UsageDetailListComponent
-  ],
-  imports: [
+    UsageDetailListComponent,
     CommonModule,
-    PortalCoreModule.forMicroFrontend(),
-    [RouterModule.forChild(addInitializeModuleGuard(routes))],
+    AngularAcceleratorModule,
+    ButtonModule,
+    FloatLabelModule,
+    InputGroupAddonModule,
+    InputGroupModule,
+    InputTextModule,
+    AngularAcceleratorModule,
+    RippleModule,
+    TooltipModule,
+    [RouterModule.forChild(routes)],
     SharedModule
   ],
-  providers: [InitializeModuleGuard, DatePipe]
+  providers: [providePermissionService(), provideThemeConfig(), DatePipe]
 })
 export class ParameterModule {
   constructor() {

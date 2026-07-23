@@ -31,8 +31,8 @@
     >
       <div class="flex flex-column row-gap-4">
         <div class="flex flex-row flex-wrap gap-4 justify-content-between">
-          <span class="p-float-label flex-grow-1" controlErrorAnchor>
-            <p-dropdown
+          <p-floatlabel class="flex-grow-1" variant="on" controlErrorAnchor>
+            <p-select
               id="pam_detail_form_product_name"
               class="input-field"
               styleClass="w-20rem text-responsive"
@@ -40,7 +40,6 @@
               formControlName="productName"
               [options]="productOptions"
               (onChange)="onChangeProductName($event.value)"
-              [autoDisplayFirst]="true"
               [appendTo]="'body'"
               [showClear]="['COPY', 'CREATE'].includes(this.changeMode)"
               [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_PRODUCT' | translate"
@@ -49,20 +48,19 @@
               tooltipPosition="top"
               tooltipEvent="hover"
             >
-            </p-dropdown>
+            </p-select>
             <label class="ocx-required-label" for="pam_detail_form_product_name" aria-hidden="true">
               {{ 'PARAMETER.PRODUCT_NAME' | translate }}
             </label>
-          </span>
-          <span class="p-float-label flex-grow-1" controlErrorAnchor>
-            <p-dropdown
+          </p-floatlabel>
+          <p-floatlabel class="flex-grow-1" variant="on" controlErrorAnchor>
+            <p-select
               id="pam_detail_form_app_id"
               class="input-field"
               styleClass="w-20rem text-responsive"
               panelStyleClass="w-20rem"
               formControlName="applicationId"
               [options]="appOptions"
-              [autoDisplayFirst]="true"
               [appendTo]="'body'"
               [showClear]="['COPY', 'CREATE'].includes(this.changeMode)"
               [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_APP' | translate"
@@ -71,15 +69,15 @@
               tooltipPosition="top"
               tooltipEvent="hover"
             >
-            </p-dropdown>
+            </p-select>
             <label class="ocx-required-label" for="pam_detail_form_app_id" aria-hidden="true">
               {{ 'PARAMETER.APP_NAME' | translate }}
             </label>
-          </span>
+          </p-floatlabel>
         </div>
 
         <div class="flex flex-row gap-4">
-          <span class="p-float-label flex-grow-1" controlErrorAnchor>
+          <p-floatlabel class="flex-grow-1" variant="on" controlErrorAnchor>
             <input
               pInputText
               type="text"
@@ -92,11 +90,11 @@
               tooltipEvent="hover"
             />
             <label class="ocx-required-label" for="pam_detail_form_name">{{ 'PARAMETER.NAME' | translate }}</label>
-          </span>
+          </p-floatlabel>
         </div>
 
         <div class="flex flex-row gap-4">
-          <span class="p-float-label flex-grow-1" controlErrorAnchor>
+          <p-floatlabel class="flex-grow-1" variant="on" controlErrorAnchor>
             <input
               pInputText
               type="text"
@@ -109,11 +107,11 @@
               tooltipEvent="hover"
             />
             <label for="pam_detail_form_display_name">{{ 'PARAMETER.DISPLAY_NAME' | translate }}</label>
-          </span>
+          </p-floatlabel>
         </div>
 
         <div class="flex flex-row gap-4">
-          <span class="p-float-label flex-grow-1" controlErrorAnchor>
+          <p-floatlabel class="flex-grow-1" variant="on" controlErrorAnchor>
             <textarea
               pInputTextarea
               id="pam_detail_form_description"
@@ -128,7 +126,7 @@
             >
             </textarea>
             <label for="pam_detail_form_description">{{ 'PARAMETER.DESCRIPTION' | translate }} </label>
-          </span>
+          </p-floatlabel>
         </div>
       </div>
     </p-tabPanel>
@@ -173,14 +171,14 @@
             id="pam_detail_form_value"
             styleClass="ml-3 cursor-auto shadow-none"
             formControlName="valueBoolean"
-            [label]="'PARAMETER.VALUE' | translate"
             [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
-          ></p-checkbox>
+            >{{ 'PARAMETER.VALUE' | translate }}</p-checkbox
+          >
         </div>
 
-        <span *ngIf="ValueType.value !== 'BOOLEAN'" class="p-float-label">
+        <p-floatlabel *ngIf="ValueType.value !== 'BOOLEAN'" variant="on">
           <input
             *ngIf="ValueType.value !== 'OBJECT'; else objectTemplate"
             pInputText
@@ -195,7 +193,7 @@
           />
           <ng-template #objectTemplate>
             <p-badge
-              severity="primary"
+              severity="info"
               [value]="5000 - ParameterValueObject.value.length"
               class="z-1 text-badge-right"
               [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
@@ -221,7 +219,7 @@
           <label *ngIf="ValueType.value !== 'BOOLEAN'" class="ocx-required-label" for="pam_detail_form_value">
             {{ 'PARAMETER.VALUE' | translate }}
           </label>
-        </span>
+        </p-floatlabel>
         <label
           *ngIf="validationStatus.value === 'INVALID' || validationStatus.valueObject === 'INVALID'"
           class="block control-error"
@@ -272,14 +270,14 @@
             id="pam_detail_form_import_value"
             styleClass="ml-3 cursor-auto shadow-none"
             formControlName="importValueBoolean"
-            [label]="'PARAMETER.IMPORT_VALUE' | translate"
             [pTooltip]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
-          ></p-checkbox>
+            >{{ 'PARAMETER.IMPORT_VALUE' | translate }}</p-checkbox
+          >
         </div>
 
-        <span *ngIf="ImportValueType.value !== 'BOOLEAN'" class="p-float-label">
+        <p-floatlabel *ngIf="ImportValueType.value !== 'BOOLEAN'" variant="on">
           <input
             *ngIf="ImportValueType.value !== 'OBJECT'; else objectTemplate"
             pInputText
@@ -294,7 +292,7 @@
           />
           <ng-template #objectTemplate>
             <p-badge
-              severity="primary"
+              severity="info"
               [value]="5000 - ParameterImportValueObject.value.length"
               class="z-1 text-badge-right"
               [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
@@ -317,7 +315,7 @@
             </textarea>
           </ng-template>
           <label for="pam_detail_form_import_value">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
-        </span>
+        </p-floatlabel>
       </div>
     </p-tabPanel>
 
@@ -341,17 +339,17 @@
             [disabled]="true"
             [value]="parameter?.operator"
             [binary]="true"
-            [label]="'INTERNAL.OPERATOR' | translate"
             [ariaLabel]="'INTERNAL.OPERATOR' | translate"
             [pTooltip]="'INTERNAL.TOOLTIPS.OPERATOR' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
-          ></p-checkbox>
+            >{{ 'INTERNAL.OPERATOR' | translate }}</p-checkbox
+          >
         </div>
 
         <!-- row 2 -->
         <div class="flex flex-row flex-wrap gap-4">
-          <span class="flex-grow-1 sm:flex-grow-0 p-float-label">
+          <p-floatlabel class="flex-grow-1 sm:flex-grow-0" variant="on">
             <input
               pInputText
               type="text"
@@ -365,8 +363,8 @@
               tooltipEvent="hover"
             />
             <label for="pam_detail_field_creation_date">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
-          </span>
-          <span class="flex-grow-1 p-float-label">
+          </p-floatlabel>
+          <p-floatlabel class="flex-grow-1" variant="on">
             <input
               pInputText
               type="text"
@@ -380,12 +378,12 @@
               tooltipEvent="hover"
             />
             <label for="pam_detail_field_creation_user"> {{ 'INTERNAL.CREATION_USER' | translate }} </label>
-          </span>
+          </p-floatlabel>
         </div>
 
         <!-- row 4 -->
         <div class="flex flex-row flex-wrap gap-4">
-          <span class="flex-grow-1 sm:flex-grow-0 p-float-label">
+          <p-floatlabel class="flex-grow-1 sm:flex-grow-0" variant="on">
             <input
               pInputText
               type="text"
@@ -399,8 +397,8 @@
               tooltipEvent="hover"
             />
             <label for="pam_detail_field_modification_date"> {{ 'INTERNAL.MODIFICATION_DATE' | translate }} </label>
-          </span>
-          <span class="flex-grow-1 p-float-label">
+          </p-floatlabel>
+          <p-floatlabel class="flex-grow-1" variant="on">
             <input
               pInputText
               type="text"
@@ -414,7 +412,7 @@
               tooltipEvent="hover"
             />
             <label for="pam_detail_field_modification_user"> {{ 'INTERNAL.MODIFICATION_USER' | translate }} </label>
-          </span>
+          </p-floatlabel>
         </div>
       </div>
     </p-tabPanel>

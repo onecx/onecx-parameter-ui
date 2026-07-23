@@ -7,23 +7,17 @@ import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ng
 import { firstValueFrom } from 'rxjs'
 
 import { AngularAuthModule } from '@onecx/angular-auth'
-import { createTranslateLoader, provideTranslationPathFromMeta } from '@onecx/angular-utils'
+import { provideTranslationPathFromMeta, createTranslateLoader, PortalApiConfiguration } from '@onecx/angular-utils'
 import { createAppEntrypoint, initializeRouter, startsWith } from '@onecx/angular-webcomponents'
-import {
-  addInitializeModuleGuard,
-  AppConfigService,
-  AppStateService,
-  ConfigurationService
-} from '@onecx/angular-integration-interface'
-import { AngularAcceleratorMissingTranslationHandler } from '@onecx/angular-accelerator'
-import { PortalApiConfiguration, PortalCoreModule } from '@onecx/portal-integration-angular'
+import { AppConfigService, AppStateService, ConfigurationService } from '@onecx/angular-integration-interface'
+import { AngularAcceleratorMissingTranslationHandler, AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
 import { Configuration } from './shared/generated'
 import { environment } from 'src/environments/environment'
 import { AppEntrypointComponent } from './app-entrypoint.component'
 
-function apiConfigProvider(configService: ConfigurationService, appStateService: AppStateService) {
-  return new PortalApiConfiguration(Configuration, environment.apiPrefix, configService, appStateService)
+function apiConfigProvider() {
+  return new PortalApiConfiguration(Configuration, environment.apiPrefix)
 }
 
 export function appConfigServiceInitializer(appStateService: AppStateService, appConfigService: AppConfigService) {
@@ -40,13 +34,14 @@ const routes: Routes = [
   }
 ]
 @NgModule({
-  declarations: [AppEntrypointComponent],
+  declarations: [],
   imports: [
+    AppEntrypointComponent,
     AngularAuthModule,
+    AngularAcceleratorModule,
     BrowserModule,
     BrowserAnimationsModule,
-    PortalCoreModule.forMicroFrontend(),
-    RouterModule.forRoot(addInitializeModuleGuard(routes)),
+    RouterModule.forRoot(routes),
     TranslateModule.forRoot({
       isolate: true,
       loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] },
@@ -58,7 +53,7 @@ const routes: Routes = [
   ],
   providers: [
     ConfigurationService,
-    { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] },
+    { provide: Configuration, useFactory: apiConfigProvider },
     {
       provide: APP_INITIALIZER,
       useFactory: initializeRouter,

@@ -5,38 +5,49 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { provideErrorTailorConfig, errorTailorImports } from '@ngneat/error-tailor'
 
 import { AutoCompleteModule } from 'primeng/autocomplete'
+import { BadgeModule } from 'primeng/badge'
+import { ButtonModule } from 'primeng/button'
 import { CalendarModule } from 'primeng/calendar'
 import { CardModule } from 'primeng/card'
+import { CheckboxModule } from 'primeng/checkbox'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { ConfirmPopupModule } from 'primeng/confirmpopup'
 import { ConfirmationService } from 'primeng/api'
 import { DataViewModule } from 'primeng/dataview'
 import { DialogModule } from 'primeng/dialog'
-import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog'
+import { DynamicDialogModule } from 'primeng/dynamicdialog'
 import { DropdownModule } from 'primeng/dropdown'
+import { SelectModule } from 'primeng/select'
 import { FieldsetModule } from 'primeng/fieldset'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
 import { InputTextModule } from 'primeng/inputtext'
-import { InputTextareaModule } from 'primeng/inputtextarea'
+import { TextareaModule } from 'primeng/textarea'
 import { KeyFilterModule } from 'primeng/keyfilter'
 import { ListboxModule } from 'primeng/listbox'
+import { MessageModule } from 'primeng/message'
 import { MultiSelectModule } from 'primeng/multiselect'
+import { RippleModule } from 'primeng/ripple'
 import { SelectButtonModule } from 'primeng/selectbutton'
 import { TableModule } from 'primeng/table'
 import { TabViewModule } from 'primeng/tabview'
 import { ToastModule } from 'primeng/toast'
 import { TooltipModule } from 'primeng/tooltip'
 
-import { PortalCoreModule, PortalDialogService } from '@onecx/portal-integration-angular'
-
 import { LabelResolver } from './label.resolver'
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
 @NgModule({
   declarations: [],
   imports: [
-    PortalCoreModule.forMicroFrontend(),
+    AngularAcceleratorModule,
     AutoCompleteModule,
+    BadgeModule,
+    ButtonModule,
     CalendarModule,
     CardModule,
+    CheckboxModule,
     CommonModule,
     ConfirmDialogModule,
     ConfirmPopupModule,
@@ -45,14 +56,20 @@ import { LabelResolver } from './label.resolver'
     DropdownModule,
     DynamicDialogModule,
     FieldsetModule,
+    FloatLabelModule,
     FormsModule,
+    InputGroupModule,
+    InputGroupAddonModule,
     InputTextModule,
-    InputTextareaModule,
+    TextareaModule,
     KeyFilterModule,
     ListboxModule,
+    MessageModule,
     MultiSelectModule,
     ReactiveFormsModule,
+    RippleModule,
     SelectButtonModule,
+    SelectModule,
     TableModule,
     TabViewModule,
     ToastModule,
@@ -62,8 +79,11 @@ import { LabelResolver } from './label.resolver'
   ],
   exports: [
     AutoCompleteModule,
+    BadgeModule,
+    ButtonModule,
     CalendarModule,
     CardModule,
+    CheckboxModule,
     CommonModule,
     ConfirmDialogModule,
     ConfirmPopupModule,
@@ -72,14 +92,20 @@ import { LabelResolver } from './label.resolver'
     DropdownModule,
     DynamicDialogModule,
     FieldsetModule,
+    FloatLabelModule,
     FormsModule,
+    InputGroupModule,
+    InputGroupAddonModule,
     InputTextModule,
-    InputTextareaModule,
+    TextareaModule,
     KeyFilterModule,
     ListboxModule,
+    MessageModule,
     MultiSelectModule,
     ReactiveFormsModule,
+    RippleModule,
     SelectButtonModule,
+    SelectModule,
     TableModule,
     TabViewModule,
     ToastModule,
@@ -91,7 +117,6 @@ import { LabelResolver } from './label.resolver'
   providers: [
     ConfirmationService,
     LabelResolver,
-    { provide: DialogService, useClass: PortalDialogService },
     provideErrorTailorConfig({
       controlErrorsOn: { async: true, blur: true, change: true },
       errors: {
@@ -109,7 +134,9 @@ import { LabelResolver } from './label.resolver'
       },
       //this is required because primeng calendar wraps things in an ugly way
       blurPredicate: (element: Element) => {
-        return ['INPUT', 'TEXTAREA', 'SELECT', 'CUSTOM-DATE', 'P-CALENDAR', 'P-DROPDOWN'].includes(element.tagName)
+        return ['INPUT', 'TEXTAREA', 'SELECT', 'CUSTOM-DATE', 'P-CALENDAR', 'P-DROPDOWN', 'P-SELECT'].includes(
+          element.tagName
+        )
       }
     })
   ]

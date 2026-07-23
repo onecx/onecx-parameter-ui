@@ -1,12 +1,27 @@
-import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core'
+import { Component, EventEmitter, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
-import { Table } from 'primeng/table'
 
+import {
+  Action,
+  ColumnType,
+  DataSortDirection,
+  DataTableColumn,
+  Filter,
+  Sort,
+  AngularAcceleratorModule
+} from '@onecx/angular-accelerator'
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
-import { Action, Column, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 import { SlotService } from '@onecx/angular-remote-components'
+import { PortalPageComponent } from '@onecx/angular-utils'
+import { ButtonModule } from 'primeng/button'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { MessageModule } from 'primeng/message'
+import { RippleModule } from 'primeng/ripple'
+import { SharedModule } from 'src/app/shared/shared.module'
 
 import {
   History,
@@ -16,26 +31,21 @@ import {
   Product
 } from 'src/app/shared/generated'
 import { displayEqualityState, displayValue, displayValueType, sortByDisplayName } from 'src/app/shared/utils'
+import { UsageDetailComponent } from '../usage-detail/usage-detail.component'
+import { ParameterCriteriaComponent } from '../parameter-criteria/parameter-criteria.component'
+import { ParameterDetailComponent } from '../parameter-detail/parameter-detail.component'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
-type ExtendedColumn = Column & {
-  hasFilter?: boolean
-  isBoolean?: boolean
-  isDate?: boolean
-  isDuration?: boolean
-  isValue?: boolean
-  isText?: boolean
-  limit?: boolean
-  frozen?: boolean
-  sort?: boolean
-  css?: string
-}
 export type ExtendedHistory = History & {
   valueType: string
   defaultValueType: string
   displayUsedValue: string
   displayDefaultValue: string
   isEqual: string
+}
+export type UsageTableRow = ExtendedHistory & {
+  imagePath: string
+  [columnId: string]: unknown
 }
 export type ExtendedProduct = {
   name: string
@@ -70,7 +80,21 @@ export type ProductAbstract = {
 @Component({
   selector: 'app-usage-search',
   templateUrl: './usage-search.component.html',
-  styleUrls: ['./usage-search.component.scss']
+  styleUrls: ['./usage-search.component.scss'],
+  imports: [
+    AngularAcceleratorModule,
+    SharedModule,
+    PortalPageComponent,
+    ButtonModule,
+    FloatLabelModule,
+    InputGroupAddonModule,
+    InputGroupModule,
+    MessageModule,
+    RippleModule,
+    ParameterCriteriaComponent,
+    UsageDetailComponent,
+    ParameterDetailComponent
+  ]
 })
 export class UsageSearchComponent implements OnInit {
   // dialog
@@ -85,11 +109,16 @@ export class UsageSearchComponent implements OnInit {
   public actions: Action[] = []
   public sortByDisplayName = sortByDisplayName
 
-  @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
-  public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
+  public interactiveColumns: DataTableColumn[] = []
+  public displayedColumnKeys: string[] = []
+  public interactiveRows: UsageTableRow[] = []
+  private allRows: UsageTableRow[] = []
+  public filterText = ''
+  public sortField = 'start'
+  public sortDirection: DataSortDirection = DataSortDirection.NONE
+  public tableFilters: Filter[] = []
 
   // data
-  public data$: Observable<ExtendedHistory[]> | undefined
   public criteria: ParameterSearchCriteria = {}
   public metaData$!: Observable<AllMetaData>
   public usedProducts$ = new ReplaySubject<Product[]>(1) // getting data from bff endpoint
@@ -102,88 +131,70 @@ export class UsageSearchComponent implements OnInit {
   public productData$ = new BehaviorSubject<ProductAbstract[] | undefined>(undefined) // product data
   public slotEmitter = new EventEmitter<ProductAbstract[]>()
 
-  public filteredColumns: Column[] = []
-  public columns: ExtendedColumn[] = [
+  public columns: DataTableColumn[] = [
     {
-      field: 'name',
-      header: 'COMBINED_NAME',
-      translationPrefix: 'PARAMETER',
-      active: true,
-      limit: false,
-      frozen: true,
-      sort: true,
-      css: 'word-break-all'
+      id: 'name',
+      nameKey: 'PARAMETER.COMBINED_NAME',
+      tooltipKey: 'PARAMETER.TOOLTIPS.COMBINED_NAME',
+      columnType: ColumnType.STRING,
+      sortable: true
     },
     {
-      field: 'displayUsedValue',
-      header: 'USED_VALUE',
-      translationPrefix: 'USAGE',
-      active: true,
-      isValue: true,
-      css: 'text-center word-break-all'
+      id: 'displayUsedValue',
+      nameKey: 'USAGE.USED_VALUE',
+      tooltipKey: 'USAGE.TOOLTIPS.USED_VALUE',
+      columnType: ColumnType.STRING
     },
     {
-      field: 'displayDefaultValue',
-      header: 'DEFAULT_VALUE',
-      translationPrefix: 'USAGE',
-      active: true,
-      isValue: true,
-      css: 'text-center word-break-all hidden xl:table-cell'
+      id: 'displayDefaultValue',
+      nameKey: 'USAGE.DEFAULT_VALUE',
+      tooltipKey: 'USAGE.TOOLTIPS.DEFAULT_VALUE',
+      columnType: ColumnType.STRING
     },
     {
-      field: 'valueType',
-      translationPrefix: 'PARAMETER',
-      header: 'VALUE.TYPE',
-      active: true,
-      isValue: false,
-      css: 'text-center hidden lg:table-cell'
+      id: 'valueType',
+      nameKey: 'PARAMETER.VALUE.TYPE',
+      tooltipKey: 'PARAMETER.TOOLTIPS.VALUE.TYPE',
+      columnType: ColumnType.STRING
     },
     {
-      field: 'equal',
-      header: 'EQUAL',
-      translationPrefix: 'USAGE',
-      active: true,
-      css: 'text-center hidden lg:table-cell'
+      id: 'equal',
+      nameKey: 'USAGE.EQUAL',
+      tooltipKey: 'USAGE.TOOLTIPS.EQUAL',
+      columnType: ColumnType.STRING
     },
     {
-      field: 'start',
-      header: 'START',
-      translationPrefix: 'USAGE',
-      active: true,
-      isDate: true,
-      sort: true
+      id: 'start',
+      nameKey: 'USAGE.START',
+      tooltipKey: 'USAGE.TOOLTIPS.START',
+      columnType: ColumnType.DATE,
+      sortable: true
     },
     {
-      field: 'duration',
-      header: 'DURATION',
-      translationPrefix: 'USAGE',
-      active: true,
-      isDuration: true,
-      css: 'text-center hidden lg:table-cell'
+      id: 'duration',
+      nameKey: 'USAGE.DURATION',
+      tooltipKey: 'USAGE.TOOLTIPS.DURATION',
+      columnType: ColumnType.STRING
     },
     {
-      field: 'count',
-      header: 'COUNT',
-      translationPrefix: 'USAGE',
-      active: true,
-      isText: true,
-      css: 'text-center hidden xl:table-cell'
+      id: 'count',
+      nameKey: 'USAGE.COUNT',
+      tooltipKey: 'USAGE.TOOLTIPS.COUNT',
+      columnType: ColumnType.STRING
     },
     {
-      field: 'applicationName',
-      header: 'APP_NAME',
-      translationPrefix: 'PARAMETER',
-      active: true,
-      sort: true
+      id: 'applicationName',
+      nameKey: 'PARAMETER.APP_NAME',
+      tooltipKey: 'PARAMETER.TOOLTIPS.APP_NAME',
+      columnType: ColumnType.STRING,
+      sortable: true
     },
     {
-      field: 'instanceId',
-      header: 'INSTANCE_ID',
-      translationPrefix: 'USAGE',
-      active: true,
-      isText: true,
-      sort: true,
-      css: 'text-center hidden xl:table-cell'
+      id: 'instanceId',
+      nameKey: 'USAGE.INSTANCE_ID',
+      tooltipKey: 'USAGE.TOOLTIPS.INSTANCE_ID',
+      columnType: ColumnType.STRING,
+      sortable: true
     }
   ]
 
@@ -197,15 +208,14 @@ export class UsageSearchComponent implements OnInit {
     private readonly historyApi: HistoriesAPIService
   ) {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
-    this.filteredColumns = this.columns.filter((a) => a.active === true)
     this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.slotName)
+    this.syncInteractiveColumns()
   }
 
   public ngOnInit(): void {
     this.slotEmitter.subscribe(this.productData$)
     this.onReload()
-    this.getMetaData() // and trigger search
-    this.prepareDialogTranslations()
+    this.getMetaData()
     this.preparePageActions()
   }
 
@@ -309,65 +319,46 @@ export class UsageSearchComponent implements OnInit {
     this.loading = true
     this.exceptionKey = undefined
     if (!reuseCriteria) this.criteria = { ...criteria }
-    this.data$ = this.historyApi.getAllHistoryLatest({ historyCriteria: { ...this.criteria } }).pipe(
-      tap((data: any) => {
-        if (data.totalElements === 0) {
-          this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
-          return data.size
-        }
-      }),
-      map((data: HistoryPageResult) => {
-        if (!data.stream) return [] as ExtendedHistory[]
-        return data.stream.map(
-          (h) =>
-            ({
-              ...h,
-              valueType: displayValueType(h.usedValue),
-              defaultValueType: displayValueType(h.defaultValue),
-              displayDefaultValue: displayValue(h.defaultValue),
-              displayUsedValue: displayValue(h.usedValue),
-              isEqual: displayEqualityState(h.usedValue, h.defaultValue)
-            }) as ExtendedHistory
-        )
-      }),
-      catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
-        console.error('getAllHistoryLatest', err)
-        return of([] as ExtendedHistory[])
-      }),
-      finalize(() => (this.loading = false))
-    )
+    this.historyApi
+      .getAllHistoryLatest({ historyCriteria: { ...this.criteria } })
+      .pipe(
+        tap((data: any) => {
+          if (data.totalElements === 0) {
+            this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
+            return data.size
+          }
+        }),
+        map((data: HistoryPageResult) => {
+          if (!data.stream) return [] as UsageTableRow[]
+          return data.stream.map(
+            (h) =>
+              ({
+                ...h,
+                valueType: displayValueType(h.usedValue),
+                defaultValueType: displayValueType(h.defaultValue),
+                displayDefaultValue: displayValue(h.defaultValue),
+                displayUsedValue: displayValue(h.usedValue),
+                isEqual: displayEqualityState(h.usedValue, h.defaultValue),
+                imagePath: ''
+              }) as UsageTableRow
+          )
+        }),
+        catchError((err) => {
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
+          console.error('getAllHistoryLatest', err)
+          return of([] as UsageTableRow[])
+        }),
+        finalize(() => (this.loading = false))
+      )
+      .subscribe((rows) => {
+        this.allRows = rows
+        this.applyFilterAndSort()
+      })
   }
 
   /**
    * Dialog preparation
    */
-  private prepareDialogTranslations(): void {
-    this.dataViewControlsTranslations$ = this.translate
-      .get([
-        'PARAMETER.PRODUCT_NAME',
-        'PARAMETER.APP_ID',
-        'PARAMETER.NAME',
-        'PARAMETER.DISPLAY_NAME',
-        'DIALOG.DATAVIEW.FILTER'
-      ])
-      .pipe(
-        map((data) => {
-          return {
-            filterInputPlaceholder: data['DIALOG.DATAVIEW.FILTER'],
-            filterInputTooltip:
-              data['PARAMETER.PRODUCT_NAME'] +
-              ', ' +
-              data['PARAMETER.APP_ID'] +
-              ', ' +
-              data['PARAMETER.DISPLAY_NAME'] +
-              ', ' +
-              data['PARAMETER.NAME']
-          } as DataViewControlTranslations
-        })
-      )
-  }
-
   public preparePageActions(): void {
     this.actions = [
       {
@@ -385,6 +376,8 @@ export class UsageSearchComponent implements OnInit {
    */
   public onCriteriaReset(): void {
     this.criteria = {}
+    this.filterText = ''
+    this.applyFilterAndSort()
   }
 
   public onGoToParameterSearchPage() {
@@ -417,12 +410,23 @@ export class UsageSearchComponent implements OnInit {
     this.item4Detail = undefined
   }
 
-  public onColumnsChange(activeIds: string[]) {
-    this.filteredColumns = activeIds.map((id) => this.columns.find((col) => col.field === id)) as Column[]
+  public onColumnsChange(activeIds: string[]): void {
+    this.displayedColumnKeys = activeIds
   }
-
-  public onFilterChange(event: string): void {
-    this.dataTable?.filterGlobal(event, 'contains')
+  public onFilterChange(event: Filter[]): void {
+    this.tableFilters = event
+  }
+  public onGlobalFilter(value: string): void {
+    this.filterText = value
+    this.applyFilterAndSort()
+  }
+  public onClearGlobalFilter(): void {
+    this.filterText = ''
+    this.applyFilterAndSort()
+  }
+  public onSortChange(event: Sort): void {
+    this.sortField = event.sortColumn
+    this.sortDirection = event.sortDirection
   }
 
   // getting display names within HTML
@@ -443,5 +447,36 @@ export class UsageSearchComponent implements OnInit {
   public onCalcDuration(start: string, end: string): string {
     if (!start || start === '' || !end || end === '') return ''
     return new Date(Date.parse(end) - Date.parse(start)).toUTCString().split(' ')[4]
+  }
+
+  /****************************************************************************
+   *  Interactive Data View
+   */
+  private syncInteractiveColumns(): void {
+    this.interactiveColumns = [
+      {
+        id: 'actions',
+        nameKey: 'ACTIONS.LABEL',
+        columnType: ColumnType.STRING,
+        sortable: false,
+        filterable: false
+      },
+      ...this.columns
+    ]
+    this.displayedColumnKeys = this.interactiveColumns.map((column) => column.id)
+  }
+
+  private applyFilterAndSort(): void {
+    const normalizedQuery = this.filterText.trim().toLowerCase()
+    if (!normalizedQuery) {
+      this.interactiveRows = [...this.allRows]
+      return
+    }
+    this.interactiveRows = this.allRows.filter((row) => {
+      const searchFields = [row.productName ?? '', row.applicationId ?? '', row.name ?? '', row['displayName'] ?? '']
+        .join(' ')
+        .toLowerCase()
+      return searchFields.includes(normalizedQuery)
+    })
   }
 }
