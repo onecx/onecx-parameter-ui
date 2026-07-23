@@ -1,29 +1,35 @@
-import { APP_INITIALIZER, DoBootstrap, Injector, NgModule } from '@angular/core'
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
+import { DoBootstrap, inject, Injector, NgModule, provideAppInitializer } from '@angular/core'
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule, Routes, Router } from '@angular/router'
-import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core'
+import {
+  TranslateModule,
+  provideTranslateService,
+  provideTranslateLoader,
+  provideMissingTranslationHandler
+} from '@ngx-translate/core'
 import { firstValueFrom } from 'rxjs'
 
-import { AngularAuthModule } from '@onecx/angular-auth'
-import { createTranslateLoader, provideTranslationPathFromMeta } from '@onecx/angular-utils'
-import { createAppEntrypoint, initializeRouter, startsWith } from '@onecx/angular-webcomponents'
+import { AngularAuthModule, provideTokenInterceptor } from '@onecx/angular-auth'
 import {
-  addInitializeModuleGuard,
-  AppConfigService,
-  AppStateService,
-  ConfigurationService
-} from '@onecx/angular-integration-interface'
-import { AngularAcceleratorMissingTranslationHandler } from '@onecx/angular-accelerator'
-import { PortalApiConfiguration, PortalCoreModule } from '@onecx/portal-integration-angular'
+  OnecxTranslateLoader,
+  MultiLanguageMissingTranslationHandler,
+  PortalApiConfiguration,
+  provideTranslationPathFromMeta,
+  provideAngularUtils
+} from '@onecx/angular-utils'
+import { provideThemeConfig } from '@onecx/angular-utils/theme/primeng'
+import { createAppEntrypoint, initializeRouter, startsWith } from '@onecx/angular-webcomponents'
+import { AppConfigService, AppStateService } from '@onecx/angular-integration-interface'
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
 import { Configuration } from './shared/generated'
 import { environment } from 'src/environments/environment'
 import { AppEntrypointComponent } from './app-entrypoint.component'
 
-function apiConfigProvider(configService: ConfigurationService, appStateService: AppStateService) {
-  return new PortalApiConfiguration(Configuration, environment.apiPrefix, configService, appStateService)
+function apiConfigProvider() {
+  return new PortalApiConfiguration(Configuration, environment.apiPrefix)
 }
 
 export function appConfigServiceInitializer(appStateService: AppStateService, appConfigService: AppConfigService) {
@@ -45,41 +51,39 @@ const routes: Routes = [
     AngularAuthModule,
     BrowserModule,
     BrowserAnimationsModule,
-    PortalCoreModule.forMicroFrontend(),
-    RouterModule.forRoot(addInitializeModuleGuard(routes)),
-    TranslateModule.forRoot({
-      isolate: true,
-      loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] },
-      missingTranslationHandler: {
-        provide: MissingTranslationHandler,
-        useClass: AngularAcceleratorMissingTranslationHandler
-      }
-    })
+    AngularAcceleratorModule,
+    RouterModule.forRoot(routes),
+    TranslateModule
   ],
   providers: [
-    ConfigurationService,
-    { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeRouter,
-      multi: true,
-      deps: [Router, AppStateService]
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: appConfigServiceInitializer,
-      multi: true,
-      deps: [AppStateService, AppConfigService]
-    },
+    { provide: Configuration, useFactory: apiConfigProvider },
+    provideTranslateService({
+      defaultLanguage: 'en',
+      loader: provideTranslateLoader(OnecxTranslateLoader),
+      missingTranslationHandler: provideMissingTranslationHandler(MultiLanguageMissingTranslationHandler)
+    }),
+    provideAppInitializer(() => {
+      const router = inject(Router)
+      const appStateService = inject(AppStateService)
+      return initializeRouter(router, appStateService)()
+    }),
+    provideAppInitializer(() => {
+      const appStateService = inject(AppStateService)
+      const appConfigService = inject(AppConfigService)
+      return appConfigServiceInitializer(appStateService, appConfigService)()
+    }),
     provideTranslationPathFromMeta(import.meta.url, 'assets/i18n/'),
+    provideThemeConfig(),
+    provideAngularUtils(),
+    provideTokenInterceptor(),
     provideHttpClient(withInterceptorsFromDi())
   ]
 })
 export class OneCXParameterModule implements DoBootstrap {
-  constructor(
-    private readonly injector: Injector,
-    private readonly appConfigService: AppConfigService
-  ) {
+  private readonly injector = inject(Injector)
+  private readonly appConfigService = inject(AppConfigService)
+
+  constructor() {
     console.info('OneCX Parameter Module constructor')
   }
 

@@ -5,6 +5,7 @@
 @include search-criteria-select-button;
 @include search-criteria-select-button-slim;
 @include readable-disabled-components;
+@include floatlabel-readability;
 @include dialog-footer-buttons;
 @include dialog-non-full-size-modal;
 @include displaying-text-responsive;
@@ -18,7 +19,7 @@
   .error-tailor-has-error ~ control-error {
     text-align: left;
   }
-  .p-dropdown-label {
+  .p-select-label {
     padding-top: 1rem !important;
     padding-bottom: 0.5rem !important;
   }

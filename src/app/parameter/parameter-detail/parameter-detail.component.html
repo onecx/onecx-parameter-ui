@@ -22,403 +22,423 @@
     [text]="exceptionKey | translate"
   ></p-message>
 
-  <p-tabView *ngIf="!exceptionKey" [formGroup]="formGroup" errorTailor>
-    <p-tabPanel
-      [header]="'DIALOG.DETAIL.TAB.PROPS' | translate"
-      [tooltip]="'DIALOG.DETAIL.TAB.TOOLTIPS.PROPS' | translate"
-      tooltipPosition="top"
-      tooltipEvent="hover"
-    >
-      <div class="flex flex-column row-gap-4">
-        <div class="flex flex-row flex-wrap gap-4 justify-content-between">
-          <span class="p-float-label flex-grow-1" controlErrorAnchor>
-            <p-dropdown
-              id="pam_detail_form_product_name"
-              class="input-field"
-              styleClass="w-20rem text-responsive"
-              panelStyleClass="w-20rem"
-              formControlName="productName"
-              [options]="productOptions"
-              (onChange)="onChangeProductName($event.value)"
-              [autoDisplayFirst]="true"
-              [appendTo]="'body'"
-              [showClear]="['COPY', 'CREATE'].includes(this.changeMode)"
-              [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_PRODUCT' | translate"
-              [ariaLabel]="'PARAMETER.PRODUCT_NAME' | translate"
-              [pTooltip]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            >
-            </p-dropdown>
-            <label class="ocx-required-label" for="pam_detail_form_product_name" aria-hidden="true">
-              {{ 'PARAMETER.PRODUCT_NAME' | translate }}
-            </label>
-          </span>
-          <span class="p-float-label flex-grow-1" controlErrorAnchor>
-            <p-dropdown
-              id="pam_detail_form_app_id"
-              class="input-field"
-              styleClass="w-20rem text-responsive"
-              panelStyleClass="w-20rem"
-              formControlName="applicationId"
-              [options]="appOptions"
-              [autoDisplayFirst]="true"
-              [appendTo]="'body'"
-              [showClear]="['COPY', 'CREATE'].includes(this.changeMode)"
-              [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_APP' | translate"
-              [ariaLabel]="'PARAMETER.APP_NAME' | translate"
-              [pTooltip]="'PARAMETER.TOOLTIPS.APP_NAME' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            >
-            </p-dropdown>
-            <label class="ocx-required-label" for="pam_detail_form_app_id" aria-hidden="true">
-              {{ 'PARAMETER.APP_NAME' | translate }}
-            </label>
-          </span>
-        </div>
+  <p-tabs *ngIf="!exceptionKey" value="0" [formGroup]="formGroup" errorTailor>
+    <p-tablist>
+      <p-tab
+        value="0"
+        [pTooltip]="'DIALOG.DETAIL.TAB.TOOLTIPS.PROPS' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      >
+        {{ 'DIALOG.DETAIL.TAB.PROPS' | translate }}
+      </p-tab>
+      <p-tab
+        value="1"
+        [pTooltip]="'DIALOG.DETAIL.TAB.TOOLTIPS.VALUE' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      >
+        {{ 'DIALOG.DETAIL.TAB.VALUE' | translate }}
+      </p-tab>
+      <p-tab
+        *ngIf="!['COPY', 'CREATE'].includes(changeMode)"
+        value="2"
+        [pTooltip]="'DIALOG.DETAIL.TAB.TOOLTIPS.IMPORT_VALUE' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      >
+        {{ 'DIALOG.DETAIL.TAB.IMPORT_VALUE' | translate }}
+      </p-tab>
+      <p-tab
+        *ngIf="!['COPY', 'CREATE'].includes(changeMode)"
+        value="3"
+        [attr.aria-label]="'INTERNAL.HEADER' | translate"
+        [pTooltip]="'INTERNAL.TOOLTIP' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      >
+        {{ 'INTERNAL.HEADER' | translate }}
+      </p-tab>
+    </p-tablist>
+    <p-tabpanels>
+      <p-tabpanel value="0">
+        <div class="flex flex-column row-gap-4">
+          <div class="flex flex-row flex-wrap gap-4 justify-content-between">
+            <p-floatlabel class="flex-grow-1" controlErrorAnchor>
+              <p-select
+                id="pam_detail_form_product_name"
+                class="input-field"
+                styleClass="w-20rem text-responsive"
+                panelStyleClass="w-20rem"
+                formControlName="productName"
+                [options]="productOptions"
+                (onChange)="onChangeProductName($event.value)"
+                [appendTo]="'body'"
+                [showClear]="['COPY', 'CREATE'].includes(this.changeMode)"
+                [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_PRODUCT' | translate"
+                [ariaLabel]="'PARAMETER.PRODUCT_NAME' | translate"
+                [pTooltip]="'PARAMETER.TOOLTIPS.PRODUCT_NAME' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+              </p-select>
+              <label class="ocx-required-label" for="pam_detail_form_product_name" aria-hidden="true">
+                {{ 'PARAMETER.PRODUCT_NAME' | translate }}
+              </label>
+            </p-floatlabel>
+            <p-floatlabel class="flex-grow-1" controlErrorAnchor>
+              <p-select
+                id="pam_detail_form_app_id"
+                class="input-field"
+                styleClass="w-20rem text-responsive"
+                panelStyleClass="w-20rem"
+                formControlName="applicationId"
+                [options]="appOptions"
+                [appendTo]="'body'"
+                [showClear]="['COPY', 'CREATE'].includes(this.changeMode)"
+                [emptyMessage]="'ACTIONS.SEARCH.CRITERIA.NO_APP' | translate"
+                [ariaLabel]="'PARAMETER.APP_NAME' | translate"
+                [pTooltip]="'PARAMETER.TOOLTIPS.APP_NAME' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+              </p-select>
+              <label class="ocx-required-label" for="pam_detail_form_app_id" aria-hidden="true">
+                {{ 'PARAMETER.APP_NAME' | translate }}
+              </label>
+            </p-floatlabel>
+          </div>
 
-        <div class="flex flex-row gap-4">
-          <span class="p-float-label flex-grow-1" controlErrorAnchor>
-            <input
-              pInputText
+          <div class="flex flex-row gap-4">
+            <p-floatlabel class="flex-grow-1" controlErrorAnchor>
+              <input
+                pInputText
+                type="text"
+                id="pam_detail_form_name"
+                formControlName="name"
+                class="w-full pt-3 pb-2 text-responsive"
+                [attr.aria-label]="'PARAMETER.NAME' | translate"
+                [pTooltip]="'PARAMETER.TOOLTIPS.NAME' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              />
+              <label class="ocx-required-label" for="pam_detail_form_name">{{ 'PARAMETER.NAME' | translate }}</label>
+            </p-floatlabel>
+          </div>
+
+          <div class="flex flex-row gap-4">
+            <p-floatlabel class="flex-grow-1" controlErrorAnchor>
+              <input
+                pInputText
+                type="text"
+                id="pam_detail_form_display_name"
+                formControlName="displayName"
+                class="w-full pt-3 pb-2 text-responsive"
+                [attr.aria-label]="'PARAMETER.DISPLAY_NAME' | translate"
+                [pTooltip]="'PARAMETER.TOOLTIPS.DISPLAY_NAME' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              />
+              <label for="pam_detail_form_display_name">{{ 'PARAMETER.DISPLAY_NAME' | translate }}</label>
+            </p-floatlabel>
+          </div>
+
+          <div class="flex flex-row gap-4">
+            <p-floatlabel class="flex-grow-1" controlErrorAnchor>
+              <textarea
+                pInputTextarea
+                id="pam_detail_form_description"
+                class="w-full"
+                formControlName="description"
+                rows="2"
+                autoResize="false"
+                [ariaLabel]="'PARAMETER.DESCRIPTION' | translate"
+                [pTooltip]="'PARAMETER.TOOLTIPS.DESCRIPTION' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+              </textarea>
+              <label for="pam_detail_form_description">{{ 'PARAMETER.DESCRIPTION' | translate }} </label>
+            </p-floatlabel>
+          </div>
+        </div>
+      </p-tabpanel>
+
+      <!-- VALUE - changeable -->
+      <p-tabpanel
+        value="1"
+        *ngIf="{
+          value: valueStatus$ | async,
+          valueObject: valueObjectStatus$ | async,
+          errors: valueObjectError$ | async
+        } as validationStatus"
+      >
+        <div class="mb-4 flex flex-row flex-wrap justify-content-center align-items-center gap-3">
+          <div class="">{{ 'PARAMETER.VALUE.TYPE' | translate }}</div>
+          <div class="slim-selectbutton search-criteria-selectbutton">
+            <p-selectButton
+              #ValueType
+              inputid="pam_detail_form_value_type_switch"
+              [options]="valueTypeOptions"
+              formControlName="valueType"
+              [attr.aria-label]="'PARAMETER.TOOLTIPS.VALUE.TYPE.DETAIL' | translate"
+              [pTooltip]="'PARAMETER.TOOLTIPS.VALUE.TYPE.DETAIL' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            >
+              <ng-template let-item pTemplate="item">{{ item.label | translate }}</ng-template>
+            </p-selectButton>
+          </div>
+        </div>
+        <ng-container *ngIf="ValueType.value === 'UNKNOWN'"> {{ 'PARAMETER.VALUE.EMPTY' | translate }} </ng-container>
+
+        <div *ngIf="ValueType.value !== 'UNKNOWN'" class="relative p-fluid">
+          <div class="mt-3 mb-4">
+            <p-checkbox
+              *ngIf="ValueType.value === 'BOOLEAN'"
               type="text"
-              id="pam_detail_form_name"
-              formControlName="name"
-              class="w-full pt-3 pb-2 text-responsive"
-              [attr.aria-label]="'PARAMETER.NAME' | translate"
-              [pTooltip]="'PARAMETER.TOOLTIPS.NAME' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label class="ocx-required-label" for="pam_detail_form_name">{{ 'PARAMETER.NAME' | translate }}</label>
-          </span>
-        </div>
-
-        <div class="flex flex-row gap-4">
-          <span class="p-float-label flex-grow-1" controlErrorAnchor>
-            <input
-              pInputText
-              type="text"
-              id="pam_detail_form_display_name"
-              formControlName="displayName"
-              class="w-full pt-3 pb-2 text-responsive"
-              [attr.aria-label]="'PARAMETER.DISPLAY_NAME' | translate"
-              [pTooltip]="'PARAMETER.TOOLTIPS.DISPLAY_NAME' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label for="pam_detail_form_display_name">{{ 'PARAMETER.DISPLAY_NAME' | translate }}</label>
-          </span>
-        </div>
-
-        <div class="flex flex-row gap-4">
-          <span class="p-float-label flex-grow-1" controlErrorAnchor>
-            <textarea
-              pInputTextarea
-              id="pam_detail_form_description"
-              class="w-full"
-              formControlName="description"
-              rows="2"
-              autoResize="false"
-              [ariaLabel]="'PARAMETER.DESCRIPTION' | translate"
-              [pTooltip]="'PARAMETER.TOOLTIPS.DESCRIPTION' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            >
-            </textarea>
-            <label for="pam_detail_form_description">{{ 'PARAMETER.DESCRIPTION' | translate }} </label>
-          </span>
-        </div>
-      </div>
-    </p-tabPanel>
-
-    <!-- VALUE - changeable -->
-    <p-tabPanel
-      [header]="'DIALOG.DETAIL.TAB.VALUE' | translate"
-      [tooltip]="'DIALOG.DETAIL.TAB.TOOLTIPS.VALUE' | translate"
-      tooltipPosition="top"
-      tooltipEvent="hover"
-      *ngIf="{
-        value: valueStatus$ | async,
-        valueObject: valueObjectStatus$ | async,
-        errors: valueObjectError$ | async
-      } as validationStatus"
-    >
-      <div class="mb-4 flex flex-row flex-wrap justify-content-center align-items-center gap-3">
-        <div class="">{{ 'PARAMETER.VALUE.TYPE' | translate }}</div>
-        <div class="slim-selectbutton search-criteria-selectbutton">
-          <p-selectButton
-            #ValueType
-            inputid="pam_detail_form_value_type_switch"
-            [options]="valueTypeOptions"
-            formControlName="valueType"
-            [attr.aria-label]="'PARAMETER.TOOLTIPS.VALUE.TYPE.DETAIL' | translate"
-            [pTooltip]="'PARAMETER.TOOLTIPS.VALUE.TYPE.DETAIL' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          >
-            <ng-template let-item pTemplate>{{ item.label | translate }}</ng-template>
-          </p-selectButton>
-        </div>
-      </div>
-      <ng-container *ngIf="ValueType.value === 'UNKNOWN'"> {{ 'PARAMETER.VALUE.EMPTY' | translate }} </ng-container>
-
-      <div *ngIf="ValueType.value !== 'UNKNOWN'" class="relative p-fluid">
-        <div class="mt-3 mb-4">
-          <p-checkbox
-            *ngIf="ValueType.value === 'BOOLEAN'"
-            type="text"
-            [binary]="true"
-            id="pam_detail_form_value"
-            styleClass="ml-3 cursor-auto shadow-none"
-            formControlName="valueBoolean"
-            [label]="'PARAMETER.VALUE' | translate"
-            [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          ></p-checkbox>
-        </div>
-
-        <span *ngIf="ValueType.value !== 'BOOLEAN'" class="p-float-label">
-          <input
-            *ngIf="ValueType.value !== 'OBJECT'; else objectTemplate"
-            pInputText
-            type="text"
-            id="pam_detail_form_value"
-            class="mb-1 w-full pt-3 pb-2 text-responsive"
-            formControlName="value"
-            [attr.aria-label]="'PARAMETER.VALUE' | translate"
-            [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          />
-          <ng-template #objectTemplate>
-            <p-badge
-              severity="primary"
-              [value]="5000 - ParameterValueObject.value.length"
-              class="z-1 text-badge-right"
-              [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
-              [pTooltip]="'DIALOG.DETAIL.CHARACTERS' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <textarea
-              #ParameterValueObject
-              pInputTextarea
+              [binary]="true"
               id="pam_detail_form_value"
-              class="w-full"
-              formControlName="valueObject"
-              [rows]="5"
-              [ariaLabel]="'PARAMETER.VALUE' | translate"
+              styleClass="ml-3 cursor-auto shadow-none"
+              formControlName="valueBoolean"
               [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
-            >
-            </textarea>
-            <div class="text-xs">Format: {{ 'VALIDATION.JSON_FORMAT' | translate }}</div>
-          </ng-template>
-          <label *ngIf="ValueType.value !== 'BOOLEAN'" class="ocx-required-label" for="pam_detail_form_value">
-            {{ 'PARAMETER.VALUE' | translate }}
-          </label>
-        </span>
-        <label
-          *ngIf="validationStatus.value === 'INVALID' || validationStatus.valueObject === 'INVALID'"
-          class="block control-error"
-          for="pam_detail_form_value"
-        >
-          {{ 'VALIDATION.ERRORS.PATTERN_ERROR' | translate }}
-          <br />
-          {{ formGroup.get('valueObject')?.errors?.['error'] }}
-        </label>
-      </div>
-    </p-tabPanel>
+            ></p-checkbox>
+            <label *ngIf="ValueType.value === 'BOOLEAN'" for="pam_detail_form_value">{{
+              'PARAMETER.VALUE' | translate
+            }}</label>
+          </div>
 
-    <!-- IMPORT VALUE - NOT changeable -->
-    <p-tabPanel
-      *ngIf="!['COPY', 'CREATE'].includes(changeMode)"
-      [header]="'DIALOG.DETAIL.TAB.IMPORT_VALUE' | translate"
-      [tooltip]="'DIALOG.DETAIL.TAB.TOOLTIPS.IMPORT_VALUE' | translate"
-      tooltipPosition="top"
-      tooltipEvent="hover"
-    >
-      <div class="mb-4 flex flex-row flex-wrap justify-content-center align-items-center gap-3">
-        <div class="">{{ 'PARAMETER.VALUE.TYPE' | translate }}</div>
-        <div class="slim-selectbutton search-criteria-selectbutton">
-          <p-selectButton
-            #ImportValueType
-            inputid="pam_detail_form_import_value_type_switch"
-            [options]="valueTypeOptions"
-            formControlName="importValueType"
-            [attr.aria-label]="'PARAMETER.VALUE.TYPE' | translate"
-            [pTooltip]="'PARAMETER.TOOLTIPS.VALUE.TYPE.DETAIL' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          >
-            <ng-template let-item pTemplate>{{ item.label | translate }}</ng-template>
-          </p-selectButton>
-        </div>
-      </div>
-      <ng-container *ngIf="ImportValueType.value === 'UNKNOWN'">
-        {{ 'PARAMETER.VALUE.EMPTY' | translate }}
-      </ng-container>
-
-      <div *ngIf="ImportValueType.value !== 'UNKNOWN'" class="relative p-fluid">
-        <div class="mt-3 mb-4">
-          <p-checkbox
-            *ngIf="ImportValueType.value === 'BOOLEAN'"
-            type="text"
-            [binary]="true"
-            id="pam_detail_form_import_value"
-            styleClass="ml-3 cursor-auto shadow-none"
-            formControlName="importValueBoolean"
-            [label]="'PARAMETER.IMPORT_VALUE' | translate"
-            [pTooltip]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          ></p-checkbox>
-        </div>
-
-        <span *ngIf="ImportValueType.value !== 'BOOLEAN'" class="p-float-label">
-          <input
-            *ngIf="ImportValueType.value !== 'OBJECT'; else objectTemplate"
-            pInputText
-            type="text"
-            id="pam_detail_form_import_value"
-            class="mb-1 w-full pt-3 pb-2 text-responsive"
-            formControlName="importValue"
-            [attr.aria-label]="'PARAMETER.IMPORT_VALUE' | translate"
-            [pTooltip]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          />
-          <ng-template #objectTemplate>
-            <p-badge
-              severity="primary"
-              [value]="5000 - ParameterImportValueObject.value.length"
-              class="z-1 text-badge-right"
-              [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
-              [pTooltip]="'DIALOG.DETAIL.CHARACTERS' | translate"
+          <p-floatlabel *ngIf="ValueType.value !== 'BOOLEAN'">
+            <input
+              *ngIf="ValueType.value !== 'OBJECT'; else objectTemplate"
+              pInputText
+              type="text"
+              id="pam_detail_form_value"
+              class="mb-1 w-full pt-3 pb-2 text-responsive"
+              formControlName="value"
+              [attr.aria-label]="'PARAMETER.VALUE' | translate"
+              [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
             />
-            <textarea
-              #ParameterImportValueObject
-              pInputTextarea
+            <ng-template #objectTemplate>
+              <p-badge
+                severity="info"
+                [value]="5000 - ParameterValueObject.value.length"
+                class="z-1 text-badge-right"
+                [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
+                [pTooltip]="'DIALOG.DETAIL.CHARACTERS' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              />
+              <textarea
+                #ParameterValueObject
+                pInputTextarea
+                id="pam_detail_form_value"
+                class="w-full"
+                formControlName="valueObject"
+                [rows]="5"
+                [ariaLabel]="'PARAMETER.VALUE' | translate"
+                [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+              </textarea>
+              <div class="text-xs">Format: {{ 'VALIDATION.JSON_FORMAT' | translate }}</div>
+            </ng-template>
+            <label *ngIf="ValueType.value !== 'BOOLEAN'" class="ocx-required-label" for="pam_detail_form_value">
+              {{ 'PARAMETER.VALUE' | translate }}
+            </label>
+          </p-floatlabel>
+          <label
+            *ngIf="validationStatus.value === 'INVALID' || validationStatus.valueObject === 'INVALID'"
+            class="block control-error"
+            for="pam_detail_form_value"
+          >
+            {{ 'VALIDATION.ERRORS.PATTERN_ERROR' | translate }}
+            <br />
+            {{ formGroup.get('valueObject')?.errors?.['error'] }}
+          </label>
+        </div>
+      </p-tabpanel>
+
+      <!-- IMPORT VALUE - NOT changeable -->
+      <p-tabpanel *ngIf="!['COPY', 'CREATE'].includes(changeMode)" value="2">
+        <div class="mb-4 flex flex-row flex-wrap justify-content-center align-items-center gap-3">
+          <div class="">{{ 'PARAMETER.VALUE.TYPE' | translate }}</div>
+          <div class="slim-selectbutton search-criteria-selectbutton">
+            <p-selectButton
+              #ImportValueType
+              inputid="pam_detail_form_import_value_type_switch"
+              [options]="valueTypeOptions"
+              formControlName="importValueType"
+              [attr.aria-label]="'PARAMETER.VALUE.TYPE' | translate"
+              [pTooltip]="'PARAMETER.TOOLTIPS.VALUE.TYPE.DETAIL' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            >
+              <ng-template let-item pTemplate="item">{{ item.label | translate }}</ng-template>
+            </p-selectButton>
+          </div>
+        </div>
+        <ng-container *ngIf="ImportValueType.value === 'UNKNOWN'">
+          {{ 'PARAMETER.VALUE.EMPTY' | translate }}
+        </ng-container>
+
+        <div *ngIf="ImportValueType.value !== 'UNKNOWN'" class="relative p-fluid">
+          <div class="mt-3 mb-4">
+            <p-checkbox
+              *ngIf="ImportValueType.value === 'BOOLEAN'"
+              type="text"
+              [binary]="true"
               id="pam_detail_form_import_value"
-              class="w-full"
-              formControlName="importValue"
-              [rows]="5"
-              [ariaLabel]="'PARAMETER.IMPORT_VALUE' | translate"
+              styleClass="ml-3 cursor-auto shadow-none"
+              formControlName="importValueBoolean"
               [pTooltip]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
-            >
-            </textarea>
-          </ng-template>
-          <label for="pam_detail_form_import_value">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
-        </span>
-      </div>
-    </p-tabPanel>
+            ></p-checkbox>
+            <label *ngIf="ImportValueType.value === 'BOOLEAN'" for="pam_detail_form_import_value">{{
+              'PARAMETER.IMPORT_VALUE' | translate
+            }}</label>
+          </div>
 
-    <!-- INTERNALS - in case of an existing item only -->
-    <p-tabPanel
-      *ngIf="!['COPY', 'CREATE'].includes(changeMode)"
-      [header]="'INTERNAL.HEADER' | translate"
-      [attr.aria-label]="'INTERNAL.HEADER' | translate"
-      [tooltip]="'INTERNAL.TOOLTIP' | translate"
-      tooltipPosition="top"
-      tooltipEvent="hover"
-    >
-      <div class="mt-1 flex flex-column row-gap-4">
-        <!-- row 1 -->
-        <div
-          class="ml-2 sm:ml-3 mb-1 flex flex-row flex-wrap justify-content-start align-items-center column-gap-7 row-gap-2"
-        >
-          <p-checkbox
-            inputId="pam_detail_field_operator"
-            styleClass="cursor-auto shadow-none"
-            [disabled]="true"
-            [value]="parameter?.operator"
-            [binary]="true"
-            [label]="'INTERNAL.OPERATOR' | translate"
-            [ariaLabel]="'INTERNAL.OPERATOR' | translate"
-            [pTooltip]="'INTERNAL.TOOLTIPS.OPERATOR' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          ></p-checkbox>
+          <p-floatlabel *ngIf="ImportValueType.value !== 'BOOLEAN'">
+            <input
+              *ngIf="ImportValueType.value !== 'OBJECT'; else objectTemplate"
+              pInputText
+              type="text"
+              id="pam_detail_form_import_value"
+              class="mb-1 w-full pt-3 pb-2 text-responsive"
+              formControlName="importValue"
+              [attr.aria-label]="'PARAMETER.IMPORT_VALUE' | translate"
+              [pTooltip]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <ng-template #objectTemplate>
+              <p-badge
+                severity="info"
+                [value]="5000 - ParameterImportValueObject.value.length"
+                class="z-1 text-badge-right"
+                [attr.aria-label]="'DIALOG.DETAIL.CHARACTERS' | translate"
+                [pTooltip]="'DIALOG.DETAIL.CHARACTERS' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              />
+              <textarea
+                #ParameterImportValueObject
+                pInputTextarea
+                id="pam_detail_form_import_value"
+                class="w-full"
+                formControlName="importValue"
+                [rows]="5"
+                [ariaLabel]="'PARAMETER.IMPORT_VALUE' | translate"
+                [pTooltip]="'PARAMETER.TOOLTIPS.IMPORT_VALUE' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+              </textarea>
+            </ng-template>
+            <label for="pam_detail_form_import_value">{{ 'PARAMETER.IMPORT_VALUE' | translate }}</label>
+          </p-floatlabel>
         </div>
+      </p-tabpanel>
 
-        <!-- row 2 -->
-        <div class="flex flex-row flex-wrap gap-4">
-          <span class="flex-grow-1 sm:flex-grow-0 p-float-label">
-            <input
-              pInputText
-              type="text"
-              id="pam_detail_field_creation_date"
-              class="w-full sm:w-15rem pt-3 pb-2 text-responsive"
+      <!-- INTERNALS - in case of an existing item only -->
+      <p-tabpanel *ngIf="!['COPY', 'CREATE'].includes(changeMode)" value="3">
+        <div class="mt-1 flex flex-column row-gap-4">
+          <!-- row 1 -->
+          <div
+            class="ml-2 sm:ml-3 mb-1 flex flex-row flex-wrap justify-content-start align-items-center column-gap-7 row-gap-2"
+          >
+            <p-checkbox
+              inputId="pam_detail_field_operator"
+              styleClass="cursor-auto shadow-none"
               [disabled]="true"
-              [value]="parameter?.creationDate ? (parameter?.creationDate | date: dateFormat) : ''"
-              [attr.aria-label]="'INTERNAL.CREATION_DATE' | translate"
-              [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
+              [value]="parameter?.operator"
+              [binary]="true"
+              [ariaLabel]="'INTERNAL.OPERATOR' | translate"
+              [pTooltip]="'INTERNAL.TOOLTIPS.OPERATOR' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
-            />
-            <label for="pam_detail_field_creation_date">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
-          </span>
-          <span class="flex-grow-1 p-float-label">
-            <input
-              pInputText
-              type="text"
-              id="pam_detail_field_creation_user"
-              class="w-full pt-3 pb-2 text-responsive"
-              [disabled]="true"
-              [value]="parameter?.creationUser"
-              [attr.aria-label]="'INTERNAL.CREATION_USER' | translate"
-              [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_USER' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label for="pam_detail_field_creation_user"> {{ 'INTERNAL.CREATION_USER' | translate }} </label>
-          </span>
-        </div>
+            ></p-checkbox>
+            <label for="pam_detail_field_operator">{{ 'INTERNAL.OPERATOR' | translate }}</label>
+          </div>
 
-        <!-- row 4 -->
-        <div class="flex flex-row flex-wrap gap-4">
-          <span class="flex-grow-1 sm:flex-grow-0 p-float-label">
-            <input
-              pInputText
-              type="text"
-              id="pam_detail_field_modification_date"
-              class="w-full sm:w-15rem pt-3 pb-2"
-              [disabled]="true"
-              [value]="parameter?.modificationDate ? (parameter?.modificationDate | date: dateFormat) : ''"
-              [attr.aria-label]="'INTERNAL.MODIFICATION_DATE' | translate"
-              [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label for="pam_detail_field_modification_date"> {{ 'INTERNAL.MODIFICATION_DATE' | translate }} </label>
-          </span>
-          <span class="flex-grow-1 p-float-label">
-            <input
-              pInputText
-              type="text"
-              id="pam_detail_field_modification_user"
-              class="w-full pt-3 pb-2 text-responsive"
-              [disabled]="true"
-              [value]="parameter?.modificationUser"
-              [attr.aria-label]="'INTERNAL.MODIFICATION_USER' | translate"
-              [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_USER' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label for="pam_detail_field_modification_user"> {{ 'INTERNAL.MODIFICATION_USER' | translate }} </label>
-          </span>
+          <!-- row 2 -->
+          <div class="flex flex-row flex-wrap gap-4">
+            <p-floatlabel class="flex-grow-1 sm:flex-grow-0">
+              <input
+                pInputText
+                type="text"
+                id="pam_detail_field_creation_date"
+                class="w-full sm:w-15rem pt-3 pb-2 text-responsive"
+                [disabled]="true"
+                [value]="parameter?.creationDate ? (parameter?.creationDate | date: dateFormat) : ''"
+                [attr.aria-label]="'INTERNAL.CREATION_DATE' | translate"
+                [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              />
+              <label for="pam_detail_field_creation_date">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
+            </p-floatlabel>
+            <p-floatlabel class="flex-grow-1">
+              <input
+                pInputText
+                type="text"
+                id="pam_detail_field_creation_user"
+                class="w-full pt-3 pb-2 text-responsive"
+                [disabled]="true"
+                [value]="parameter?.creationUser"
+                [attr.aria-label]="'INTERNAL.CREATION_USER' | translate"
+                [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_USER' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              />
+              <label for="pam_detail_field_creation_user"> {{ 'INTERNAL.CREATION_USER' | translate }} </label>
+            </p-floatlabel>
+          </div>
+
+          <!-- row 4 -->
+          <div class="flex flex-row flex-wrap gap-4">
+            <p-floatlabel class="flex-grow-1 sm:flex-grow-0">
+              <input
+                pInputText
+                type="text"
+                id="pam_detail_field_modification_date"
+                class="w-full sm:w-15rem pt-3 pb-2"
+                [disabled]="true"
+                [value]="parameter?.modificationDate ? (parameter?.modificationDate | date: dateFormat) : ''"
+                [attr.aria-label]="'INTERNAL.MODIFICATION_DATE' | translate"
+                [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              />
+              <label for="pam_detail_field_modification_date"> {{ 'INTERNAL.MODIFICATION_DATE' | translate }} </label>
+            </p-floatlabel>
+            <p-floatlabel class="flex-grow-1">
+              <input
+                pInputText
+                type="text"
+                id="pam_detail_field_modification_user"
+                class="w-full pt-3 pb-2 text-responsive"
+                [disabled]="true"
+                [value]="parameter?.modificationUser"
+                [attr.aria-label]="'INTERNAL.MODIFICATION_USER' | translate"
+                [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_USER' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              />
+              <label for="pam_detail_field_modification_user"> {{ 'INTERNAL.MODIFICATION_USER' | translate }} </label>
+            </p-floatlabel>
+          </div>
         </div>
-      </div>
-    </p-tabPanel>
-  </p-tabView>
+      </p-tabpanel>
+    </p-tabpanels>
+  </p-tabs>
 
   <ng-template pTemplate="footer">
     <div class="flex flex-wrap justify-content-end gap-2 mb-1">

@@ -67,6 +67,27 @@
   }
 }
 
+// PrimeNG v20's default floated-label font-size (0.75rem => ~10.5px) is hard to
+// read, and its active/filled color (near-black) is inconsistent with the
+// resting-state label color (muted gray). Bump the floated font-size up and
+// keep the label color consistent between resting and floated states.
+@mixin floatlabel-readability {
+  :host ::ng-deep {
+    .p-floatlabel:has(input:focus) label,
+    .p-floatlabel:has(input.p-filled) label,
+    .p-floatlabel:has(input:-webkit-autofill) label,
+    .p-floatlabel:has(textarea:focus) label,
+    .p-floatlabel:has(textarea.p-filled) label,
+    .p-floatlabel:has(.p-inputwrapper-focus) label,
+    .p-floatlabel:has(.p-inputwrapper-filled) label,
+    .p-floatlabel:has(input[placeholder]) label,
+    .p-floatlabel:has(textarea[placeholder]) label {
+      font-size: 0.85rem !important;
+      color: var(--onecx-parameter-onecx-parameter-ui-form-field-float-label-color) !important;
+    }
+  }
+}
+
 @mixin invisible {
   :host ::ng-deep {
     .invisible {
@@ -120,10 +141,11 @@
 @mixin text-badges {
   :host ::ng-deep {
     .text-badge-right {
-      display: inline-block;
       position: absolute;
       right: 40px;
-      top: -10px;
+      top: -1.5rem;
+      width: auto;
+      white-space: nowrap;
     }
   }
 }
@@ -474,14 +496,14 @@
 
 @mixin tabview-reduce-padding {
   :host ::ng-deep {
-    .p-tabview .p-tabview-panels {
+    .p-tabs .p-tabpanels {
       padding: 1.4rem 0 0 0;
     }
   }
 }
 @mixin tabview-fix-color-selected-tab {
   :host ::ng-deep {
-    --tabview-header-active-bg: rgb(from var(--primary-color) r g b / 0.12) !important;
+    --p-tabs-tab-active-background: rgb(from var(--primary-color) r g b / 0.12) !important;
   }
 }
 

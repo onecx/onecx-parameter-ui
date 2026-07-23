@@ -4,8 +4,10 @@ import { DatePipe } from '@angular/common'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormBuilder } from '@angular/forms'
-import { TranslateTestingModule } from 'ngx-translate-testing'
+import { TranslateModule, provideTranslateService } from '@ngx-translate/core'
 import { of, throwError } from 'rxjs'
+
+import { provideTestTranslateLoader } from 'src/app/shared/translate-loader-testing'
 
 import { UserService } from '@onecx/angular-integration-interface'
 
@@ -73,14 +75,15 @@ const historyRespData: History[] = [
     end: '2024-01-01T00:25:00Z'
   }
 ]
-const historyData: ExtendedHistory[] = [
+const historyData = [
   {
     ...historyRespData[0],
     valueType: 'STRING',
     defaultValueType: 'STRING',
     displayUsedValue: 'Val',
     displayDefaultValue: 'Val',
-    isEqual: 'TRUE'
+    isEqual: 'TRUE',
+    imagePath: ''
   },
   {
     ...historyRespData[1],
@@ -88,7 +91,8 @@ const historyData: ExtendedHistory[] = [
     defaultValueType: 'BOOLEAN',
     displayUsedValue: '1234',
     displayDefaultValue: 'true',
-    isEqual: 'FALSE'
+    isEqual: 'FALSE',
+    imagePath: ''
   },
   {
     ...historyRespData[2],
@@ -96,7 +100,8 @@ const historyData: ExtendedHistory[] = [
     defaultValueType: 'OBJECT',
     displayUsedValue: '{ ... }',
     displayDefaultValue: '{ ... }',
-    isEqual: 'FALSE'
+    isEqual: 'FALSE',
+    imagePath: ''
   },
   {
     ...historyRespData[3],
@@ -104,7 +109,8 @@ const historyData: ExtendedHistory[] = [
     defaultValueType: 'UNKNOWN',
     displayUsedValue: '{ ... }',
     displayDefaultValue: '',
-    isEqual: 'FALSE'
+    isEqual: 'FALSE',
+    imagePath: ''
   },
   {
     ...historyRespData[4],
@@ -112,7 +118,8 @@ const historyData: ExtendedHistory[] = [
     defaultValueType: 'UNKNOWN',
     displayUsedValue: '',
     displayDefaultValue: '',
-    isEqual: 'UNDEFINED'
+    isEqual: 'UNDEFINED',
+    imagePath: ''
   },
   {
     ...historyRespData[5],
@@ -120,9 +127,10 @@ const historyData: ExtendedHistory[] = [
     defaultValueType: 'BOOLEAN',
     displayUsedValue: 'false',
     displayDefaultValue: 'false',
-    isEqual: 'TRUE'
+    isEqual: 'TRUE',
+    imagePath: ''
   }
-]
+] as ExtendedHistory[]
 const parameter: Parameter = {
   id: 'pid',
   productName: 'prod1',
@@ -147,14 +155,16 @@ describe('HistoryComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [UsageDetailComponent],
-      imports: [
-        TranslateTestingModule.withTranslations({
-          de: require('src/assets/i18n/de.json'),
-          en: require('src/assets/i18n/en.json')
-        }).withDefaultLanguage('en')
-      ],
+      imports: [TranslateModule],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
+        provideTranslateService({
+          defaultLanguage: 'en',
+          loader: provideTestTranslateLoader({
+            de: require('src/assets/i18n/de.json'),
+            en: require('src/assets/i18n/en.json')
+          })
+        }),
         FormBuilder,
         provideHttpClient(),
         provideHttpClientTesting(),
