@@ -14,7 +14,6 @@ import {
   Sort
 } from '@onecx/angular-accelerator'
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
-import { Column } from '@onecx/portal-integration-angular'
 import { SlotService } from '@onecx/angular-remote-components'
 
 import {

@@ -16,7 +16,7 @@ import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog'
 import { DropdownModule } from 'primeng/dropdown'
 import { FieldsetModule } from 'primeng/fieldset'
 import { InputTextModule } from 'primeng/inputtext'
-import { InputTextareaModule } from 'primeng/inputtextarea'
+import { TextareaModule } from 'primeng/textarea'
 import { KeyFilterModule } from 'primeng/keyfilter'
 import { ListboxModule } from 'primeng/listbox'
 import { MultiSelectModule } from 'primeng/multiselect'
@@ -26,14 +26,13 @@ import { TabViewModule } from 'primeng/tabview'
 import { ToastModule } from 'primeng/toast'
 import { TooltipModule } from 'primeng/tooltip'
 
-import { PortalCoreModule, PortalDialogService } from '@onecx/portal-integration-angular'
-
 import { LabelResolver } from './label.resolver'
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
 @NgModule({
   declarations: [],
   imports: [
-    PortalCoreModule.forMicroFrontend(),
+    AngularAcceleratorModule,
     AutoCompleteModule,
     CalendarModule,
     CardModule,
@@ -47,7 +46,7 @@ import { LabelResolver } from './label.resolver'
     FieldsetModule,
     FormsModule,
     InputTextModule,
-    InputTextareaModule,
+    TextareaModule,
     KeyFilterModule,
     ListboxModule,
     MultiSelectModule,
@@ -74,7 +73,7 @@ import { LabelResolver } from './label.resolver'
     FieldsetModule,
     FormsModule,
     InputTextModule,
-    InputTextareaModule,
+    TextareaModule,
     KeyFilterModule,
     ListboxModule,
     MultiSelectModule,
@@ -91,7 +90,6 @@ import { LabelResolver } from './label.resolver'
   providers: [
     ConfirmationService,
     LabelResolver,
-    { provide: DialogService, useClass: PortalDialogService },
     provideErrorTailorConfig({
       controlErrorsOn: { async: true, blur: true, change: true },
       errors: {

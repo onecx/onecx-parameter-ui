@@ -10,9 +10,7 @@ import { InputTextModule } from 'primeng/inputtext'
 import { RippleModule } from 'primeng/ripple'
 import { TooltipModule } from 'primeng/tooltip'
 
-import { InitializeModuleGuard, addInitializeModuleGuard } from '@onecx/angular-integration-interface'
 import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
-import { PortalCoreModule } from '@onecx/portal-integration-angular'
 
 import { SharedModule } from 'src/app/shared/shared.module'
 import { LabelResolver } from 'src/app/shared/label.resolver'
@@ -46,7 +44,7 @@ const routes: Routes = [
   }
 ]
 @NgModule({
-  declarations: [
+  imports: [
     ParameterSearchComponent,
     ParameterCriteriaComponent,
     ParameterDetailComponent,
@@ -54,9 +52,7 @@ const routes: Routes = [
     UsageSearchComponent,
     UsageDetailComponent,
     UsageDetailCriteriaComponent,
-    UsageDetailListComponent
-  ],
-  imports: [
+    UsageDetailListComponent,
     CommonModule,
     AngularAcceleratorModule,
     ButtonModule,
@@ -64,13 +60,13 @@ const routes: Routes = [
     InputGroupAddonModule,
     InputGroupModule,
     InputTextModule,
-    PortalCoreModule.forMicroFrontend(),
+    AngularAcceleratorModule,
     RippleModule,
     TooltipModule,
-    [RouterModule.forChild(addInitializeModuleGuard(routes))],
+    [RouterModule.forChild(routes)],
     SharedModule
-  ],
-  providers: [InitializeModuleGuard, DatePipe]
+  ]
+  // providers: [InitializeModuleGuard, DatePipe]
 })
 export class ParameterModule {
   constructor() {

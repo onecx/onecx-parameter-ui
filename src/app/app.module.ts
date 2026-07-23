@@ -7,9 +7,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { TranslateLoader, TranslateModule, MissingTranslationHandler } from '@ngx-translate/core'
 
 import { AngularAuthModule } from '@onecx/angular-auth'
-import { provideTranslationPathFromMeta, createTranslateLoader } from '@onecx/angular-utils'
+import { provideTranslationPathFromMeta, createTranslateLoader, provideThemeConfig } from '@onecx/angular-utils'
 import { APP_CONFIG } from '@onecx/angular-integration-interface'
-import { AngularAcceleratorMissingTranslationHandler, PortalCoreModule } from '@onecx/portal-integration-angular'
+import { AngularAcceleratorMissingTranslationHandler, AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
 import { environment } from 'src/environments/environment'
 import { AppComponent } from './app.component'
@@ -22,13 +22,13 @@ const routes: Routes = [
 ]
 @NgModule({
   bootstrap: [AppComponent],
-  declarations: [AppComponent],
   imports: [
+    AppComponent,
     CommonModule,
     BrowserModule,
     BrowserAnimationsModule,
     AngularAuthModule,
-    PortalCoreModule.forRoot('onecx-parameter-ui'),
+    AngularAcceleratorModule,
     RouterModule.forRoot(routes, {
       initialNavigation: 'enabledBlocking',
       enableTracing: true
@@ -45,7 +45,8 @@ const routes: Routes = [
   providers: [
     { provide: APP_CONFIG, useValue: environment },
     provideTranslationPathFromMeta(import.meta.url, 'assets/i18n/'),
-    provideHttpClient(withInterceptorsFromDi())
+    provideHttpClient(withInterceptorsFromDi()),
+    provideThemeConfig()
   ]
 })
 export class AppModule {

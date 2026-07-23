@@ -1,8 +1,6 @@
 import { Component, Input } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
 
-import { Column } from '@onecx/portal-integration-angular'
-
 import { Parameter } from 'src/app/shared/generated'
 import { ExtendedHistory } from '../../usage-search/usage-search.component'
 

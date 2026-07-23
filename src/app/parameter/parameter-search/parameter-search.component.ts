@@ -14,7 +14,6 @@ import {
   RowListGridData,
   Sort
 } from '@onecx/angular-accelerator'
-import { Column } from '@onecx/portal-integration-angular'
 import { SlotService } from '@onecx/angular-remote-components'
 
 import {
