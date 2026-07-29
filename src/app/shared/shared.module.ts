@@ -4,19 +4,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { provideErrorTailorConfig, errorTailorImports } from '@ngneat/error-tailor'
 
-import { AutoCompleteModule } from 'primeng/autocomplete'
 import { BadgeModule } from 'primeng/badge'
 import { ButtonModule } from 'primeng/button'
-import { CalendarModule } from 'primeng/calendar'
-import { CardModule } from 'primeng/card'
 import { CheckboxModule } from 'primeng/checkbox'
-import { ConfirmDialogModule } from 'primeng/confirmdialog'
-import { ConfirmPopupModule } from 'primeng/confirmpopup'
 import { ConfirmationService } from 'primeng/api'
 import { DataViewModule } from 'primeng/dataview'
 import { DialogModule } from 'primeng/dialog'
-import { DynamicDialogModule } from 'primeng/dynamicdialog'
-import { DropdownModule } from 'primeng/dropdown'
 import { SelectModule } from 'primeng/select'
 import { FieldsetModule } from 'primeng/fieldset'
 import { FloatLabelModule } from 'primeng/floatlabel'
@@ -24,14 +17,11 @@ import { InputGroupModule } from 'primeng/inputgroup'
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
 import { InputTextModule } from 'primeng/inputtext'
 import { TextareaModule } from 'primeng/textarea'
-import { KeyFilterModule } from 'primeng/keyfilter'
-import { ListboxModule } from 'primeng/listbox'
 import { MessageModule } from 'primeng/message'
-import { MultiSelectModule } from 'primeng/multiselect'
 import { RippleModule } from 'primeng/ripple'
 import { SelectButtonModule } from 'primeng/selectbutton'
 import { TableModule } from 'primeng/table'
-import { TabViewModule } from 'primeng/tabview'
+import { TabsModule } from 'primeng/tabs'
 import { ToastModule } from 'primeng/toast'
 import { TooltipModule } from 'primeng/tooltip'
 
@@ -42,19 +32,12 @@ import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
   declarations: [],
   imports: [
     AngularAcceleratorModule,
-    AutoCompleteModule,
     BadgeModule,
     ButtonModule,
-    CalendarModule,
-    CardModule,
     CheckboxModule,
     CommonModule,
-    ConfirmDialogModule,
-    ConfirmPopupModule,
     DataViewModule,
     DialogModule,
-    DropdownModule,
-    DynamicDialogModule,
     FieldsetModule,
     FloatLabelModule,
     FormsModule,
@@ -62,35 +45,25 @@ import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
     InputGroupAddonModule,
     InputTextModule,
     TextareaModule,
-    KeyFilterModule,
-    ListboxModule,
     MessageModule,
-    MultiSelectModule,
     ReactiveFormsModule,
     RippleModule,
     SelectButtonModule,
     SelectModule,
     TableModule,
-    TabViewModule,
+    TabsModule,
     ToastModule,
     TooltipModule,
     TranslateModule,
     errorTailorImports
   ],
   exports: [
-    AutoCompleteModule,
     BadgeModule,
     ButtonModule,
-    CalendarModule,
-    CardModule,
     CheckboxModule,
     CommonModule,
-    ConfirmDialogModule,
-    ConfirmPopupModule,
     DataViewModule,
     DialogModule,
-    DropdownModule,
-    DynamicDialogModule,
     FieldsetModule,
     FloatLabelModule,
     FormsModule,
@@ -98,16 +71,13 @@ import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
     InputGroupAddonModule,
     InputTextModule,
     TextareaModule,
-    KeyFilterModule,
-    ListboxModule,
     MessageModule,
-    MultiSelectModule,
     ReactiveFormsModule,
     RippleModule,
     SelectButtonModule,
     SelectModule,
     TableModule,
-    TabViewModule,
+    TabsModule,
     ToastModule,
     TooltipModule,
     TranslateModule,

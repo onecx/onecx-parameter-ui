@@ -1,17 +1,9 @@
-<p-message
-  *ngIf="loading"
-  id="pam_usage_detail_message_loading"
-  severity="info"
-  styleClass="my-3"
-  [text]="'ACTIONS.LOADING' | translate"
-></p-message>
-<p-message
-  *ngIf="exceptionKey"
-  id="pam_usage_detail_message_error"
-  severity="error"
-  styleClass="my-3"
-  [text]="exceptionKey | translate"
-></p-message>
+<p-message *ngIf="loading" id="pam_usage_detail_message_loading" severity="info" styleClass="my-3">{{
+  'ACTIONS.LOADING' | translate
+}}</p-message>
+<p-message *ngIf="exceptionKey" id="pam_usage_detail_message_error" severity="error" styleClass="my-3">{{
+  exceptionKey | translate
+}}</p-message>
 
 <p-table
   *ngIf="!loading && !exceptionKey"
@@ -76,7 +68,6 @@
           [pRowToggler]="rowData"
           [text]="true"
           [rounded]="true"
-          [plain]="true"
           [icon]="expanded ? 'pi pi-eye-slash' : 'pi pi-eye'"
           [attr.aria-label]="'DIALOG.USAGE.DETAIL.LABEL' | translate"
           [pTooltip]="'DIALOG.USAGE.DETAIL.LABEL' | translate"

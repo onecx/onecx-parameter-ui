@@ -23,16 +23,12 @@
         id="pam_search_message_error"
         severity="error"
         styleClass="m-3"
-        [text]="exceptionKey ? (exceptionKey | translate) : (exceptionKeyMeta ?? '' | translate)"
-      ></p-message>
+        >{{ exceptionKey ? (exceptionKey | translate) : (exceptionKeyMeta ?? '' | translate) }}</p-message
+      >
 
-      <p-message
-        *ngIf="loading"
-        id="pam_search_message_loading"
-        severity="info"
-        styleClass="m-3"
-        [text]="'ACTIONS.LOADING' | translate"
-      ></p-message>
+      <p-message *ngIf="loading" id="pam_search_message_loading" severity="info" styleClass="m-3">{{
+        'ACTIONS.LOADING' | translate
+      }}</p-message>
 
       <ocx-interactive-data-view
         *ngIf="!(loading || exceptionKey)"
@@ -105,7 +101,6 @@
                   [id]="'pam_search_table_row_' + rowObject.id + '_action_view'"
                   pRipple
                   [text]="true"
-                  [plain]="true"
                   [rounded]="true"
                   [icon]="'pi pi-eye'"
                   (onClick)="onDetail('VIEW', rowObject, $event)"
@@ -121,7 +116,6 @@
                 [id]="'pam_search_table_row_' + rowObject.id + '_action_edit'"
                 pRipple
                 [text]="true"
-                [plain]="true"
                 [rounded]="true"
                 [icon]="'pi pi-pencil'"
                 (onClick)="onDetail('EDIT', rowObject, $event)"
@@ -136,7 +130,6 @@
                 [id]="'pam_search_table_row_' + rowObject.id + '_action_copy'"
                 pRipple
                 [text]="true"
-                [plain]="true"
                 [rounded]="true"
                 [icon]="'pi pi-copy'"
                 (onClick)="onDetail('COPY', rowObject, $event)"
@@ -153,7 +146,6 @@
                 [id]="'pam_search_table_row_' + rowObject.id + '_action_usage'"
                 pRipple
                 [text]="true"
-                [plain]="true"
                 [rounded]="true"
                 [icon]="'pi pi-history'"
                 (onClick)="onDetailUsage($event, rowObject)"

@@ -83,7 +83,8 @@
       },
       "FILTER": {
         "LABEL": "Filter",
-        "TOOLTIP": "Applikation, App, Anzeigename, Name"
+        "TOOLTIP": "Applikation, App, Anzeigename, Name",
+        "RESET": "Filter zurücksetzen"
       }
     },
     "VIEW": {

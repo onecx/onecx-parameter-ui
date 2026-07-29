@@ -23,16 +23,12 @@
         id="pam_usage_search_message_error"
         severity="error"
         styleClass="m-3"
-        [text]="exceptionKey ? (exceptionKey | translate) : (exceptionKeyMeta ?? '' | translate)"
-      ></p-message>
+        >{{ exceptionKey ? (exceptionKey | translate) : (exceptionKeyMeta ?? '' | translate) }}</p-message
+      >
 
-      <p-message
-        *ngIf="loading"
-        id="pam_usage_search_message_loading"
-        severity="info"
-        styleClass="m-3"
-        [text]="'ACTIONS.LOADING' | translate"
-      ></p-message>
+      <p-message *ngIf="loading" id="pam_usage_search_message_loading" severity="info" styleClass="m-3">{{
+        'ACTIONS.LOADING' | translate
+      }}</p-message>
 
       <ocx-interactive-data-view
         *ngIf="!(loading || exceptionKey)"
@@ -104,7 +100,6 @@
                 pRipple
                 [id]="'pam_usage_search_table_row_' + rowObject.id + '_action_view'"
                 [text]="true"
-                [plain]="true"
                 [rounded]="true"
                 [icon]="'pi pi-eye'"
                 (onClick)="onDetail('VIEW', rowObject, $event)"
@@ -121,7 +116,6 @@
               pRipple
               [id]="'pam_usage_search_table_row_' + rowObject.id + '_action_edit'"
               [text]="true"
-              [plain]="true"
               [rounded]="true"
               [icon]="'pi pi-pencil'"
               (onClick)="onDetail('EDIT', rowObject, $event)"
@@ -138,7 +132,6 @@
               pRipple
               [id]="'pam_usage_search_table_row_' + rowObject.id + '_action_usage'"
               [text]="true"
-              [plain]="true"
               [rounded]="true"
               [icon]="'pi pi-history'"
               (onClick)="onUsage($event, rowObject)"
