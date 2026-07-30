@@ -28,7 +28,7 @@ describe('ParameterDeleteComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ParameterDeleteComponent],
+      declarations: [],
       imports: [
         TranslateModule.forRoot(),
         TranslateTestingModule.withTranslations({
@@ -39,12 +39,19 @@ describe('ParameterDeleteComponent', () => {
       providers: [
         provideHttpClientTesting(),
         provideHttpClient(),
-        provideRouter([{ path: '', component: ParameterDeleteComponent }]),
-        { provide: PortalMessageService, useValue: msgServiceSpy },
-        { provide: ParametersAPIService, useValue: parametersApiSpy }
+        provideRouter([{ path: '', component: ParameterDeleteComponent }])
       ],
       schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents()
+    })
+      .overrideComponent(ParameterDeleteComponent, {
+        add: {
+          providers: [
+            { provide: PortalMessageService, useValue: msgServiceSpy },
+            { provide: ParametersAPIService, useValue: parametersApiSpy }
+          ]
+        }
+      })
+      .compileComponents()
   }))
 
   beforeEach(() => {

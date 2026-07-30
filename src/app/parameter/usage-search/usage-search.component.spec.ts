@@ -17,6 +17,8 @@ import {
   ProductAbstract
 } from './usage-search.component'
 import { ParameterSearchComponent } from '../parameter-search/parameter-search.component'
+import { providePermissionService } from '@onecx/angular-utils'
+import { BreadcrumbService } from '@onecx/angular-accelerator'
 
 // response data of parameter search service
 const historyRespData: History[] = [
@@ -176,8 +178,9 @@ describe('UsageSearchComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [UsageSearchComponent],
+      declarations: [],
       imports: [
+        UsageSearchComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
@@ -187,14 +190,23 @@ describe('UsageSearchComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        providePermissionService(),
         provideRouter([{ path: '', component: ParameterSearchComponent }]),
         { provide: Router, useValue: routerSpy },
-        { provide: ActivatedRoute, useValue: routeMock },
-        { provide: UserService, useValue: mockUserService },
-        { provide: PortalMessageService, useValue: msgServiceSpy },
-        { provide: HistoriesAPIService, useValue: historyApiSpy }
+        { provide: ActivatedRoute, useValue: routeMock }
       ]
-    }).compileComponents()
+    })
+      .overrideComponent(UsageSearchComponent, {
+        add: {
+          providers: [
+            { provide: UserService, useValue: mockUserService },
+            { provide: PortalMessageService, useValue: msgServiceSpy },
+            { provide: HistoriesAPIService, useValue: historyApiSpy },
+            { provide: BreadcrumbService, useValue: {} }
+          ]
+        }
+      })
+      .compileComponents()
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
     msgServiceSpy.info.calls.reset()
@@ -229,7 +241,7 @@ describe('UsageSearchComponent', () => {
       spyOn(component, 'onGoToParameterSearchPage')
 
       component.ngOnInit()
-      component.actions[0].actionCallback()
+      component.actions[0].actionCallback!()
 
       expect(component.onGoToParameterSearchPage).toHaveBeenCalled()
     })

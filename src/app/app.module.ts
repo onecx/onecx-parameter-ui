@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core'
-import { CommonModule } from '@angular/common'
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { RouterModule, Routes } from '@angular/router'
-import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { TranslateLoader, TranslateModule, MissingTranslationHandler } from '@ngx-translate/core'
 
@@ -15,6 +13,7 @@ import {
 } from '@onecx/angular-utils'
 import { APP_CONFIG } from '@onecx/angular-integration-interface'
 import { AngularAcceleratorMissingTranslationHandler, AngularAcceleratorModule } from '@onecx/angular-accelerator'
+import { StandaloneShellModule, provideStandaloneProviders } from '@onecx/angular-standalone-shell'
 
 import { environment } from 'src/environments/environment'
 import { AppComponent } from './app.component'
@@ -26,11 +25,8 @@ const routes: Routes = [
   }
 ]
 @NgModule({
-  bootstrap: [AppComponent],
   imports: [
     AppComponent,
-    CommonModule,
-    BrowserModule,
     BrowserAnimationsModule,
     AngularAuthModule,
     AngularAcceleratorModule,
@@ -38,6 +34,7 @@ const routes: Routes = [
       initialNavigation: 'enabledBlocking',
       enableTracing: true
     }),
+    StandaloneShellModule,
     TranslateModule.forRoot({
       isolate: true,
       loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] },
@@ -52,7 +49,8 @@ const routes: Routes = [
     provideTranslationPathFromMeta(import.meta.url, 'assets/i18n/'),
     provideHttpClient(withInterceptorsFromDi()),
     provideThemeConfig(),
-    providePermissionService()
+    providePermissionService(),
+    provideStandaloneProviders()
   ]
 })
 export class AppModule {

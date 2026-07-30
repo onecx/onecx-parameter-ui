@@ -41,16 +41,23 @@ describe('HistoryCriteriaComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [UsageDetailCriteriaComponent],
+      declarations: [],
       imports: [
+        UsageDetailCriteriaComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
       schemas: [NO_ERRORS_SCHEMA],
-      providers: [provideHttpClient(), provideHttpClientTesting(), { provide: UserService, useValue: mockUserService }]
-    }).compileComponents()
+      providers: [provideHttpClient(), provideHttpClientTesting()]
+    })
+      .overrideComponent(UsageDetailCriteriaComponent, {
+        add: {
+          providers: [{ provide: UserService, useValue: mockUserService }]
+        }
+      })
+      .compileComponents()
   }))
 
   beforeEach(() => {

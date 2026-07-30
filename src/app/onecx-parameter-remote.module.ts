@@ -1,6 +1,5 @@
-import { APP_INITIALIZER, DoBootstrap, Injector, NgModule } from '@angular/core'
+import { DoBootstrap, inject, Injector, NgModule, provideAppInitializer } from '@angular/core'
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
-import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule, Routes, Router } from '@angular/router'
 import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core'
@@ -39,7 +38,6 @@ const routes: Routes = [
     AppEntrypointComponent,
     AngularAuthModule,
     AngularAcceleratorModule,
-    BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes),
     TranslateModule.forRoot({
@@ -54,29 +52,15 @@ const routes: Routes = [
   providers: [
     ConfigurationService,
     { provide: Configuration, useFactory: apiConfigProvider },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeRouter,
-      multi: true,
-      deps: [Router, AppStateService]
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: appConfigServiceInitializer,
-      multi: true,
-      deps: [AppStateService, AppConfigService]
-    },
+    provideAppInitializer(() => initializeRouter(inject(Router), inject(AppStateService))()),
+    provideAppInitializer(() => appConfigServiceInitializer(inject(AppStateService), inject(AppConfigService))()),
     provideTranslationPathFromMeta(import.meta.url, 'assets/i18n/'),
     provideHttpClient(withInterceptorsFromDi())
   ]
 })
 export class OneCXParameterModule implements DoBootstrap {
-  constructor(
-    private readonly injector: Injector,
-    private readonly appConfigService: AppConfigService
-  ) {
-    console.info('OneCX Parameter Module constructor')
-  }
+  private readonly injector = inject(Injector)
+  private readonly appConfigService = inject(AppConfigService)
 
   ngDoBootstrap(): void {
     const envElementName = this.appConfigService.getProperty('APP_ELEMENT_NAME')

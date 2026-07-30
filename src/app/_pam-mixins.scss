@@ -3,12 +3,12 @@
  * **********************************************/
 
 // displaying text like an input field with floating label
-@mixin float-label-textbox {
+@mixin ocx-p-floatlabel {
   :host {
     .p-float-label {
       display: block;
       position: relative;
-      .ocx-float-label-textbox {
+      .ocx-ocx-p-floatlabel {
         font-family: var(--font-family);
         font-size: var(--input-text-font-size);
         color: var(--emphasis-high);
@@ -39,7 +39,18 @@
   }
 }
 
-@mixin displaying-text-responsive {
+@mixin ocx-required-label {
+  // Keep a visible required marker even when external theme styles are missing.
+  :host ::ng-deep {
+    .p-floatlabel > label.ocx-required-label::after {
+      content: ' *';
+      color: var(--red-500, #ef4444);
+      font-weight: 600;
+    }
+  }
+}
+
+@mixin ocx-text-responsive {
   :host ::ng-deep {
     .text-responsive {
       white-space: nowrap;
@@ -472,16 +483,25 @@
   }
 }
 
-@mixin tabview-reduce-padding {
+/* **********************************************
+ *  TABs
+ * **********************************************/
+@mixin ocx-p-tabs {
   :host ::ng-deep {
-    .p-tabview .p-tabview-panels {
-      padding: 1.4rem 0 0 0;
+    .p-tabs {
+      .p-tablist {
+        border-bottom: 1px solid var(--surface-300);
+      }
+      .p-tab {
+        padding: 0.75rem 1rem;
+        &.p-tab-active {
+          background-color: rgb(from var(--primary-color) r g b / 0.12);
+        }
+      }
+      .p-tabpanels {
+        padding: 1.5rem 0 0 0;
+      }
     }
-  }
-}
-@mixin tabview-fix-color-selected-tab {
-  :host ::ng-deep {
-    --tabview-header-active-bg: rgb(from var(--primary-color) r g b / 0.12) !important;
   }
 }
 

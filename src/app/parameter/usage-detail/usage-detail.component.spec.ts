@@ -146,8 +146,9 @@ describe('HistoryComponent', () => {
     datePipe = new DatePipe('en-US')
 
     TestBed.configureTestingModule({
-      declarations: [UsageDetailComponent],
+      declarations: [],
       imports: [
+        UsageDetailComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
@@ -158,12 +159,18 @@ describe('HistoryComponent', () => {
         FormBuilder,
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: UserService, useValue: mockUserService },
-        { provide: HistoriesAPIService, useValue: historyApiSpy },
         { provide: DatePipe, useValue: datePipe }
       ]
-    }).compileComponents()
-    // to spy data: reset
+    })
+      .overrideComponent(UsageDetailComponent, {
+        add: {
+          providers: [
+            { provide: UserService, useValue: mockUserService },
+            { provide: HistoriesAPIService, useValue: historyApiSpy }
+          ]
+        }
+      })
+      .compileComponents() // to spy data: reset
     historyApiSpy.getAllHistory.calls.reset()
     // to spy data: refill with neutral data
     historyApiSpy.getAllHistory.and.returnValue(of({}))

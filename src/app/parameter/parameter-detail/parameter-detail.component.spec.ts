@@ -59,22 +59,27 @@ describe('ParameterDetailComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ParameterDetailComponent],
+      declarations: [],
       imports: [
+        ParameterDetailComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
       schemas: [NO_ERRORS_SCHEMA],
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        { provide: UserService, useValue: mockUserService },
-        { provide: PortalMessageService, useValue: msgServiceSpy },
-        { provide: ParametersAPIService, useValue: apiServiceSpy }
-      ]
-    }).compileComponents()
+      providers: [provideHttpClient(), provideHttpClientTesting()]
+    })
+      .overrideComponent(ParameterDetailComponent, {
+        add: {
+          providers: [
+            { provide: UserService, useValue: mockUserService },
+            { provide: PortalMessageService, useValue: msgServiceSpy },
+            { provide: ParametersAPIService, useValue: apiServiceSpy }
+          ]
+        }
+      })
+      .compileComponents()
     // reset
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
@@ -625,8 +630,8 @@ describe('DefaultValueAccessor prototype modification', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TestComponent],
-      imports: [FormsModule]
+      declarations: [],
+      imports: [TestComponent, FormsModule]
     }).compileComponents()
 
     fixture = TestBed.createComponent(TestComponent)

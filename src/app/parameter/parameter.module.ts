@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core'
-import { CommonModule, DatePipe } from '@angular/common'
+import { DatePipe } from '@angular/common'
 import { RouterModule, Routes } from '@angular/router'
 
 import { ButtonModule } from 'primeng/button'
@@ -54,7 +54,6 @@ const routes: Routes = [
     UsageDetailComponent,
     UsageDetailCriteriaComponent,
     UsageDetailListComponent,
-    CommonModule,
     AngularAcceleratorModule,
     ButtonModule,
     FloatLabelModule,

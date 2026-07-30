@@ -17,6 +17,8 @@ import {
   ProductAbstract
 } from './parameter-search.component'
 import { UsageSearchComponent } from '../usage-search/usage-search.component'
+import { providePermissionService } from '@onecx/angular-utils'
+import { BreadcrumbService } from '@onecx/angular-accelerator'
 
 // response data of parameter search service
 const paramRespData: Parameter[] = [
@@ -154,8 +156,9 @@ describe('ParameterSearchComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ParameterSearchComponent],
+      declarations: [],
       imports: [
+        ParameterSearchComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
@@ -165,14 +168,23 @@ describe('ParameterSearchComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        providePermissionService(),
         provideRouter([{ path: 'usage', component: UsageSearchComponent }]),
         { provide: Router, useValue: routerSpy },
-        { provide: ActivatedRoute, useValue: routeMock },
-        { provide: UserService, useValue: mockUserService },
-        { provide: PortalMessageService, useValue: msgServiceSpy },
-        { provide: ParametersAPIService, useValue: apiServiceSpy }
+        { provide: ActivatedRoute, useValue: routeMock }
       ]
-    }).compileComponents()
+    })
+      .overrideComponent(ParameterSearchComponent, {
+        add: {
+          providers: [
+            { provide: UserService, useValue: mockUserService },
+            { provide: PortalMessageService, useValue: msgServiceSpy },
+            { provide: ParametersAPIService, useValue: apiServiceSpy },
+            { provide: BreadcrumbService, useValue: {} }
+          ]
+        }
+      })
+      .compileComponents()
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
     msgServiceSpy.info.calls.reset()
@@ -207,7 +219,7 @@ describe('ParameterSearchComponent', () => {
       spyOn(component, 'onDetail')
 
       component.ngOnInit()
-      component.actions[0].actionCallback()
+      component.actions[0].actionCallback!()
 
       expect(component.onDetail).toHaveBeenCalled()
     })
@@ -216,7 +228,7 @@ describe('ParameterSearchComponent', () => {
       spyOn(component, 'onGoToLatestUsagePage')
 
       component.ngOnInit()
-      component.actions[1].actionCallback()
+      component.actions[1].actionCallback!()
 
       expect(component.onGoToLatestUsagePage).toHaveBeenCalled()
     })

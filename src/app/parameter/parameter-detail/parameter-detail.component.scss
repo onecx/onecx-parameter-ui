@@ -7,9 +7,9 @@
 @include readable-disabled-components;
 @include dialog-footer-buttons;
 @include dialog-non-full-size-modal;
-@include displaying-text-responsive;
-@include tabview-reduce-padding;
-@include tabview-fix-color-selected-tab;
+@include ocx-text-responsive;
+@include ocx-required-label;
+@include ocx-p-tabs;
 @include p-inputtext-disabled-fix;
 
 :host ::ng-deep {
