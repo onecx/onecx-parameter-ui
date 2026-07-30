@@ -4,9 +4,11 @@ import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormsModule } from '@angular/forms'
 import { By } from '@angular/platform-browser'
-import { TranslateTestingModule } from 'ngx-translate-testing'
+import { TranslateModule, provideTranslateService } from '@ngx-translate/core'
 import { of, throwError } from 'rxjs'
 import { SelectItem } from 'primeng/api'
+
+import { provideTestTranslateLoader } from 'src/app/shared/translate-loader-testing'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 
@@ -60,14 +62,16 @@ describe('ParameterDetailComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ParameterDetailComponent],
-      imports: [
-        TranslateTestingModule.withTranslations({
-          de: require('src/assets/i18n/de.json'),
-          en: require('src/assets/i18n/en.json')
-        }).withDefaultLanguage('en')
-      ],
+      imports: [TranslateModule],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
+        provideTranslateService({
+          defaultLanguage: 'en',
+          loader: provideTestTranslateLoader({
+            de: require('src/assets/i18n/de.json'),
+            en: require('src/assets/i18n/en.json')
+          })
+        }),
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: UserService, useValue: mockUserService },
@@ -613,7 +617,8 @@ describe('ParameterDetailComponent', () => {
 
 /* Test modification of built-in Angular class registerOnChange at top of the file  */
 @Component({
-  template: `<input type="text" [(ngModel)]="value" />`
+  template: `<input type="text" [(ngModel)]="value" />`,
+  standalone: false
 })
 class TestComponent {
   value: any = ''

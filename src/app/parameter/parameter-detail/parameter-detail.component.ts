@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import { Component, EventEmitter, Input, OnChanges, Output, inject } from '@angular/core'
 import {
   AbstractControl,
   DefaultValueAccessor,
@@ -104,9 +104,14 @@ export function JsonValidator(): ValidatorFn {
 @Component({
   selector: 'app-parameter-detail',
   templateUrl: './parameter-detail.component.html',
-  styleUrls: ['./parameter-detail.component.scss']
+  styleUrls: ['./parameter-detail.component.scss'],
+  standalone: false
 })
 export class ParameterDetailComponent implements OnChanges {
+  private readonly parameterApi = inject(ParametersAPIService)
+  private readonly translate = inject(TranslateService)
+  private readonly msgService = inject(PortalMessageService)
+
   @Input() public changeMode: ChangeMode = 'CREATE'
   @Input() public parameter: Parameter | undefined
   @Input() public allProducts: ExtendedProduct[] = []
@@ -133,11 +138,7 @@ export class ParameterDetailComponent implements OnChanges {
     { label: 'VALUE_TYPE.OBJECT', value: 'OBJECT' }
   ]
 
-  constructor(
-    private readonly parameterApi: ParametersAPIService,
-    private readonly translate: TranslateService,
-    private readonly msgService: PortalMessageService
-  ) {
+  constructor() {
     this.formGroup = new FormGroup({})
     this.formGroup.controls = {
       modificationCount: new FormControl(0),

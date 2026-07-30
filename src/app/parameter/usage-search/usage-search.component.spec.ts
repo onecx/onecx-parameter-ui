@@ -3,12 +3,13 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { provideRouter, Router, ActivatedRoute } from '@angular/router'
-import { TranslateService } from '@ngx-translate/core'
-import { TranslateTestingModule } from 'ngx-translate-testing'
+import { TranslateModule, provideTranslateService } from '@ngx-translate/core'
 import { of, throwError } from 'rxjs'
 
+import { provideTestTranslateLoader } from 'src/app/shared/translate-loader-testing'
+
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
-import { Column } from '@onecx/portal-integration-angular'
+import { Filter } from '@onecx/angular-accelerator'
 
 import { History, HistoriesAPIService, Product } from 'src/app/shared/generated'
 import {
@@ -80,14 +81,15 @@ const historyRespData: History[] = [
     end: '2024-01-01T00:25:00Z'
   }
 ]
-const historyData: ExtendedHistory[] = [
+const historyData = [
   {
     ...historyRespData[0],
     valueType: 'STRING',
     defaultValueType: 'STRING',
     displayUsedValue: 'Val',
     displayDefaultValue: 'Val',
-    isEqual: 'TRUE'
+    isEqual: 'TRUE',
+    imagePath: ''
   },
   {
     ...historyRespData[1],
@@ -95,7 +97,8 @@ const historyData: ExtendedHistory[] = [
     defaultValueType: 'BOOLEAN',
     displayUsedValue: '1234',
     displayDefaultValue: 'true',
-    isEqual: 'FALSE'
+    isEqual: 'FALSE',
+    imagePath: ''
   },
   {
     ...historyRespData[2],
@@ -103,7 +106,8 @@ const historyData: ExtendedHistory[] = [
     defaultValueType: 'OBJECT',
     displayUsedValue: '{ ... }',
     displayDefaultValue: '{ ... }',
-    isEqual: 'FALSE'
+    isEqual: 'FALSE',
+    imagePath: ''
   },
   {
     ...historyRespData[3],
@@ -111,7 +115,8 @@ const historyData: ExtendedHistory[] = [
     defaultValueType: 'UNKNOWN',
     displayUsedValue: '{ ... }',
     displayDefaultValue: '',
-    isEqual: 'FALSE'
+    isEqual: 'FALSE',
+    imagePath: ''
   },
   {
     ...historyRespData[4],
@@ -119,7 +124,8 @@ const historyData: ExtendedHistory[] = [
     defaultValueType: 'UNKNOWN',
     displayUsedValue: '',
     displayDefaultValue: '',
-    isEqual: 'UNDEFINED'
+    isEqual: 'UNDEFINED',
+    imagePath: ''
   },
   {
     ...historyRespData[5],
@@ -127,9 +133,10 @@ const historyData: ExtendedHistory[] = [
     defaultValueType: 'BOOLEAN',
     displayUsedValue: 'false',
     displayDefaultValue: 'false',
-    isEqual: 'TRUE'
+    isEqual: 'TRUE',
+    imagePath: ''
   }
-]
+] as ExtendedHistory[]
 // Original form BFF: unsorted and not complete
 const usedProductsOrg: Product[] = [
   { productName: 'product2', displayName: undefined, applications: ['app2-svc'] },
@@ -179,14 +186,16 @@ describe('UsageSearchComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [UsageSearchComponent],
-      imports: [
-        TranslateTestingModule.withTranslations({
-          de: require('src/assets/i18n/de.json'),
-          en: require('src/assets/i18n/en.json')
-        }).withDefaultLanguage('en')
-      ],
+      imports: [TranslateModule],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
+        provideTranslateService({
+          defaultLanguage: 'en',
+          loader: provideTestTranslateLoader({
+            de: require('src/assets/i18n/de.json'),
+            en: require('src/assets/i18n/en.json')
+          })
+        }),
         provideHttpClient(),
         provideHttpClientTesting(),
         provideRouter([{ path: '', component: ParameterSearchComponent }]),
@@ -220,29 +229,10 @@ describe('UsageSearchComponent', () => {
       expect(component).toBeTruthy()
     })
 
-    it('should call OnInit and populate filteredColumns/actions correctly', () => {
+    it('should call OnInit and populate columns correctly', () => {
       component.ngOnInit()
-      expect(component.filteredColumns[0]).toEqual(component.columns[0])
-    })
-
-    it('dataview translations', (done) => {
-      const translationData = {
-        'DIALOG.DATAVIEW.FILTER': 'filter'
-      }
-      const translateService = TestBed.inject(TranslateService)
-      spyOn(translateService, 'get').and.returnValue(of(translationData))
-
-      component.ngOnInit()
-
-      component.dataViewControlsTranslations$?.subscribe({
-        next: (data) => {
-          if (data) {
-            expect(data.filterInputPlaceholder).toEqual('filter')
-          }
-          done()
-        },
-        error: done.fail
-      })
+      expect(component.columns[0].id).toEqual('name')
+      expect(component.columns.length).toBeGreaterThan(0)
     })
   })
 
@@ -251,7 +241,7 @@ describe('UsageSearchComponent', () => {
       spyOn(component, 'onGoToParameterSearchPage')
 
       component.ngOnInit()
-      component.actions[0].actionCallback()
+      component.actions[0].actionCallback?.()
 
       expect(component.onGoToParameterSearchPage).toHaveBeenCalled()
     })
@@ -409,27 +399,13 @@ describe('UsageSearchComponent', () => {
     })
   })
 
-  describe('filter columns', () => {
-    it('should update the columns that are seen in data', () => {
-      const columns: Column[] = [
-        { field: 'productName', header: 'PRODUCT_NAME' },
-        { field: 'description', header: 'DESCRIPTION' }
-      ]
-      const expectedColumn = { field: 'productName', header: 'PRODUCT_NAME' }
-      component.columns = columns
+  describe('filter change', () => {
+    it('should update the filters used by the data view', () => {
+      const filters: Filter[] = [{ columnId: 'applicationName', value: 'app1' }]
 
-      component.onColumnsChange(['productName'])
+      component.onFilterChange(filters)
 
-      expect(component.filteredColumns).not.toContain(columns[1])
-      expect(component.filteredColumns).toEqual([jasmine.objectContaining(expectedColumn)])
-    })
-
-    it('should apply a filter to the result table', () => {
-      component.dataTable = jasmine.createSpyObj('dataTable', ['filterGlobal'])
-
-      component.onFilterChange('test')
-
-      expect(component.dataTable?.filterGlobal).toHaveBeenCalledWith('test', 'contains')
+      expect(component.filters).toEqual(filters)
     })
   })
 
@@ -463,13 +439,9 @@ describe('UsageSearchComponent', () => {
   })
 
   describe('onUsage', () => {
-    it('should stop event propagation, set parameter, and display history dialog', () => {
-      const event = new MouseEvent('click')
-      spyOn(event, 'stopPropagation')
+    it('should set parameter and display history dialog', () => {
+      component.onUsage(historyData[0])
 
-      component.onUsage(event, historyData[0])
-
-      expect(event.stopPropagation).toHaveBeenCalled()
       expect(component.item4Detail).toEqual(historyData[0])
       expect(component.displayUsageDialog).toBeTrue()
     })
@@ -480,6 +452,15 @@ describe('UsageSearchComponent', () => {
       component.onCloseUsage()
 
       expect(component.displayUsageDialog).toBeFalse()
+    })
+
+    it('should invoke onUsage via the usage additionalAction callback', () => {
+      spyOn(component, 'onUsage')
+      const usageAction = component.additionalActions.find((a) => a.id === 'usage')
+
+      usageAction?.callback?.(historyData[0])
+
+      expect(component.onUsage).toHaveBeenCalledWith(historyData[0])
     })
   })
 

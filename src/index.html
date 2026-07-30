@@ -4,6 +4,18 @@
     <meta charset="utf-8" />
     <title>OneCX Parameter</title>
     <base href="/" />
+    <script>
+      // Local dev only: when this MFE dev-server is accessed directly through the
+      // local-proxy admin path (traefik strips the prefix before forwarding here),
+      // rewrite <base href> so relative asset requests resolve back through the
+      // proxy path instead of the domain root. No-op for plain `ng serve` at "/".
+      ;(function () {
+        var localAdminPrefix = '/ui/admin/onecx-parameter-ui'
+        if (window.location.pathname.indexOf(localAdminPrefix) === 0) {
+          document.querySelector('base').setAttribute('href', localAdminPrefix + '/')
+        }
+      })()
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
   </head>

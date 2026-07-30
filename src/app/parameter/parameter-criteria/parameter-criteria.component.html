@@ -7,8 +7,8 @@
   [actions]="actions"
 >
   <div [formGroup]="criteriaForm" class="flex flex-wrap gap-3">
-    <span class="p-float-label">
-      <p-dropdown
+    <p-floatlabel>
+      <p-select
         id="pam_search_criteria_product_name"
         styleClass="w-11rem sm:w-18rem text-responsive"
         panelStyleClass="w-11rem sm:w-18rem"
@@ -23,13 +23,13 @@
         tooltipPosition="top"
         tooltipEvent="hover"
       >
-      </p-dropdown>
+      </p-select>
       <label for="pam_search_criteria_product_name" aria-hidden="true">
         {{ 'PARAMETER.PRODUCT_NAME' | translate }}
       </label>
-    </span>
-    <span *ocxAdvanced class="p-float-label">
-      <p-dropdown
+    </p-floatlabel>
+    <p-floatlabel *ocxAdvanced>
+      <p-select
         id="pam_search_criteria_application_id"
         styleClass="w-11rem sm:w-18rem text-responsive"
         panelStyleClass="w-11rem sm:w-18rem"
@@ -43,10 +43,10 @@
         tooltipPosition="top"
         tooltipEvent="hover"
       >
-      </p-dropdown>
+      </p-select>
       <label for="pam_search_criteria_application_id" aria-hidden="true">{{ 'PARAMETER.APP_NAME' | translate }}</label>
-    </span>
-    <span class="p-float-label">
+    </p-floatlabel>
+    <p-floatlabel>
       <input
         id="pam_search_criteria_name"
         pInputText
@@ -59,6 +59,6 @@
         tooltipEvent="hover"
       />
       <label for="pam_search_criteria_name" aria-hidden="true">{{ 'PARAMETER.NAME' | translate }}</label>
-    </span>
+    </p-floatlabel>
   </div>
 </ocx-search-header>

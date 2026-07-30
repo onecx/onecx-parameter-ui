@@ -3,8 +3,10 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
-import { TranslateTestingModule } from 'ngx-translate-testing'
+import { TranslateModule, provideTranslateService } from '@ngx-translate/core'
 import { SelectItem } from 'primeng/api'
+
+import { provideTestTranslateLoader } from 'src/app/shared/translate-loader-testing'
 
 import { UserService } from '@onecx/angular-integration-interface'
 
@@ -45,14 +47,20 @@ describe('ParameterCriteriaComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ParameterCriteriaComponent],
-      imports: [
-        TranslateTestingModule.withTranslations({
-          de: require('src/assets/i18n/de.json'),
-          en: require('src/assets/i18n/en.json')
-        }).withDefaultLanguage('en')
-      ],
+      imports: [TranslateModule],
       schemas: [NO_ERRORS_SCHEMA],
-      providers: [provideHttpClient(), provideHttpClientTesting(), { provide: UserService, useValue: mockUserService }]
+      providers: [
+        provideTranslateService({
+          defaultLanguage: 'en',
+          loader: provideTestTranslateLoader({
+            de: require('src/assets/i18n/de.json'),
+            en: require('src/assets/i18n/en.json')
+          })
+        }),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: UserService, useValue: mockUserService }
+      ]
     }).compileComponents()
   }))
 

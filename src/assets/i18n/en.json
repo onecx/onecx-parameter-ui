@@ -1,4 +1,5 @@
 {
+  "DEFAULT": "Default",
   "ACTIONS": {
     "LABEL": "Actions",
     "TOOLTIP": "Actions for the data of the table row",

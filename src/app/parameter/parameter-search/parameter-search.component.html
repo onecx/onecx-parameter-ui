@@ -17,7 +17,7 @@
       (resetSearchEmitter)="onCriteriaReset()"
     ></app-parameter-criteria>
 
-    <ocx-page-content>
+    <ocx-content>
       <p-message
         *ngIf="exceptionKey || exceptionKeyMeta"
         id="pam_search_message_error"
@@ -34,252 +34,108 @@
           styleClass="m-3"
           [text]="'ACTIONS.LOADING' | translate"
         ></p-message>
-        <p-table
+        <ocx-interactive-data-view
           *ngIf="!(loading || exceptionKey)"
-          #dataTable
-          id="pam_search_table"
-          styleClass="mx-3 mb-2"
-          [value]="data"
-          dataKey="id"
-          [columns]="filteredColumns"
-          [globalFilterFields]="['productName', 'applicationId', 'name', 'displayName']"
-          [reorderableColumns]="false"
-          [scrollable]="true"
-          scrollHeight="590px"
-          [rows]="30"
-          [rowsPerPageOptions]="[30, 100]"
-          [paginator]="true"
-          [alwaysShowPaginator]="true"
-          paginatorPosition="bottom"
-          [showCurrentPageReport]="true"
-          currentPageReportTemplate="{first} - {last} {{ 'ACTIONS.SEARCH.OF' | translate }} {totalRecords}"
+          name="pam_search_table"
+          [supportedViewLayouts]="['table']"
+          layout="table"
+          [columns]="columns"
+          [data]="data"
+          [filters]="filters"
+          [clientSideFiltering]="true"
+          [clientSideSorting]="true"
+          [tablePaginator]="true"
+          [pageSize]="30"
+          [pageSizes]="[30, 100]"
+          [frozenActionColumn]="true"
+          actionColumnPosition="left"
+          defaultGroupKey="DEFAULT"
+          viewPermission="PARAMETER#VIEW"
+          editPermission="PARAMETER#EDIT"
+          deletePermission="PARAMETER#DELETE"
+          [additionalActions]="additionalActions"
+          [emptyResultsMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
+          (filtered)="onFilterChange($event)"
+          (viewItem)="onDetail('VIEW', $any($event))"
+          (editItem)="onDetail('EDIT', $any($event))"
+          (deleteItem)="onDelete($any($event))"
         >
-          <ng-template pTemplate="caption">
-            <ocx-data-view-controls
-              [supportedViews]="['table']"
-              [enableFiltering]="true"
-              [enableSorting]="false"
-              [columnDefinitions]="columns"
-              (columnsChange)="onColumnsChange($event)"
-              (filterChange)="onFilterChange($event)"
-              [translations]="(dataViewControlsTranslations$ | async) ?? {}"
-            ></ocx-data-view-controls>
+          <ng-template pTemplate="nameIdTableCell" let-rowObject="rowObject">
+            <div
+              class="text-ellipsis-2-lines word-break-all"
+              [ngStyle]="{ 'min-width': (rowObject['displayName'] ?? '').length > 15 ? '8rem' : '' }"
+            >
+              {{ rowObject['displayName'] }}
+            </div>
           </ng-template>
 
-          <ng-template pTemplate="emptymessage">
-            <tr>
-              <td id="pam_search_table_emptymessage" colspan="16">{{ 'ACTIONS.SEARCH.NO_DATA' | translate }}</td>
-            </tr>
+          <ng-template pTemplate="valueIdTableCell" let-rowObject="rowObject">
+            @let value = rowObject['value'] ?? rowObject['importValue'];
+            <div
+              class="text-ellipsis-2-lines word-break-all"
+              [ngStyle]="{ 'min-width': (value ?? '').length > 15 ? '10rem' : '' }"
+            >
+              {{ rowObject['displayValue'] }}
+            </div>
           </ng-template>
 
-          <ng-template pTemplate="header" let-columns>
-            <tr>
-              <th pFrozenColumn id="pam_search_table_header_actions" class="text-center">
-                {{ 'ACTIONS.LABEL' | translate }}
-              </th>
-              <th
-                *ngFor="let col of columns"
-                [id]="'pam_search_table_header_col_' + col.field"
-                class="white-space-nowrap"
-                [class]="col.css"
-                [ngClass]="{ 'border-right-1': col.frozen }"
-                pFrozenColumn
-                [frozen]="col.frozen"
-                [pSortableColumn]="col.field"
-                [attr.aria-label]="col.translationPrefix + '.' + col.header | translate"
-                [pTooltip]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-                escape="false"
-              >
-                <span>{{ col.translationPrefix + '.' + col.header | translate }}</span>
-                <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
-                <p-columnFilter *ngIf="col.hasFilter" type="text" [field]="col.field" display="menu"></p-columnFilter>
-              </th>
-            </tr>
+          <ng-template pTemplate="valueTypeIdTableCell" let-rowObject="rowObject">
+            @let toolTipText =
+              ('PARAMETER.TOOLTIPS.VALUE.TYPES' | translate) +
+              '<br/>' +
+              ('PARAMETER.VALUE' | translate) +
+              ': ' +
+              (rowObject['valueType'].includes('UNKNOWN')
+                ? ('VALUE_TYPE.UNKNOWN.TIP' | translate)
+                : ('VALUE_TYPE.' + rowObject['valueType'] | translate)) +
+              '<br/>' +
+              ('PARAMETER.IMPORT_VALUE' | translate) +
+              ': ' +
+              (rowObject['importValueType'].includes('UNKNOWN')
+                ? ('VALUE_TYPE.UNKNOWN.TIP' | translate)
+                : ('VALUE_TYPE.' + rowObject['importValueType'] | translate));
+            <div [pTooltip]="toolTipText" tooltipPosition="top" tooltipEvent="hover" escape="false">
+              {{ 'VALUE_TYPE.' + rowObject['valueType'] | translate }}
+              <ng-container *ngIf="rowObject['valueType'] !== rowObject['importValueType']">
+                <br />
+                {{ 'VALUE_TYPE.' + rowObject['importValueType'] | translate }}
+              </ng-container>
+            </div>
           </ng-template>
 
-          <ng-template pTemplate="body" let-i="rowIndex" let-rowData let-columns="columns">
-            <tr [pSelectableRow]="data">
-              <!-- actions -->
-              <td pFrozenColumn>
-                <!-- use the following as container to wrap button within the row height -->
-                <div class="flex flex-row flex-wrap sm:flex-nowrap justify-content-center align-items-center">
-                  <div class="white-space-nowrap">
-                    <ng-container *ocxIfNotPermission="'PARAMETER#EDIT'">
-                      <p-button
-                        *ocxIfPermission="'PARAMETER#VIEW'"
-                        [id]="'pam_search_table_row_' + i + '_action_view'"
-                        pRipple
-                        [text]="true"
-                        [plain]="true"
-                        [rounded]="true"
-                        [icon]="'pi pi-eye'"
-                        (onClick)="onDetail('VIEW', rowData, $event)"
-                        (onKeyPress)="onDetail('VIEW', rowData, $event)"
-                        [ariaLabel]="'ACTIONS.VIEW.LABEL' | translate"
-                        [pTooltip]="'ACTIONS.VIEW.LABEL' | translate"
-                        tooltipPosition="top"
-                        tooltipEvent="hover"
-                      />
-                    </ng-container>
-                    <p-button
-                      *ocxIfPermission="'PARAMETER#EDIT'"
-                      [id]="'pam_search_table_row_' + i + '_action_edit'"
-                      pRipple
-                      [text]="true"
-                      [plain]="true"
-                      [rounded]="true"
-                      [icon]="'pi pi-pencil'"
-                      (onClick)="onDetail('EDIT', rowData, $event)"
-                      (onKeyPress)="onDetail('EDIT', rowData, $event)"
-                      [ariaLabel]="'ACTIONS.EDIT.LABEL' | translate"
-                      [pTooltip]="'ACTIONS.EDIT.LABEL' | translate"
-                      tooltipPosition="top"
-                      tooltipEvent="hover"
-                    />
-                    <p-button
-                      *ocxIfPermission="'PARAMETER#EDIT'"
-                      [id]="'pam_search_table_row_' + i + '_action_copy'"
-                      pRipple
-                      [text]="true"
-                      [plain]="true"
-                      [rounded]="true"
-                      [icon]="'pi pi-copy'"
-                      (onClick)="onDetail('COPY', rowData, $event)"
-                      (onKeyPress)="onDetail('COPY', rowData, $event)"
-                      [ariaLabel]="'ACTIONS.COPY.LABEL' | translate"
-                      [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
-                      tooltipPosition="top"
-                      tooltipEvent="hover"
-                    />
-                  </div>
-                  <div class="white-space-nowrap">
-                    <p-button
-                      *ocxIfPermission="'USAGE#VIEW'"
-                      [id]="'pam_search_table_row_' + i + '_action_usage'"
-                      pRipple
-                      [text]="true"
-                      [plain]="true"
-                      [rounded]="true"
-                      [icon]="'pi pi-history'"
-                      (onClick)="onDetailUsage($event, rowData)"
-                      (onKeyPress)="onDetailUsage($event, rowData)"
-                      [disabled]="!rowData['isInHistory']"
-                      [ariaLabel]="'DIALOG.NAVIGATION.DETAIL_USAGE.LABEL' | translate"
-                      [pTooltip]="'DIALOG.NAVIGATION.DETAIL_USAGE.LABEL' | translate"
-                      tooltipPosition="top"
-                      tooltipEvent="hover"
-                    />
-                    <p-button
-                      *ocxIfPermission="'PARAMETER#DELETE'"
-                      [id]="'pam_search_table_row_' + i + '_action_delete'"
-                      pRipple
-                      [text]="true"
-                      [plain]="true"
-                      [rounded]="true"
-                      severity="danger"
-                      [icon]="'pi pi-trash'"
-                      (onClick)="onDelete($event, rowData)"
-                      (onKeyPress)="onDelete($event, rowData)"
-                      [ariaLabel]="'ACTIONS.DELETE.LABEL' | translate"
-                      [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
-                      tooltipPosition="top"
-                      tooltipEvent="hover"
-                    />
-                  </div>
-                </div>
-              </td>
-              <td
-                *ngFor="let col of columns"
-                [id]="'pam_search_table_row_' + i + '_' + col.field"
-                [class]="col.css"
-                [ngClass]="{ 'border-right-1': col.frozen }"
-                pFrozenColumn
-                [frozen]="col.frozen"
-              >
-                @let value = rowData['value'] ?? rowData['importValue'];
-                <!-- needs a div due to manage ellipsis -->
-                <div
-                  *ngIf="col.field === 'name'"
-                  class="text-ellipsis-2-lines word-break-all"
-                  [ngStyle]="{
-                    'min-width': rowData['displayName'].length > 15 ? '8rem' : ''
-                  }"
-                >
-                  {{ rowData['displayName'] }}
-                </div>
-
-                @let toolTipText =
-                  ('PARAMETER.TOOLTIPS.VALUE.TYPES' | translate) +
-                  '<br/>' +
-                  ('PARAMETER.VALUE' | translate) +
-                  ': ' +
-                  (rowData['valueType'].includes('UNKNOWN')
-                    ? ('VALUE_TYPE.UNKNOWN.TIP' | translate)
-                    : ('VALUE_TYPE.' + rowData['valueType'] | translate)) +
-                  '<br/>' +
-                  ('PARAMETER.IMPORT_VALUE' | translate) +
-                  ': ' +
-                  (rowData['importValueType'].includes('UNKNOWN')
-                    ? ('VALUE_TYPE.UNKNOWN.TIP' | translate)
-                    : ('VALUE_TYPE.' + rowData['importValueType'] | translate));
-                <div
-                  *ngIf="col.field === 'valueType'"
-                  [pTooltip]="toolTipText"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                  escape="false"
-                >
-                  {{ 'VALUE_TYPE.' + rowData['valueType'] | translate }}
-                  <ng-container *ngIf="rowData['valueType'] !== rowData['importValueType']">
-                    <br />
-                    {{ 'VALUE_TYPE.' + rowData['importValueType'] | translate }}
-                  </ng-container>
-                </div>
-
-                <div
-                  *ngIf="col.field === 'equal'"
-                  [ngClass]="
-                    rowData['isEqual'] === 'TRUE'
-                      ? 'pi pi-check text-green-600'
-                      : rowData['isEqual'] === 'FALSE'
-                        ? 'pi pi-times text-red-600'
-                        : ''
-                  "
-                  [attr.aria-label]="'PARAMETER.TOOLTIPS.EQUAL.' + rowData['isEqual'] | translate"
-                  [pTooltip]="'PARAMETER.TOOLTIPS.EQUAL.' + rowData['isEqual'] | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                >
-                  {{ rowData['isEqual'] === 'UNDEFINED' ? 'n.a.' : '' }}
-                </div>
-
-                <div
-                  *ngIf="col.field === 'value'"
-                  class="text-ellipsis-2-lines word-break-all"
-                  [ngStyle]="{ 'min-width': (value ?? '').length > 15 ? '10rem' : '' }"
-                >
-                  {{ rowData['displayValue'] }}
-                </div>
-
-                <div *ngIf="col.field === 'applicationId'" class="max-w-30rem">
-                  <div class="text-responsive">
-                    {{ getProductDisplayName(rowData['productName'], metaData.allProducts) }}
-                  </div>
-                  <div class="text-responsive">
-                    {{ getAppDisplayName(rowData['productName'], rowData['applicationId'], metaData.allProducts) }}
-                  </div>
-                </div>
-
-                <ng-container *ngIf="col.isBoolean">
-                  <span *ngIf="rowData[col.field] === true" class="pi pi-check text-green-600"></span>
-                </ng-container>
-                <ng-container *ngIf="col.isDate"> {{ rowData[col.field] | date: dateFormat }} </ng-container>
-              </td>
-            </tr>
+          <ng-template pTemplate="equalIdTableCell" let-rowObject="rowObject">
+            <div
+              [ngClass]="
+                rowObject['isEqual'] === 'TRUE'
+                  ? 'pi pi-check text-green-600'
+                  : rowObject['isEqual'] === 'FALSE'
+                    ? 'pi pi-times text-red-600'
+                    : ''
+              "
+              [attr.aria-label]="'PARAMETER.TOOLTIPS.EQUAL.' + rowObject['isEqual'] | translate"
+              [pTooltip]="'PARAMETER.TOOLTIPS.EQUAL.' + rowObject['isEqual'] | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            >
+              {{ rowObject['isEqual'] === 'UNDEFINED' ? 'n.a.' : '' }}
+            </div>
           </ng-template>
-        </p-table>
+
+          <ng-template pTemplate="applicationIdIdTableCell" let-rowObject="rowObject">
+            <div class="max-w-30rem">
+              <div class="text-responsive">
+                {{ getProductDisplayName(rowObject['productName'], metaData.allProducts) }}
+              </div>
+              <div class="text-responsive">
+                {{ getAppDisplayName(rowObject['productName'], rowObject['applicationId'], metaData.allProducts) }}
+              </div>
+            </div>
+          </ng-template>
+
+          <ng-template pTemplate="operatorIdTableCell" let-rowObject="rowObject">
+            <span *ngIf="rowObject['operator'] === true" class="pi pi-check text-green-600"></span>
+          </ng-template>
+        </ocx-interactive-data-view>
 
         <!-- DELETE -->
         <app-parameter-delete
@@ -302,7 +158,7 @@
         [changeMode]="changeMode"
         [dateFormat]="dateFormat"
       ></app-parameter-detail>
-    </ocx-page-content>
+    </ocx-content>
   </ng-container>
 </ocx-portal-page>
 

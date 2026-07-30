@@ -1,10 +1,15 @@
-import { Component, Input } from '@angular/core'
+import { Component, Input, inject } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
-
-import { Column } from '@onecx/portal-integration-angular'
 
 import { Parameter } from 'src/app/shared/generated'
 import { ExtendedHistory } from '../../usage-search/usage-search.component'
+
+interface Column {
+  field: string
+  header: string
+  active?: boolean
+  translationPrefix?: string
+}
 
 type ExtendedColumn = Column & {
   hasFilter?: boolean
@@ -20,9 +25,12 @@ type ExtendedColumn = Column & {
 
 @Component({
   selector: 'app-usage-detail-list',
-  templateUrl: './usage-detail-list.component.html'
+  templateUrl: './usage-detail-list.component.html',
+  standalone: false
 })
 export class UsageDetailListComponent {
+  readonly translate = inject(TranslateService)
+
   @Input() public loading = false
   @Input() public exceptionKey: string | undefined = undefined
   @Input() public history: ExtendedHistory | undefined = undefined
@@ -100,7 +108,7 @@ export class UsageDetailListComponent {
     }
   ]
 
-  constructor(public readonly translate: TranslateService) {
+  constructor() {
     this.filteredColumns = this.columns.filter((a) => a.active === true)
   }
 
