@@ -5,6 +5,7 @@
 @include dialog-non-full-size-modal;
 @include displaying-text-responsive;
 @include tabview-fix-color-selected-tab;
+@include p-inputtext-disabled-fix;
 
 :host ::ng-deep {
   .p-fieldset {

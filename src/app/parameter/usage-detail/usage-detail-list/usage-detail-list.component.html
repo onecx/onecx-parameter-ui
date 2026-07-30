@@ -111,7 +111,7 @@
     </tr>
   </ng-template>
 
-  <ng-template pTemplate="rowexpansion" let-rowData let-index="rowIndex" let-columns="columns">
+  <ng-template #expandedrow let-rowData let-index="rowIndex" let-columns="columns">
     <tr class="">
       <td [attr.colspan]="columns.length + 1">
         <div class="flex flex-row flex-wrap gap-4 justify-content-around align-items-start">

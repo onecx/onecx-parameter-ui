@@ -17,6 +17,7 @@ import { BadgeModule } from 'primeng/badge'
 import { CheckboxModule } from 'primeng/checkbox'
 import { SelectButtonModule } from 'primeng/selectbutton'
 import { TabsModule } from 'primeng/tabs'
+import { InputTextModule } from 'primeng/inputtext'
 
 import { Parameter, ParametersAPIService, ParameterCreate, ParameterUpdate } from 'src/app/shared/generated'
 import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
@@ -110,7 +111,7 @@ export function JsonValidator(): ValidatorFn {
   selector: 'app-parameter-detail',
   templateUrl: './parameter-detail.component.html',
   styleUrls: ['./parameter-detail.component.scss'],
-  imports: [SharedModule, BadgeModule, CheckboxModule, SelectButtonModule, TabsModule]
+  imports: [SharedModule, BadgeModule, CheckboxModule, SelectButtonModule, TabsModule, InputTextModule]
 })
 export class ParameterDetailComponent implements OnChanges {
   @Input() public changeMode: ChangeMode = 'CREATE'

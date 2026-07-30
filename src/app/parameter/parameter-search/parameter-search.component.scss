@@ -8,6 +8,7 @@
 @include table-zebra-rows;
 @include table-responsive-columns;
 @include dialog-footer-buttons;
+@include fix-pi-icon-colors;
 
 :host ::ng-deep {
   .text-badge-right {

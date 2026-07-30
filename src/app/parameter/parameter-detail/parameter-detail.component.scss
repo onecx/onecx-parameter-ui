@@ -10,6 +10,7 @@
 @include displaying-text-responsive;
 @include tabview-reduce-padding;
 @include tabview-fix-color-selected-tab;
+@include p-inputtext-disabled-fix;
 
 :host ::ng-deep {
   label.float-label {

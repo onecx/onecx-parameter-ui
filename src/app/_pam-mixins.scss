@@ -540,3 +540,28 @@
     }
   }
 }
+
+@mixin fix-pi-icon-colors {
+  :host ::ng-deep {
+    .pi.text-green-600 {
+      color: var(--green-600, var(--p-green-600, #16a34a)) !important;
+    }
+
+    .pi.text-red-600 {
+      color: var(--red-600, var(--p-red-600, #dc2626)) !important;
+    }
+  }
+}
+
+@mixin p-inputtext-disabled-fix {
+  :host ::ng-deep {
+    .p-inputtext:disabled {
+      opacity: var(--disabled-opacity, 0.7);
+      color: var(--p-inputtext-disabled-color, #64748b);
+    }
+    .p-inputtext:disabled ~ label {
+      opacity: var(--disabled-opacity, 0.7);
+      color: var(--p-inputtext-disabled-color, #64748b);
+    }
+  }
+}
