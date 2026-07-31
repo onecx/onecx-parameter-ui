@@ -253,7 +253,7 @@ describe('UsageSearchComponent', () => {
 
       component.onSearch({})
 
-      expect(component.interactiveRows.length).toEqual(historyData.length)
+      expect(component.interactiveRows).toHaveSize(historyData.length)
     })
 
     it('should display an info message if there is no result', () => {
@@ -344,7 +344,7 @@ describe('UsageSearchComponent', () => {
 
       expect(ev.stopPropagation).toHaveBeenCalled()
       expect(component.changeMode).toEqual(mode)
-      expect(component.item4Detail).toBe(undefined)
+      expect(component.item4Detail).toBeUndefined()
       expect(component.displayDetailDialog).toBeTrue()
 
       component.onCloseDetail(false)
@@ -435,7 +435,7 @@ describe('UsageSearchComponent', () => {
 
       component.onGlobalFilter('name1')
 
-      expect(component.interactiveRows.length).toBe(1)
+      expect(component.interactiveRows).toHaveSize(1)
     })
 
     it('should update tableFilters on filter change', () => {

@@ -246,7 +246,7 @@ describe('ParameterSearchComponent', () => {
 
       component.onSearch({})
 
-      expect(component.interactiveRows.length).toEqual(parameterData.length)
+      expect(component.interactiveRows).toHaveSize(parameterData.length)
     })
 
     it('should display an info message if there is no result', () => {
@@ -395,7 +395,7 @@ describe('ParameterSearchComponent', () => {
 
     it('should manage data after parameter deletion', () => {
       const ev: MouseEvent = new MouseEvent('type')
-      expect(items4Deletion.length).toBe(3)
+      expect(items4Deletion).toHaveSize(3)
 
       component.onDelete(ev, items4Deletion[1])
       component.onDeleteClosed(true) // remove but not the last of the product
@@ -487,7 +487,7 @@ describe('ParameterSearchComponent', () => {
 
       component.onGlobalFilter('name9')
 
-      expect(component.interactiveRows.length).toBe(1)
+      expect(component.interactiveRows).toHaveSize(1)
       expect(component.interactiveRows[0].id).toBe('id9')
     })
 

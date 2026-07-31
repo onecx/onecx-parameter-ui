@@ -225,7 +225,7 @@ describe('HistoryComponent', () => {
 
       component.data$?.subscribe({
         next: (data) => {
-          expect(data.length).toEqual(0)
+          expect(data).toHaveSize(0)
           done()
         },
         error: done.fail
@@ -245,7 +245,7 @@ describe('HistoryComponent', () => {
 
       component.data$?.subscribe({
         next: (data) => {
-          expect(data.length).toEqual(0)
+          expect(data).toHaveSize(0)
           done()
         },
         error: done.fail

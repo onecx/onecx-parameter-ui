@@ -473,7 +473,8 @@ export class UsageSearchComponent implements OnInit {
       return
     }
     this.interactiveRows = this.allRows.filter((row) => {
-      const searchFields = [row.productName ?? '', row.applicationId ?? '', row.name ?? '', row['displayName'] ?? '']
+      const searchFields = [row.productName, row.applicationId, row.name, row['displayName']]
+        .filter((value): value is string => typeof value === 'string')
         .join(' ')
         .toLowerCase()
       return searchFields.includes(normalizedQuery)

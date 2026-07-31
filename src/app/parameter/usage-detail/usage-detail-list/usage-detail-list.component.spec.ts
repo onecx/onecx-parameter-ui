@@ -67,7 +67,9 @@ describe('HistoryListComponent', () => {
     })
 
     it('should format JSON', () => {
-      component.toJsonFormat('{ json: true}')
+      const result = component.toJsonFormat('{ json: true}')
+
+      expect(result).toBe('"{ json: true}"')
     })
   })
 })

@@ -303,7 +303,7 @@ describe('ParameterDetailComponent', () => {
         component.ngOnChanges()
 
         expect(component.formGroup.enabled).toBeTrue()
-        expect(component.formGroup.controls['name'].value).toEqual(null)
+        expect(component.formGroup.controls['name'].value).toBeNull()
       })
 
       it('should prepare creating a parameter - start with empty form', () => {
@@ -315,7 +315,7 @@ describe('ParameterDetailComponent', () => {
 
         expect(component.formGroup.reset).toHaveBeenCalled()
         expect(component.formGroup.enabled).toBeTrue()
-        expect(component.formGroup.controls['name'].value).toBe(null)
+        expect(component.formGroup.controls['name'].value).toBeNull()
       })
     })
 
@@ -535,6 +535,8 @@ describe('ParameterDetailComponent', () => {
       component.formGroup.controls['valueObject'].setValue(obj)
       component.formGroup.controls['valueType'].setValue('OBJECT')
       component.onSave()
+
+      expect(component.formGroup.invalid).toBe(true)
     })
 
     it('should log if form is not valide', () => {
