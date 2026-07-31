@@ -618,7 +618,8 @@ describe('ParameterDetailComponent', () => {
 
 /* Test modification of built-in Angular class registerOnChange at top of the file  */
 @Component({
-  template: `<input type="text" [(ngModel)]="value" />`
+  template: `<input type="text" [(ngModel)]="value" />`,
+  imports: [FormsModule]
 })
 class TestComponent {
   value: any = ''

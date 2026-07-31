@@ -18,7 +18,7 @@ import {
 } from './parameter-search.component'
 import { UsageSearchComponent } from '../usage-search/usage-search.component'
 import { providePermissionService } from '@onecx/angular-utils'
-import { BreadcrumbService } from '@onecx/angular-accelerator'
+import { BreadcrumbService, DataSortDirection, Filter, FilterType, Sort } from '@onecx/angular-accelerator'
 
 // response data of parameter search service
 const paramRespData: Parameter[] = [
@@ -144,7 +144,7 @@ const allProducts: ExtendedProduct[] = [
 describe('ParameterSearchComponent', () => {
   let component: ParameterSearchComponent
   let fixture: ComponentFixture<ParameterSearchComponent>
-  const routerSpy = jasmine.createSpyObj('router', ['navigate'])
+  const routerSpy = jasmine.createSpyObj('router', ['navigate'], { url: '' })
   const routeMock = { snapshot: { paramMap: new Map() } }
 
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
@@ -418,6 +418,20 @@ describe('ParameterSearchComponent', () => {
 
       expect(component.item4Delete).toBeUndefined()
     })
+
+    it('should search again if the deleted parameter was not the last of its product', () => {
+      const ev: MouseEvent = new MouseEvent('type')
+      apiServiceSpy.searchParametersByCriteria.and.returnValue(of({ stream: paramRespData }))
+      component.onSearch({})
+      spyOn(component, 'onSearch')
+
+      component.onDelete(ev, items4Deletion[0])
+      component.onDeleteClosed(true)
+
+      expect(component.onSearch).toHaveBeenCalledWith({}, true)
+      expect(component.displayDeleteDialog).toBeFalse()
+      expect(component.item4Delete).toBeUndefined()
+    })
   })
 
   describe('filter columns', () => {
@@ -431,6 +445,67 @@ describe('ParameterSearchComponent', () => {
       component.onGlobalFilter('test')
 
       expect(component.filterText).toBe('test')
+    })
+
+    it('should filter interactiveRows based on the global filter', () => {
+      apiServiceSpy.searchParametersByCriteria.and.returnValue(of({ stream: paramRespData }))
+      component.onSearch({})
+
+      component.onGlobalFilter('name')
+
+      expect(component.filterText).toBe('name')
+      expect(component.interactiveRows.length).toBeGreaterThan(0)
+    })
+
+    it('should clear the global filter', () => {
+      component.onGlobalFilter('test')
+
+      component.onClearGlobalFilter()
+
+      expect(component.filterText).toBe('')
+    })
+
+    it('should handle rows with missing fields when filtering', () => {
+      apiServiceSpy.searchParametersByCriteria.and.returnValue(
+        of({
+          stream: [
+            { modificationCount: 0, value: 'val1', importValue: 'val1' },
+            {
+              modificationCount: 0,
+              id: 'id9',
+              productName: 'product1',
+              applicationId: 'app1',
+              name: 'name9',
+              displayName: 'Name 9',
+              value: 'val1',
+              importValue: 'val1'
+            }
+          ]
+        })
+      )
+      component.onSearch({})
+
+      component.onGlobalFilter('name9')
+
+      expect(component.interactiveRows.length).toBe(1)
+      expect(component.interactiveRows[0].id).toBe('id9')
+    })
+
+    it('should update tableFilters on filter change', () => {
+      const filters: Filter[] = [{ columnId: 'name', filterType: FilterType.CONTAINS, value: 'test' }]
+
+      component.onFilterChange(filters)
+
+      expect(component.tableFilters).toEqual(filters)
+    })
+
+    it('should update sort field and direction on sort change', () => {
+      const sort: Sort = { sortColumn: 'value', sortDirection: DataSortDirection.ASCENDING }
+
+      component.onSortChange(sort)
+
+      expect(component.sortField).toBe('value')
+      expect(component.sortDirection).toBe(DataSortDirection.ASCENDING)
     })
   })
 

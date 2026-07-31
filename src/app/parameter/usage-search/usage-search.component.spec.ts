@@ -18,7 +18,7 @@ import {
 } from './usage-search.component'
 import { ParameterSearchComponent } from '../parameter-search/parameter-search.component'
 import { providePermissionService } from '@onecx/angular-utils'
-import { BreadcrumbService } from '@onecx/angular-accelerator'
+import { BreadcrumbService, DataSortDirection, Filter, FilterType, Sort } from '@onecx/angular-accelerator'
 
 // response data of parameter search service
 const historyRespData: History[] = [
@@ -166,7 +166,7 @@ const allProducts: ExtendedProduct[] = [
 describe('UsageSearchComponent', () => {
   let component: UsageSearchComponent
   let fixture: ComponentFixture<UsageSearchComponent>
-  const routerSpy = jasmine.createSpyObj('router', ['navigate'])
+  const routerSpy = jasmine.createSpyObj('router', ['navigate'], { url: '' })
   const routeMock = { snapshot: { paramMap: new Map() } }
 
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
@@ -388,6 +388,71 @@ describe('UsageSearchComponent', () => {
       component.onGlobalFilter('test')
 
       expect(component.filterText).toBe('test')
+    })
+
+    it('should filter interactiveRows based on the global filter', () => {
+      historyApiSpy.getAllHistoryLatest.and.returnValue(of({ stream: historyRespData }))
+      component.onSearch({})
+
+      component.onGlobalFilter('name')
+
+      expect(component.filterText).toBe('name')
+      expect(component.interactiveRows.length).toBeGreaterThan(0)
+    })
+
+    it('should clear the global filter', () => {
+      component.onGlobalFilter('test')
+
+      component.onClearGlobalFilter()
+
+      expect(component.filterText).toBe('')
+    })
+
+    it('should handle rows with missing fields when filtering', () => {
+      historyApiSpy.getAllHistoryLatest.and.returnValue(
+        of({
+          stream: [
+            {
+              id: 'id0',
+              productName: undefined,
+              applicationId: undefined,
+              name: undefined,
+              usedValue: 'Val',
+              defaultValue: 'Default'
+            },
+            {
+              id: 'id1',
+              productName: 'product1',
+              applicationId: 'app1',
+              name: 'name1',
+              usedValue: 'Val',
+              defaultValue: 'Default'
+            }
+          ]
+        })
+      )
+      component.onSearch({})
+
+      component.onGlobalFilter('name1')
+
+      expect(component.interactiveRows.length).toBe(1)
+    })
+
+    it('should update tableFilters on filter change', () => {
+      const filters: Filter[] = [{ columnId: 'name', filterType: FilterType.CONTAINS, value: 'test' }]
+
+      component.onFilterChange(filters)
+
+      expect(component.tableFilters).toEqual(filters)
+    })
+
+    it('should update sort field and direction on sort change', () => {
+      const sort: Sort = { sortColumn: 'start', sortDirection: DataSortDirection.DESCENDING }
+
+      component.onSortChange(sort)
+
+      expect(component.sortField).toBe('start')
+      expect(component.sortDirection).toBe(DataSortDirection.DESCENDING)
     })
   })
 
