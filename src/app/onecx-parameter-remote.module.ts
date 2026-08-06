@@ -1,29 +1,22 @@
-import { APP_INITIALIZER, DoBootstrap, Injector, NgModule } from '@angular/core'
+import { DoBootstrap, inject, Injector, NgModule, provideAppInitializer } from '@angular/core'
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
-import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule, Routes, Router } from '@angular/router'
 import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { firstValueFrom } from 'rxjs'
 
 import { AngularAuthModule } from '@onecx/angular-auth'
-import { createTranslateLoader, provideTranslationPathFromMeta } from '@onecx/angular-utils'
+import { provideTranslationPathFromMeta, createTranslateLoader, PortalApiConfiguration } from '@onecx/angular-utils'
 import { createAppEntrypoint, initializeRouter, startsWith } from '@onecx/angular-webcomponents'
-import {
-  addInitializeModuleGuard,
-  AppConfigService,
-  AppStateService,
-  ConfigurationService
-} from '@onecx/angular-integration-interface'
-import { AngularAcceleratorMissingTranslationHandler } from '@onecx/angular-accelerator'
-import { PortalApiConfiguration, PortalCoreModule } from '@onecx/portal-integration-angular'
+import { AppConfigService, AppStateService, ConfigurationService } from '@onecx/angular-integration-interface'
+import { AngularAcceleratorMissingTranslationHandler, AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
 import { Configuration } from './shared/generated'
 import { environment } from 'src/environments/environment'
 import { AppEntrypointComponent } from './app-entrypoint.component'
 
-function apiConfigProvider(configService: ConfigurationService, appStateService: AppStateService) {
-  return new PortalApiConfiguration(Configuration, environment.apiPrefix, configService, appStateService)
+function apiConfigProvider() {
+  return new PortalApiConfiguration(Configuration, environment.apiPrefix)
 }
 
 export function appConfigServiceInitializer(appStateService: AppStateService, appConfigService: AppConfigService) {
@@ -40,13 +33,13 @@ const routes: Routes = [
   }
 ]
 @NgModule({
-  declarations: [AppEntrypointComponent],
+  declarations: [],
   imports: [
+    AppEntrypointComponent,
     AngularAuthModule,
-    BrowserModule,
+    AngularAcceleratorModule,
     BrowserAnimationsModule,
-    PortalCoreModule.forMicroFrontend(),
-    RouterModule.forRoot(addInitializeModuleGuard(routes)),
+    RouterModule.forRoot(routes),
     TranslateModule.forRoot({
       isolate: true,
       loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] },
@@ -58,30 +51,16 @@ const routes: Routes = [
   ],
   providers: [
     ConfigurationService,
-    { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeRouter,
-      multi: true,
-      deps: [Router, AppStateService]
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: appConfigServiceInitializer,
-      multi: true,
-      deps: [AppStateService, AppConfigService]
-    },
+    { provide: Configuration, useFactory: apiConfigProvider },
+    provideAppInitializer(() => initializeRouter(inject(Router), inject(AppStateService))()),
+    provideAppInitializer(() => appConfigServiceInitializer(inject(AppStateService), inject(AppConfigService))()),
     provideTranslationPathFromMeta(import.meta.url, 'assets/i18n/'),
     provideHttpClient(withInterceptorsFromDi())
   ]
 })
 export class OneCXParameterModule implements DoBootstrap {
-  constructor(
-    private readonly injector: Injector,
-    private readonly appConfigService: AppConfigService
-  ) {
-    console.info('OneCX Parameter Module constructor')
-  }
+  private readonly injector = inject(Injector)
+  private readonly appConfigService = inject(AppConfigService)
 
   ngDoBootstrap(): void {
     const envElementName = this.appConfigService.getProperty('APP_ELEMENT_NAME')

@@ -3,12 +3,10 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { provideRouter, Router, ActivatedRoute } from '@angular/router'
-import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
-import { Column } from '@onecx/portal-integration-angular'
 
 import { History, HistoriesAPIService, Product } from 'src/app/shared/generated'
 import {
@@ -19,6 +17,8 @@ import {
   ProductAbstract
 } from './usage-search.component'
 import { ParameterSearchComponent } from '../parameter-search/parameter-search.component'
+import { providePermissionService } from '@onecx/angular-utils'
+import { BreadcrumbService, DataSortDirection, Filter, FilterType, Sort } from '@onecx/angular-accelerator'
 
 // response data of parameter search service
 const historyRespData: History[] = [
@@ -166,7 +166,7 @@ const allProducts: ExtendedProduct[] = [
 describe('UsageSearchComponent', () => {
   let component: UsageSearchComponent
   let fixture: ComponentFixture<UsageSearchComponent>
-  const routerSpy = jasmine.createSpyObj('router', ['navigate'])
+  const routerSpy = jasmine.createSpyObj('router', ['navigate'], { url: '' })
   const routeMock = { snapshot: { paramMap: new Map() } }
 
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
@@ -178,8 +178,9 @@ describe('UsageSearchComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [UsageSearchComponent],
+      declarations: [],
       imports: [
+        UsageSearchComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
@@ -189,14 +190,23 @@ describe('UsageSearchComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        providePermissionService(),
         provideRouter([{ path: '', component: ParameterSearchComponent }]),
         { provide: Router, useValue: routerSpy },
-        { provide: ActivatedRoute, useValue: routeMock },
-        { provide: UserService, useValue: mockUserService },
-        { provide: PortalMessageService, useValue: msgServiceSpy },
-        { provide: HistoriesAPIService, useValue: historyApiSpy }
+        { provide: ActivatedRoute, useValue: routeMock }
       ]
-    }).compileComponents()
+    })
+      .overrideComponent(UsageSearchComponent, {
+        add: {
+          providers: [
+            { provide: UserService, useValue: mockUserService },
+            { provide: PortalMessageService, useValue: msgServiceSpy },
+            { provide: HistoriesAPIService, useValue: historyApiSpy },
+            { provide: BreadcrumbService, useValue: {} }
+          ]
+        }
+      })
+      .compileComponents()
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
     msgServiceSpy.info.calls.reset()
@@ -220,29 +230,9 @@ describe('UsageSearchComponent', () => {
       expect(component).toBeTruthy()
     })
 
-    it('should call OnInit and populate filteredColumns/actions correctly', () => {
+    it('should call OnInit and populate displayedColumnKeys/actions correctly', () => {
       component.ngOnInit()
-      expect(component.filteredColumns[0]).toEqual(component.columns[0])
-    })
-
-    it('dataview translations', (done) => {
-      const translationData = {
-        'DIALOG.DATAVIEW.FILTER': 'filter'
-      }
-      const translateService = TestBed.inject(TranslateService)
-      spyOn(translateService, 'get').and.returnValue(of(translationData))
-
-      component.ngOnInit()
-
-      component.dataViewControlsTranslations$?.subscribe({
-        next: (data) => {
-          if (data) {
-            expect(data.filterInputPlaceholder).toEqual('filter')
-          }
-          done()
-        },
-        error: done.fail
-      })
+      expect(component.displayedColumnKeys).toContain(component.columns[0].id)
     })
   })
 
@@ -251,60 +241,38 @@ describe('UsageSearchComponent', () => {
       spyOn(component, 'onGoToParameterSearchPage')
 
       component.ngOnInit()
-      component.actions[0].actionCallback()
+      component.actions[0].actionCallback!()
 
       expect(component.onGoToParameterSearchPage).toHaveBeenCalled()
     })
   })
 
   describe('search', () => {
-    it('should search parameters without search criteria', (done) => {
+    it('should search parameters without search criteria', () => {
       historyApiSpy.getAllHistoryLatest.and.returnValue(of({ stream: historyRespData }))
 
       component.onSearch({})
 
-      component.data$?.subscribe({
-        next: (data) => {
-          expect(data).toEqual(historyData)
-          done()
-        },
-        error: done.fail
-      })
+      expect(component.interactiveRows).toHaveSize(historyData.length)
     })
 
-    it('should display an info message if there is no result', (done) => {
+    it('should display an info message if there is no result', () => {
       historyApiSpy.getAllHistoryLatest.and.returnValue(of({ totalElements: 0, stream: [] }))
 
       component.onSearch({})
 
-      component.data$?.subscribe({
-        next: (data) => {
-          expect(data.length).toEqual(0)
-          expect(msgServiceSpy.info).toHaveBeenCalledOnceWith({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
-          done()
-        },
-        error: done.fail
-      })
+      expect(msgServiceSpy.info).toHaveBeenCalledOnceWith({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
     })
 
-    it('should display an error message if the search fails', (done) => {
+    it('should display an error message if the search fails', () => {
       const errorResponse = { status: '403', statusText: 'Not authorized' }
       historyApiSpy.getAllHistoryLatest.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
 
       component.onSearch({})
 
-      component.data$?.subscribe({
-        next: (data) => {
-          expect(data).toEqual([])
-          done()
-        },
-        error: () => {
-          expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.SEARCH_FAILED' })
-          expect(console.error).toHaveBeenCalledWith('getAllHistoryLatest', errorResponse)
-          done.fail
-        }
-      })
+      expect(component.interactiveRows).toEqual([])
+      expect(console.error).toHaveBeenCalledWith('getAllHistoryLatest', errorResponse)
     })
   })
 
@@ -376,7 +344,7 @@ describe('UsageSearchComponent', () => {
 
       expect(ev.stopPropagation).toHaveBeenCalled()
       expect(component.changeMode).toEqual(mode)
-      expect(component.item4Detail).toBe(undefined)
+      expect(component.item4Detail).toBeUndefined()
       expect(component.displayDetailDialog).toBeTrue()
 
       component.onCloseDetail(false)
@@ -410,26 +378,81 @@ describe('UsageSearchComponent', () => {
   })
 
   describe('filter columns', () => {
-    it('should update the columns that are seen in data', () => {
-      const columns: Column[] = [
-        { field: 'productName', header: 'PRODUCT_NAME' },
-        { field: 'description', header: 'DESCRIPTION' }
-      ]
-      const expectedColumn = { field: 'productName', header: 'PRODUCT_NAME' }
-      component.columns = columns
+    it('should update displayedColumnKeys when columns change', () => {
+      component.onColumnsChange(['productName', 'description'])
 
-      component.onColumnsChange(['productName'])
-
-      expect(component.filteredColumns).not.toContain(columns[1])
-      expect(component.filteredColumns).toEqual([jasmine.objectContaining(expectedColumn)])
+      expect(component.displayedColumnKeys).toEqual(['productName', 'description'])
     })
 
-    it('should apply a filter to the result table', () => {
-      component.dataTable = jasmine.createSpyObj('dataTable', ['filterGlobal'])
+    it('should update filterText on global filter', () => {
+      component.onGlobalFilter('test')
 
-      component.onFilterChange('test')
+      expect(component.filterText).toBe('test')
+    })
 
-      expect(component.dataTable?.filterGlobal).toHaveBeenCalledWith('test', 'contains')
+    it('should filter interactiveRows based on the global filter', () => {
+      historyApiSpy.getAllHistoryLatest.and.returnValue(of({ stream: historyRespData }))
+      component.onSearch({})
+
+      component.onGlobalFilter('name')
+
+      expect(component.filterText).toBe('name')
+      expect(component.interactiveRows.length).toBeGreaterThan(0)
+    })
+
+    it('should clear the global filter', () => {
+      component.onGlobalFilter('test')
+
+      component.onClearGlobalFilter()
+
+      expect(component.filterText).toBe('')
+    })
+
+    it('should handle rows with missing fields when filtering', () => {
+      historyApiSpy.getAllHistoryLatest.and.returnValue(
+        of({
+          stream: [
+            {
+              id: 'id0',
+              productName: undefined,
+              applicationId: undefined,
+              name: undefined,
+              usedValue: 'Val',
+              defaultValue: 'Default'
+            },
+            {
+              id: 'id1',
+              productName: 'product1',
+              applicationId: 'app1',
+              name: 'name1',
+              usedValue: 'Val',
+              defaultValue: 'Default'
+            }
+          ]
+        })
+      )
+      component.onSearch({})
+
+      component.onGlobalFilter('name1')
+
+      expect(component.interactiveRows).toHaveSize(1)
+    })
+
+    it('should update tableFilters on filter change', () => {
+      const filters: Filter[] = [{ columnId: 'name', filterType: FilterType.CONTAINS, value: 'test' }]
+
+      component.onFilterChange(filters)
+
+      expect(component.tableFilters).toEqual(filters)
+    })
+
+    it('should update sort field and direction on sort change', () => {
+      const sort: Sort = { sortColumn: 'start', sortDirection: DataSortDirection.DESCENDING }
+
+      component.onSortChange(sort)
+
+      expect(component.sortField).toBe('start')
+      expect(component.sortDirection).toBe(DataSortDirection.DESCENDING)
     })
   })
 

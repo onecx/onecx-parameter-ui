@@ -1,10 +1,16 @@
 import { Component, Input } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
 
-import { Column } from '@onecx/portal-integration-angular'
-
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 import { Parameter } from 'src/app/shared/generated'
+import { SharedModule } from 'src/app/shared/shared.module'
 import { ExtendedHistory } from '../../usage-search/usage-search.component'
+
+interface Column {
+  field: string
+  header: string
+  [key: string]: unknown
+}
 
 type ExtendedColumn = Column & {
   hasFilter?: boolean
@@ -20,7 +26,8 @@ type ExtendedColumn = Column & {
 
 @Component({
   selector: 'app-usage-detail-list',
-  templateUrl: './usage-detail-list.component.html'
+  templateUrl: './usage-detail-list.component.html',
+  imports: [AngularAcceleratorModule, SharedModule]
 })
 export class UsageDetailListComponent {
   @Input() public loading = false
@@ -101,7 +108,7 @@ export class UsageDetailListComponent {
   ]
 
   constructor(public readonly translate: TranslateService) {
-    this.filteredColumns = this.columns.filter((a) => a.active === true)
+    this.filteredColumns = this.columns.filter((a) => a['active'] === true)
   }
 
   public onCalcDuration(start: string, end: string): string {

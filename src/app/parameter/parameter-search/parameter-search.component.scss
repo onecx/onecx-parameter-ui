@@ -1,13 +1,14 @@
-@import '/src/app/_pam-mixins.scss';
+@use '/src/app/_pam-mixins.scss' as *;
 
 @include text-badges;
 @include danger-action;
 @include word-break-all;
-@include displaying-text-responsive;
+@include ocx-text-responsive;
 @include table-inline-buttons;
 @include table-zebra-rows;
 @include table-responsive-columns;
 @include dialog-footer-buttons;
+@include fix-pi-icon-colors;
 
 :host ::ng-deep {
   .text-badge-right {
