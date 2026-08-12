@@ -1,17 +1,9 @@
-<p-message
-  *ngIf="loading"
-  id="pam_usage_detail_message_loading"
-  severity="info"
-  styleClass="my-3"
-  [text]="'ACTIONS.LOADING' | translate"
-></p-message>
-<p-message
-  *ngIf="exceptionKey"
-  id="pam_usage_detail_message_error"
-  severity="error"
-  styleClass="my-3"
-  [text]="exceptionKey | translate"
-></p-message>
+<p-message *ngIf="loading" id="pam_usage_detail_message_loading" severity="info" styleClass="my-3">{{
+  'ACTIONS.LOADING' | translate
+}}</p-message>
+<p-message *ngIf="exceptionKey" id="pam_usage_detail_message_error" severity="error" styleClass="my-3">{{
+  exceptionKey | translate
+}}</p-message>
 
 <p-table
   *ngIf="!loading && !exceptionKey"
@@ -76,7 +68,6 @@
           [pRowToggler]="rowData"
           [text]="true"
           [rounded]="true"
-          [plain]="true"
           [icon]="expanded ? 'pi pi-eye-slash' : 'pi pi-eye'"
           [attr.aria-label]="'DIALOG.USAGE.DETAIL.LABEL' | translate"
           [pTooltip]="'DIALOG.USAGE.DETAIL.LABEL' | translate"
@@ -120,7 +111,7 @@
     </tr>
   </ng-template>
 
-  <ng-template pTemplate="rowexpansion" let-rowData let-index="rowIndex" let-columns="columns">
+  <ng-template #expandedrow let-rowData let-index="rowIndex" let-columns="columns">
     <tr class="">
       <td [attr.colspan]="columns.length + 1">
         <div class="flex flex-row flex-wrap gap-4 justify-content-around align-items-start">
@@ -180,13 +171,13 @@
             id="pam_usage_detail_form_value"
             styleClass="ml-3 cursor-auto shadow-none"
             [value]="data.value"
-            [label]="'PARAMETER.VALUE' | translate"
             [pTooltip]="'PARAMETER.TOOLTIPS.VALUE' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
-          ></p-checkbox>
+            >{{ 'PARAMETER.VALUE' | translate }}</p-checkbox
+          >
 
-          <span *ngIf="data.type !== 'BOOLEAN'" class="p-float-label">
+          <p-floatlabel *ngIf="data.type !== 'BOOLEAN'" variant="on">
             <input
               *ngIf="data.type !== 'OBJECT'"
               pInputText
@@ -215,7 +206,7 @@
             <label *ngIf="data.type !== 'BOOLEAN'" for="pam_usage_detail_form_value">
               {{ 'PARAMETER.VALUE' | translate }}
             </label>
-          </span>
+          </p-floatlabel>
         </div>
       </ng-container>
     </div>

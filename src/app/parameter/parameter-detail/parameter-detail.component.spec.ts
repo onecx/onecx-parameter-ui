@@ -59,22 +59,27 @@ describe('ParameterDetailComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ParameterDetailComponent],
+      declarations: [],
       imports: [
+        ParameterDetailComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
       schemas: [NO_ERRORS_SCHEMA],
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        { provide: UserService, useValue: mockUserService },
-        { provide: PortalMessageService, useValue: msgServiceSpy },
-        { provide: ParametersAPIService, useValue: apiServiceSpy }
-      ]
-    }).compileComponents()
+      providers: [provideHttpClient(), provideHttpClientTesting()]
+    })
+      .overrideComponent(ParameterDetailComponent, {
+        add: {
+          providers: [
+            { provide: UserService, useValue: mockUserService },
+            { provide: PortalMessageService, useValue: msgServiceSpy },
+            { provide: ParametersAPIService, useValue: apiServiceSpy }
+          ]
+        }
+      })
+      .compileComponents()
     // reset
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
@@ -298,7 +303,7 @@ describe('ParameterDetailComponent', () => {
         component.ngOnChanges()
 
         expect(component.formGroup.enabled).toBeTrue()
-        expect(component.formGroup.controls['name'].value).toEqual(null)
+        expect(component.formGroup.controls['name'].value).toBeNull()
       })
 
       it('should prepare creating a parameter - start with empty form', () => {
@@ -310,7 +315,7 @@ describe('ParameterDetailComponent', () => {
 
         expect(component.formGroup.reset).toHaveBeenCalled()
         expect(component.formGroup.enabled).toBeTrue()
-        expect(component.formGroup.controls['name'].value).toBe(null)
+        expect(component.formGroup.controls['name'].value).toBeNull()
       })
     })
 
@@ -530,6 +535,8 @@ describe('ParameterDetailComponent', () => {
       component.formGroup.controls['valueObject'].setValue(obj)
       component.formGroup.controls['valueType'].setValue('OBJECT')
       component.onSave()
+
+      expect(component.formGroup.invalid).toBe(true)
     })
 
     it('should log if form is not valide', () => {
@@ -613,7 +620,8 @@ describe('ParameterDetailComponent', () => {
 
 /* Test modification of built-in Angular class registerOnChange at top of the file  */
 @Component({
-  template: `<input type="text" [(ngModel)]="value" />`
+  template: `<input type="text" [(ngModel)]="value" />`,
+  imports: [FormsModule]
 })
 class TestComponent {
   value: any = ''
@@ -625,8 +633,8 @@ describe('DefaultValueAccessor prototype modification', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TestComponent],
-      imports: [FormsModule]
+      declarations: [],
+      imports: [TestComponent, FormsModule]
     }).compileComponents()
 
     fixture = TestBed.createComponent(TestComponent)

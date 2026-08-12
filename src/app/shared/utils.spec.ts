@@ -85,7 +85,7 @@ describe('util functions', () => {
 
       const sortedItems = items.sort(dropDownSortItemsByLabel)
 
-      expect(sortedItems[0].label).toEqual(undefined)
+      expect(sortedItems[0].label).toBeUndefined()
     })
   })
 

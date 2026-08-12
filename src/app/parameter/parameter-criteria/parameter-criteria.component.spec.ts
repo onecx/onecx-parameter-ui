@@ -10,6 +10,8 @@ import { UserService } from '@onecx/angular-integration-interface'
 
 import { ExtendedProduct, ApplicationAbstract } from '../parameter-search/parameter-search.component'
 import { ParameterCriteriaComponent, CriteriaForm } from './parameter-criteria.component'
+import { ActivatedRoute } from '@angular/router'
+import { BreadcrumbService } from '@onecx/angular-accelerator'
 
 const filledCriteria = new FormGroup<CriteriaForm>({
   productName: new FormControl<string | null>('productName'),
@@ -40,20 +42,31 @@ describe('ParameterCriteriaComponent', () => {
   let component: ParameterCriteriaComponent
   let fixture: ComponentFixture<ParameterCriteriaComponent>
 
+  const routeMock = { snapshot: { paramMap: new Map() } }
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ParameterCriteriaComponent],
+      declarations: [],
       imports: [
+        ParameterCriteriaComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
       schemas: [NO_ERRORS_SCHEMA],
-      providers: [provideHttpClient(), provideHttpClientTesting(), { provide: UserService, useValue: mockUserService }]
-    }).compileComponents()
+      providers: [provideHttpClient(), provideHttpClientTesting(), { provide: ActivatedRoute, useValue: routeMock }]
+    })
+      .overrideComponent(ParameterCriteriaComponent, {
+        add: {
+          providers: [
+            { provide: UserService, useValue: mockUserService },
+            { provide: BreadcrumbService, useValue: {} }
+          ]
+        }
+      })
+      .compileComponents()
   }))
 
   beforeEach(() => {

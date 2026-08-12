@@ -80,6 +80,11 @@
       "MESSAGE": {
         "NO_RESULTS": "Die Suche ergab keine Treffer",
         "SEARCH_FAILED": "Suche ist fehlgeschlagen"
+      },
+      "FILTER": {
+        "LABEL": "Filter",
+        "TOOLTIP": "Applikation, App, Anzeigename, Name",
+        "RESET": "Filter zurücksetzen"
       }
     },
     "VIEW": {

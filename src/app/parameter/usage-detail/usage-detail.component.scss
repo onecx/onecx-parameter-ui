@@ -1,10 +1,10 @@
-@import '/src/app/_pam-mixins.scss';
+@use '/src/app/_pam-mixins.scss' as *;
 
 @include readable-disabled-components;
 @include dialog-footer-buttons;
 @include dialog-non-full-size-modal;
-@include displaying-text-responsive;
-@include tabview-fix-color-selected-tab;
+@include ocx-text-responsive;
+@include p-inputtext-disabled-fix;
 
 :host ::ng-deep {
   .p-fieldset {
