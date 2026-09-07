@@ -20,7 +20,7 @@ import { TabsModule } from 'primeng/tabs'
 import { InputTextModule } from 'primeng/inputtext'
 
 import { Parameter, ParametersAPIService, ParameterCreate, ParameterUpdate } from 'src/app/shared/generated'
-import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
+import { Utils } from 'src/app/shared/utils'
 import { SharedModule } from 'src/app/shared/shared.module'
 import { ChangeMode, ExtendedProduct } from '../parameter-search/parameter-search.component'
 
@@ -257,7 +257,7 @@ export class ParameterDetailComponent implements OnChanges {
         error: (err) => {
           this.formGroup.reset()
           this.formGroup.disable()
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + Utils.mapping_error_status(err.status) + '.PARAMETER'
           this.msgService.error({ summaryKey: this.exceptionKey })
           console.error('getParameterById', err)
         }
@@ -284,7 +284,7 @@ export class ParameterDetailComponent implements OnChanges {
           this.appOptions.push({ label: app.appName, value: app.appId })
         })
       })
-    this.appOptions.sort(dropDownSortItemsByLabel)
+    this.appOptions.sort(Utils.dropDownSortItemsByLabel)
   }
 
   /**
