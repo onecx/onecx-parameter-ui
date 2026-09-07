@@ -23,7 +23,7 @@ import {
   ParametersAPIService,
   Product
 } from 'src/app/shared/generated'
-import { displayEqualityState, displayValue2, displayValueType, sortByDisplayName } from 'src/app/shared/utils'
+import { Utils } from 'src/app/shared/utils'
 import { SharedModule } from 'src/app/shared/shared.module'
 import { ParameterCriteriaComponent } from '../parameter-criteria/parameter-criteria.component'
 import { ParameterDetailComponent } from '../parameter-detail/parameter-detail.component'
@@ -243,7 +243,7 @@ export class ParameterSearchComponent implements OnInit {
           applications: p.applications ?? []
         })
       )
-      aps.sort(sortByDisplayName)
+      aps.sort(Utils.sortByDisplayName)
     }
     return aps
   }
@@ -257,7 +257,7 @@ export class ParameterSearchComponent implements OnInit {
       })
       ups.push({ name: p.productName, displayName: p.productName, applications: apps } as ExtendedProduct)
     })
-    ups.sort(sortByDisplayName)
+    ups.sort(Utils.sortByDisplayName)
     return ups
   }
 
@@ -279,7 +279,7 @@ export class ParameterSearchComponent implements OnInit {
           p.applications = uApps
         }
       })
-      uP.sort(sortByDisplayName)
+      uP.sort(Utils.sortByDisplayName)
     }
     // if service is not running or product data are not yet available
     if (aP.length === 0) aP = uP
@@ -310,16 +310,16 @@ export class ParameterSearchComponent implements OnInit {
                 ...p,
                 id: p.id ?? '',
                 displayName: p.displayName ?? p.name,
-                valueType: displayValueType(p.value),
-                importValueType: displayValueType(p.importValue),
-                displayValue: displayValue2(p.value, p.importValue),
-                isEqual: displayEqualityState(p.value, p.importValue),
+                valueType: Utils.displayValueType(p.value),
+                importValueType: Utils.displayValueType(p.importValue),
+                displayValue: Utils.displayValue2(p.value, p.importValue),
+                isEqual: Utils.displayEqualityState(p.value, p.importValue),
                 imagePath: ''
               }) as ParameterTableRow
           )
         }),
         catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETERS'
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + Utils.mapping_error_status(err.status) + '.PARAMETERS'
           console.error('searchParametersByCriteria', err)
           return of([] as ParameterTableRow[])
         }),
