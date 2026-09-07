@@ -30,7 +30,7 @@ import {
   ParameterSearchCriteria,
   Product
 } from 'src/app/shared/generated'
-import { displayEqualityState, displayValue, displayValueType, sortByDisplayName } from 'src/app/shared/utils'
+import { Utils } from 'src/app/shared/utils'
 import { UsageDetailComponent } from '../usage-detail/usage-detail.component'
 import { ParameterCriteriaComponent } from '../parameter-criteria/parameter-criteria.component'
 import { ParameterDetailComponent } from '../parameter-detail/parameter-detail.component'
@@ -107,7 +107,7 @@ export class UsageSearchComponent implements OnInit {
   public displayDetailDialog = false
   public displayUsageDialog = false
   public actions: Action[] = []
-  public sortByDisplayName = sortByDisplayName
+  public sortByDisplayName = Utils.sortByDisplayName
 
   public interactiveColumns: DataTableColumn[] = []
   public displayedColumnKeys: string[] = []
@@ -334,17 +334,17 @@ export class UsageSearchComponent implements OnInit {
             (h) =>
               ({
                 ...h,
-                valueType: displayValueType(h.usedValue),
-                defaultValueType: displayValueType(h.defaultValue),
-                displayDefaultValue: displayValue(h.defaultValue),
-                displayUsedValue: displayValue(h.usedValue),
-                isEqual: displayEqualityState(h.usedValue, h.defaultValue),
+                valueType: Utils.displayValueType(h.usedValue),
+                defaultValueType: Utils.displayValueType(h.defaultValue),
+                displayDefaultValue: Utils.displayValue(h.defaultValue),
+                displayUsedValue: Utils.displayValue(h.usedValue),
+                isEqual: Utils.displayEqualityState(h.usedValue, h.defaultValue),
                 imagePath: ''
               }) as UsageTableRow
           )
         }),
         catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PARAMETER'
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + Utils.mapping_error_status(err.status) + '.PARAMETER'
           console.error('getAllHistoryLatest', err)
           return of([] as UsageTableRow[])
         }),

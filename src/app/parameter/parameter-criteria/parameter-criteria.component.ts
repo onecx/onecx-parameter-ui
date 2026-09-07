@@ -6,7 +6,7 @@ import { SelectItem } from 'primeng/api'
 import { Action, AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
 import { ParameterSearchCriteria } from 'src/app/shared/generated'
-import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
+import { Utils } from 'src/app/shared/utils'
 import { SharedModule } from 'src/app/shared/shared.module'
 import { ExtendedProduct } from '../parameter-search/parameter-search.component'
 
@@ -80,6 +80,6 @@ export class ParameterCriteriaComponent implements OnChanges {
           this.appOptions.push({ label: app.appName, value: app.appId })
         })
       })
-    this.appOptions.sort(dropDownSortItemsByLabel)
+    this.appOptions.sort(Utils.dropDownSortItemsByLabel)
   }
 }

@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core'
 import { catchError, finalize, map, Observable, of } from 'rxjs'
 
 import { HistoriesAPIService, HistoryCriteria, HistoryPageResult, Parameter } from 'src/app/shared/generated'
-import { displayEqualityState, displayValue, displayValueType } from 'src/app/shared/utils'
+import { Utils } from 'src/app/shared/utils'
 import { SharedModule } from 'src/app/shared/shared.module'
 
 import { ExtendedHistory } from '../usage-search/usage-search.component'
@@ -50,16 +50,16 @@ export class UsageDetailComponent {
           (h) =>
             ({
               ...h,
-              valueType: displayValueType(h.usedValue),
-              defaultValueType: displayValueType(h.defaultValue),
-              displayDefaultValue: displayValue(h.defaultValue),
-              displayUsedValue: displayValue(h.usedValue),
-              isEqual: displayEqualityState(h.usedValue, h.defaultValue)
+              valueType: Utils.displayValueType(h.usedValue),
+              defaultValueType: Utils.displayValueType(h.defaultValue),
+              displayDefaultValue: Utils.displayValue(h.defaultValue),
+              displayUsedValue: Utils.displayValue(h.usedValue),
+              isEqual: Utils.displayEqualityState(h.usedValue, h.defaultValue)
             }) as ExtendedHistory
         )
       }),
       catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.USAGE'
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + Utils.mapping_error_status(err.status) + '.USAGE'
         console.error('getAllHistory', err)
         return of([])
       }),
