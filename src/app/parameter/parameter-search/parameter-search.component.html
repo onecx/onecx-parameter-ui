@@ -179,9 +179,8 @@
         <ng-template pTemplate="nameIdTableCell" let-rowObject="rowObject">
           <div
             class="text-ellipsis-2-lines word-break-all"
-            [ngStyle]="{
-              'min-width': rowObject['displayName']?.length > 15 ? '8rem' : ''
-            }"
+            [class.min-w-8rem]="rowObject['displayName']?.length > 15"
+            [style.min-width]="rowObject['displayName']?.length > 15 ? '8rem' : ''"
           >
             {{ rowObject['displayName'] }}
           </div>
@@ -192,7 +191,8 @@
           @let value = rowObject['value'] ?? rowObject['importValue'];
           <div
             class="text-ellipsis-2-lines word-break-all"
-            [ngStyle]="{ 'min-width': (value ?? '').length > 15 ? '10rem' : '' }"
+            [class.min-w-10rem]="(value ?? '').length > 15"
+            [style.min-width]="(value ?? '').length > 15 ? '10rem' : ''"
           >
             {{ rowObject['displayValue'] }}
           </div>
@@ -226,13 +226,11 @@
         <!-- equal column -->
         <ng-template pTemplate="equalIdTableCell" let-rowObject="rowObject">
           <div
-            [ngClass]="
-              rowObject['isEqual'] === 'TRUE'
-                ? 'pi pi-check text-green-600'
-                : rowObject['isEqual'] === 'FALSE'
-                  ? 'pi pi-times text-red-600'
-                  : ''
-            "
+            [class.pi]="rowObject['isEqual'] === 'TRUE' || rowObject['isEqual'] === 'FALSE'"
+            [class.pi-check]="rowObject['isEqual'] === 'TRUE'"
+            [class.text-green-600]="rowObject['isEqual'] === 'TRUE'"
+            [class.pi-times]="rowObject['isEqual'] === 'FALSE'"
+            [class.text-red-600]="rowObject['isEqual'] === 'FALSE'"
             [attr.aria-label]="'PARAMETER.TOOLTIPS.EQUAL.' + rowObject['isEqual'] | translate"
             [pTooltip]="'PARAMETER.TOOLTIPS.EQUAL.' + rowObject['isEqual'] | translate"
             tooltipPosition="top"

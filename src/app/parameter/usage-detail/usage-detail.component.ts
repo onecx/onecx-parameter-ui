@@ -1,20 +1,31 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core'
-import { TranslateService } from '@ngx-translate/core'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { catchError, finalize, map, Observable, of } from 'rxjs'
 
 import { HistoriesAPIService, HistoryCriteria, HistoryPageResult, Parameter } from 'src/app/shared/generated'
 import { Utils } from 'src/app/shared/utils'
-import { SharedModule } from 'src/app/shared/shared.module'
 
 import { ExtendedHistory } from '../usage-search/usage-search.component'
 import { UsageDetailCriteriaComponent } from './usage-detail-criteria/usage-detail-criteria.component'
 import { UsageDetailListComponent } from './usage-detail-list/usage-detail-list.component'
+import { TooltipModule } from 'primeng/tooltip'
+import { ButtonModule } from 'primeng/button'
+import { AsyncPipe } from '@angular/common'
+import { DialogModule } from 'primeng/dialog'
 
 @Component({
   selector: 'app-usage-detail',
   templateUrl: './usage-detail.component.html',
   styleUrls: ['./usage-detail.component.scss'],
-  imports: [SharedModule, UsageDetailCriteriaComponent, UsageDetailListComponent]
+  imports: [
+    UsageDetailCriteriaComponent,
+    UsageDetailListComponent,
+    TranslateModule,
+    TooltipModule,
+    ButtonModule,
+    AsyncPipe,
+    DialogModule
+  ]
 })
 export class UsageDetailComponent {
   @Input() public history: ExtendedHistory | undefined
@@ -39,7 +50,6 @@ export class UsageDetailComponent {
    */
   public onSearch(criteria: HistoryCriteria): void {
     if (!criteria.name || !criteria.productName || !criteria.applicationId) {
-      console.error('Missing search criteria for getting parameter usage', criteria)
       return
     }
     this.loading = true

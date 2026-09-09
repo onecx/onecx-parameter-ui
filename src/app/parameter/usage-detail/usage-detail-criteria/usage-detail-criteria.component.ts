@@ -1,10 +1,12 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
-import { FormControl, FormGroup } from '@angular/forms'
-import { TranslateService } from '@ngx-translate/core'
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
+import { CommonModule } from '@angular/common'
 
 import { HistoryCriteria, Parameter } from 'src/app/shared/generated'
-import { SharedModule } from 'src/app/shared/shared.module'
 import { ExtendedHistory } from '../../usage-search/usage-search.component'
+import { TooltipModule } from 'primeng/tooltip'
+import { FloatLabelModule } from 'primeng/floatlabel'
 
 export interface CriteriaForm {
   name: FormControl<string | undefined>
@@ -15,7 +17,7 @@ export interface CriteriaForm {
 @Component({
   selector: 'app-usage-detail-criteria',
   templateUrl: './usage-detail-criteria.component.html',
-  imports: [SharedModule]
+  imports: [TranslateModule, TooltipModule, FloatLabelModule, ReactiveFormsModule, CommonModule]
 })
 export class UsageDetailCriteriaComponent implements OnChanges {
   @Input() public history: ExtendedHistory | undefined = undefined

@@ -16,7 +16,7 @@
   }"
 >
   <p-message *ngIf="exceptionKey" id="am_detail_message_error" severity="error">{{
-    exceptionKey | translate
+    exceptionKey ?? '' | translate
   }}</p-message>
 
   <p-tabs *ngIf="!exceptionKey" [(value)]="activeTab" [formGroup]="formGroup" errorTailor>
@@ -118,7 +118,6 @@
           <div class="flex flex-row gap-4">
             <p-floatlabel class="flex-grow-1" variant="on" controlErrorAnchor>
               <input
-                pInputText
                 type="text"
                 id="pam_detail_form_display_name"
                 formControlName="displayName"

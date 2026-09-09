@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
-import { TranslateService } from '@ngx-translate/core'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
@@ -24,11 +24,18 @@ import {
   Product
 } from 'src/app/shared/generated'
 import { Utils } from 'src/app/shared/utils'
-import { SharedModule } from 'src/app/shared/shared.module'
 import { ParameterCriteriaComponent } from '../parameter-criteria/parameter-criteria.component'
 import { ParameterDetailComponent } from '../parameter-detail/parameter-detail.component'
 import { ParameterDeleteComponent } from '../parameter-delete/parameter-delete.component'
 import { UsageDetailComponent } from '../usage-detail/usage-detail.component'
+import { AsyncPipe, CommonModule, DatePipe } from '@angular/common'
+import { TooltipModule } from 'primeng/tooltip'
+import { ButtonModule } from 'primeng/button'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { MessageModule } from 'primeng/message'
+import { InputTextModule } from 'primeng/inputtext'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 export type ExtendedParameter = Parameter & {
@@ -77,13 +84,23 @@ export type ProductAbstract = {
   templateUrl: './parameter-search.component.html',
   styleUrls: ['./parameter-search.component.scss'],
   imports: [
+    AsyncPipe,
     AngularAcceleratorModule,
-    SharedModule,
     PortalPageComponent,
     ParameterCriteriaComponent,
     ParameterDetailComponent,
     ParameterDeleteComponent,
-    UsageDetailComponent
+    UsageDetailComponent,
+    DatePipe,
+    TranslateModule,
+    TooltipModule,
+    FloatLabelModule,
+    ButtonModule,
+    InputTextModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    MessageModule,
+    CommonModule
   ]
 })
 export class ParameterSearchComponent implements OnInit {

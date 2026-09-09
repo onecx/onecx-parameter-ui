@@ -148,7 +148,8 @@
         <ng-template pTemplate="nameIdTableCell" let-rowObject="rowObject">
           <div
             class="text-ellipsis-2-lines max-w-15rem word-break-all"
-            [ngStyle]="{ 'min-width': (rowObject['name'] ?? '').length > 15 ? '8rem' : '' }"
+            [class.min-w-8rem]="(rowObject['name'] ?? '').length > 15"
+            [style.min-width]="(rowObject['name'] ?? '').length > 15 ? '8rem' : ''"
           >
             {{ rowObject['name'] }}
           </div>
@@ -158,9 +159,8 @@
         <ng-template pTemplate="displayUsedValueIdTableCell" let-rowObject="rowObject">
           <div
             class="text-ellipsis-2-lines max-w-20rem word-break-all"
-            [ngStyle]="{
-              'min-width': (rowObject['displayUsedValue'] ?? '').length > 15 ? '10rem' : ''
-            }"
+            [class.min-w-10rem]="(rowObject['displayUsedValue'] ?? '').length > 15"
+            [style.min-width]="(rowObject['displayUsedValue'] ?? '').length > 15 ? '10rem' : ''"
           >
             {{ rowObject['displayUsedValue'] }}
           </div>
@@ -170,9 +170,8 @@
         <ng-template pTemplate="displayDefaultValueIdTableCell" let-rowObject="rowObject">
           <div
             class="text-ellipsis-2-lines max-w-20rem word-break-all"
-            [ngStyle]="{
-              'min-width': (rowObject['displayDefaultValue'] ?? '').length > 15 ? '10rem' : ''
-            }"
+            [class.min-w-10rem]="(rowObject['displayDefaultValue'] ?? '').length > 15"
+            [style.min-width]="(rowObject['displayDefaultValue'] ?? '').length > 15 ? '10rem' : ''"
           >
             {{ rowObject['displayDefaultValue'] }}
           </div>
@@ -196,13 +195,11 @@
         <!-- equal column -->
         <ng-template pTemplate="equalIdTableCell" let-rowObject="rowObject">
           <span
-            [ngClass]="
-              rowObject['isEqual'] === 'TRUE'
-                ? 'pi pi-check text-green-600'
-                : rowObject['isEqual'] === 'FALSE'
-                  ? 'pi pi-times text-red-600'
-                  : ''
-            "
+            [class.pi]="rowObject['isEqual'] === 'TRUE' || rowObject['isEqual'] === 'FALSE'"
+            [class.pi-check]="rowObject['isEqual'] === 'TRUE'"
+            [class.text-green-600]="rowObject['isEqual'] === 'TRUE'"
+            [class.pi-times]="rowObject['isEqual'] === 'FALSE'"
+            [class.text-red-600]="rowObject['isEqual'] === 'FALSE'"
             [attr.aria-label]="'PARAMETER.TOOLTIPS.EQUAL.' + rowObject['isEqual'] | translate"
             [pTooltip]="'PARAMETER.TOOLTIPS.EQUAL.' + rowObject['isEqual'] | translate"
             tooltipPosition="top"

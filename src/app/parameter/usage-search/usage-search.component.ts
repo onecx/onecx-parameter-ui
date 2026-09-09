@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
-import { TranslateService } from '@ngx-translate/core'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
 
 import {
@@ -21,7 +21,6 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
 import { InputGroupModule } from 'primeng/inputgroup'
 import { MessageModule } from 'primeng/message'
 import { RippleModule } from 'primeng/ripple'
-import { SharedModule } from 'src/app/shared/shared.module'
 
 import {
   History,
@@ -34,6 +33,8 @@ import { Utils } from 'src/app/shared/utils'
 import { UsageDetailComponent } from '../usage-detail/usage-detail.component'
 import { ParameterCriteriaComponent } from '../parameter-criteria/parameter-criteria.component'
 import { ParameterDetailComponent } from '../parameter-detail/parameter-detail.component'
+import { DatePipe } from '@angular/common'
+import { TooltipModule } from 'primeng/tooltip'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 export type ExtendedHistory = History & {
@@ -83,7 +84,7 @@ export type ProductAbstract = {
   styleUrls: ['./usage-search.component.scss'],
   imports: [
     AngularAcceleratorModule,
-    SharedModule,
+    DatePipe,
     PortalPageComponent,
     ButtonModule,
     FloatLabelModule,
@@ -93,7 +94,9 @@ export type ProductAbstract = {
     RippleModule,
     ParameterCriteriaComponent,
     UsageDetailComponent,
-    ParameterDetailComponent
+    ParameterDetailComponent,
+    TranslateModule,
+    TooltipModule
   ]
 })
 export class UsageSearchComponent implements OnInit {

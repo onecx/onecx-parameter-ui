@@ -6,9 +6,10 @@ import {
   FormGroup,
   FormControlStatus,
   Validators,
-  ValidatorFn
+  ValidatorFn,
+  ReactiveFormsModule
 } from '@angular/forms'
-import { TranslateService } from '@ngx-translate/core'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { finalize, map, Observable, of } from 'rxjs'
 import { SelectItem } from 'primeng/api'
 
@@ -21,8 +22,14 @@ import { InputTextModule } from 'primeng/inputtext'
 
 import { Parameter, ParametersAPIService, ParameterCreate, ParameterUpdate } from 'src/app/shared/generated'
 import { Utils } from 'src/app/shared/utils'
-import { SharedModule } from 'src/app/shared/shared.module'
 import { ChangeMode, ExtendedProduct } from '../parameter-search/parameter-search.component'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { TooltipModule } from 'primeng/tooltip'
+import { ButtonModule } from 'primeng/button'
+import { CommonModule, DatePipe } from '@angular/common'
+import { SelectModule } from 'primeng/select'
+import { MessageModule } from 'primeng/message'
+import { DialogModule } from 'primeng/dialog'
 
 type ErrorMessageType = { summaryKey: string; detailKey?: string }
 
@@ -111,7 +118,23 @@ export function JsonValidator(): ValidatorFn {
   selector: 'app-parameter-detail',
   templateUrl: './parameter-detail.component.html',
   styleUrls: ['./parameter-detail.component.scss'],
-  imports: [SharedModule, BadgeModule, CheckboxModule, SelectButtonModule, TabsModule, InputTextModule]
+  imports: [
+    BadgeModule,
+    CheckboxModule,
+    SelectButtonModule,
+    TabsModule,
+    InputTextModule,
+    TranslateModule,
+    FloatLabelModule,
+    TooltipModule,
+    ButtonModule,
+    CommonModule,
+    DatePipe,
+    SelectModule,
+    ReactiveFormsModule,
+    MessageModule,
+    DialogModule
+  ]
 })
 export class ParameterDetailComponent implements OnChanges {
   @Input() public changeMode: ChangeMode = 'CREATE'

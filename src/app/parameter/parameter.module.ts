@@ -12,7 +12,6 @@ import { TooltipModule } from 'primeng/tooltip'
 
 import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
-import { SharedModule } from 'src/app/shared/shared.module'
 import { LabelResolver } from 'src/app/shared/label.resolver'
 
 import { ParameterSearchComponent } from './parameter-search/parameter-search.component'
@@ -63,8 +62,7 @@ const routes: Routes = [
     AngularAcceleratorModule,
     RippleModule,
     TooltipModule,
-    [RouterModule.forChild(routes)],
-    SharedModule
+    [RouterModule.forChild(routes)]
   ],
   providers: [providePermissionService(), provideThemeConfig(), DatePipe]
 })
