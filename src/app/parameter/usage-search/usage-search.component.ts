@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
@@ -82,6 +82,7 @@ export type ProductAbstract = {
   selector: 'app-usage-search',
   templateUrl: './usage-search.component.html',
   styleUrls: ['./usage-search.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     AngularAcceleratorModule,
     DatePipe,

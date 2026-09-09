@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { catchError, finalize, map, Observable, of } from 'rxjs'
 
@@ -17,6 +17,7 @@ import { DialogModule } from 'primeng/dialog'
   selector: 'app-usage-detail',
   templateUrl: './usage-detail.component.html',
   styleUrls: ['./usage-detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     UsageDetailCriteriaComponent,
     UsageDetailListComponent,

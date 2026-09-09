@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
 import {
   AbstractControl,
   DefaultValueAccessor,
@@ -118,6 +118,7 @@ export function JsonValidator(): ValidatorFn {
   selector: 'app-parameter-detail',
   templateUrl: './parameter-detail.component.html',
   styleUrls: ['./parameter-detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     BadgeModule,
     CheckboxModule,

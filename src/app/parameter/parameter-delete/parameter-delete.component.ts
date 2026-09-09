@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 
 import { PortalMessageService } from '@onecx/angular-integration-interface'
@@ -13,6 +13,7 @@ import { Parameter, ParametersAPIService } from 'src/app/shared/generated'
 @Component({
   selector: 'app-parameter-delete',
   templateUrl: './parameter-delete.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [AutoFocus, TranslateModule, ButtonModule, TooltipModule, FloatLabelModule, DialogModule]
 })
 export class ParameterDeleteComponent {

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 
 import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
@@ -36,6 +36,7 @@ type ExtendedColumn = Column & {
 @Component({
   selector: 'app-usage-detail-list',
   templateUrl: './usage-detail-list.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     AngularAcceleratorModule,
     TranslateModule,

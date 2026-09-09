@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { SelectItem } from 'primeng/api'
@@ -22,6 +22,7 @@ export interface CriteriaForm {
   selector: 'app-parameter-criteria',
   templateUrl: './parameter-criteria.component.html',
   styleUrls: ['./parameter-criteria.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     AngularAcceleratorModule,
     TranslateModule,
