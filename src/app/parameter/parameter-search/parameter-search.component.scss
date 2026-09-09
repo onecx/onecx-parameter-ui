@@ -11,11 +11,6 @@
 @include fix-pi-icon-colors;
 
 :host ::ng-deep {
-  .text-badge-right {
-    right: 0px;
-    height: 1.4rem;
-    width: 1.4rem;
-  }
   .p-datatable {
     .p-datatable-thead > tr > th {
       border-bottom-width: 2px;
