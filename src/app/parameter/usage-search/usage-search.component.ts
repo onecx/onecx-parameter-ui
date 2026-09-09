@@ -33,7 +33,7 @@ import { Utils } from 'src/app/shared/utils'
 import { UsageDetailComponent } from '../usage-detail/usage-detail.component'
 import { ParameterCriteriaComponent } from '../parameter-criteria/parameter-criteria.component'
 import { ParameterDetailComponent } from '../parameter-detail/parameter-detail.component'
-import { DatePipe } from '@angular/common'
+import { AsyncPipe, DatePipe } from '@angular/common'
 import { TooltipModule } from 'primeng/tooltip'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
@@ -85,6 +85,7 @@ export type ProductAbstract = {
   imports: [
     AngularAcceleratorModule,
     DatePipe,
+    AsyncPipe,
     PortalPageComponent,
     ButtonModule,
     FloatLabelModule,

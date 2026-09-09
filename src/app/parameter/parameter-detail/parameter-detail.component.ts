@@ -26,7 +26,7 @@ import { ChangeMode, ExtendedProduct } from '../parameter-search/parameter-searc
 import { FloatLabelModule } from 'primeng/floatlabel'
 import { TooltipModule } from 'primeng/tooltip'
 import { ButtonModule } from 'primeng/button'
-import { CommonModule, DatePipe } from '@angular/common'
+import { AsyncPipe, DatePipe } from '@angular/common'
 import { SelectModule } from 'primeng/select'
 import { MessageModule } from 'primeng/message'
 import { DialogModule } from 'primeng/dialog'
@@ -128,7 +128,7 @@ export function JsonValidator(): ValidatorFn {
     FloatLabelModule,
     TooltipModule,
     ButtonModule,
-    CommonModule,
+    AsyncPipe,
     DatePipe,
     SelectModule,
     ReactiveFormsModule,

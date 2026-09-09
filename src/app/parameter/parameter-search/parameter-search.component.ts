@@ -28,7 +28,7 @@ import { ParameterCriteriaComponent } from '../parameter-criteria/parameter-crit
 import { ParameterDetailComponent } from '../parameter-detail/parameter-detail.component'
 import { ParameterDeleteComponent } from '../parameter-delete/parameter-delete.component'
 import { UsageDetailComponent } from '../usage-detail/usage-detail.component'
-import { AsyncPipe, CommonModule, DatePipe } from '@angular/common'
+import { AsyncPipe, DatePipe } from '@angular/common'
 import { TooltipModule } from 'primeng/tooltip'
 import { ButtonModule } from 'primeng/button'
 import { FloatLabelModule } from 'primeng/floatlabel'
@@ -99,8 +99,7 @@ export type ProductAbstract = {
     InputTextModule,
     InputGroupModule,
     InputGroupAddonModule,
-    MessageModule,
-    CommonModule
+    MessageModule
   ]
 })
 export class ParameterSearchComponent implements OnInit {

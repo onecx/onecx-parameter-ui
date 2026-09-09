@@ -12,7 +12,7 @@ import { ButtonModule } from 'primeng/button'
 import { TableModule } from 'primeng/table'
 import { MessageModule } from 'primeng/message'
 import { InputTextModule } from 'primeng/inputtext'
-import { CommonModule, DatePipe } from '@angular/common'
+import { DatePipe } from '@angular/common'
 import { ReactiveFormsModule } from '@angular/forms'
 
 interface Column {
@@ -37,7 +37,6 @@ type ExtendedColumn = Column & {
   selector: 'app-usage-detail-list',
   templateUrl: './usage-detail-list.component.html',
   imports: [
-    CommonModule,
     AngularAcceleratorModule,
     TranslateModule,
     TooltipModule,
