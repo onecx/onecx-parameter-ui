@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core'
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
+
 import { Observable, map } from 'rxjs'
 
 //dont use `providedIn root` - wont work when we are in shell

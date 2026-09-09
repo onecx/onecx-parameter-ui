@@ -1,17 +1,17 @@
+import { AsyncPipe } from '@angular/common'
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { catchError, finalize, map, Observable, of } from 'rxjs'
+import { TooltipModule } from 'primeng/tooltip'
+import { ButtonModule } from 'primeng/button'
+import { DialogModule } from 'primeng/dialog'
 
 import { HistoriesAPIService, HistoryCriteria, HistoryPageResult, Parameter } from 'src/app/shared/generated'
 import { Utils } from 'src/app/shared/utils'
 
-import { ExtendedHistory } from '../usage-search/usage-search.component'
 import { UsageDetailCriteriaComponent } from './usage-detail-criteria/usage-detail-criteria.component'
 import { UsageDetailListComponent } from './usage-detail-list/usage-detail-list.component'
-import { TooltipModule } from 'primeng/tooltip'
-import { ButtonModule } from 'primeng/button'
-import { AsyncPipe } from '@angular/common'
-import { DialogModule } from 'primeng/dialog'
+import { ExtendedHistory } from '../usage-search/usage-search.component'
 
 @Component({
   selector: 'app-usage-detail',

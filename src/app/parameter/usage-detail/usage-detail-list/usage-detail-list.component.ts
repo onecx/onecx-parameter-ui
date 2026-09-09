@@ -1,9 +1,7 @@
+import { DatePipe } from '@angular/common'
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
+import { ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
-
-import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
-import { Parameter } from 'src/app/shared/generated'
-import { ExtendedHistory } from '../../usage-search/usage-search.component'
 import { TooltipModule } from 'primeng/tooltip'
 import { FloatLabelModule } from 'primeng/floatlabel'
 import { CheckboxModule } from 'primeng/checkbox'
@@ -12,8 +10,11 @@ import { ButtonModule } from 'primeng/button'
 import { TableModule } from 'primeng/table'
 import { MessageModule } from 'primeng/message'
 import { InputTextModule } from 'primeng/inputtext'
-import { DatePipe } from '@angular/common'
-import { ReactiveFormsModule } from '@angular/forms'
+
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
+
+import { Parameter } from 'src/app/shared/generated'
+import { ExtendedHistory } from '../../usage-search/usage-search.component'
 
 interface Column {
   field: string

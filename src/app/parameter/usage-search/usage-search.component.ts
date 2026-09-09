@@ -1,7 +1,16 @@
+import { AsyncPipe, DatePipe } from '@angular/common'
 import { ChangeDetectionStrategy, Component, EventEmitter, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
+
+import { ButtonModule } from 'primeng/button'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { MessageModule } from 'primeng/message'
+import { RippleModule } from 'primeng/ripple'
+import { TooltipModule } from 'primeng/tooltip'
 
 import {
   Action,
@@ -15,12 +24,6 @@ import {
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 import { SlotService } from '@onecx/angular-remote-components'
 import { PortalPageComponent } from '@onecx/angular-utils'
-import { ButtonModule } from 'primeng/button'
-import { FloatLabelModule } from 'primeng/floatlabel'
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
-import { InputGroupModule } from 'primeng/inputgroup'
-import { MessageModule } from 'primeng/message'
-import { RippleModule } from 'primeng/ripple'
 
 import {
   History,
@@ -33,8 +36,6 @@ import { Utils } from 'src/app/shared/utils'
 import { UsageDetailComponent } from '../usage-detail/usage-detail.component'
 import { ParameterCriteriaComponent } from '../parameter-criteria/parameter-criteria.component'
 import { ParameterDetailComponent } from '../parameter-detail/parameter-detail.component'
-import { AsyncPipe, DatePipe } from '@angular/common'
-import { TooltipModule } from 'primeng/tooltip'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 export type ExtendedHistory = History & {

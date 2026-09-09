@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
-
-import { PortalMessageService } from '@onecx/angular-integration-interface'
 import { AutoFocus } from 'primeng/autofocus'
 import { ButtonModule } from 'primeng/button'
 import { DialogModule } from 'primeng/dialog'
 import { FloatLabelModule } from 'primeng/floatlabel'
 import { TooltipModule } from 'primeng/tooltip'
+
+import { PortalMessageService } from '@onecx/angular-integration-interface'
 
 import { Parameter, ParametersAPIService } from 'src/app/shared/generated'
 

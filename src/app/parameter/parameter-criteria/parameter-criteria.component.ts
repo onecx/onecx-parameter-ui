@@ -2,16 +2,16 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Out
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { SelectItem } from 'primeng/api'
+import { TooltipModule } from 'primeng/tooltip'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { SelectModule } from 'primeng/select'
+import { InputTextModule } from 'primeng/inputtext'
 
 import { Action, AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
 import { ParameterSearchCriteria } from 'src/app/shared/generated'
 import { Utils } from 'src/app/shared/utils'
 import { ExtendedProduct } from '../parameter-search/parameter-search.component'
-import { TooltipModule } from 'primeng/tooltip'
-import { FloatLabelModule } from 'primeng/floatlabel'
-import { SelectModule } from 'primeng/select'
-import { InputTextModule } from 'primeng/inputtext'
 
 export interface CriteriaForm {
   applicationId: FormControl<string | null>

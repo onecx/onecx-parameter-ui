@@ -6,7 +6,9 @@ import { provideRouter, Router, ActivatedRoute } from '@angular/router'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
+import { BreadcrumbService, DataSortDirection, Filter, FilterType, Sort } from '@onecx/angular-accelerator'
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
+import { providePermissionService } from '@onecx/angular-utils'
 
 import { Parameter, ParametersAPIService, Product } from 'src/app/shared/generated'
 import {
@@ -17,8 +19,6 @@ import {
   ProductAbstract
 } from './parameter-search.component'
 import { UsageSearchComponent } from '../usage-search/usage-search.component'
-import { providePermissionService } from '@onecx/angular-utils'
-import { BreadcrumbService, DataSortDirection, Filter, FilterType, Sort } from '@onecx/angular-accelerator'
 
 // response data of parameter search service
 const paramRespData: Parameter[] = [

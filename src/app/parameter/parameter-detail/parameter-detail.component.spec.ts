@@ -11,8 +11,8 @@ import { SelectItem } from 'primeng/api'
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 
 import { Parameter, ParametersAPIService } from 'src/app/shared/generated'
-import { ExtendedProduct, ApplicationAbstract } from '../parameter-search/parameter-search.component'
 import { ParameterDetailComponent } from './parameter-detail.component'
+import { ExtendedProduct, ApplicationAbstract } from '../parameter-search/parameter-search.component'
 
 const parameterBase: Parameter = {
   modificationCount: 0,

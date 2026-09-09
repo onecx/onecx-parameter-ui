@@ -11,6 +11,7 @@ import { RippleModule } from 'primeng/ripple'
 import { TooltipModule } from 'primeng/tooltip'
 
 import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
+import { providePermissionService, provideThemeConfig } from '@onecx/angular-utils'
 
 import { LabelResolver } from 'src/app/shared/label.resolver'
 
@@ -22,7 +23,6 @@ import { UsageDetailComponent } from './usage-detail/usage-detail.component'
 import { UsageDetailCriteriaComponent } from './usage-detail/usage-detail-criteria/usage-detail-criteria.component'
 import { UsageDetailListComponent } from './usage-detail/usage-detail-list/usage-detail-list.component'
 import { ParameterDeleteComponent } from './parameter-delete/parameter-delete.component'
-import { providePermissionService, provideThemeConfig } from '@onecx/angular-utils'
 
 const routes: Routes = [
   {

@@ -1,7 +1,16 @@
+import { AsyncPipe, DatePipe } from '@angular/common'
 import { ChangeDetectionStrategy, Component, EventEmitter, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
+
+import { TooltipModule } from 'primeng/tooltip'
+import { ButtonModule } from 'primeng/button'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { MessageModule } from 'primeng/message'
+import { InputTextModule } from 'primeng/inputtext'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 import {
@@ -28,14 +37,6 @@ import { ParameterCriteriaComponent } from '../parameter-criteria/parameter-crit
 import { ParameterDetailComponent } from '../parameter-detail/parameter-detail.component'
 import { ParameterDeleteComponent } from '../parameter-delete/parameter-delete.component'
 import { UsageDetailComponent } from '../usage-detail/usage-detail.component'
-import { AsyncPipe, DatePipe } from '@angular/common'
-import { TooltipModule } from 'primeng/tooltip'
-import { ButtonModule } from 'primeng/button'
-import { FloatLabelModule } from 'primeng/floatlabel'
-import { InputGroupModule } from 'primeng/inputgroup'
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
-import { MessageModule } from 'primeng/message'
-import { InputTextModule } from 'primeng/inputtext'
 
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 export type ExtendedParameter = Parameter & {
