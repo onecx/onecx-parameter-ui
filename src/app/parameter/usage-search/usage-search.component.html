@@ -70,7 +70,7 @@
                       [pTooltip]="'ACTIONS.SEARCH.FILTER.TOOLTIP' | translate"
                       tooltipPosition="top"
                       tooltipEvent="hover"
-                      [attr.aria-label]="'ACTIONS.SEARCH.FILTER.TOOLTIP' | translate"
+                      [ariaLabel]="'ACTIONS.SEARCH.FILTER.TOOLTIP' | translate"
                     />
                     <label for="pam_usage_search_filter" aria-hidden="true">
                       {{ 'ACTIONS.SEARCH.FILTER.LABEL' | translate }}
@@ -79,7 +79,7 @@
                   <p-button
                     icon="pi pi-filter-slash"
                     (onClick)="dvFilterInput.value = ''; onClearGlobalFilter()"
-                    [attr.aria-label]="'ACTIONS.SEARCH.FILTER.RESET' | translate"
+                    [ariaLabel]="'ACTIONS.SEARCH.FILTER.RESET' | translate"
                     [pTooltip]="'ACTIONS.SEARCH.FILTER.RESET' | translate"
                     tooltipPosition="top"
                     tooltipEvent="hover"
@@ -192,7 +192,7 @@
               [class.text-green-600]="rowObject['isEqual'] === 'TRUE'"
               [class.pi-times]="rowObject['isEqual'] === 'FALSE'"
               [class.text-red-600]="rowObject['isEqual'] === 'FALSE'"
-              [attr.aria-label]="'PARAMETER.TOOLTIPS.EQUAL.' + rowObject['isEqual'] | translate"
+              [ariaLabel]="'PARAMETER.TOOLTIPS.EQUAL.' + rowObject['isEqual'] | translate"
               [pTooltip]="'PARAMETER.TOOLTIPS.EQUAL.' + rowObject['isEqual'] | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
