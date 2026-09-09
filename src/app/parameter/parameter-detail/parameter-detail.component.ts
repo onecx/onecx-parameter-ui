@@ -30,6 +30,7 @@ import { AsyncPipe, DatePipe } from '@angular/common'
 import { SelectModule } from 'primeng/select'
 import { MessageModule } from 'primeng/message'
 import { DialogModule } from 'primeng/dialog'
+import { TextareaModule } from 'primeng/textarea'
 
 type ErrorMessageType = { summaryKey: string; detailKey?: string }
 
@@ -134,7 +135,8 @@ export function JsonValidator(): ValidatorFn {
     SelectModule,
     ReactiveFormsModule,
     MessageModule,
-    DialogModule
+    DialogModule,
+    TextareaModule
   ]
 })
 export class ParameterDetailComponent implements OnChanges {

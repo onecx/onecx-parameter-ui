@@ -11,6 +11,7 @@ import { ExtendedProduct } from '../parameter-search/parameter-search.component'
 import { TooltipModule } from 'primeng/tooltip'
 import { FloatLabelModule } from 'primeng/floatlabel'
 import { SelectModule } from 'primeng/select'
+import { InputTextModule } from 'primeng/inputtext'
 
 export interface CriteriaForm {
   applicationId: FormControl<string | null>
@@ -29,7 +30,8 @@ export interface CriteriaForm {
     TooltipModule,
     FloatLabelModule,
     SelectModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    InputTextModule
   ]
 })
 export class ParameterCriteriaComponent implements OnChanges {
