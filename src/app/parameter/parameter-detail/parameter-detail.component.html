@@ -20,9 +20,9 @@
   }
 
   @if (!exceptionKey) {
-    <p-tabs [(value)]="activeTab" [formGroup]="formGroup" errorTailor>
+    <p-tabs value="0" [formGroup]="formGroup" errorTailor>
       <p-tablist>
-        <p-tab [value]="0">
+        <p-tab value="0">
           <span
             [pTooltip]="'DIALOG.DETAIL.TAB.TOOLTIPS.PROPS' | translate"
             tooltipPosition="top"
@@ -30,7 +30,7 @@
             >{{ 'DIALOG.DETAIL.TAB.PROPS' | translate }}</span
           >
         </p-tab>
-        <p-tab [value]="1">
+        <p-tab value="1">
           <span
             [pTooltip]="'DIALOG.DETAIL.TAB.TOOLTIPS.VALUE' | translate"
             tooltipPosition="top"
@@ -39,7 +39,7 @@
           >
         </p-tab>
         @if (!['COPY', 'CREATE'].includes(changeMode)) {
-          <p-tab [value]="2">
+          <p-tab value="2">
             <span
               [pTooltip]="'DIALOG.DETAIL.TAB.TOOLTIPS.IMPORT_VALUE' | translate"
               tooltipPosition="top"
@@ -49,7 +49,7 @@
           </p-tab>
         }
         @if (!['COPY', 'CREATE'].includes(changeMode)) {
-          <p-tab [value]="3">
+          <p-tab value="3">
             <span
               [ariaLabel]="'INTERNAL.HEADER' | translate"
               [pTooltip]="'INTERNAL.TOOLTIP' | translate"
@@ -61,7 +61,7 @@
         }
       </p-tablist>
       <p-tabpanels>
-        <p-tabpanel [value]="0">
+        <p-tabpanel value="0">
           <div class="flex flex-column row-gap-4">
             <div class="flex flex-row flex-wrap gap-4 justify-content-between">
               <p-floatlabel class="flex-grow-1" variant="on" controlErrorAnchor>
@@ -164,7 +164,7 @@
           </div>
         </p-tabpanel>
 
-        <p-tabpanel [value]="1">
+        <p-tabpanel value="1">
           @if (
             {
               value: valueStatus$ | async,
@@ -269,7 +269,7 @@
         </p-tabpanel>
 
         @if (!['COPY', 'CREATE'].includes(changeMode)) {
-          <p-tabpanel [value]="2">
+          <p-tabpanel value="2">
             <div class="mb-4 flex flex-row flex-wrap justify-content-center align-items-center gap-3">
               <div class="">{{ 'PARAMETER.VALUE.TYPE' | translate }}</div>
               <div class="slim-selectbutton search-criteria-selectbutton">
@@ -356,7 +356,7 @@
         }
 
         @if (!['COPY', 'CREATE'].includes(changeMode)) {
-          <p-tabpanel [value]="3">
+          <p-tabpanel value="3">
             <div class="mt-1 flex flex-column row-gap-4">
               <!-- row 1 -->
               <div
