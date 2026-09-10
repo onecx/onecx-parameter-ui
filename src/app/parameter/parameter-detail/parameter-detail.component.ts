@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import { AsyncPipe, DatePipe } from '@angular/common'
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
 import {
   AbstractControl,
   DefaultValueAccessor,
@@ -6,22 +7,30 @@ import {
   FormGroup,
   FormControlStatus,
   Validators,
-  ValidatorFn
+  ValidatorFn,
+  ReactiveFormsModule
 } from '@angular/forms'
-import { TranslateService } from '@ngx-translate/core'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { finalize, map, Observable, of } from 'rxjs'
-import { SelectItem } from 'primeng/api'
 
-import { PortalMessageService } from '@onecx/angular-integration-interface'
+import { SelectItem } from 'primeng/api'
 import { BadgeModule } from 'primeng/badge'
 import { CheckboxModule } from 'primeng/checkbox'
 import { SelectButtonModule } from 'primeng/selectbutton'
 import { TabsModule } from 'primeng/tabs'
 import { InputTextModule } from 'primeng/inputtext'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { TooltipModule } from 'primeng/tooltip'
+import { ButtonModule } from 'primeng/button'
+import { SelectModule } from 'primeng/select'
+import { MessageModule } from 'primeng/message'
+import { DialogModule } from 'primeng/dialog'
+import { TextareaModule } from 'primeng/textarea'
+
+import { PortalMessageService } from '@onecx/angular-integration-interface'
 
 import { Parameter, ParametersAPIService, ParameterCreate, ParameterUpdate } from 'src/app/shared/generated'
 import { Utils } from 'src/app/shared/utils'
-import { SharedModule } from 'src/app/shared/shared.module'
 import { ChangeMode, ExtendedProduct } from '../parameter-search/parameter-search.component'
 
 type ErrorMessageType = { summaryKey: string; detailKey?: string }
@@ -111,7 +120,25 @@ export function JsonValidator(): ValidatorFn {
   selector: 'app-parameter-detail',
   templateUrl: './parameter-detail.component.html',
   styleUrls: ['./parameter-detail.component.scss'],
-  imports: [SharedModule, BadgeModule, CheckboxModule, SelectButtonModule, TabsModule, InputTextModule]
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    AsyncPipe,
+    BadgeModule,
+    ButtonModule,
+    CheckboxModule,
+    DatePipe,
+    DialogModule,
+    FloatLabelModule,
+    InputTextModule,
+    MessageModule,
+    ReactiveFormsModule,
+    SelectButtonModule,
+    SelectModule,
+    TabsModule,
+    TextareaModule,
+    TooltipModule,
+    TranslateModule
+  ]
 })
 export class ParameterDetailComponent implements OnChanges {
   @Input() public changeMode: ChangeMode = 'CREATE'

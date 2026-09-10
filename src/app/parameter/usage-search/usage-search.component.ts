@@ -1,7 +1,16 @@
-import { Component, EventEmitter, OnInit } from '@angular/core'
+import { AsyncPipe, DatePipe } from '@angular/common'
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
-import { TranslateService } from '@ngx-translate/core'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
+
+import { ButtonModule } from 'primeng/button'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { MessageModule } from 'primeng/message'
+import { RippleModule } from 'primeng/ripple'
+import { TooltipModule } from 'primeng/tooltip'
 
 import {
   Action,
@@ -15,13 +24,6 @@ import {
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 import { SlotService } from '@onecx/angular-remote-components'
 import { PortalPageComponent } from '@onecx/angular-utils'
-import { ButtonModule } from 'primeng/button'
-import { FloatLabelModule } from 'primeng/floatlabel'
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
-import { InputGroupModule } from 'primeng/inputgroup'
-import { MessageModule } from 'primeng/message'
-import { RippleModule } from 'primeng/ripple'
-import { SharedModule } from 'src/app/shared/shared.module'
 
 import {
   History,
@@ -81,19 +83,24 @@ export type ProductAbstract = {
   selector: 'app-usage-search',
   templateUrl: './usage-search.component.html',
   styleUrls: ['./usage-search.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     AngularAcceleratorModule,
-    SharedModule,
-    PortalPageComponent,
+    AsyncPipe,
     ButtonModule,
+    DatePipe,
     FloatLabelModule,
     InputGroupAddonModule,
     InputGroupModule,
     MessageModule,
+    PortalPageComponent,
     RippleModule,
+    TooltipModule,
+    TranslateModule,
+    // components
     ParameterCriteriaComponent,
-    UsageDetailComponent,
-    ParameterDetailComponent
+    ParameterDetailComponent,
+    UsageDetailComponent
   ]
 })
 export class UsageSearchComponent implements OnInit {

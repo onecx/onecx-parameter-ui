@@ -53,8 +53,4 @@ const routes: Routes = [
     provideStandaloneProviders()
   ]
 })
-export class AppModule {
-  constructor() {
-    console.info('OneCX Parameter Module constructor')
-  }
-}
+export class AppModule {}

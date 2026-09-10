@@ -1,13 +1,16 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
-import { FormControl, FormGroup } from '@angular/forms'
-import { TranslateService } from '@ngx-translate/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { SelectItem } from 'primeng/api'
+import { TooltipModule } from 'primeng/tooltip'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { SelectModule } from 'primeng/select'
+import { InputTextModule } from 'primeng/inputtext'
 
 import { Action, AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
 import { ParameterSearchCriteria } from 'src/app/shared/generated'
 import { Utils } from 'src/app/shared/utils'
-import { SharedModule } from 'src/app/shared/shared.module'
 import { ExtendedProduct } from '../parameter-search/parameter-search.component'
 
 export interface CriteriaForm {
@@ -20,7 +23,16 @@ export interface CriteriaForm {
   selector: 'app-parameter-criteria',
   templateUrl: './parameter-criteria.component.html',
   styleUrls: ['./parameter-criteria.component.scss'],
-  imports: [AngularAcceleratorModule, SharedModule]
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    AngularAcceleratorModule,
+    FloatLabelModule,
+    InputTextModule,
+    ReactiveFormsModule,
+    SelectModule,
+    TooltipModule,
+    TranslateModule
+  ]
 })
 export class ParameterCriteriaComponent implements OnChanges {
   @Input() public type = 'PARAMETER'

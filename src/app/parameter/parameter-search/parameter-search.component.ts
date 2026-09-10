@@ -1,7 +1,16 @@
-import { Component, EventEmitter, OnInit } from '@angular/core'
+import { AsyncPipe, DatePipe } from '@angular/common'
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
-import { TranslateService } from '@ngx-translate/core'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
+
+import { TooltipModule } from 'primeng/tooltip'
+import { ButtonModule } from 'primeng/button'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { MessageModule } from 'primeng/message'
+import { InputTextModule } from 'primeng/inputtext'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 import {
@@ -24,7 +33,6 @@ import {
   Product
 } from 'src/app/shared/generated'
 import { Utils } from 'src/app/shared/utils'
-import { SharedModule } from 'src/app/shared/shared.module'
 import { ParameterCriteriaComponent } from '../parameter-criteria/parameter-criteria.component'
 import { ParameterDetailComponent } from '../parameter-detail/parameter-detail.component'
 import { ParameterDeleteComponent } from '../parameter-delete/parameter-delete.component'
@@ -76,10 +84,21 @@ export type ProductAbstract = {
   selector: 'app-parameter-search',
   templateUrl: './parameter-search.component.html',
   styleUrls: ['./parameter-search.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     AngularAcceleratorModule,
-    SharedModule,
+    AsyncPipe,
+    ButtonModule,
+    DatePipe,
+    FloatLabelModule,
+    InputGroupAddonModule,
+    InputGroupModule,
+    InputTextModule,
+    MessageModule,
     PortalPageComponent,
+    TooltipModule,
+    TranslateModule,
+    // components
     ParameterCriteriaComponent,
     ParameterDetailComponent,
     ParameterDeleteComponent,

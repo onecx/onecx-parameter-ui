@@ -1,9 +1,19 @@
-import { Component, Input } from '@angular/core'
-import { TranslateService } from '@ngx-translate/core'
+import { DatePipe } from '@angular/common'
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
+import { ReactiveFormsModule } from '@angular/forms'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
+import { TooltipModule } from 'primeng/tooltip'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { CheckboxModule } from 'primeng/checkbox'
+import { FieldsetModule } from 'primeng/fieldset'
+import { ButtonModule } from 'primeng/button'
+import { TableModule } from 'primeng/table'
+import { MessageModule } from 'primeng/message'
+import { InputTextModule } from 'primeng/inputtext'
 
 import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
+
 import { Parameter } from 'src/app/shared/generated'
-import { SharedModule } from 'src/app/shared/shared.module'
 import { ExtendedHistory } from '../../usage-search/usage-search.component'
 
 interface Column {
@@ -27,7 +37,21 @@ type ExtendedColumn = Column & {
 @Component({
   selector: 'app-usage-detail-list',
   templateUrl: './usage-detail-list.component.html',
-  imports: [AngularAcceleratorModule, SharedModule]
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    AngularAcceleratorModule,
+    ButtonModule,
+    CheckboxModule,
+    DatePipe,
+    FieldsetModule,
+    FloatLabelModule,
+    InputTextModule,
+    MessageModule,
+    ReactiveFormsModule,
+    TableModule,
+    TooltipModule,
+    TranslateModule
+  ]
 })
 export class UsageDetailListComponent {
   @Input() public loading = false

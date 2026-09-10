@@ -10,7 +10,6 @@ import { of, throwError } from 'rxjs'
 import { PortalMessageService } from '@onecx/angular-integration-interface'
 
 import { ParametersAPIService } from 'src/app/shared/generated'
-
 import { ParameterDeleteComponent } from './parameter-delete.component'
 
 describe('ParameterDeleteComponent', () => {

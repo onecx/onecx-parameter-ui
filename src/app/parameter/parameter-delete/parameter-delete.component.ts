@@ -1,16 +1,20 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core'
-import { TranslateService } from '@ngx-translate/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
+import { AutoFocus } from 'primeng/autofocus'
+import { ButtonModule } from 'primeng/button'
+import { DialogModule } from 'primeng/dialog'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { TooltipModule } from 'primeng/tooltip'
 
 import { PortalMessageService } from '@onecx/angular-integration-interface'
-import { AutoFocus } from 'primeng/autofocus'
 
 import { Parameter, ParametersAPIService } from 'src/app/shared/generated'
-import { SharedModule } from 'src/app/shared/shared.module'
 
 @Component({
   selector: 'app-parameter-delete',
   templateUrl: './parameter-delete.component.html',
-  imports: [SharedModule, AutoFocus]
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [AutoFocus, ButtonModule, DialogModule, FloatLabelModule, TooltipModule, TranslateModule]
 })
 export class ParameterDeleteComponent {
   @Input() parameter: Parameter | undefined

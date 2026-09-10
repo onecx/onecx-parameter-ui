@@ -3,15 +3,15 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
+import { ActivatedRoute } from '@angular/router'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { SelectItem } from 'primeng/api'
 
+import { BreadcrumbService } from '@onecx/angular-accelerator'
 import { UserService } from '@onecx/angular-integration-interface'
 
-import { ExtendedProduct, ApplicationAbstract } from '../parameter-search/parameter-search.component'
 import { ParameterCriteriaComponent, CriteriaForm } from './parameter-criteria.component'
-import { ActivatedRoute } from '@angular/router'
-import { BreadcrumbService } from '@onecx/angular-accelerator'
+import { ExtendedProduct, ApplicationAbstract } from '../parameter-search/parameter-search.component'
 
 const filledCriteria = new FormGroup<CriteriaForm>({
   productName: new FormControl<string | null>('productName'),

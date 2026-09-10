@@ -1,4 +1,5 @@
 import { Component } from '@angular/core'
+
 import { StandaloneShellModule } from '@onecx/angular-standalone-shell'
 import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 

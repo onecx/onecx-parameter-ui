@@ -11,8 +11,8 @@ import { createAppEntrypoint, initializeRouter, startsWith } from '@onecx/angula
 import { AppConfigService, AppStateService, ConfigurationService } from '@onecx/angular-integration-interface'
 import { AngularAcceleratorMissingTranslationHandler, AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
-import { Configuration } from './shared/generated'
 import { environment } from 'src/environments/environment'
+import { Configuration } from './shared/generated'
 import { AppEntrypointComponent } from './app-entrypoint.component'
 
 function apiConfigProvider() {
