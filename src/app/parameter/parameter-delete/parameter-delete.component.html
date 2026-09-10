@@ -16,7 +16,7 @@
         <div
           id="pam_delete_message_text"
           class="mr-3 font-bold"
-          [ariaLabel]="'ACTIONS.CONFIRMATION.QUESTION' | translate"
+          [attr.aria-label]="'ACTIONS.CONFIRMATION.QUESTION' | translate"
           role="note"
         >
           {{ 'ACTIONS.DELETE.MESSAGE.TEXT' | translate }}
@@ -24,7 +24,7 @@
         <div
           id="pam_delete_parameter_name"
           class="text-center danger-action-text text-responsive"
-          [ariaLabel]="'PARAMETER.NAME' | translate"
+          [attr.aria-label]="'PARAMETER.NAME' | translate"
           role="note"
         >
           {{ parameter?.displayName ?? parameter?.name }}

@@ -47,7 +47,7 @@
             class="white-space-nowrap"
             [class]="col.css"
             [pSortableColumn]="col.field"
-            [ariaLabel]="col.translationPrefix + '.' + col.header | translate"
+            [attr.aria-label]="col.translationPrefix + '.' + col.header | translate"
             [pTooltip]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
@@ -87,7 +87,7 @@
             @if (col.isValue) {
               <div
                 class="text-ellipsis-2-lines"
-                [ariaLabel]="'VALUE_TYPE.' + rowData['valueType'] | translate"
+                [attr.aria-label]="'VALUE_TYPE.' + rowData['valueType'] | translate"
                 [pTooltip]="'VALUE_TYPE.' + rowData['valueType'] | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -102,7 +102,7 @@
                 [class.text-green-600]="rowData['isEqual'] === 'TRUE'"
                 [class.pi-times]="rowData['isEqual'] === 'FALSE'"
                 [class.text-red-600]="rowData['isEqual'] === 'FALSE'"
-                [ariaLabel]="'PARAMETER.TOOLTIPS.EQUAL.' + rowData['isEqual'] | translate"
+                [attr.aria-label]="'PARAMETER.TOOLTIPS.EQUAL.' + rowData['isEqual'] | translate"
                 [pTooltip]="'PARAMETER.TOOLTIPS.EQUAL.' + rowData['isEqual'] | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"

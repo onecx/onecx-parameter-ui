@@ -224,7 +224,7 @@
               [class.text-green-600]="rowObject['isEqual'] === 'TRUE'"
               [class.pi-times]="rowObject['isEqual'] === 'FALSE'"
               [class.text-red-600]="rowObject['isEqual'] === 'FALSE'"
-              [ariaLabel]="'PARAMETER.TOOLTIPS.EQUAL.' + rowObject['isEqual'] | translate"
+              [attr.aria-label]="'PARAMETER.TOOLTIPS.EQUAL.' + rowObject['isEqual'] | translate"
               [pTooltip]="'PARAMETER.TOOLTIPS.EQUAL.' + rowObject['isEqual'] | translate"
               tooltipPosition="top"
               tooltipEvent="hover"

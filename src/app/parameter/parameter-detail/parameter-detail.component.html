@@ -51,7 +51,7 @@
         @if (!['COPY', 'CREATE'].includes(changeMode)) {
           <p-tab value="3">
             <span
-              [ariaLabel]="'INTERNAL.HEADER' | translate"
+              [attr.aria-label]="'INTERNAL.HEADER' | translate"
               [pTooltip]="'INTERNAL.TOOLTIP' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
