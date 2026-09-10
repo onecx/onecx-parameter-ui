@@ -1,4 +1,3 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { TestBed } from '@angular/core/testing'
 import { provideRouter } from '@angular/router'
 import { TranslateModule } from '@ngx-translate/core'
@@ -10,8 +9,7 @@ describe('AppComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [],
       imports: [AppComponent, TranslateModule.forRoot()],
-      providers: [provideRouter([])],
-      schemas: [NO_ERRORS_SCHEMA]
+      providers: [provideRouter([])]
     }).compileComponents()
   })
 
