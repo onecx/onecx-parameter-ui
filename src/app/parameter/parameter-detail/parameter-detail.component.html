@@ -20,7 +20,7 @@
   }
 
   @if (!exceptionKey) {
-    <p-tabs value="0" [formGroup]="formGroup" errorTailor>
+    <p-tabs [(value)]="activeTab" [formGroup]="formGroup" errorTailor>
       <p-tablist>
         <p-tab value="0">
           <span
