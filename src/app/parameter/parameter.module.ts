@@ -53,18 +53,9 @@ const routes: Routes = [
     UsageDetailComponent,
     UsageDetailCriteriaComponent,
     UsageDetailListComponent,
-    AngularAcceleratorModule,
-    ButtonModule,
-    FloatLabelModule,
-    InputGroupAddonModule,
-    InputGroupModule,
-    InputTextModule,
-    AngularAcceleratorModule,
-    RippleModule,
-    TooltipModule,
     [RouterModule.forChild(routes)]
   ],
-  providers: [providePermissionService(), provideThemeConfig(), DatePipe]
+  providers: [providePermissionService(), provideThemeConfig()]
 })
 export class ParameterModule {
   constructor() {

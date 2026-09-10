@@ -122,22 +122,22 @@ export function JsonValidator(): ValidatorFn {
   styleUrls: ['./parameter-detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    BadgeModule,
-    CheckboxModule,
-    SelectButtonModule,
-    TabsModule,
-    InputTextModule,
-    TranslateModule,
-    FloatLabelModule,
-    TooltipModule,
-    ButtonModule,
     AsyncPipe,
+    BadgeModule,
+    ButtonModule,
+    CheckboxModule,
     DatePipe,
-    SelectModule,
-    ReactiveFormsModule,
-    MessageModule,
     DialogModule,
-    TextareaModule
+    FloatLabelModule,
+    InputTextModule,
+    MessageModule,
+    ReactiveFormsModule,
+    SelectButtonModule,
+    SelectModule,
+    TabsModule,
+    TextareaModule,
+    TooltipModule,
+    TranslateModule
   ]
 })
 export class ParameterDetailComponent implements OnChanges {

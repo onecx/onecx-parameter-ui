@@ -14,7 +14,7 @@ import { Parameter, ParametersAPIService } from 'src/app/shared/generated'
   selector: 'app-parameter-delete',
   templateUrl: './parameter-delete.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AutoFocus, TranslateModule, ButtonModule, TooltipModule, FloatLabelModule, DialogModule]
+  imports: [AutoFocus, ButtonModule, DialogModule, FloatLabelModule, TooltipModule, TranslateModule]
 })
 export class ParameterDeleteComponent {
   @Input() parameter: Parameter | undefined

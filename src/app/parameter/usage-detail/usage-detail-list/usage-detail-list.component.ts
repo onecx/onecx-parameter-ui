@@ -40,17 +40,16 @@ type ExtendedColumn = Column & {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     AngularAcceleratorModule,
-    TranslateModule,
-    TooltipModule,
-    FloatLabelModule,
-    CheckboxModule,
-    FieldsetModule,
     ButtonModule,
-    TableModule,
-    MessageModule,
-    InputTextModule,
+    CheckboxModule,
     DatePipe,
+    FieldsetModule,
+    FloatLabelModule,
+    InputTextModule,
+    MessageModule,
     ReactiveFormsModule,
+    TableModule,
+    TooltipModule,
     TranslateModule
   ]
 })

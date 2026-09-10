@@ -86,20 +86,21 @@ export type ProductAbstract = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     AngularAcceleratorModule,
-    DatePipe,
     AsyncPipe,
-    PortalPageComponent,
     ButtonModule,
+    DatePipe,
     FloatLabelModule,
     InputGroupAddonModule,
     InputGroupModule,
     MessageModule,
+    PortalPageComponent,
     RippleModule,
-    ParameterCriteriaComponent,
-    UsageDetailComponent,
-    ParameterDetailComponent,
+    TooltipModule,
     TranslateModule,
-    TooltipModule
+    // components
+    ParameterCriteriaComponent,
+    ParameterDetailComponent,
+    UsageDetailComponent
   ]
 })
 export class UsageSearchComponent implements OnInit {

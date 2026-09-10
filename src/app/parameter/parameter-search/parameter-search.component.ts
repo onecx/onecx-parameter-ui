@@ -86,22 +86,23 @@ export type ProductAbstract = {
   styleUrls: ['./parameter-search.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    AsyncPipe,
     AngularAcceleratorModule,
+    AsyncPipe,
+    ButtonModule,
+    DatePipe,
+    FloatLabelModule,
+    InputGroupAddonModule,
+    InputGroupModule,
+    InputTextModule,
+    MessageModule,
     PortalPageComponent,
+    TooltipModule,
+    TranslateModule,
+    // components
     ParameterCriteriaComponent,
     ParameterDetailComponent,
     ParameterDeleteComponent,
-    UsageDetailComponent,
-    DatePipe,
-    TranslateModule,
-    TooltipModule,
-    FloatLabelModule,
-    ButtonModule,
-    InputTextModule,
-    InputGroupModule,
-    InputGroupAddonModule,
-    MessageModule
+    UsageDetailComponent
   ]
 })
 export class ParameterSearchComponent implements OnInit {

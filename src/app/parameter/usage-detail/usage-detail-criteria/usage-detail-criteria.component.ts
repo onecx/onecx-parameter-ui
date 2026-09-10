@@ -17,7 +17,7 @@ export interface CriteriaForm {
   selector: 'app-usage-detail-criteria',
   templateUrl: './usage-detail-criteria.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslateModule, TooltipModule, FloatLabelModule, ReactiveFormsModule]
+  imports: [FloatLabelModule, ReactiveFormsModule, TranslateModule, TooltipModule]
 })
 export class UsageDetailCriteriaComponent implements OnChanges {
   @Input() public history: ExtendedHistory | undefined = undefined

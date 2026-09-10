@@ -26,12 +26,12 @@ export interface CriteriaForm {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     AngularAcceleratorModule,
-    TranslateModule,
-    TooltipModule,
     FloatLabelModule,
-    SelectModule,
+    InputTextModule,
     ReactiveFormsModule,
-    InputTextModule
+    SelectModule,
+    TooltipModule,
+    TranslateModule
   ]
 })
 export class ParameterCriteriaComponent implements OnChanges {

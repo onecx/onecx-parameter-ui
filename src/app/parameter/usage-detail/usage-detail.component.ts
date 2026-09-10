@@ -19,13 +19,14 @@ import { ExtendedHistory } from '../usage-search/usage-search.component'
   styleUrls: ['./usage-detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    UsageDetailCriteriaComponent,
-    UsageDetailListComponent,
-    TranslateModule,
-    TooltipModule,
-    ButtonModule,
     AsyncPipe,
-    DialogModule
+    ButtonModule,
+    DialogModule,
+    TooltipModule,
+    TranslateModule,
+    // components
+    UsageDetailCriteriaComponent,
+    UsageDetailListComponent
   ]
 })
 export class UsageDetailComponent {
