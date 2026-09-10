@@ -16,7 +16,7 @@
   }"
 >
   @if (exceptionKey) {
-    <p-message id="am_detail_message_error" severity="error">{{ exceptionKey ?? '' | translate }}</p-message>
+    <p-message id="am_detail_message_error" severity="error">{{ exceptionKey | translate }}</p-message>
   }
 
   @if (!exceptionKey) {
