@@ -15,9 +15,6 @@ import { ExtendedHistory } from '../usage-search/usage-search.component'
 
 @Component({
   selector: 'app-usage-detail',
-  templateUrl: './usage-detail.component.html',
-  styleUrls: ['./usage-detail.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     AsyncPipe,
     ButtonModule,
@@ -27,7 +24,10 @@ import { ExtendedHistory } from '../usage-search/usage-search.component'
     // components
     UsageDetailCriteriaComponent,
     UsageDetailListComponent
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './usage-detail.component.html',
+  styleUrls: ['./usage-detail.component.scss']
 })
 export class UsageDetailComponent {
   @Input() public history: ExtendedHistory | undefined

@@ -12,9 +12,9 @@ import { Parameter, ParametersAPIService } from 'src/app/shared/generated'
 
 @Component({
   selector: 'app-parameter-delete',
-  templateUrl: './parameter-delete.component.html',
+  imports: [AutoFocus, ButtonModule, DialogModule, FloatLabelModule, TooltipModule, TranslateModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AutoFocus, ButtonModule, DialogModule, FloatLabelModule, TooltipModule, TranslateModule]
+  templateUrl: './parameter-delete.component.html'
 })
 export class ParameterDeleteComponent {
   @Input() parameter: Parameter | undefined

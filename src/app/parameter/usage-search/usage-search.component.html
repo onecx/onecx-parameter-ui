@@ -17,18 +17,17 @@
       (searchEmitter)="onSearch($event)"
       (resetSearchEmitter)="onCriteriaReset()"
     ></app-parameter-criteria>
-    <ocx-content>
+
+    <ocx-content class="ocx-content">
       @if (exceptionKey || exceptionKeyMeta) {
-        <p-message id="pam_usage_search_message_error" severity="error" styleClass="m-3">{{
-          exceptionKey ? (exceptionKey | translate) : (exceptionKeyMeta ?? '' | translate)
-        }}</p-message>
-      }
-      @if (loading) {
-        <p-message id="pam_usage_search_message_loading" severity="info" styleClass="m-3">{{
-          'ACTIONS.LOADING' | translate
-        }}</p-message>
-      }
-      @if (!(loading || exceptionKey)) {
+        <p-message id="pam_usage_search_message_error" severity="error" styleClass="m-3">
+          {{ exceptionKey ? (exceptionKey | translate) : (exceptionKeyMeta ?? '' | translate) }}
+        </p-message>
+      } @else if (loading) {
+        <p-message id="pam_usage_search_message_loading" severity="info" styleClass="m-3">
+          {{ 'ACTIONS.LOADING' | translate }}
+        </p-message>
+      } @else {
         <ocx-interactive-data-view
           [data]="interactiveRows"
           [columns]="interactiveColumns"
@@ -67,10 +66,10 @@
                       pInputText
                       [value]="filterText"
                       (input)="onGlobalFilter(dvFilterInput.value)"
+                      [ariaLabel]="'ACTIONS.SEARCH.FILTER.TOOLTIP' | translate"
                       [pTooltip]="'ACTIONS.SEARCH.FILTER.TOOLTIP' | translate"
                       tooltipPosition="top"
                       tooltipEvent="hover"
-                      [ariaLabel]="'ACTIONS.SEARCH.FILTER.TOOLTIP' | translate"
                     />
                     <label for="pam_usage_search_filter" aria-hidden="true">
                       {{ 'ACTIONS.SEARCH.FILTER.LABEL' | translate }}

@@ -21,9 +21,6 @@ export interface CriteriaForm {
 
 @Component({
   selector: 'app-parameter-criteria',
-  templateUrl: './parameter-criteria.component.html',
-  styleUrls: ['./parameter-criteria.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     AngularAcceleratorModule,
     FloatLabelModule,
@@ -32,7 +29,10 @@ export interface CriteriaForm {
     SelectModule,
     TooltipModule,
     TranslateModule
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './parameter-criteria.component.html',
+  styleUrls: ['./parameter-criteria.component.scss']
 })
 export class ParameterCriteriaComponent implements OnChanges {
   @Input() public type = 'PARAMETER'

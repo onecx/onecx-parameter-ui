@@ -1,10 +1,4 @@
-import { AbstractControl, FormArray, FormGroup } from '@angular/forms'
 import { SelectItem } from 'primeng/api'
-
-/**
- *  DROPDOWN
- */
-export type DropDownChangeEvent = MouseEvent & { value: any }
 
 // This object encapsulates functions because ...
 //  ...Jasmine has problems to spying direct imported functions
@@ -23,22 +17,6 @@ export const Utils = {
 
   copyToClipboard(text?: string): void {
     if (text) navigator.clipboard.writeText(text)
-  },
-
-  /**
-   *  FORM
-   */
-  forceFormValidation(form: AbstractControl): void {
-    if (form instanceof FormGroup || form instanceof FormArray) {
-      for (const inner in form.controls) {
-        const control = form.get(inner)
-        control && Utils.forceFormValidation(control)
-      }
-    } else {
-      form.markAsDirty()
-      form.markAsTouched()
-      form.updateValueAndValidity()
-    }
   },
 
   /**
@@ -86,6 +64,7 @@ export const Utils = {
     if (!v) return ''
     return typeof v === 'object' ? '{ ... }' : '' + v
   },
+
   // value can be boolean
   displayEqualityState(val1: any, val2: any): string {
     if (typeof val1 !== typeof val2) return 'FALSE'

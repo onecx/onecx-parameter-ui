@@ -1,16 +1,9 @@
 @use '/src/app/_pam-mixins.scss' as *;
 
 @include text-badges;
-@include correct-select-button;
-@include search-criteria-select-button;
-@include search-criteria-select-button-slim;
-@include readable-disabled-components;
-@include dialog-footer-buttons;
-@include dialog-non-full-size-modal;
 @include ocx-text-responsive;
 @include ocx-required-label;
 @include ocx-p-tabs;
-@include p-inputtext-disabled-fix;
 
 :host ::ng-deep {
   label.float-label {

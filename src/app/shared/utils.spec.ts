@@ -1,4 +1,3 @@
-import { FormGroup, FormControl } from '@angular/forms'
 import { SelectItem } from 'primeng/api'
 
 import { Utils } from './utils'
@@ -50,20 +49,6 @@ describe('util functions', () => {
       Utils.copyToClipboard('text')
 
       expect(writeTextSpy).toHaveBeenCalledWith('text')
-    })
-  })
-
-  describe('forceFormValidation', () => {
-    it('should mark controls as dirty and touched', () => {
-      const group = new FormGroup({
-        control1: new FormControl(''),
-        control2: new FormControl('')
-      })
-
-      Utils.forceFormValidation(group)
-
-      expect(group.dirty).toBeTrue()
-      expect(group.touched).toBeTrue()
     })
   })
 

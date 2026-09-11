@@ -2,7 +2,7 @@ import { Component } from '@angular/core'
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
-import { FormsModule } from '@angular/forms'
+import { FormControlStatus, FormsModule } from '@angular/forms'
 import { By } from '@angular/platform-browser'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
@@ -551,6 +551,28 @@ describe('ParameterDetailComponent', () => {
       component.onSave()
 
       expect(console.error).toHaveBeenCalledWith('form error: ', 'valueObject', 'pattern')
+    })
+  })
+
+  describe('value/valueObject status observables', () => {
+    it('should emit value control status on valueStatus$', () => {
+      let status: FormControlStatus | undefined
+      component.valueStatus$.subscribe((s) => (status = s))
+
+      component.formGroup.controls['valueType'].setValue('STRING')
+      component.formGroup.controls['value'].setValue('some text')
+
+      expect(status).toBe('VALID')
+    })
+
+    it('should emit valueObject control status on valueObjectStatus$', () => {
+      let status: FormControlStatus | undefined
+      component.valueObjectStatus$.subscribe((s) => (status = s))
+
+      component.formGroup.controls['valueType'].setValue('OBJECT')
+      component.formGroup.controls['valueObject'].setValue(JSON.stringify({}))
+
+      expect(status).toBe('VALID')
     })
   })
 
