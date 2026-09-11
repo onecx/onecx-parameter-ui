@@ -16,11 +16,11 @@
   }"
 >
   @if (exceptionKey) {
-    <p-message id="am_detail_message_error" severity="error">{{ exceptionKey ?? '' | translate }}</p-message>
+    <p-message id="am_detail_message_error" severity="error">{{ exceptionKey | translate }}</p-message>
   }
 
   @if (!exceptionKey) {
-    <p-tabs value="0" [formGroup]="formGroup" errorTailor>
+    <p-tabs [(value)]="activeTab" [formGroup]="formGroup" errorTailor>
       <p-tablist>
         <p-tab value="0">
           <span

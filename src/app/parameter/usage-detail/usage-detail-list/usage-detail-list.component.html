@@ -5,7 +5,7 @@
 }
 @if (exceptionKey) {
   <p-message id="pam_usage_detail_message_error" severity="error" styleClass="my-3">{{
-    exceptionKey ?? '' | translate
+    exceptionKey | translate
   }}</p-message>
 }
 
