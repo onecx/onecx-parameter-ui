@@ -2,38 +2,16 @@
  *  FORM - Control Improvements
  * **********************************************/
 
-// displaying text like an input field with floating label
+// Manipulate PrimeNG p-floatlabel
 @mixin ocx-p-floatlabel {
-  :host {
-    .p-float-label {
-      display: block;
-      position: relative;
-      .ocx-ocx-p-floatlabel {
-        font-family: var(--font-family);
-        font-size: var(--input-text-font-size);
-        color: var(--emphasis-high);
-        background: var(--input-bg);
-        padding: var(--input-padding);
-        border: var(--input-border);
-        transition: var(--form-element-transition);
-        appearance: none;
-        border-radius: var(--border-radius);
-      }
-      .ocx-float-label {
-        position: absolute;
-        left: 0.75rem;
-        top: -0.5rem !important;
-        padding: 2px 4px;
-        margin-left: -4px;
-        margin-top: 0;
-        line-height: 1;
-        font-size: 12px;
-        pointer-events: none;
-        color: var(--emphasis-medium);
-        background-color: var(--input-bg);
-        transition-property: all;
-        transition-timing-function: ease;
-        transition-duration: var(--transition-duration);
+  .p-floatlabel {
+    // Move the label only if embedded input control (input, textarea etc.) is filled or focussed
+    &.p-floatlabel-over {
+      &:has(.p-filled) label,
+      &:has(.p-focus) label {
+        top: -5px !important;
+        background-color: white;
+        padding: 0 0.5rem;
       }
     }
   }
@@ -52,6 +30,9 @@
 
 @mixin ocx-text-responsive {
   :host ::ng-deep {
+    .p-inputtext:disabled {
+      opacity: 0.7;
+    }
     .text-responsive {
       white-space: nowrap;
       overflow: hidden;
@@ -305,9 +286,35 @@
 }
 
 /* **********************************************
- *  OneCX Widget - Layout Corrections
+ *  OCX Widgets
  * **********************************************/
-@mixin correct-search-criteria {
+@mixin ocx-interactive-data-view-fixes {
+  :host ::ng-deep {
+    /* fix base layout of interactive data view */
+    ocx-interactive-data-view > {
+      :first-child {
+        padding: 0 0 0.5rem 0 !important;
+        > :first-child {
+          padding: 0.5rem 0 !important;
+        }
+      }
+      :not(:first-child) {
+        padding: 0.5rem 0 0 0 !important;
+      }
+    }
+    /* correct header layouting by lib */
+    .table-header-wrapper {
+      flex-direction: row !important;
+      justify-content: flex-start !important;
+      flex-wrap: nowrap !important;
+    }
+    .table-header-wrapper span:first-child {
+      margin-right: 10px !important;
+    }
+  }
+}
+
+@mixin ocx-search-criteria-fixes {
   :host ::ng-deep {
     .search-criteria-container > div {
       display: flex;
@@ -319,72 +326,6 @@
         flex-wrap: wrap;
         align-content: center;
         margin-top: unset;
-      }
-    }
-  }
-}
-
-@mixin search-criteria-select-button-slim {
-  :host ::ng-deep {
-    .slim-selectbutton {
-      display: flex;
-      flex-wrap: wrap;
-      flex-direction: column;
-      row-gap: 0.1rem;
-      align-items: center;
-
-      .p-selectbutton .p-button {
-        text-align: center;
-        display: inline-block;
-        color: var(--emphasis-medium);
-        font-weight: var(--font-weight);
-        padding: 0.3rem 0.8rem;
-        border: var(--input-border);
-      }
-      .p-selectbutton-subtitle {
-        color: var(--emphasis-medium);
-        font-size: 0.8rem;
-      }
-    }
-  }
-}
-@mixin search-criteria-select-button-filter {
-  :host ::ng-deep {
-    .filter-selectbutton {
-      .p-selectbutton .p-button {
-        opacity: 0.9 !important;
-        border: var(--toggle-button-border);
-        &.p-highlight {
-          background: var(--toggle-button-active-bg);
-          border-color: var(--toggle-button-active-border-color);
-        }
-        &:not(.p-disabled):not(.p-highlight):hover {
-          color: var(--text-color);
-          border-color: var(--toggle-button-hover-border-color);
-          background-color: var(--toggle-button-hover-bg);
-        }
-      }
-    }
-  }
-}
-@mixin search-criteria-select-button {
-  :host ::ng-deep {
-    .p-selectbutton-title {
-      width: 2rem;
-      text-align: right;
-    }
-    .search-criteria-selectbutton {
-      .p-selectbutton .p-button {
-        &.p-highlight {
-          color: var(--primary-text-color);
-          border-color: var(--toggle-button-hover-border-color);
-          background-color: var(--primary-color);
-        }
-        &:not(.p-disabled):not(.p-highlight):hover {
-          color: var(--primary-text-color);
-          border-color: var(--toggle-button-hover-border-color);
-          background-color: var(--button-hover-bg);
-        }
       }
     }
   }
@@ -569,18 +510,6 @@
 
     .pi.text-red-600 {
       color: var(--red-600, var(--p-red-600, #dc2626)) !important;
-    }
-  }
-}
-
-@mixin p-inputtext-disabled-fix {
-  :host ::ng-deep {
-    .p-inputtext:disabled {
-      opacity: var(--disabled-opacity, 0.7);
-      color: var(--p-inputtext-disabled-color, #64748b);
-    }
-    .p-inputtext:disabled ~ label {
-      color: var(--p-inputtext-disabled-color, #64748b);
     }
   }
 }

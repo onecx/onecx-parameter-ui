@@ -82,9 +82,6 @@ export type ProductAbstract = {
 
 @Component({
   selector: 'app-parameter-search',
-  templateUrl: './parameter-search.component.html',
-  styleUrls: ['./parameter-search.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     AngularAcceleratorModule,
     AsyncPipe,
@@ -103,7 +100,10 @@ export type ProductAbstract = {
     ParameterDetailComponent,
     ParameterDeleteComponent,
     UsageDetailComponent
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './parameter-search.component.html',
+  styleUrls: ['./parameter-search.component.scss']
 })
 export class ParameterSearchComponent implements OnInit {
   // dialog

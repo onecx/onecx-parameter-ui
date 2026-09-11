@@ -1,6 +1,6 @@
-# Coding Standards — onecx-theme-ui
+# Coding Standards — onecx-parameter-ui
 
-In this section, the term _theme_ is used as main business topic (feature) in this project.
+In this section, the term _parameter_ is used as main business topic (feature) in this project.
 
 ---
 
@@ -20,7 +20,7 @@ src/app/
     label.resolver.ts        # Route breadcrumb resolver
     slot.initializer.ts      # SlotService factory helper
     utils.ts                 # Shared utility functions (object pattern)
-  *parameter*/                   # Root directory for business components (feature)
+  *parameter*/               # Root directory for business components (feature)
     parameter.module.ts      # Lazy-loaded feature module
     parameter-search/        # Smart container — list and manage parameters
     parameter-criteria/      # Search criteria form

@@ -1,4 +1,4 @@
 @use '/src/app/_pam-mixins.scss' as *;
 
-@include correct-search-criteria;
 @include ocx-text-responsive;
+@include ocx-search-criteria-fixes;

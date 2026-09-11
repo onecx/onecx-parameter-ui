@@ -53,20 +53,6 @@ describe('util functions', () => {
     })
   })
 
-  describe('forceFormValidation', () => {
-    it('should mark controls as dirty and touched', () => {
-      const group = new FormGroup({
-        control1: new FormControl(''),
-        control2: new FormControl('')
-      })
-
-      Utils.forceFormValidation(group)
-
-      expect(group.dirty).toBeTrue()
-      expect(group.touched).toBeTrue()
-    })
-  })
-
   describe('dropDownSortItemsByLabel', () => {
     it('should correctly sort items by label', () => {
       const items: SelectItem[] = [

@@ -3,6 +3,8 @@
 @include danger-action;
 @include word-break-all;
 @include ocx-text-responsive;
+@include ocx-interactive-data-view-fixes;
+
 @include table-inline-buttons;
 @include table-zebra-rows;
 @include table-responsive-columns;
@@ -10,6 +12,10 @@
 @include fix-pi-icon-colors;
 
 :host ::ng-deep {
+  .ocx-content > div {
+    margin-bottom: 0 !important;
+  }
+
   .p-datatable {
     .p-datatable-thead > tr > th {
       border-bottom-width: 2px;

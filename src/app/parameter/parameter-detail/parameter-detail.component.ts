@@ -118,9 +118,6 @@ export function JsonValidator(): ValidatorFn {
 
 @Component({
   selector: 'app-parameter-detail',
-  templateUrl: './parameter-detail.component.html',
-  styleUrls: ['./parameter-detail.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     AsyncPipe,
     BadgeModule,
@@ -138,11 +135,14 @@ export function JsonValidator(): ValidatorFn {
     TextareaModule,
     TooltipModule,
     TranslateModule
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './parameter-detail.component.html',
+  styleUrls: ['./parameter-detail.component.scss']
 })
 export class ParameterDetailComponent implements OnChanges {
   @Input() public changeMode: ChangeMode = 'CREATE'
-  @Input() public parameter: Parameter | undefined
+  @Input() public parameter: Parameter | undefined = undefined
   @Input() public allProducts: ExtendedProduct[] = []
   @Input() public dateFormat = 'medium'
   @Input() public visible = false
