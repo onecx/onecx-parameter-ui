@@ -1,4 +1,3 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { DatePipe } from '@angular/common'
 import { provideHttpClient } from '@angular/common/http'
@@ -154,7 +153,6 @@ describe('HistoryComponent', () => {
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
-      schemas: [NO_ERRORS_SCHEMA],
       providers: [
         FormBuilder,
         provideHttpClient(),

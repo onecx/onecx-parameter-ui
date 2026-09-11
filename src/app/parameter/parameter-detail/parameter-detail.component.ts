@@ -152,7 +152,7 @@ export class ParameterDetailComponent implements OnChanges {
   public loading = false
   public exceptionKey: string | undefined = undefined
   public logErrors = false
-  public activeTab = 0
+  public activeTab: string = '0'
   // form
   public formGroup: FormGroup
   public valueStatus$: Observable<FormControlStatus> = of()
@@ -212,6 +212,7 @@ export class ParameterDetailComponent implements OnChanges {
   }
 
   public ngOnChanges() {
+    this.activeTab = '0'
     if (!this.visible) return
     this.exceptionKey = undefined
     // matching mode and given data?
