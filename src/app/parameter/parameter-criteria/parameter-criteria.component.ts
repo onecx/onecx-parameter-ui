@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges
+} from '@angular/core'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { SelectItem } from 'primeng/api'
@@ -37,6 +45,7 @@ export interface CriteriaForm {
 export class ParameterCriteriaComponent implements OnChanges {
   @Input() public type = 'PARAMETER'
   @Input() public actions: Action[] = []
+  @Input() public criteria: ParameterSearchCriteria | null = null
   @Input() public usedProducts: ExtendedProduct[] = [] // products used with data
   @Output() public searchEmitter = new EventEmitter<ParameterSearchCriteria>()
   @Output() public resetSearchEmitter = new EventEmitter<boolean>()
@@ -53,10 +62,28 @@ export class ParameterCriteriaComponent implements OnChanges {
     })
   }
 
-  public ngOnChanges(): void {
+  public ngOnChanges(changes: SimpleChanges): void {
     this.productOptions = []
     if (this.usedProducts && this.usedProducts.length > 0) {
       this.productOptions = this.usedProducts.map((p) => ({ label: p.displayName, value: p.name }))
+    }
+
+    if (changes['criteria'] && this.criteria) {
+      this.criteriaForm.patchValue(
+        {
+          productName: this.criteria.productName ?? null,
+          applicationId: this.criteria.applicationId ?? null,
+          name: this.criteria.name ?? null
+        },
+        { emitEvent: false }
+      )
+
+      if (this.criteria.productName) {
+        this.onChangeProductName(this.criteria.productName)
+      } else {
+        this.appOptions = []
+        this.criteriaForm.controls['applicationId'].setValue(null, { emitEvent: false })
+      }
     }
   }
 
