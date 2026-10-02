@@ -144,7 +144,7 @@ describe('ParameterSearchComponent', () => {
   let component: ParameterSearchComponent
   let fixture: ComponentFixture<ParameterSearchComponent>
   const routerSpy = jasmine.createSpyObj('router', ['navigate'], { url: '' })
-  const routeMock = { snapshot: { paramMap: new Map() } }
+  const routeMock = { snapshot: { paramMap: new Map(), queryParams: {} } }
 
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
@@ -264,6 +264,27 @@ describe('ParameterSearchComponent', () => {
 
       expect(component.interactiveRows).toEqual([])
       expect(console.error).toHaveBeenCalledWith('searchParametersByCriteria', errorResponse)
+    })
+
+    it('should restore state from query params and reuse the criteria for the next search', () => {
+      routeMock.snapshot = {
+        paramMap: new Map(),
+        queryParams: { productName: 'product1', applicationId: 'app1-svc', name: 'name-1' }
+      }
+      spyOn(component, 'onSearch')
+
+      const restored = component['restoreStateFromQueryParams']()
+
+      expect(restored).toBeTrue()
+      expect(component.criteria).toEqual({
+        productName: 'product1',
+        applicationId: 'app1-svc',
+        name: 'name-1'
+      })
+      expect(component.onSearch).toHaveBeenCalledWith(
+        { productName: 'product1', applicationId: 'app1-svc', name: 'name-1' },
+        true
+      )
     })
   })
 

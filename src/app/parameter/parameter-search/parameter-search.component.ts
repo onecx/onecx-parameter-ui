@@ -519,8 +519,7 @@ export class ParameterSearchComponent implements OnInit {
   }
 
   private restoreStateFromQueryParams(): boolean {
-    const snapshot = this.route.snapshot
-    const queryParams = snapshot?.queryParams ?? {}
+    const queryParams = this.route.snapshot.queryParams
     const paramKeys = Object.keys(queryParams)
 
     if (!paramKeys.length) return false

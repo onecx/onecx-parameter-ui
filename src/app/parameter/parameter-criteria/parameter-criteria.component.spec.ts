@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
+import { SimpleChange } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { SelectItem } from 'primeng/api'
@@ -84,9 +85,33 @@ describe('ParameterCriteriaComponent', () => {
     it('should initialize', () => {
       component.usedProducts = usedProducts
 
-      component.ngOnChanges()
+      component.ngOnChanges({})
 
       expect(component.productOptions).toEqual(usedProductsSI)
+    })
+
+    it('should populate form controls from restored criteria', () => {
+      component.usedProducts = usedProducts
+      component.criteria = { productName: 'product1', applicationId: 'app1-svc', name: 'param-1' }
+
+      component.ngOnChanges({ criteria: new SimpleChange(null, component.criteria, true) })
+
+      expect(component.criteriaForm.value).toEqual({
+        productName: 'product1',
+        applicationId: 'app1-svc',
+        name: 'param-1'
+      })
+      expect(component.appOptions).toEqual(appOptionsP1)
+    })
+
+    it('should keep the selected application when the same product is restored', () => {
+      component.usedProducts = usedProducts
+      component.criteria = { productName: 'product1', applicationId: 'app2-svc', name: 'param-1' }
+
+      component.ngOnChanges({ criteria: new SimpleChange(null, component.criteria, true) })
+
+      expect(component.criteriaForm.value.applicationId).toBe('app2-svc')
+      expect(component.appOptions).toEqual(appOptionsP1)
     })
   })
 
