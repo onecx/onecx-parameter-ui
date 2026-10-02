@@ -383,6 +383,7 @@ export class ParameterSearchComponent implements OnInit {
     this.criteria = {}
     this.filterText = ''
     this.applyFilterAndSort()
+    this.onSearch({}, true)
   }
   public onColumnsChange(activeIds: string[]): void {
     this.displayedColumnKeys = activeIds
