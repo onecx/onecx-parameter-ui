@@ -1,5 +1,5 @@
 import { AsyncPipe, DatePipe } from '@angular/common'
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
@@ -195,7 +195,8 @@ export class ParameterSearchComponent implements OnInit {
     private readonly slotService: SlotService,
     private readonly translate: TranslateService,
     private readonly msgService: PortalMessageService,
-    private readonly parameterApi: ParametersAPIService
+    private readonly parameterApi: ParametersAPIService,
+    private readonly cd: ChangeDetectorRef
   ) {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.slotName)
@@ -344,7 +345,10 @@ export class ParameterSearchComponent implements OnInit {
           console.error('searchParametersByCriteria', err)
           return of([] as ParameterTableRow[])
         }),
-        finalize(() => (this.loading = false))
+        finalize(() => {
+          this.loading = false
+          this.cd.markForCheck()
+        })
       )
       .subscribe((rows) => {
         this.allRows = rows
