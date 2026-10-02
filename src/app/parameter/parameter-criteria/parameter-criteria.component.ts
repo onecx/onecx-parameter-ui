@@ -109,9 +109,14 @@ export class ParameterCriteriaComponent implements OnChanges {
      2. diff. value => clear appid dropdown content and prepare new list
   */
   public onChangeProductName(name: string | null) {
+    const currentApplicationId = this.criteriaForm.controls['applicationId'].value
     this.appOptions = []
-    this.criteriaForm.controls['applicationId'].setValue(null)
-    if (!name || !this.usedProducts) return
+
+    if (!name || !this.usedProducts) {
+      this.criteriaForm.controls['applicationId'].setValue(null)
+      return
+    }
+
     this.usedProducts
       .filter((p) => p.name === name)
       .forEach((p) => {
@@ -120,5 +125,11 @@ export class ParameterCriteriaComponent implements OnChanges {
         })
       })
     this.appOptions.sort(Utils.dropDownSortItemsByLabel)
+
+    if (currentApplicationId && this.appOptions.some((app) => app.value === currentApplicationId)) {
+      return
+    }
+
+    this.criteriaForm.controls['applicationId'].setValue(null)
   }
 }
