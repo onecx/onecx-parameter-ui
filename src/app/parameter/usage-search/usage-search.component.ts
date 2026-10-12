@@ -228,7 +228,8 @@ export class UsageSearchComponent implements OnInit {
 
   private onReload(): void {
     this.getUsedProducts()
-    this.onSearch({}, true)
+    const restored = this.restoreStateFromQueryParams()
+    if (!restored) this.onSearch({}, true)
   }
 
   /****************************************************************************
@@ -326,6 +327,7 @@ export class UsageSearchComponent implements OnInit {
     this.loading = true
     this.exceptionKey = undefined
     if (!reuseCriteria) this.criteria = { ...criteria }
+    this.updateSearchParamsFromState()
     this.historyApi
       .getAllHistoryLatest({ historyCriteria: { ...this.criteria } })
       .pipe(
@@ -486,5 +488,48 @@ export class UsageSearchComponent implements OnInit {
         .toLowerCase()
       return searchFields.includes(normalizedQuery)
     })
+  }
+
+  private updateSearchParamsFromState(): void {
+    const queryParams = {
+      productName:
+        this.criteria.productName && this.criteria.productName !== '' ? this.criteria.productName : undefined,
+      applicationId:
+        this.criteria.applicationId && this.criteria.applicationId !== '' ? this.criteria.applicationId : undefined,
+      name: this.criteria.name && this.criteria.name !== '' ? this.criteria.name : undefined
+    }
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+      replaceUrl: true,
+      queryParamsHandling: 'merge'
+    })
+  }
+
+  private restoreStateFromQueryParams(): boolean {
+    const queryParams = this.route.snapshot.queryParams
+    const paramKeys = Object.keys(queryParams)
+
+    if (!paramKeys.length) return false
+
+    const criteria: ParameterSearchCriteria = {}
+    const productName = queryParams['productName']
+    const applicationId = queryParams['applicationId']
+    const name = queryParams['name']
+
+    if (productName !== undefined) {
+      criteria.productName = productName
+    }
+    if (applicationId !== undefined) {
+      criteria.applicationId = applicationId
+    }
+    if (name !== undefined) {
+      criteria.name = name
+    }
+
+    this.criteria = criteria
+    this.onSearch(criteria, true)
+    return true
   }
 }

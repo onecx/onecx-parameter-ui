@@ -68,22 +68,30 @@ export class ParameterCriteriaComponent implements OnChanges {
       this.productOptions = this.usedProducts.map((p) => ({ label: p.displayName, value: p.name }))
     }
 
-    if (changes['criteria'] && this.criteria) {
-      this.criteriaForm.patchValue(
-        {
-          productName: this.criteria.productName ?? null,
-          applicationId: this.criteria.applicationId ?? null,
-          name: this.criteria.name ?? null
-        },
-        { emitEvent: false }
-      )
+    if (!this.criteria) {
+      return
+    }
 
-      if (this.criteria.productName) {
-        this.onChangeProductName(this.criteria.productName)
-      } else {
-        this.appOptions = []
-        this.criteriaForm.controls['applicationId'].setValue(null, { emitEvent: false })
-      }
+    const productName = this.criteria.productName ?? null
+    const applicationId = this.criteria.applicationId ?? null
+    const name = this.criteria.name ?? null
+
+    this.criteriaForm.patchValue(
+      {
+        productName,
+        applicationId,
+        name
+      },
+      { emitEvent: false }
+    )
+
+    if (productName) {
+      this.onChangeProductName(productName)
+      const hasApplication = this.appOptions.some((app) => app.value === applicationId)
+      this.criteriaForm.controls['applicationId'].setValue(hasApplication ? applicationId : null, { emitEvent: false })
+    } else {
+      this.appOptions = []
+      this.criteriaForm.controls['applicationId'].setValue(null, { emitEvent: false })
     }
   }
 
@@ -109,11 +117,12 @@ export class ParameterCriteriaComponent implements OnChanges {
      2. diff. value => clear appid dropdown content and prepare new list
   */
   public onChangeProductName(name: string | null) {
-    const currentApplicationId = this.criteriaForm.controls['applicationId'].value
+    const currentApplicationId =
+      this.criteriaForm.controls['applicationId'].value ?? this.criteria?.applicationId ?? null
     this.appOptions = []
 
     if (!name || !this.usedProducts) {
-      this.criteriaForm.controls['applicationId'].setValue(null)
+      this.criteriaForm.controls['applicationId'].setValue(null, { emitEvent: false })
       return
     }
 
@@ -127,9 +136,10 @@ export class ParameterCriteriaComponent implements OnChanges {
     this.appOptions.sort(Utils.dropDownSortItemsByLabel)
 
     if (currentApplicationId && this.appOptions.some((app) => app.value === currentApplicationId)) {
+      this.criteriaForm.controls['applicationId'].setValue(currentApplicationId, { emitEvent: false })
       return
     }
 
-    this.criteriaForm.controls['applicationId'].setValue(null)
+    this.criteriaForm.controls['applicationId'].setValue(null, { emitEvent: false })
   }
 }
