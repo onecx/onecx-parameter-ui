@@ -28,6 +28,6 @@ const routes: Routes = [
 ]
 @NgModule({
   imports: [ParameterSearchComponent, UsageSearchComponent, [RouterModule.forChild(routes)]],
-  providers: [providePermissionService(), provideThemeConfig()]
+  providers: [LabelResolver, providePermissionService(), provideThemeConfig()]
 })
 export class ParameterModule {}
