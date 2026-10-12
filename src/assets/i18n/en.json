@@ -85,6 +85,10 @@
         "LABEL": "Filter",
         "TOOLTIP": "Application, App, Display Name, Name",
         "RESET": "Reset Filter"
+      },
+      "RESET_BUTTON": {
+        "ARIA_LABEL": "Reset search criteria and results",
+        "TOOLTIP": "Reset search criteria and results"
       }
     },
     "VIEW": {
