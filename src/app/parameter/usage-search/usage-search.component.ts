@@ -390,7 +390,8 @@ export class UsageSearchComponent implements OnInit {
   }
 
   public onGoToParameterSearchPage() {
-    this.router.navigate(['../'], { relativeTo: this.route })
+    const navigation = this.router.navigate(['../'], { relativeTo: this.route })
+    navigation?.catch((err) => console.error(err))
   }
 
   // Detail => CREATE, COPY, EDIT, VIEW
@@ -508,7 +509,7 @@ export class UsageSearchComponent implements OnInit {
   }
 
   private restoreStateFromQueryParams(): boolean {
-    const queryParams = this.route.snapshot.queryParams
+    const queryParams = this.route.snapshot.queryParams ?? {}
     const paramKeys = Object.keys(queryParams)
 
     if (!paramKeys.length) return false

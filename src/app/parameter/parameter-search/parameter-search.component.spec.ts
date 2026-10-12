@@ -236,6 +236,18 @@ describe('ParameterSearchComponent', () => {
 
       expect(routerSpy.navigate).toHaveBeenCalledWith(['./usage'], { relativeTo: routeMock })
     })
+
+    it('should log error when latest usage page navigation fails', async () => {
+      const errorResponse = { status: '500', statusText: 'Navigation failed' }
+      spyOn(console, 'error')
+      routerSpy.navigate.and.returnValue(Promise.reject(errorResponse))
+
+      component.onGoToLatestUsagePage()
+      await Promise.resolve()
+
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['./usage'], { relativeTo: routeMock })
+      expect(console.error).toHaveBeenCalledWith(errorResponse)
+    })
   })
 
   describe('search', () => {

@@ -166,7 +166,7 @@ describe('UsageSearchComponent', () => {
   let component: UsageSearchComponent
   let fixture: ComponentFixture<UsageSearchComponent>
   const routerSpy = jasmine.createSpyObj('router', ['navigate'], { url: '' })
-  const routeMock = { snapshot: { paramMap: new Map() } }
+  const routeMock: any = { snapshot: { paramMap: new Map(), queryParams: {} } }
 
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
@@ -218,6 +218,7 @@ describe('UsageSearchComponent', () => {
   }))
 
   beforeEach(() => {
+    routeMock.snapshot.queryParams = {}
     fixture = TestBed.createComponent(UsageSearchComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
@@ -234,6 +235,75 @@ describe('UsageSearchComponent', () => {
     })
   })
 
+  describe('query state sync', () => {
+    it('should persist criteria in query params and omit empty values', () => {
+      component.criteria = {
+        productName: 'product1',
+        applicationId: 'app-1',
+        name: 'example-name'
+      }
+
+      component['updateSearchParamsFromState']()
+
+      expect(routerSpy.navigate).toHaveBeenCalledWith([], {
+        relativeTo: routeMock,
+        queryParams: {
+          productName: 'product1',
+          applicationId: 'app-1',
+          name: 'example-name'
+        },
+        replaceUrl: true,
+        queryParamsHandling: 'merge'
+      })
+    })
+
+    it('should restore criteria from query params and trigger a search with reused criteria', () => {
+      routeMock.snapshot.queryParams = {
+        productName: 'product1',
+        applicationId: 'app-1',
+        name: 'example-name'
+      }
+      const searchSpy = spyOn(component, 'onSearch')
+
+      const restored = component['restoreStateFromQueryParams']()
+
+      expect(restored).toBeTrue()
+      expect(component.criteria).toEqual({
+        productName: 'product1',
+        applicationId: 'app-1',
+        name: 'example-name'
+      })
+      expect(searchSpy).toHaveBeenCalledWith(
+        {
+          productName: 'product1',
+          applicationId: 'app-1',
+          name: 'example-name'
+        },
+        true
+      )
+    })
+
+    it('should return false when there are no query params to restore', () => {
+      const searchSpy = spyOn(component, 'onSearch')
+
+      const restored = component['restoreStateFromQueryParams']()
+
+      expect(restored).toBeFalse()
+      expect(searchSpy).not.toHaveBeenCalled()
+    })
+
+    it('should treat undefined query params as an empty object and not restore anything', () => {
+      routeMock.snapshot.queryParams = undefined
+      const searchSpy = spyOn(component, 'onSearch')
+
+      const restored = component['restoreStateFromQueryParams']()
+
+      expect(restored).toBeFalse()
+      expect(component.criteria).toEqual({})
+      expect(searchSpy).not.toHaveBeenCalled()
+    })
+  })
+
   describe('page actions', () => {
     it('should go to parameter search', () => {
       spyOn(component, 'onGoToParameterSearchPage')
@@ -242,6 +312,18 @@ describe('UsageSearchComponent', () => {
       component.actions[0].actionCallback!()
 
       expect(component.onGoToParameterSearchPage).toHaveBeenCalled()
+    })
+
+    it('should log error when parameter search navigation fails', async () => {
+      const errorResponse = { status: '500', statusText: 'Navigation failed' }
+      spyOn(console, 'error')
+      routerSpy.navigate.and.returnValue(Promise.reject(errorResponse))
+
+      component.onGoToParameterSearchPage()
+      await Promise.resolve()
+
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['../'], { relativeTo: routeMock })
+      expect(console.error).toHaveBeenCalledWith(errorResponse)
     })
   })
 

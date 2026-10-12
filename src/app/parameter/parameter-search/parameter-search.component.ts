@@ -216,7 +216,8 @@ export class ParameterSearchComponent implements OnInit {
     if (!restored) this.onSearch({}, true)
   }
   public onGoToLatestUsagePage(): void {
-    this.router.navigate(['./usage'], { relativeTo: this.route })
+    const navigation = this.router.navigate(['./usage'], { relativeTo: this.route })
+    navigation?.catch((err) => console.error(err))
   }
 
   /****************************************************************************
