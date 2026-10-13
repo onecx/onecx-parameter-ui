@@ -1,5 +1,5 @@
 import { AsyncPipe, DatePipe } from '@angular/common'
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
@@ -195,7 +195,8 @@ export class ParameterSearchComponent implements OnInit {
     private readonly slotService: SlotService,
     private readonly translate: TranslateService,
     private readonly msgService: PortalMessageService,
-    private readonly parameterApi: ParametersAPIService
+    private readonly parameterApi: ParametersAPIService,
+    private readonly cd: ChangeDetectorRef
   ) {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.slotName)
@@ -211,10 +212,12 @@ export class ParameterSearchComponent implements OnInit {
 
   private onReload(): void {
     this.getUsedProducts()
-    this.onSearch({}, true)
+    const restored = this.restoreStateFromQueryParams()
+    if (!restored) this.onSearch({}, true)
   }
   public onGoToLatestUsagePage(): void {
-    this.router.navigate(['./usage'], { relativeTo: this.route })
+    const navigation = this.router.navigate(['./usage'], { relativeTo: this.route })
+    navigation?.catch((err) => console.error(err))
   }
 
   /****************************************************************************
@@ -312,6 +315,7 @@ export class ParameterSearchComponent implements OnInit {
     this.loading = true
     this.exceptionKey = undefined
     if (!reuseCriteria) this.criteria = { ...criteria }
+    this.updateSearchParamsFromState()
     this.parameterApi
       .searchParametersByCriteria({ parameterSearchCriteria: { ...this.criteria } })
       .pipe(
@@ -342,7 +346,10 @@ export class ParameterSearchComponent implements OnInit {
           console.error('searchParametersByCriteria', err)
           return of([] as ParameterTableRow[])
         }),
-        finalize(() => (this.loading = false))
+        finalize(() => {
+          this.loading = false
+          this.cd.markForCheck()
+        })
       )
       .subscribe((rows) => {
         this.allRows = rows
@@ -381,6 +388,7 @@ export class ParameterSearchComponent implements OnInit {
     this.criteria = {}
     this.filterText = ''
     this.applyFilterAndSort()
+    this.onSearch({}, true)
   }
   public onColumnsChange(activeIds: string[]): void {
     this.displayedColumnKeys = activeIds
@@ -492,5 +500,48 @@ export class ParameterSearchComponent implements OnInit {
         .toLowerCase()
       return searchFields.includes(normalizedQuery)
     })
+  }
+
+  private updateSearchParamsFromState(): void {
+    const queryParams = {
+      productName:
+        this.criteria.productName && this.criteria.productName !== '' ? this.criteria.productName : undefined,
+      applicationId:
+        this.criteria.applicationId && this.criteria.applicationId !== '' ? this.criteria.applicationId : undefined,
+      name: this.criteria.name && this.criteria.name !== '' ? this.criteria.name : undefined
+    }
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+      replaceUrl: true,
+      queryParamsHandling: 'merge'
+    })
+  }
+
+  private restoreStateFromQueryParams(): boolean {
+    const queryParams = this.route.snapshot.queryParams
+    const paramKeys = Object.keys(queryParams)
+
+    if (!paramKeys.length) return false
+
+    const criteria: ParameterSearchCriteria = {}
+    const productName = queryParams['productName']
+    const applicationId = queryParams['applicationId']
+    const name = queryParams['name']
+
+    if (productName !== undefined) {
+      criteria.productName = productName
+    }
+    if (applicationId !== undefined) {
+      criteria.applicationId = applicationId
+    }
+    if (name !== undefined) {
+      criteria.name = name
+    }
+
+    this.criteria = criteria
+    this.onSearch(criteria, true)
+    return true
   }
 }
