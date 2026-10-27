@@ -196,6 +196,7 @@ describe('ParameterSearchComponent', () => {
   }))
 
   beforeEach(() => {
+    routerSpy.navigate.and.returnValue(Promise.resolve(true))
     fixture = TestBed.createComponent(ParameterSearchComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
@@ -235,6 +236,32 @@ describe('ParameterSearchComponent', () => {
       component.onGoToLatestUsagePage()
 
       expect(routerSpy.navigate).toHaveBeenCalledWith(['./usage'], { relativeTo: routeMock })
+    })
+
+    it('should log error when query params sync navigation fails', async () => {
+      const errorResponse = { status: '500', statusText: 'Navigation failed' }
+      spyOn(console, 'error')
+      routerSpy.navigate.and.returnValue(Promise.reject(errorResponse))
+      component.criteria = {
+        productName: 'product1',
+        applicationId: 'app1-svc',
+        name: 'name-1'
+      }
+
+      component['updateSearchParamsFromState']()
+      await Promise.resolve()
+
+      expect(routerSpy.navigate).toHaveBeenCalledWith([], {
+        relativeTo: routeMock,
+        queryParams: {
+          productName: 'product1',
+          applicationId: 'app1-svc',
+          name: 'name-1'
+        },
+        replaceUrl: true,
+        queryParamsHandling: 'merge'
+      })
+      expect(console.error).toHaveBeenCalledWith(errorResponse)
     })
 
     it('should log error when latest usage page navigation fails', async () => {
