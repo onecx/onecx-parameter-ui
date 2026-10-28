@@ -13,7 +13,7 @@
 
 :host ::ng-deep {
   .ocx-content > div {
-    margin-bottom: 0 !important;
+    margin-bottom: 0;
   }
 
   .p-datatable {
@@ -29,7 +29,7 @@
     display: none;
   }
   ocx-data-view-controls div {
-    justify-content: center !important;
+    justify-content: center;
   }
 
   .max-height-for-2-lines {

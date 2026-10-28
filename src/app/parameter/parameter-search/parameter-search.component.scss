@@ -14,12 +14,15 @@
 
 :host ::ng-deep {
   .ocx-content > div {
-    margin-bottom: 0 !important;
+    margin-bottom: 0;
   }
 
   .p-datatable {
     .p-datatable-thead > tr > th {
       border-bottom-width: 2px;
+    }
+    thead th:first-child {
+      text-align: center;
     }
   }
   --table-body-cell-padding: 0.5rem;
@@ -30,7 +33,7 @@
     display: none;
   }
   ocx-data-view-controls div {
-    justify-content: center !important;
+    justify-content: center;
   }
 
   .max-height-for-2-lines {

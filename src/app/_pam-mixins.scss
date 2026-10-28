@@ -9,7 +9,7 @@
     &.p-floatlabel-over {
       &:has(.p-filled) label,
       &:has(.p-focus) label {
-        top: -5px !important;
+        top: -5px;
         background-color: white;
         padding: 0 0.5rem;
       }
@@ -96,14 +96,14 @@
       border-bottom-right-radius: 0;
     }
     .input-field-correction .p-inputtext {
-      padding-top: 1rem !important;
-      padding-bottom: 0.5rem !important;
+      padding-top: 1rem;
+      padding-bottom: 0.5rem;
     }
     .pseudo-button:hover {
-      background: var(--button-hover-bg) !important;
+      background: var(--button-hover-bg);
       cursor: pointer;
       * {
-        background: var(--button-hover-bg) !important;
+        background: var(--button-hover-bg);
       }
     }
   }
@@ -150,7 +150,7 @@
         color: var(--primary-color-text);
         background: var(--button-hover-bg);
         cursor: pointer;
-        padding: 5px !important;
+        padding: 5px;
       }
     }
   }
@@ -230,7 +230,7 @@
       }
       &.p-inputtext:hover,
       &.p-dropdown:hover {
-        border-color: rgb(0 0 0 / 30%) !important;
+        border-color: rgb(0 0 0 / 30%);
       }
     }
   }
@@ -242,7 +242,7 @@
     .p-fileupload {
       .p-fileupload-buttonbar,
       .p-fileupload-content {
-        background-color: var(--surface-100) !important;
+        background-color: var(--surface-100);
       }
       .p-fileupload-content {
         padding: 0.5rem;
@@ -310,6 +310,12 @@
     }
     .table-header-wrapper span:first-child {
       margin-right: 10px !important;
+    }
+
+    .p-datatable-thead > tr > th,
+    .p-datatable-sort-icon,
+    .p-datatable-sort-badge {
+      vertical-align: top;
     }
   }
 }
@@ -383,7 +389,7 @@
       button[icon='pi pi-angle-double-right'],
       button:nth-child(2),
       button:nth-child(4) {
-        display: none !important;
+        display: none;
       }
     }
   }
@@ -404,14 +410,14 @@
   :host ::ng-deep {
     @media (max-width: 991px) {
       .p-dialog.p-dialog {
-        max-height: unset !important;
-        height: unset !important;
+        max-height: unset;
+        height: unset;
       }
     }
     @media (max-width: 576px) {
       .p-dialog.p-dialog {
-        max-height: inherit !important;
-        height: inherit !important;
+        max-height: inherit;
+        height: inherit;
       }
     }
   }
@@ -468,10 +474,10 @@
     td button.p-button {
       &.p-button-icon-only {
         padding: 0.5rem;
-        width: unset !important;
+        width: unset;
       }
       &.p-button-rounded {
-        height: unset !important;
+        height: unset;
       }
     }
   }
@@ -481,22 +487,22 @@
     // responsive table result view
     @media screen and (min-width: 576px) {
       .sm\:table-cell {
-        display: table-cell !important;
+        display: table-cell;
       }
     }
     @media screen and (min-width: 768px) {
       .md\:table-cell {
-        display: table-cell !important;
+        display: table-cell;
       }
     }
     @media screen and (min-width: 992px) {
       .lg\:table-cell {
-        display: table-cell !important;
+        display: table-cell;
       }
     }
     @media screen and (min-width: 1200px) {
       .xl\:table-cell {
-        display: table-cell !important;
+        display: table-cell;
       }
     }
   }
@@ -505,11 +511,11 @@
 @mixin fix-pi-icon-colors {
   :host ::ng-deep {
     .pi.text-green-600 {
-      color: var(--green-600, var(--p-green-600, #16a34a)) !important;
+      color: var(--green-600, var(--p-green-600, #16a34a));
     }
 
     .pi.text-red-600 {
-      color: var(--red-600, var(--p-red-600, #dc2626)) !important;
+      color: var(--red-600, var(--p-red-600, #dc2626));
     }
   }
 }
