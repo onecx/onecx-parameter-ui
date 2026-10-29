@@ -511,12 +511,14 @@ export class ParameterSearchComponent implements OnInit {
       name: this.criteria.name && this.criteria.name !== '' ? this.criteria.name : undefined
     }
 
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams,
-      replaceUrl: true,
-      queryParamsHandling: 'merge'
-    })
+    this.router
+      .navigate([], {
+        relativeTo: this.route,
+        queryParams,
+        replaceUrl: true,
+        queryParamsHandling: 'merge'
+      })
+      .catch((err) => console.error(err))
   }
 
   private restoreStateFromQueryParams(): boolean {

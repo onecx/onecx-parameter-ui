@@ -219,6 +219,7 @@ describe('UsageSearchComponent', () => {
 
   beforeEach(() => {
     routeMock.snapshot.queryParams = {}
+    routerSpy.navigate.and.returnValue(Promise.resolve(true))
     fixture = TestBed.createComponent(UsageSearchComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
@@ -255,6 +256,32 @@ describe('UsageSearchComponent', () => {
         replaceUrl: true,
         queryParamsHandling: 'merge'
       })
+    })
+
+    it('should log error when query params sync navigation fails', async () => {
+      const errorResponse = { status: '500', statusText: 'Navigation failed' }
+      spyOn(console, 'error')
+      routerSpy.navigate.and.returnValue(Promise.reject(errorResponse))
+      component.criteria = {
+        productName: 'product1',
+        applicationId: 'app-1',
+        name: 'example-name'
+      }
+
+      component['updateSearchParamsFromState']()
+      await Promise.resolve()
+
+      expect(routerSpy.navigate).toHaveBeenCalledWith([], {
+        relativeTo: routeMock,
+        queryParams: {
+          productName: 'product1',
+          applicationId: 'app-1',
+          name: 'example-name'
+        },
+        replaceUrl: true,
+        queryParamsHandling: 'merge'
+      })
+      expect(console.error).toHaveBeenCalledWith(errorResponse)
     })
 
     it('should restore criteria from query params and trigger a search with reused criteria', () => {
