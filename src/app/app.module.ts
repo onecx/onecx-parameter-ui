@@ -1,18 +1,19 @@
 import { NgModule } from '@angular/core'
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { RouterModule, Routes } from '@angular/router'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-import { TranslateLoader, TranslateModule, MissingTranslationHandler } from '@ngx-translate/core'
+import { provideMissingTranslationHandler, provideTranslateLoader, provideTranslateService } from '@ngx-translate/core'
 
 import { AngularAuthModule } from '@onecx/angular-auth'
 import {
   provideTranslationPathFromMeta,
-  createTranslateLoader,
-  provideThemeConfig,
-  providePermissionService
+  providePermissionService,
+  MultiLanguageMissingTranslationHandler,
+  OnecxTranslateLoader
 } from '@onecx/angular-utils'
+import { provideThemeConfig } from '@onecx/angular-utils/theme/primeng'
 import { APP_CONFIG } from '@onecx/angular-integration-interface'
-import { AngularAcceleratorMissingTranslationHandler, AngularAcceleratorModule } from '@onecx/angular-accelerator'
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 import { StandaloneShellModule, provideStandaloneProviders } from '@onecx/angular-standalone-shell'
 
 import { environment } from 'src/environments/environment'
@@ -34,18 +35,15 @@ const routes: Routes = [
       initialNavigation: 'enabledBlocking',
       enableTracing: true
     }),
-    StandaloneShellModule,
-    TranslateModule.forRoot({
-      isolate: true,
-      loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] },
-      missingTranslationHandler: {
-        provide: MissingTranslationHandler,
-        useClass: AngularAcceleratorMissingTranslationHandler
-      }
-    })
+    StandaloneShellModule
   ],
   providers: [
     { provide: APP_CONFIG, useValue: environment },
+    provideTranslateService({
+      defaultLanguage: 'en',
+      loader: provideTranslateLoader(OnecxTranslateLoader),
+      missingTranslationHandler: provideMissingTranslationHandler(MultiLanguageMissingTranslationHandler)
+    }),
     provideTranslationPathFromMeta(import.meta.url, 'assets/i18n/'),
     provideHttpClient(withInterceptorsFromDi()),
     provideThemeConfig(),

@@ -1,15 +1,20 @@
 import { DoBootstrap, inject, Injector, NgModule, provideAppInitializer } from '@angular/core'
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule, Routes, Router } from '@angular/router'
-import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core'
+import { provideMissingTranslationHandler, provideTranslateLoader, provideTranslateService } from '@ngx-translate/core'
 import { firstValueFrom } from 'rxjs'
 
 import { AngularAuthModule } from '@onecx/angular-auth'
-import { provideTranslationPathFromMeta, createTranslateLoader, PortalApiConfiguration } from '@onecx/angular-utils'
+import {
+  provideTranslationPathFromMeta,
+  PortalApiConfiguration,
+  MultiLanguageMissingTranslationHandler,
+  OnecxTranslateLoader
+} from '@onecx/angular-utils'
 import { createAppEntrypoint, initializeRouter, startsWith } from '@onecx/angular-webcomponents'
 import { AppConfigService, AppStateService, ConfigurationService } from '@onecx/angular-integration-interface'
-import { AngularAcceleratorMissingTranslationHandler, AngularAcceleratorModule } from '@onecx/angular-accelerator'
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
 import { environment } from 'src/environments/environment'
 import { Configuration } from './shared/generated'
@@ -39,19 +44,16 @@ const routes: Routes = [
     AngularAuthModule,
     AngularAcceleratorModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot(routes),
-    TranslateModule.forRoot({
-      isolate: true,
-      loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] },
-      missingTranslationHandler: {
-        provide: MissingTranslationHandler,
-        useClass: AngularAcceleratorMissingTranslationHandler
-      }
-    })
+    RouterModule.forRoot(routes)
   ],
   providers: [
     ConfigurationService,
     { provide: Configuration, useFactory: apiConfigProvider },
+    provideTranslateService({
+      defaultLanguage: 'en',
+      loader: provideTranslateLoader(OnecxTranslateLoader),
+      missingTranslationHandler: provideMissingTranslationHandler(MultiLanguageMissingTranslationHandler)
+    }),
     provideAppInitializer(() => initializeRouter(inject(Router), inject(AppStateService))()),
     provideAppInitializer(() => appConfigServiceInitializer(inject(AppStateService), inject(AppConfigService))()),
     provideTranslationPathFromMeta(import.meta.url, 'assets/i18n/'),
