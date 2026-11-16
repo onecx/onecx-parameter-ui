@@ -1,5 +1,5 @@
 import { AsyncPipe, DatePipe } from '@angular/common'
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnChanges, Output } from '@angular/core'
 import {
   AbstractControl,
   DefaultValueAccessor,
@@ -149,67 +149,50 @@ export class ParameterDetailComponent implements OnChanges {
   @Output() public visibleChange = new EventEmitter<boolean>()
 
   // dialog
+  private readonly parameterApi = inject(ParametersAPIService)
+  private readonly translate = inject(TranslateService)
+  private readonly msgService = inject(PortalMessageService)
+
   public loading = false
   public exceptionKey: string | undefined = undefined
   public logErrors = false
   public activeTab: string = '0'
-  // form
-  public formGroup: FormGroup
-  public valueStatus$: Observable<FormControlStatus> = of()
-  public valueObjectStatus$: Observable<FormControlStatus> = of()
-  public valueObjectError$: Observable<any> = of()
-  // value lists
-  public productOptions: SelectItem[] = []
-  public appOptions: SelectItem[] = []
   public valueTypeOptions: SelectItem[] = [
     { label: 'VALUE_TYPE.BOOLEAN', value: 'BOOLEAN' },
     { label: 'VALUE_TYPE.NUMBER', value: 'NUMBER' },
     { label: 'VALUE_TYPE.STRING', value: 'STRING' },
     { label: 'VALUE_TYPE.OBJECT', value: 'OBJECT' }
   ]
-
-  constructor(
-    private readonly parameterApi: ParametersAPIService,
-    private readonly translate: TranslateService,
-    private readonly msgService: PortalMessageService
-  ) {
-    this.formGroup = new FormGroup({})
-    this.formGroup.controls = {
-      modificationCount: new FormControl(0),
-      productName: new FormControl(null, [Validators.required]),
-      applicationId: new FormControl(null, [Validators.required]),
-      name: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
-      displayName: new FormControl(null, [Validators.maxLength(255)]),
-      description: new FormControl(null, [Validators.maxLength(255)]),
-      importValue: new FormControl(null),
-      importValueType: new FormControl(null),
-      importValueBoolean: new FormControl(false),
-      valueBoolean: new FormControl(false)
-    }
-    // add extra validators with specific update event - do it separately!
-    // default update strategy is 'changes' => updateOn: 'change'
-    this.formGroup.addControl(
-      'value',
-      new FormControl(null, {
-        validators: Validators.compose([ValueValidator(), Validators.maxLength(5000)])
-      })
-    )
-    this.formGroup.addControl(
-      'valueObject',
-      new FormControl(null, {
-        validators: Validators.compose([JsonValidator(), Validators.maxLength(5000)])
-      })
-    )
-    this.formGroup.addControl(
-      'valueType',
-      new FormControl(this.valueTypeOptions[2], { validators: Validators.compose([TypeValidator()]) })
-    )
-    // be informed about invalid content in value fields
-    const vField = this.formGroup.get('value')
-    if (vField) this.valueStatus$ = vField.statusChanges.pipe(map((s) => s))
-    const voField = this.formGroup.get('valueObject')
-    if (voField) this.valueObjectStatus$ = voField.statusChanges.pipe(map((s) => s))
-  }
+  // form
+  public formGroup: FormGroup = new FormGroup({
+    modificationCount: new FormControl(0),
+    productName: new FormControl(null, [Validators.required]),
+    applicationId: new FormControl(null, [Validators.required]),
+    name: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
+    displayName: new FormControl(null, [Validators.maxLength(255)]),
+    description: new FormControl(null, [Validators.maxLength(255)]),
+    importValue: new FormControl(null),
+    importValueType: new FormControl(null),
+    importValueBoolean: new FormControl(false),
+    valueBoolean: new FormControl(false),
+    value: new FormControl(null, {
+      validators: Validators.compose([ValueValidator(), Validators.maxLength(5000)])
+    }),
+    valueObject: new FormControl(null, {
+      validators: Validators.compose([JsonValidator(), Validators.maxLength(5000)])
+    }),
+    valueType: new FormControl(this.valueTypeOptions[2], {
+      validators: Validators.compose([TypeValidator()])
+    })
+  })
+  public valueStatus$: Observable<FormControlStatus> =
+    this.formGroup.get('value')?.statusChanges.pipe(map((s) => s)) ?? of()
+  public valueObjectStatus$: Observable<FormControlStatus> =
+    this.formGroup.get('valueObject')?.statusChanges.pipe(map((s) => s)) ?? of()
+  public valueObjectError$: Observable<any> = of()
+  // value lists
+  public productOptions: SelectItem[] = []
+  public appOptions: SelectItem[] = []
 
   public ngOnChanges() {
     this.activeTab = '0'

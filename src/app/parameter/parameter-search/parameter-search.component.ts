@@ -1,5 +1,5 @@
 import { AsyncPipe, DatePipe } from '@angular/common'
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, tap, Observable, of, ReplaySubject } from 'rxjs'
@@ -107,11 +107,20 @@ export type ProductAbstract = {
 })
 export class ParameterSearchComponent implements OnInit {
   // dialog
+  private readonly route = inject(ActivatedRoute)
+  private readonly router = inject(Router)
+  private readonly user = inject(UserService)
+  private readonly slotService = inject(SlotService)
+  private readonly translate = inject(TranslateService)
+  private readonly msgService = inject(PortalMessageService)
+  private readonly parameterApi = inject(ParametersAPIService)
+  private readonly cd = inject(ChangeDetectorRef)
+
   public loading = false
   public exceptionKey: string | undefined = undefined
   public exceptionKeyMeta: string | undefined = undefined
   public changeMode: ChangeMode = 'VIEW'
-  public dateFormat: string
+  public dateFormat: string = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
   public refreshUsedProducts = false
   public displayDetailDialog = false
   public displayDeleteDialog = false
@@ -136,7 +145,7 @@ export class ParameterSearchComponent implements OnInit {
   public item4Delete: Parameter | undefined // used on deletion
   // slot configuration: get product infos via remote component
   public slotName = 'onecx-product-data'
-  public isComponentDefined$: Observable<boolean> | undefined // check
+  public isComponentDefined$: Observable<boolean> = this.slotService.isSomeComponentDefinedForSlot(this.slotName)
   public productData$ = new BehaviorSubject<ProductAbstract[] | undefined>(undefined) // product infos
   public slotEmitter = new EventEmitter<ProductAbstract[]>()
 
@@ -188,22 +197,8 @@ export class ParameterSearchComponent implements OnInit {
     }
   ]
 
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly user: UserService,
-    private readonly slotService: SlotService,
-    private readonly translate: TranslateService,
-    private readonly msgService: PortalMessageService,
-    private readonly parameterApi: ParametersAPIService,
-    private readonly cd: ChangeDetectorRef
-  ) {
-    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
-    this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.slotName)
-    this.syncInteractiveColumns()
-  }
-
   public ngOnInit(): void {
+    this.syncInteractiveColumns()
     this.slotEmitter.subscribe(this.productData$)
     this.onReload()
     this.getMetaData()

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common'
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
+import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { TooltipModule } from 'primeng/tooltip'
@@ -64,7 +64,6 @@ export class UsageDetailListComponent {
   public item4Detail: ExtendedHistory | undefined = undefined
   public displayDetailDialog = false
   public expandedRows: { [s: string]: boolean } = {}
-  public filteredColumns: Column[]
   public columns: ExtendedColumn[] = [
     {
       field: 'start',
@@ -131,9 +130,8 @@ export class UsageDetailListComponent {
     }
   ]
 
-  constructor(public readonly translate: TranslateService) {
-    this.filteredColumns = this.columns.filter((a) => a['active'] === true)
-  }
+  public readonly translate = inject(TranslateService)
+  public filteredColumns: Column[] = this.columns.filter((a) => a['active'] === true)
 
   public onCalcDuration(start: string, end: string): string {
     if (!start || start === '' || !end || end === '') return ''

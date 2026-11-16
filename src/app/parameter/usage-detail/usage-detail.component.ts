@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common'
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { catchError, finalize, map, Observable, of } from 'rxjs'
 import { TooltipModule } from 'primeng/tooltip'
@@ -36,16 +36,14 @@ export class UsageDetailComponent {
   @Input() public visible = false
   @Output() public visibleChange = new EventEmitter<boolean>()
 
+  private readonly translate = inject(TranslateService)
+  private readonly historyApiService = inject(HistoriesAPIService)
+
   // dialog
   public loading = false
   public exceptionKey: string | undefined = undefined
   // data
   public data$: Observable<ExtendedHistory[]> = of([])
-
-  constructor(
-    private readonly translate: TranslateService,
-    private readonly historyApiService: HistoriesAPIService
-  ) {}
 
   /****************************************************************************
    *  SEARCH usage data

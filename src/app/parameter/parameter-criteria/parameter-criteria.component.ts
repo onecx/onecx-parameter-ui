@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  inject,
   Input,
   OnChanges,
   Output,
@@ -50,17 +51,14 @@ export class ParameterCriteriaComponent implements OnChanges {
   @Output() public searchEmitter = new EventEmitter<ParameterSearchCriteria>()
   @Output() public resetSearchEmitter = new EventEmitter<boolean>()
 
-  public criteriaForm: FormGroup<CriteriaForm>
+  public readonly translate = inject(TranslateService)
+  public criteriaForm: FormGroup<CriteriaForm> = new FormGroup<CriteriaForm>({
+    productName: new FormControl<string | null>(null),
+    applicationId: new FormControl<string | null>(null),
+    name: new FormControl<string | null>(null)
+  })
   public productOptions: SelectItem[] = []
   public appOptions: SelectItem[] = []
-
-  constructor(public readonly translate: TranslateService) {
-    this.criteriaForm = new FormGroup<CriteriaForm>({
-      productName: new FormControl<string | null>(null),
-      applicationId: new FormControl<string | null>(null),
-      name: new FormControl<string | null>(null)
-    })
-  }
 
   public ngOnChanges(changes: SimpleChanges): void {
     this.productOptions = []
