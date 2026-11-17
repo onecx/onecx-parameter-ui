@@ -413,7 +413,7 @@ describe('UsageSearchComponent', () => {
         },
         error: () => {
           expect(console.error).toHaveBeenCalledOnceWith('getAllHistoryProducts', errorResponse)
-          done.fail
+          done.fail()
         }
       })
     })

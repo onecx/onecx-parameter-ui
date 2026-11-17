@@ -281,7 +281,7 @@ describe('HistoryComponent', () => {
         error: () => {
           expect(component.exceptionKey).toBe('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.USAGE')
           expect(console.error).toHaveBeenCalledWith('getAllHistory', errorResponse)
-          done.fail
+          done.fail()
         }
       })
     })
