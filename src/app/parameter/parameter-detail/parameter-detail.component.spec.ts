@@ -2,13 +2,13 @@ import { Component } from '@angular/core'
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
-import { FormControlStatus, FormsModule } from '@angular/forms'
+import { FormControlStatus, FormGroup, FormsModule } from '@angular/forms'
 import { By } from '@angular/platform-browser'
-import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 import { SelectItem } from 'primeng/api'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
+import { provideTranslateTestingService } from '@onecx/angular-testing'
 
 import { Parameter, ParametersAPIService } from 'src/app/shared/generated'
 import { ParameterDetailComponent } from './parameter-detail.component'
@@ -60,14 +60,15 @@ describe('ParameterDetailComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [],
-      imports: [
-        ParameterDetailComponent,
-        TranslateTestingModule.withTranslations({
-          de: require('src/assets/i18n/de.json'),
-          en: require('src/assets/i18n/en.json')
-        }).withDefaultLanguage('en')
-      ],
-      providers: [provideHttpClient(), provideHttpClientTesting()]
+      imports: [ParameterDetailComponent],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideTranslateTestingService({
+          de: require('/src/assets/i18n/de.json'),
+          en: require('/src/assets/i18n/en.json')
+        })
+      ]
     })
       .overrideComponent(ParameterDetailComponent, {
         add: {
@@ -571,6 +572,15 @@ describe('ParameterDetailComponent', () => {
 
       component.formGroup.controls['valueType'].setValue('OBJECT')
       component.formGroup.controls['valueObject'].setValue(JSON.stringify({}))
+
+      expect(status).toBe('VALID')
+    })
+
+    it('should fallback to VALID when value control is missing', () => {
+      component.formGroup = new FormGroup({})
+
+      let status: FormControlStatus | undefined
+      component['getStatusObservable']('value').subscribe((s) => (status = s))
 
       expect(status).toBe('VALID')
     })

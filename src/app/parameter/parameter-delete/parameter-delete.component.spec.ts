@@ -2,11 +2,10 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { provideRouter, Router } from '@angular/router'
-import { TranslateModule } from '@ngx-translate/core'
-import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
 import { PortalMessageService } from '@onecx/angular-integration-interface'
+import { provideTranslateTestingService } from '@onecx/angular-testing'
 
 import { ParametersAPIService } from 'src/app/shared/generated'
 import { ParameterDeleteComponent } from './parameter-delete.component'
@@ -26,18 +25,14 @@ describe('ParameterDeleteComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [],
-      imports: [
-        TranslateModule.forRoot(),
-        TranslateTestingModule.withTranslations({
-          de: require('src/assets/i18n/de.json'),
-          en: require('src/assets/i18n/en.json')
-        }).withDefaultLanguage('de')
-      ],
       providers: [
         provideHttpClientTesting(),
         provideHttpClient(),
-        provideRouter([{ path: '', component: ParameterDeleteComponent }])
+        provideRouter([{ path: '', component: ParameterDeleteComponent }]),
+        provideTranslateTestingService({
+          de: require('/src/assets/i18n/de.json'),
+          en: require('/src/assets/i18n/en.json')
+        })
       ]
     })
       .overrideComponent(ParameterDeleteComponent, {

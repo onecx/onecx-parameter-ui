@@ -185,11 +185,14 @@ export class ParameterDetailComponent implements OnChanges {
       validators: Validators.compose([TypeValidator()])
     })
   })
-  public valueStatus$: Observable<FormControlStatus> =
-    this.formGroup.get('value')?.statusChanges.pipe(map((s) => s)) ?? of()
-  public valueObjectStatus$: Observable<FormControlStatus> =
-    this.formGroup.get('valueObject')?.statusChanges.pipe(map((s) => s)) ?? of()
+  public readonly valueStatus$: Observable<FormControlStatus> = this.getStatusObservable('value')
+  public readonly valueObjectStatus$: Observable<FormControlStatus> = this.getStatusObservable('valueObject')
   public valueObjectError$: Observable<any> = of()
+
+  private getStatusObservable(controlName: string): Observable<FormControlStatus> {
+    const control = this.formGroup.get(controlName)
+    return control ? control.statusChanges.pipe(map((s) => s)) : of('VALID')
+  }
   // value lists
   public productOptions: SelectItem[] = []
   public appOptions: SelectItem[] = []

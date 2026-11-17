@@ -1,9 +1,9 @@
 import { provideHttpClient } from '@angular/common/http'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
-import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { UserService } from '@onecx/angular-integration-interface'
+import { provideTranslateTestingService } from '@onecx/angular-testing'
 
 import { HistoryCriteria, Parameter } from 'src/app/shared/generated'
 import { UsageDetailCriteriaComponent } from './usage-detail-criteria.component'
@@ -41,14 +41,15 @@ describe('HistoryCriteriaComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [],
-      imports: [
-        UsageDetailCriteriaComponent,
-        TranslateTestingModule.withTranslations({
-          de: require('src/assets/i18n/de.json'),
-          en: require('src/assets/i18n/en.json')
-        }).withDefaultLanguage('en')
-      ],
-      providers: [provideHttpClient(), provideHttpClientTesting()]
+      imports: [UsageDetailCriteriaComponent],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideTranslateTestingService({
+          de: require('/src/assets/i18n/de.json'),
+          en: require('/src/assets/i18n/en.json')
+        })
+      ]
     })
       .overrideComponent(UsageDetailCriteriaComponent, {
         add: {

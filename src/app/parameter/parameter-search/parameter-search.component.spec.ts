@@ -2,11 +2,11 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { provideRouter, Router, ActivatedRoute } from '@angular/router'
-import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
 import { BreadcrumbService, DataSortDirection, Filter, FilterType, Sort } from '@onecx/angular-accelerator'
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
+import { provideTranslateTestingService } from '@onecx/angular-testing'
 import { providePermissionService } from '@onecx/angular-utils'
 
 import { Parameter, ParametersAPIService, Product } from 'src/app/shared/generated'
@@ -156,20 +156,18 @@ describe('ParameterSearchComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [],
-      imports: [
-        ParameterSearchComponent,
-        TranslateTestingModule.withTranslations({
-          de: require('src/assets/i18n/de.json'),
-          en: require('src/assets/i18n/en.json')
-        }).withDefaultLanguage('en')
-      ],
+      imports: [ParameterSearchComponent],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
         providePermissionService(),
         provideRouter([{ path: 'usage', component: UsageSearchComponent }]),
         { provide: Router, useValue: routerSpy },
-        { provide: ActivatedRoute, useValue: routeMock }
+        { provide: ActivatedRoute, useValue: routeMock },
+        provideTranslateTestingService({
+          de: require('/src/assets/i18n/de.json'),
+          en: require('/src/assets/i18n/en.json')
+        })
       ]
     })
       .overrideComponent(ParameterSearchComponent, {
