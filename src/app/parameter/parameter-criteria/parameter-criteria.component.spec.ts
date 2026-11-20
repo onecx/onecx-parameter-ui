@@ -4,11 +4,11 @@ import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
 import { SimpleChange } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
-import { TranslateTestingModule } from 'ngx-translate-testing'
 import { SelectItem } from 'primeng/api'
 
 import { BreadcrumbService } from '@onecx/angular-accelerator'
 import { UserService } from '@onecx/angular-integration-interface'
+import { provideTranslateTestingService } from '@onecx/angular-testing'
 
 import { ParameterCriteriaComponent, CriteriaForm } from './parameter-criteria.component'
 import { ExtendedProduct, ApplicationAbstract } from '../parameter-search/parameter-search.component'
@@ -48,14 +48,16 @@ describe('ParameterCriteriaComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [],
-      imports: [
-        ParameterCriteriaComponent,
-        TranslateTestingModule.withTranslations({
-          de: require('src/assets/i18n/de.json'),
-          en: require('src/assets/i18n/en.json')
-        }).withDefaultLanguage('en')
-      ],
-      providers: [provideHttpClient(), provideHttpClientTesting(), { provide: ActivatedRoute, useValue: routeMock }]
+      imports: [ParameterCriteriaComponent],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: ActivatedRoute, useValue: routeMock },
+        provideTranslateTestingService({
+          de: require('/src/assets/i18n/de.json'),
+          en: require('/src/assets/i18n/en.json')
+        })
+      ]
     })
       .overrideComponent(ParameterCriteriaComponent, {
         add: {

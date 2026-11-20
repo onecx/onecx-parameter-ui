@@ -1,3 +1,5 @@
+import { TestBed } from '@angular/core/testing'
+import { TranslateService } from '@ngx-translate/core'
 import { Observable, of } from 'rxjs'
 
 import { LabelResolver } from './label.resolver'
@@ -5,7 +7,7 @@ import { LabelResolver } from './label.resolver'
 let labelResolver: LabelResolver
 
 describe('LabelResolver', () => {
-  const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
+  const translateServiceSpy = jasmine.createSpyObj<TranslateService>('TranslateService', ['get'])
 
   const activatedRouteSpy = jasmine.createSpyObj('ActivatedRouteSnapshot', [], {
     routeConfig: {
@@ -17,14 +19,22 @@ describe('LabelResolver', () => {
   const routerStateSpy = jasmine.createSpyObj('RouterStateSnapshot', [''])
 
   beforeEach(async () => {
-    labelResolver = new LabelResolver(translateServiceSpy)
+    TestBed.configureTestingModule({
+      providers: [{ provide: TranslateService, useValue: translateServiceSpy }]
+    })
+
+    labelResolver = TestBed.runInInjectionContext(() => new LabelResolver())
     translateServiceSpy.get.calls.reset()
-    const dataSpy = Object.getOwnPropertyDescriptor(activatedRouteSpy, 'data')?.get as jasmine.Spy<() => {}>
+    const dataSpy = Object.getOwnPropertyDescriptor(activatedRouteSpy, 'data')?.get as jasmine.Spy<
+      () => Record<string, unknown>
+    >
     dataSpy.and.returnValue({})
   })
 
   it('should translate if breadcrumb is present', (done: DoneFn) => {
-    const dataSpy = Object.getOwnPropertyDescriptor(activatedRouteSpy, 'data')?.get as jasmine.Spy<() => {}>
+    const dataSpy = Object.getOwnPropertyDescriptor(activatedRouteSpy, 'data')?.get as jasmine.Spy<
+      () => Record<string, unknown>
+    >
     dataSpy.and.returnValue({
       breadcrumb: 'defined'
     })
@@ -48,7 +58,7 @@ describe('LabelResolver', () => {
 
   it('should return an empty string if neither breadcrumb nor route.routeConfig.path are present', () => {
     const routeConfigSpy = Object.getOwnPropertyDescriptor(activatedRouteSpy, 'routeConfig')?.get as jasmine.Spy<
-      () => {}
+      () => Record<string, unknown>
     >
     routeConfigSpy.and.returnValue({})
     const result = labelResolver.resolve(activatedRouteSpy, routerStateSpy)

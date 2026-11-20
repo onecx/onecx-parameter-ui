@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnChanges, Output } from '@angular/core'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { TooltipModule } from 'primeng/tooltip'
@@ -24,15 +24,12 @@ export class UsageDetailCriteriaComponent implements OnChanges {
   @Input() public parameter: Parameter | undefined = undefined
   @Output() public criteriaEmitter = new EventEmitter<HistoryCriteria>()
 
-  public criteriaForm: FormGroup<CriteriaForm>
-
-  constructor(public readonly translate: TranslateService) {
-    this.criteriaForm = new FormGroup<CriteriaForm>({
-      name: new FormControl<string | undefined>({ value: undefined, disabled: true }, { nonNullable: true }),
-      productName: new FormControl<string | undefined>({ value: undefined, disabled: true }, { nonNullable: true }),
-      applicationId: new FormControl<string | undefined>({ value: undefined, disabled: true }, { nonNullable: true })
-    })
-  }
+  public readonly translate = inject(TranslateService)
+  public criteriaForm: FormGroup<CriteriaForm> = new FormGroup<CriteriaForm>({
+    name: new FormControl<string | undefined>({ value: undefined, disabled: true }, { nonNullable: true }),
+    productName: new FormControl<string | undefined>({ value: undefined, disabled: true }, { nonNullable: true }),
+    applicationId: new FormControl<string | undefined>({ value: undefined, disabled: true }, { nonNullable: true })
+  })
 
   public ngOnChanges(): void {
     if (this.history || this.parameter) {

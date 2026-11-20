@@ -3,10 +3,10 @@ import { DatePipe } from '@angular/common'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormBuilder } from '@angular/forms'
-import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
+import { provideTranslateTestingService } from '@onecx/angular-testing'
 
 import { History, HistoriesAPIService, HistoryCriteria, HistoryPageResult, Parameter } from 'src/app/shared/generated'
 import { UsageDetailComponent } from './usage-detail.component'
@@ -146,18 +146,16 @@ describe('HistoryComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [],
-      imports: [
-        UsageDetailComponent,
-        TranslateTestingModule.withTranslations({
-          de: require('src/assets/i18n/de.json'),
-          en: require('src/assets/i18n/en.json')
-        }).withDefaultLanguage('en')
-      ],
+      imports: [UsageDetailComponent],
       providers: [
         FormBuilder,
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: DatePipe, useValue: datePipe }
+        { provide: DatePipe, useValue: datePipe },
+        provideTranslateTestingService({
+          de: require('/src/assets/i18n/de.json'),
+          en: require('/src/assets/i18n/en.json')
+        })
       ]
     })
       .overrideComponent(UsageDetailComponent, {
@@ -283,7 +281,7 @@ describe('HistoryComponent', () => {
         error: () => {
           expect(component.exceptionKey).toBe('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.USAGE')
           expect(console.error).toHaveBeenCalledWith('getAllHistory', errorResponse)
-          done.fail
+          done.fail()
         }
       })
     })

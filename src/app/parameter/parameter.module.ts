@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
 
-import { providePermissionService, provideThemeConfig } from '@onecx/angular-utils'
+import { providePermissionService } from '@onecx/angular-utils'
+import { provideThemeConfig } from '@onecx/angular-utils/theme/primeng'
 
 import { LabelResolver } from 'src/app/shared/label.resolver'
 import { ParameterSearchComponent } from './parameter-search/parameter-search.component'

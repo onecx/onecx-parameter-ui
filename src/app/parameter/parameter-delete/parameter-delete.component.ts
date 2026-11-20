@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { AutoFocus } from 'primeng/autofocus'
 import { ButtonModule } from 'primeng/button'
@@ -23,11 +23,9 @@ export class ParameterDeleteComponent {
   @Input() visible = false
   @Output() visibleChange = new EventEmitter<boolean>()
 
-  constructor(
-    private readonly parameterApi: ParametersAPIService,
-    private readonly msgService: PortalMessageService,
-    private readonly translate: TranslateService
-  ) {}
+  private readonly parameterApi = inject(ParametersAPIService)
+  private readonly msgService = inject(PortalMessageService)
+  private readonly translate = inject(TranslateService)
 
   /**
    * DELETE
