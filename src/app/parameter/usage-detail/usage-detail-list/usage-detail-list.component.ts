@@ -10,6 +10,7 @@ import { ButtonModule } from 'primeng/button'
 import { TableModule } from 'primeng/table'
 import { MessageModule } from 'primeng/message'
 import { InputTextModule } from 'primeng/inputtext'
+import { TextareaModule } from 'primeng/textarea'
 
 import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
@@ -49,6 +50,7 @@ type ExtendedColumn = Column & {
     MessageModule,
     ReactiveFormsModule,
     TableModule,
+    TextareaModule,
     TooltipModule,
     TranslateModule
   ]
