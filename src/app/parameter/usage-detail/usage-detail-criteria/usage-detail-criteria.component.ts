@@ -3,6 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { TooltipModule } from 'primeng/tooltip'
 import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputTextModule } from 'primeng/inputtext'
 
 import { HistoryCriteria, Parameter } from 'src/app/shared/generated'
 import { ExtendedHistory } from '../../usage-search/usage-search.component'
@@ -17,7 +18,7 @@ export interface CriteriaForm {
   selector: 'app-usage-detail-criteria',
   templateUrl: './usage-detail-criteria.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FloatLabelModule, ReactiveFormsModule, TranslateModule, TooltipModule]
+  imports: [FloatLabelModule, InputTextModule, ReactiveFormsModule, TranslateModule, TooltipModule]
 })
 export class UsageDetailCriteriaComponent implements OnChanges {
   @Input() public history: ExtendedHistory | undefined = undefined

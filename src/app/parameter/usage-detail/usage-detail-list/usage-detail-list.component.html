@@ -18,8 +18,6 @@
     dataKey="id"
     [columns]="filteredColumns"
     [reorderableColumns]="false"
-    [scrollable]="true"
-    scrollHeight="590px"
     expandableRows="true"
     [expandedRowKeys]="expandedRows"
     rowExpandMode="single"
@@ -28,6 +26,7 @@
     [paginator]="true"
     [alwaysShowPaginator]="true"
     paginatorPosition="bottom"
+    paginatorDropdownAppendTo="body"
     [showCurrentPageReport]="true"
     currentPageReportTemplate="{first} - {last} {{ 'ACTIONS.SEARCH.OF' | translate }} {totalRecords}"
   >
@@ -177,7 +176,7 @@
                         }
                         @if (rowData.valueType === 'OBJECT') {
                           <textarea
-                            pInputTextarea
+                            pTextarea
                             id="pam_usage_detail_form_value_used"
                             class="w-full"
                             [rows]="5"
@@ -250,7 +249,7 @@
                         }
                         @if (rowData.defaultValueType === 'OBJECT') {
                           <textarea
-                            pInputTextarea
+                            pTextarea
                             id="pam_usage_detail_form_value_default"
                             class="w-full"
                             [rows]="5"
